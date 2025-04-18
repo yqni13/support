@@ -13,13 +13,13 @@ class AuthException extends Error {
     }
 }
 
-class AuthenticationStandardException extends CommonException {
+class AuthenticationStandardException extends AuthException {
     constructor(message, data) {
         super(ErrorCodes.AuthenticationStandardException, message, data);
     }
 }
 
-class AuthenticationEmailException extends CommonException {
+class AuthenticationEmailException extends AuthException {
     constructor(message, data) {
         super(ErrorCodes.AuthenticationEmailException, message, data, ErrorStatusCodes.AuthenticationException);
     }
@@ -43,7 +43,7 @@ class InvalidCredentialsException extends AuthException {
     }
 }
 
-class InvalidTokenException extends ApiException {
+class InvalidTokenException extends AuthException {
     constructor(message, data) {
         super(ErrorCodes.InvalidTokenException, message, data);
     }

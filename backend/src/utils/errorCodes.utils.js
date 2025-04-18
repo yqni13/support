@@ -11,5 +11,6 @@ module.exports.ErrorCodes = {
     InvalidPropertiesException: 9,
     InvalidEndpointException: 10,
     UnimplementedException: 11,
-    InvalidTokenException: 12
+    InvalidTokenException: 12,
+    InvalidSourceException: 13
 }

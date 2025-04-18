@@ -25,6 +25,12 @@ class RequestExceedMaxException extends CommonException {
     }
 }
 
+class InvalidSourceException extends CommonException {
+    constructor(message = 'server-invalid-source', data) {
+        super(ErrorCodes.InvalidSourceException, message, data);
+    }
+}
+
 class UnexpectedException extends CommonException {
     constructor(message, data) {
         super(ErrorCodes.UnexpectedException, message, data, ErrorStatusCodes.UnexpectedException);
@@ -34,5 +40,6 @@ class UnexpectedException extends CommonException {
 module.exports = {
     InternalServerException,
     RequestExceedMaxException,
+    InvalidSourceException,
     UnexpectedException,
 };
