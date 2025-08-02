@@ -1,3 +1,7 @@
+# Custom ignore items
+desktop.ini
+
+
 # Logs
 logs
 *.log
