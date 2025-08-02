@@ -12,5 +12,6 @@ module.exports.ErrorCodes = {
     InvalidEndpointException: 10,
     UnimplementedException: 11,
     InvalidTokenException: 12,
-    InvalidSourceException: 13
+    InvalidSourceException: 13,
+    UnexpectedApiResponseException: 14
 }

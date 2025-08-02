@@ -14,7 +14,7 @@ class CommonException extends Error {
 }
 
 class InternalServerException extends CommonException {
-    constructor(data) {
+    constructor(message, data) {
         super(ErrorCodes.InternalServerException, message, data);
     }
 }
