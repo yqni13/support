@@ -72,7 +72,7 @@ Basic description: `<base>.<subsuffix?>.<suffix>.<ending>` [specific always sing
 |---------------------------|-----------------------------|---------------------------|
 | Enum (template access)    | `[EnumName]Enum`            | BaseRouteEnum = BaseRoute |
 | Environment variables     | `SECRET_[description]`      | SECRET_API_KEY            |
-| Logger context (method)   | `tava_[Class]_[Method]`     | tava_DBConnect_Init       |
+| Logger context (method)   |  support_[Class]_[Method]`  | support_DBConnect_Init    |
 
 <br>
 
