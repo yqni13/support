@@ -13,5 +13,7 @@ module.exports.ErrorCodes = {
     UnimplementedException: 11,
     InvalidTokenException: 12,
     InvalidSourceException: 13,
-    UnexpectedApiResponseException: 14
+    UnexpectedApiResponseException: 14,
+    DBConnectionException: 15,
+    DBEmptyException: 16
 }
