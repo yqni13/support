@@ -19,20 +19,22 @@ Consistency within these rules improve readability, maintenance and modular deve
 
 Basic description: `<base>.<subsuffix?>.<suffix>.<ending>` [specific always singular]
 
-| Classification    | Structure                             | Example                         |
-|-------------------|---------------------------------------|---------------------------------|
-| Controllers       | `[base].controller.[ending]`          | mailing.controller.js           |
-| Loaders           | `[base].loader.[ending]`              | express.loader.js               |
-| Middleware        | `[base].model.[ending]`               | error.middleware.js             |
-| Validators        | `[base]Validator.middleware.[ending]` | mailingValidator.middleware.js  |
-| Models            | `[base].model.[ending]`               | mailing.model.js                |
-| Routes            | `[base].routes.[ending]`              | mailing.routes.js               |
-| Services          | `[base].service.[ending]`             | mailing.service.js              |
-| Utils             | `[base].utils.[ending]`               | common.utils.js                 |
-| Mock data         | `[base].mock.json`                    | mailing.mock.json               |
-| Enums             | `[base].enum.[ending]`                | snackbar-options.enum.js        |
-| Integration-Tests | `[base].integration.test.js`          | mailing.integration.test.js     |
-| Unit-Tests        | `[base].[suffix].test.js`             | address.validators.test.s       |
+| Classification    | Structure                             | Example                            |
+|-------------------|---------------------------------------|------------------------------------|
+| Controllers       | `[base].controller.js`                | mailing.controller.js              |
+| Loaders           | `[base].loader.js`                    | express.loader.js                  |
+| Middleware        | `[base].model.js`                     | error.middleware.js                |
+| Validators        | `[base]Validator.middleware.js`       | mailingValidator.middleware.js     |
+| Models            | `[base].model.js`                     | mailing.model.js                   |
+| Routes            | `[base].routes.js`                    | mailing.routes.js                  |
+| Services          | `[base].service.[ending]`             | mailing.service.js/ts              |
+| Utils             | `[base].utils.[ending]`               | common.utils.js/ts                 |
+| Mock data         | `[base].mock.json`                    | mailing.mock.json                  |
+| Enums             | `[base].enum.[ending]`                | snackbar-options.enum.js/ts        |
+| Integration-Tests | `[base].integration.test.js`          | mailing.integration.test.js        |
+| Unit-Tests        | `[base].[suffix].test.js`             | address.validators.test.js         |
+| Migrations [Init] | `[time]_init.migrations.js`           | 1748..._init.migrations.js         |
+| Migrations        | `[time]_[base]-[suffix].migrations.js`| 1748..._meta-update0.migrations.js |
 
 <br>
 
@@ -66,6 +68,14 @@ Basic description: `<base>.<subsuffix?>.<suffix>.<ending>` [specific always sing
 
 <br>
 
+## Git administration
+
+| Description                   | Prefix                       | Example                      |
+|-------------------------------|------------------------------|------------------------------|
+| Feature branch                | SUPPORT-[JiraRefNr]-[Desc]   | SUPPORT-8-db-setup           |
+| Merge commit [not-Master]     | by[Branch]-[Desc?]_[Version] | byDevelopment-Hotfix_vX.Y.Z  |
+| Merge commit [Master]         | toMaster-[Desc?]_[Version]   | toMaster_v1.6.3              |
+
 ## 🈺 Other
 
 | Classification            | Structure                   | Example                   |
@@ -81,4 +91,5 @@ Basic description: `<base>.<subsuffix?>.<suffix>.<ending>` [specific always sing
 | Abbreviation           | Definition                  | Value/Importance             |
 |------------------------|-----------------------------|------------------------------|
 | S_ID                   | Service Identification      | 'artdv', 'tava'              |
+| Desc                   | Description                 | --                           |
 
