@@ -1,6 +1,6 @@
 ## How to migrate?
 
-Create a new migration file (name scheme: <target-table>-update<serial_number>-migration).<br>This will be saved automatically at [migrations](../../migrations/).
+Create a new migration file (name scheme: <target-table>-update<serial_number>.migrations).<br>This will be saved automatically at [migrations](../../migrations/).
 ```sh
 npm run migrate create <target-table>-update<serial_number>.migrations
 ```
@@ -27,7 +27,7 @@ module.exports = {
 
 Since a central db is in use for this project, the migration can be executed locally.
 
-Set project to type module in `package.json` (add <"type": "module">) and type the following command in powershell:
+Set connection string as environment variable by the following command in powershell:
 ```sh
 path> $env:DATABASE_URL = "postgresql://<user>:<password>@<host>:<port>/<db>"
 ```

@@ -40,6 +40,7 @@ class DBConnection {
                 throw error;
             }
         } catch(error) {
+            // TODO(yqni13): logging
             if(error.code === ErrorStatusCodes.DBEmptyException) {
                 throw new DBEmptyException();
             } else {
@@ -55,7 +56,7 @@ class DBConnection {
             const client = await this.#pool.connect();
             return client;
         } catch(error) {
-            // logging
+            // TODO(yqni13): logging
             throw new DBConnectionException('server-535-auth#database');
         }
     }
@@ -64,7 +65,7 @@ class DBConnection {
         try {
             await client.release(true);
         } catch(error) {
-            // logging
+            // TODO(yqni13): logging
             throw new DBConnectionException('server-535-auth#database');
         }
     }
