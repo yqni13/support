@@ -1,77 +1,95 @@
-const { Config } = require('../configs/config');
-const { AuthSecretNotFoundException } = require('../utils/exceptions/auth.exception');
-const fs = require('fs');
+import { Config } from'../configs/config';
+import { AuthSecretNotFoundException } from'./exceptions/auth.exception';
+import fs from "fs";
 
 class Secrets {
-    MODE = '';
-    EMAIL_RECEIVER = '';
-    EMAIL_SENDER = '';
-    EMAIL_PASS = '';
-    PRIVATE_KEY_ARTDV = '';
-    PRIVATE_KEY_TAVA = '';
-    BETTERSTACK_LOGGING_KEY = '';
-    BETTERSTACK_HOST = '';
-    DB_LOCAL_USER = '';
-    DB_LOCAL_PASS = '';
-    DB_LOCAL_HOST = '';
-    DB_LOCAL_PORT = '';
-    DB_LOCAL_DB = '';
-    DB_DOCKER_USER = '';
-    DB_DOCKER_PASS = '';
-    DB_DOCKER_HOST = '';
-    DB_DOCKER_PORT = '';
-    DB_DOCKER_DB = '';
+    readonly MODE: string ;
+    readonly PORT: number ;
+    readonly EMAIL_RECEIVER: string ;
+    readonly EMAIL_SENDER: string ;
+    readonly EMAIL_PASS: string ;
+    readonly PRIVATE_KEY_ARTDV: string ;
+    readonly PRIVATE_KEY_TAVA: string ;
+    readonly BETTERSTACK_LOGGING_KEY: string ;
+    readonly BETTERSTACK_HOST: string ;
+    readonly DB_LOCAL_USER: string ;
+    readonly DB_LOCAL_PASS: string ;
+    readonly DB_LOCAL_HOST: string ;
+    readonly DB_LOCAL_PORT: string ;
+    readonly DB_LOCAL_DB: string ;
+    readonly DB_DOCKER_USER: string ;
+    readonly DB_DOCKER_PASS: string ;
+    readonly DB_DOCKER_HOST: string ;
+    readonly DB_DOCKER_PORT: string ;
+    readonly DB_DOCKER_DB: string ;
 
-    constructor() {
-        this.MODE = this._setMode();
-        this.EMAIL_RECEIVER = this._setEmailReceiver();
-        this.EMAIL_SENDER = this._setEmailSender();
-        this.EMAIL_PASS = this._setEmailPass();
-        this.PRIVATE_KEY_ARTDV = this._setPrivateKey_ARTDV();
-        this.PRIVATE_KEY_TAVA = this._setPrivateKey_TAVA();
-        this.BETTERSTACK_LOGGING_KEY = this._setBetterStackLoggingKey();
-        this.BETTERSTACK_HOST = this._setBetterStackHost();
-        this.DB_LOCAL_USER = this._setDbLocalUser();
-        this.DB_LOCAL_PASS = this._setDbLocalPass();
-        this.DB_LOCAL_HOST = this._setDbLocalHost();
-        this.DB_LOCAL_PORT = this._setDbLocalPort();
-        this.DB_LOCAL_DB = this._setDbLocalDb();
-        this.DB_DOCKER_USER = this._setDbDockerUser();
-        this.DB_DOCKER_PASS = this._setDbDockerPass();
-        this.DB_DOCKER_HOST = this._setDbDockerHost();
-        this.DB_DOCKER_PORT = this._setDbDockerPort();
-        this.DB_DOCKER_DB = this._setDbDockerDb();
+    private static _instance: Secrets;
+
+    private constructor() {
+        this.MODE = this.setMode();
+        this.PORT = this.setPort();
+        this.EMAIL_RECEIVER = this.setEmailReceiver();
+        this.EMAIL_SENDER = this.setEmailSender();
+        this.EMAIL_PASS = this.setEmailPass();
+        this.PRIVATE_KEY_ARTDV = this.setPrivateKey_ARTDV();
+        this.PRIVATE_KEY_TAVA = this.setPrivateKey_TAVA();
+        this.BETTERSTACK_LOGGING_KEY = this.setBetterStackLoggingKey();
+        this.BETTERSTACK_HOST = this.setBetterStackHost();
+        this.DB_LOCAL_USER = this.setDbLocalUser();
+        this.DB_LOCAL_PASS = this.setDbLocalPass();
+        this.DB_LOCAL_HOST = this.setDbLocalHost();
+        this.DB_LOCAL_PORT = this.setDbLocalPort();
+        this.DB_LOCAL_DB = this.setDbLocalDb();
+        this.DB_DOCKER_USER = this.setDbDockerUser();
+        this.DB_DOCKER_PASS = this.setDbDockerPass();
+        this.DB_DOCKER_HOST = this.setDbDockerHost();
+        this.DB_DOCKER_PORT = this.setDbDockerPort();
+        this.DB_DOCKER_DB = this.setDbDockerDb();
     }
 
-    _setMode() {
+    static get instance(): Secrets {
+        if(!Secrets._instance) {
+            Secrets._instance = new Secrets();
+        }
+        return Secrets._instance;
+    }
+
+    private setMode() {
         if(!Config.MODE) {
-            throw new AuthSecretNotFoundException('secret-404-env#MODE')
+            throw new AuthSecretNotFoundException('secret-404-env#MODE');
         }
         return Config.MODE;
     }
 
-    _setEmailReceiver() {
+    private setPort() {
+        if(!Config.PORT) {
+            throw new AuthSecretNotFoundException('secret-404-env#PORT');
+        }
+        return Config.PORT;
+    }
+
+    private setEmailReceiver() {
         if(!Config.EMAIL_RECEIVER) {
-            throw new AuthSecretNotFoundException('secret-404-env#EMAIL_RECEIVER')
+            throw new AuthSecretNotFoundException('secret-404-env#EMAIL_RECEIVER');
         }
         return Config.EMAIL_RECEIVER;
     }
 
-    _setEmailSender() {
+    private setEmailSender() {
         if(!Config.EMAIL_SENDER) {
-            throw new AuthSecretNotFoundException('secret-404-env#EMAIL_SENDER')
+            throw new AuthSecretNotFoundException('secret-404-env#EMAIL_SENDER');
         }
         return Config.EMAIL_SENDER;
     }
 
-    _setEmailPass() {
+    private setEmailPass() {
         if(!Config.EMAIL_PASS) {
-            throw new AuthSecretNotFoundException('secret-404-env#EMAIL_PASS')
+            throw new AuthSecretNotFoundException('secret-404-env#EMAIL_PASS');
         }
         return Config.EMAIL_PASS;
     }
 
-    _setPrivateKey_ARTDV = () => {
+    private setPrivateKey_ARTDV = () => {
         let key;
         if(Config.MODE === 'development') {
             key = !Config.PRIVATE_KEY_ARTDV ? null : fs.readFileSync(Config.PRIVATE_KEY_ARTDV, 'utf8');
@@ -85,7 +103,7 @@ class Secrets {
         return key;
     }
 
-    _setPrivateKey_TAVA = () => {
+    private setPrivateKey_TAVA = () => {
         let key;
         if(Config.MODE === 'development') {
             key = !Config.PRIVATE_KEY_TAVA ? null : fs.readFileSync(Config.PRIVATE_KEY_TAVA, 'utf8');
@@ -99,84 +117,84 @@ class Secrets {
         return key;
     }
 
-    _setBetterStackLoggingKey = () => {
+    private setBetterStackLoggingKey = () => {
         if(!Config.BETTERSTACK_LOGGING_KEY) {
             throw new AuthSecretNotFoundException('secret-404-env#BETTERSTACK_LOGGING_KEY');
         }
         return Config.BETTERSTACK_LOGGING_KEY;
     }
 
-    _setBetterStackHost = () => {
+    private setBetterStackHost = () => {
         if(!Config.BETTERSTACK_HOST) {
             throw new AuthSecretNotFoundException('secret-404-env#BETTERSTACK_HOST');
         }
         return Config.BETTERSTACK_HOST;
     }
 
-    _setDbLocalUser() {
+    private setDbLocalUser() {
         if(!Config.DB_LOCAL_USER) {
             throw new AuthSecretNotFoundException('secret-404-env#DB_LOCAL_USER');
         }
         return Config.DB_LOCAL_USER
     }
 
-    _setDbLocalPass() {
+    private setDbLocalPass() {
         if(!Config.DB_LOCAL_PASS) {
             throw new AuthSecretNotFoundException('secret-404-env#DB_LOCAL_PASS');
         }
         return Config.DB_LOCAL_PASS
     }
 
-    _setDbLocalHost() {
+    private setDbLocalHost() {
         if(!Config.DB_LOCAL_HOST) {
             throw new AuthSecretNotFoundException('secret-404-env#DB_LOCAL_HOST');
         }
         return Config.DB_LOCAL_HOST
     }
 
-    _setDbLocalPort() {
+    private setDbLocalPort() {
         if(!Config.DB_LOCAL_PORT) {
             throw new AuthSecretNotFoundException('secret-404-env#DB_LOCAL_PORT');
         }
         return Config.DB_LOCAL_PORT
     }
 
-    _setDbLocalDb() {
+    private setDbLocalDb() {
         if(!Config.DB_LOCAL_DB) {
             throw new AuthSecretNotFoundException('secret-404-env#DB_LOCAL_DB');
         }
         return Config.DB_LOCAL_DB
     }
 
-    _setDbDockerUser() {
+    private setDbDockerUser() {
         if(!Config.DB_DOCKER_USER) {
             throw new AuthSecretNotFoundException('secret-404-env#DB_DOCKER_USER');
         }
         return Config.DB_DOCKER_USER
     }
 
-    _setDbDockerPass() {
+    private setDbDockerPass() {
         if(!Config.DB_DOCKER_PASS) {
             throw new AuthSecretNotFoundException('secret-404-env#DB_DOCKER_PASS');
         }
         return Config.DB_DOCKER_PASS
     }
 
-    _setDbDockerHost() {
+    private setDbDockerHost() {
         if(!Config.DB_DOCKER_HOST) {
             throw new AuthSecretNotFoundException('secret-404-env#DB_DOCKER_HOST');
         }
         return Config.DB_DOCKER_HOST
     }
 
-    _setDbDockerPort() {
+    private setDbDockerPort() {
         if(!Config.DB_DOCKER_PORT) {
             throw new AuthSecretNotFoundException('secret-404-env#DB_DOCKER_PORT');
         }
         return Config.DB_DOCKER_PORT
     }
 
-    _setDbDockerDb() {
+    private setDbDockerDb() {
         if(!Config.DB_DOCKER_DB) {
             throw new AuthSecretNotFoundException('secret-404-env#DB_DOCKER_DB');
         }
@@ -184,4 +202,4 @@ class Secrets {
     }
 }
 
-module.exports = new Secrets();
+export const secrets = Secrets.instance;

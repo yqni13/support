@@ -1,6 +1,6 @@
-const { body } = require('express-validator');
+import { body, ValidationChain } from 'express-validator';
 
-exports.mailingSchema = [
+export const mailingSchema: ValidationChain[] = [
     body('sender')
         .trim()
         .notEmpty()

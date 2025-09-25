@@ -1,4 +1,4 @@
-module.exports.Config = {
+export const Config: any = {
     MODE: process.env.ENV_MODE || 'development',
     PORT: process.env.ENV_PORT || 3000,
     EMAIL_RECEIVER: process.env.SECRET_EMAIL_RECEIVER || null,
@@ -18,4 +18,4 @@ module.exports.Config = {
     DB_DOCKER_HOST: process.env.SECRET_DB_DOCKER_HOST || null,
     DB_DOCKER_PORT: process.env.SECRET_DB_DOCKER_PORT || null,
     DB_DOCKER_DB: process.env.SECRET_DB_DOCKER_DB || null
-}
+};
