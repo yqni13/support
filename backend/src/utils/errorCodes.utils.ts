@@ -1,4 +1,4 @@
-module.exports.ErrorCodes = {
+export const ErrorCodes: any = {
     AuthSecretNotFoundException: 0,
     InvalidCredentialsException: 1,
     TokenMissingException: 2,
@@ -16,4 +16,4 @@ module.exports.ErrorCodes = {
     UnexpectedApiResponseException: 14,
     DBConnectionException: 15,
     DBEmptyException: 16
-}
+};

@@ -1,15 +1,15 @@
-const { Config } = require('../configs/config');
-const { InternalServerException } = require('../utils/exceptions/common.exception');
+import { NextFunction, Request, Response } from "express";
+import { secrets } from '../utils/secrets.utils';
+import { InternalServerException } from '../utils/exceptions/common.exception';
 
-function errorMiddleware(err, req, res, next) {
-
+export function errorMiddleware(err: any, req: Request, res: Response, next: NextFunction) {
     if((err.status === 500 || !err.message) && !err.isOperational) {
         err = new InternalServerException('Internal Server Error');
     }
 
     let { message, code, error, status, data, stack } = err;
 
-    if(Config.MODE === 'development') {
+    if(secrets.MODE === 'development') {
         console.log(`[Exception] ${error}, [Code] ${code}`);
         console.log(`[Error] ${message}`);
         console.log(`[Stack] ${stack}`);
@@ -25,5 +25,3 @@ function errorMiddleware(err, req, res, next) {
 
     res.status(status).send({ headers, body: {}});
 }
-
-module.exports = errorMiddleware;

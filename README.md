@@ -1,5 +1,5 @@
 # yqni13 | support
-$\texttt{\color{teal}{v0.0.1}}$
+$\texttt{\color{teal}{v0.1.1}}$
 
 
 <br>
@@ -38,11 +38,13 @@ The development process is structured by the TDD (test driven development) princ
 <br>
 
 ## Updates
-[list of all updates](update_protocol.md)
+[list of all updates](/docs/update_protocol.md)
 
-### $\textsf{last\ update\ 0.0.0\ >>\ {\color{pink}0.0.1}}$
+### $\textsf{last\ update\ 0.0.1\ >>\ {\color{pink}0.1.1}}$
 
-- $\textsf{\color{teal}Addition:}$ Added basic documentation.
+- $\textsf{\color{teal}Addition:}$ Added basic meta route.
+- $\textsf{\color{green}Change:}$ Switched from NodeJS by Javascript to Typescript.
+- $\textsf{\color{green}Change:}$ Adjusted migration documentation for correct terminal commands.
 
 <br>
 

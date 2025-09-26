@@ -58,6 +58,7 @@ async function up(pgm) {
             notNull: true
         }
     });
+    pgm.sql(`ALTER SEQUENCE meta_id_seq RESTART WITH 1;`);
 };
 
 /**

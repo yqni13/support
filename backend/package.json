@@ -7,7 +7,9 @@
     "migrate-up": "node-pg-migrate up",
     "migrate-down": "node-pg-migrate down",
     "test": "set ENV_MODE=staging && jest --setupFiles dotenv/config",
-    "start": "node server.js"
+    "start-local": "ts-node src/server.ts",
+    "build": "tsc",
+    "start-prod": "node dist/server.js"
   },
   "author": "yqni13",
   "license": "ISC",
@@ -28,8 +30,18 @@
     "nodemailer": "^6.10.1",
     "nodemon": "^3.1.9",
     "pg": "^8.16.3",
-    "supertest": "^7.1.4",
     "uuid": "^11.1.0",
     "winston": "^3.17.0"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.3",
+    "@types/node": "^24.5.2",
+    "@types/pg": "^8.15.5",
+    "@types/supertest": "^6.0.3",
+    "supertest": "^7.1.4",
+    "ts-jest": "^29.4.4",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.2"
   }
 }

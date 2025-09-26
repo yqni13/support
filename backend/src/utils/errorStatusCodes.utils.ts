@@ -1,4 +1,4 @@
-module.exports.ErrorStatusCodes = {
+export const ErrorStatusCodes: any = {
     AuthSecretNotFoundException: 404,
     AuthenticationEmailException: 535,
     UnexpectedException: 502,
@@ -6,4 +6,4 @@ module.exports.ErrorStatusCodes = {
     UnimplementedException: 501,
     DBConnectionException: 535,
     DBEmptyException: 544
-}
+};
