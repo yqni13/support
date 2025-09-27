@@ -5,11 +5,13 @@ import { NextFunction, Request, Response } from "express";
 
 export type AsyncMiddleware = (req: Request, res: Response, next: NextFunction) => Promise<void>;
 
-export function basicResponse(body: unknown, success: number, message: string): any {
-    return {
-        headers: { success, message },
-        body: body
+export function isObjEmpty(obj: any): boolean {
+    for(let key in obj) {
+        if(Object.hasOwnProperty(key)) {
+            return false;
+        }
     }
+    return true;
 }
 
 export function selectPrivateKey(source: MailSource): string {

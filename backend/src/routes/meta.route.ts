@@ -4,6 +4,6 @@ import metaController from '../controllers/meta.controller';
 
 const router = Router();
 
-router.get('/info', awaitHandlerFactory(metaController.getMetaData));
+router.get('/info/:id', awaitHandlerFactory(metaController.getMetaData));
 
 export default router;

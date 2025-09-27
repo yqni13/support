@@ -4,12 +4,19 @@ import { DBConnectionException, DBEmptyException } from '../utils/exceptions/db.
 import { ErrorStatusCodes } from '../utils/errorStatusCodes.utils';
 
 export class DBConnection {
-
+    private static instance: DBConnection;
     #pool: Pool;
 
     constructor() {
         const connectionString = this._getConnectionString(secrets.MODE);
         this.#pool = new Pool({connectionString});
+    }
+
+    static getInstance(): DBConnection {
+        if(!DBConnection.instance) {
+            DBConnection.instance = new DBConnection();
+        }
+        return DBConnection.instance;
     }
 
     _getConnectionString(env: string) {
@@ -60,7 +67,7 @@ export class DBConnection {
         try {
             const client = await this.#pool.connect();
             return client;
-        } catch(error) {
+        } catch(error: any) {
             // TODO(yqni13): logging
             throw new DBConnectionException('server-535-auth#database');
         }
@@ -69,9 +76,13 @@ export class DBConnection {
     async close(client: PoolClient) {
         try {
             client.release(true);
-        } catch(error) {
+        } catch(error: any) {
             // TODO(yqni13): logging
             throw new DBConnectionException('server-535-auth#database');
         }
+    }
+
+    async shutdown() {
+        await this.#pool.end();
     }
 }

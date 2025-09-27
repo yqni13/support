@@ -1,8 +1,11 @@
-import { basicResponse } from '../utils/common.utils';
+import { MetaFindDTO, MetaResponseDTO } from '../dtos/meta.dto';
+import { IRepoError } from '../repositories/interfaces/base.repository.interface';
+import metaRepository from '../repositories/meta.repository';
 
 class MetaService {
-    async getMetaData() {
-        return basicResponse({demo: true}, 1, 'Success');
+    async getMetaData(dto: MetaFindDTO): Promise<MetaResponseDTO | IRepoError | null> {
+        const result = await metaRepository.findById(dto.id);
+        return result;
     }
 }
 
