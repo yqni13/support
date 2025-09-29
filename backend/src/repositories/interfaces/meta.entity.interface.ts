@@ -8,5 +8,7 @@ export interface Meta {
     db_version: string,
     docker_image: string,
     docker_version: string,
-    jenkins_version: string
+    jenkins_version: string,
+    created_on: string,
+    last_modified: string
 }

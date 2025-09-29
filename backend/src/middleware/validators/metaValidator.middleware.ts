@@ -9,7 +9,7 @@ export const metaFindByIdSchema: ValidationChain[] = [
 ];
 
 export const metaUpdateSchema: ValidationChain[] = [
-    body('id')
+    param('id')
         .trim()
         .notEmpty()
         .withMessage('data-required'),

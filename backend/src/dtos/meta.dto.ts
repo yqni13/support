@@ -3,7 +3,6 @@ export interface MetaFindDTO {
 }
 
 export interface MetaUpdateDTO {
-    id: number,
     app: string,
     author: string,
     build_on: string,
@@ -25,5 +24,7 @@ export interface MetaResponseDTO {
     db_version: string,
     docker_image: string,
     docker_version: string,
-    jenkins_version: string
+    jenkins_version: string,
+    created_on: string,
+    last_modified: string
 }

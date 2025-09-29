@@ -1,7 +1,7 @@
 export function validateVersionStructure(version: string, numOfDelimiter: number): boolean {
     // 1. Check if version is a string and has all necessary delimiters.
-    const hasValidDelimiter: boolean = (version.match(/./g) || []).length === numOfDelimiter;
-    if(typeof version !== 'string' || !hasValidDelimiter) {
+    const hasValidDelimiter: boolean = (version.split('.').length - 1) === numOfDelimiter;
+    if(!hasValidDelimiter) {
         throw new Error('backend-invalid-version');
     }
 

@@ -1,6 +1,6 @@
 export interface IBaseRepository<T> {
     findById(id: string | number): Promise<T |  IRepoError | null>;
-    // update(id: string, data: Partial<T>): Promise<T | IRepoError | null>;
+    update(id: string | number, data: Partial<T>): Promise<T | IRepoError | null>;
 }
 
 export interface IRepoError {
