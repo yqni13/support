@@ -3,6 +3,8 @@ import { DBConnection } from "../configs/db";
 import { IBaseRepository, IRepoError } from "./interfaces/base.repository.interface";
 import { Meta } from "./interfaces/meta.entity.interface";
 import * as Utils from '../utils/common.utils';
+import { secrets } from "../utils/secrets.utils";
+import { EnvMode } from "../utils/enums/env-mode.enum";
 
 class MetaRepository implements IBaseRepository<Meta> {
 
@@ -24,9 +26,12 @@ class MetaRepository implements IBaseRepository<Meta> {
             const result: QueryResult<Meta> = await client.query(sql, value);
             await db.close(client);
             return result.rows[0] ?? null;
+
         } catch(err: any) {
             // logging
-            console.log("DB ERROR ON SELECT (Meta Repository, findById): ", err);
+            if(secrets.MODE === EnvMode.DEV) {
+                console.log("DB ERROR ON SELECT (Meta Repository, findById): ", err);
+            }
             await db.close(client);
             return {
                 method: 'support_meta_findById',
@@ -54,7 +59,9 @@ class MetaRepository implements IBaseRepository<Meta> {
             return result.rows[0] ?? null;
         } catch(err: any) {
             // logging
-            console.log("DB ERROR ON UPDATE (Meta Repository, update): ", err);
+            if(secrets.MODE === EnvMode.DEV) {
+                console.log("DB ERROR ON UPDATE (Meta Repository, update): ", err);
+            }
             await db.close(client);
             return {
                 method: 'support_meta_update',

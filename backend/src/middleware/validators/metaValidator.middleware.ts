@@ -10,9 +10,8 @@ export const metaFindByIdSchema: ValidationChain[] = [
 
 export const metaUpdateSchema: ValidationChain[] = [
     param('id')
-        .trim()
-        .notEmpty()
-        .withMessage('data-required'),
+        .isInt()
+        .withMessage('backend-invalid-id'),
     body('app')
         .trim()
         .notEmpty()

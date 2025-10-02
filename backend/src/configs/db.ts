@@ -2,6 +2,7 @@ import { Pool, PoolClient } from 'pg';
 import { secrets } from '../utils/secrets.utils';
 import { DBConnectionException, DBEmptyException } from '../utils/exceptions/db.exception';
 import { ErrorStatusCodes } from '../utils/errorStatusCodes.utils';
+import { EnvMode } from '../utils/enums/env-mode.enum';
 
 export class DBConnection {
     private static instance: DBConnection;
@@ -60,7 +61,9 @@ export class DBConnection {
         } finally {
             await this.close(client);
         }
-        console.log("DB COMMUNICATION: SUCCESS");
+        if(secrets.MODE === EnvMode.DEV) {
+            console.log("DB COMMUNICATION: SUCCESS");
+        }
     }
 
     async connect(): Promise<PoolClient> {

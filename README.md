@@ -1,5 +1,5 @@
 # yqni13 | support
-$\texttt{\color{teal}{v0.1.1}}$
+$\texttt{\color{teal}{v0.2.1}}$
 
 
 <br>
@@ -23,6 +23,7 @@ $\texttt{\color{teal}{v0.1.1}}$
 <div style="display:flex; align-items:center;">
     <img src="assets/icons/cloudflare.png" alt="Cloudflare">
     <img src="assets/icons/betterstack.png" alt="Betterstack">
+    <img src="assets/icons/testcontainers.png" alt="Testcontainers">
 </div>
 
 <br>
@@ -38,20 +39,18 @@ The development process is structured by the TDD (test driven development) princ
 <br>
 
 ## Updates
-[list of all updates](/docs/update_protocol.md)
+[list of all updates](/docs/CHANGELOG.md)
 
-### $\textsf{last\ update\ 0.0.1\ >>\ {\color{pink}0.1.1}}$
+### $\textsf{last\ update\ 0.1.1\ >>\ {\color{pink}0.2.1}}$
 
-- $\textsf{\color{teal}Addition:}$ Added basic meta route.
-- $\textsf{\color{green}Change:}$ Switched from NodeJS by Javascript to Typescript.
-- $\textsf{\color{green}Change:}$ Adjusted migration documentation for correct terminal commands.
+- $\textsf{\color{teal}Addition:}$ Added meta handling in addition to full db setup.
+- $\textsf{\color{red}Patch:}$ Updated typescript configuration to include jest testing-framework.
 
 <br>
 
 ### Update objectives:
 <dl>
     <dd>- docker setup</dd>
-    <dd>- database setup</dd>
     <dd>- cloudflare setup</dd>
     <dd>- jenkins setup</dd>
     <dd>- host setup</dd>
