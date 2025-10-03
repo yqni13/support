@@ -1,10 +1,10 @@
-import { MetaFindDTO, MetaResponseDTO, MetaUpdateDTO } from '../dtos/meta.dto';
-import { IRepoError } from '../repositories/interfaces/base.repository.interface';
+import { MetaResponseDTO, MetaUpdateDTO } from '../dtos/meta.dto';
+import { IRepoError } from '../repositories/interfaces/error.repository.interface';
 import metaRepository from '../repositories/meta.repository';
 
 class MetaService {
-    async getMetaData(dto: MetaFindDTO): Promise<MetaResponseDTO | IRepoError | null> {
-        const result = await metaRepository.findById(dto.id);
+    async getMetaData(id: number): Promise<MetaResponseDTO | IRepoError | null> {
+        const result = await metaRepository.findById(id);
         return result;
     }
 

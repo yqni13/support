@@ -1,6 +1,7 @@
 import { QueryResult } from "pg";
 import { DBConnection } from "../configs/db";
-import { IBaseRepository, IRepoError } from "./interfaces/base.repository.interface";
+import { IBaseRepository } from "./interfaces/base.repository.interface";
+import { IRepoError } from "./interfaces/error.repository.interface";
 import { Meta } from "./interfaces/meta.entity.interface";
 import * as Utils from '../utils/common.utils';
 import { secrets } from "../utils/secrets.utils";

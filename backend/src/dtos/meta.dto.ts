@@ -1,7 +1,3 @@
-export interface MetaFindDTO {
-    id: number
-}
-
 export interface MetaUpdateDTO {
     app: string,
     author: string,

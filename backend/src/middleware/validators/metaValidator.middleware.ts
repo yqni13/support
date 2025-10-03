@@ -3,9 +3,8 @@ import * as CustomValidator from '../../utils/customValidator.utils';
 
 export const metaFindByIdSchema: ValidationChain[] = [
     param('id')
-        .trim()
-        .notEmpty()
-        .withMessage('data-required')
+        .isInt()
+        .withMessage('backend-invalid-id')
 ];
 
 export const metaUpdateSchema: ValidationChain[] = [
@@ -15,45 +14,45 @@ export const metaUpdateSchema: ValidationChain[] = [
     body('app')
         .trim()
         .notEmpty()
-        .withMessage('data-required'),
+        .withMessage('arg-required'),
     body('author')
         .trim()
         .notEmpty()
-        .withMessage('data-required'),
+        .withMessage('arg-required'),
     body('build_on')
         .trim()
         .notEmpty()
-        .withMessage('data-required'),
+        .withMessage('arg-required'),
     body('environment')
         .trim()
         .notEmpty()
-        .withMessage('data-required'),
+        .withMessage('arg-required'),
     body('app_version')
         .trim()
         .notEmpty()
-        .withMessage('data-required')
+        .withMessage('arg-required')
         .bail()
         .custom((val) => CustomValidator.validateVersionStructure(val, 2)),
     body('db_version')
         .trim()
         .notEmpty()
-        .withMessage('data-required')
+        .withMessage('arg-required')
         .bail()
         .custom((val) => CustomValidator.validateVersionStructure(val, 2)),
     body('docker_image')
         .trim()
         .notEmpty()
-        .withMessage('data-required'),
+        .withMessage('arg-required'),
     body('docker_version')
         .trim()
         .notEmpty()
-        .withMessage('data-required')
+        .withMessage('arg-required')
         .bail()
         .custom((val) => CustomValidator.validateVersionStructure(val, 2)),
     body('jenkins_version')
         .trim()
         .notEmpty()
-        .withMessage('data-required')
+        .withMessage('arg-required')
         .bail()
         .custom((val) => CustomValidator.validateVersionStructure(val, 2)),
-]
+];

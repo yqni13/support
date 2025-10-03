@@ -1,15 +1,15 @@
 import { NextFunction, Request, Response } from "express";
 import metaService from "../services/meta.service";
 import { checkValidation } from "../middleware/validation.middleware";
-import { MetaFindDTO, MetaResponseDTO, MetaUpdateDTO } from "../dtos/meta.dto";
-import { IRepoError } from "../repositories/interfaces/base.repository.interface";
+import { MetaResponseDTO, MetaUpdateDTO } from "../dtos/meta.dto";
+import { IRepoError } from "../repositories/interfaces/error.repository.interface";
 
 class MetaController {
     async getMetaData(req: Request, res: Response, next: NextFunction) {
         try {
             checkValidation(req);
-            const param: MetaFindDTO = { id: +(req.params.id) };
-            const response: MetaResponseDTO | IRepoError | null = await metaService.getMetaData(param);
+            const id: number = +(req.params.id);
+            const response: MetaResponseDTO | IRepoError | null = await metaService.getMetaData(id);
             res.send(response);
         } catch(err: any) {
             next(err);

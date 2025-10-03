@@ -1,10 +1,9 @@
-import { QueryResult } from "pg";
 import { DBConnection } from "../../../src/configs/db";
 import metaRepository from "../../../src/repositories/meta.repository"
-import { IRepoError } from "../../../src/repositories/interfaces/base.repository.interface";
 import { Meta } from "../../../src/repositories/interfaces/meta.entity.interface";
 import * as Utils from "../../../src/utils/common.utils";
 import * as MockUtils from "../../common.test-utils";
+import { IRepoError } from "../../../src/repositories/interfaces/error.repository.interface";
 
 jest.mock("../../../src/configs/db", () => {
     return {
@@ -13,6 +12,22 @@ jest.mock("../../../src/configs/db", () => {
         }
     }
 })
+
+const mockVar_timeStamp = "2025-10-02T21:34:00.000Z";
+const mockData = {
+    id: 1,
+    app: "support",
+    author: "yqni13",
+    build_on: "2025-01-01T00:00:01.000z",
+    environment: "development",
+    app_version: "0.0.1",
+    db_version: "0.0.2",
+    docker_image: "no-image",
+    docker_version: "0.0.3",
+    jenkins_version: "0.0.4",
+    last_modified: mockVar_timeStamp,
+    created_on: "2024-12-31T23:00:01.000Z"
+};
 
 describe('Database tests table <meta>, priority: findById', () => {
 
@@ -23,22 +38,9 @@ describe('Database tests table <meta>, priority: findById', () => {
             sql = "SELECT * FROM meta WHERE id = $1;";
         })
 
-        test('Params: <key> = 1', async () => {
+        test('Return data for existing entry, params: <key> = 1', async () => {
             const mockParam_id = 1;
-            const mockResult = {
-                id: 1,
-                app: "support",
-                author: "yqni13",
-                build_on: "2025-01-01T00:00:01.000z",
-                environment: "development",
-                app_version: "0.1.2",
-                db_version: "0.0.0",
-                docker_image: "no-image",
-                docker_version: "0.0.0",
-                jenkins_version: "0.0.0",
-                created_on: "2024-12-31T23:00:01.000Z",
-                last_modified: "2025-09-29T01:18:38.000Z"
-            };
+            const mockResult = structuredClone(mockData);
             const mockClient = MockUtils.mapMockDbClient(mockResult);
             const testFn = await metaRepository.findById(mockParam_id);
 
@@ -47,7 +49,7 @@ describe('Database tests table <meta>, priority: findById', () => {
             expect(mockClient.query).toHaveBeenCalledWith(sql, [mockParam_id]);
         });
 
-        test('Params: <key> = 0', async () => {
+        test('Return null for non-existing entry, params: <key> = 0', async () => {
             const mockParam_id = 0;
             const mockResult = null;
             const mockClient = MockUtils.mapMockDbClient(mockResult);
@@ -82,42 +84,25 @@ describe('Database tests table <meta>, priority: udpate', () => {
     describe('Testing valid fn calls', () => {
 
         let sql: string;
-        let data: Partial<Meta>;
-        let mockVar_timeStamp: string;
         let mockParam_data: Partial<Meta>;
         let mockValues: any[];
         beforeEach(() => {
-            mockVar_timeStamp = "2025-10-02T21:34:00.000Z";
             sql = `UPDATE meta`; // Keep it simple if it isn't essential.
-            data = {
-                id: 1,
-                app: "support",
-                author: "yqni13",
-                build_on: "2025-01-01T00:00:01.000z",
-                environment: "development",
-                app_version: "0.0.1",
-                db_version: "0.0.2",
-                docker_image: "no-image",
-                docker_version: "0.0.3",
-                jenkins_version: "0.0.4",
-                last_modified: mockVar_timeStamp,
-                created_on: "2024-12-31T23:00:01.000Z"
-            };
-            mockParam_data = structuredClone(data);
+            mockParam_data = structuredClone(mockData);
             delete mockParam_data['id'];
             delete mockParam_data['last_modified'];
             delete mockParam_data['created_on'];
             mockValues = [];
         })
 
-        test('PUT by valid values', async () => {
+        test('Return data of changed entry by valid id', async () => {
             const mockParam_id = 1;
             Object.values(mockParam_data).forEach((val) => {
                 mockValues.push(val);
             });
             mockValues.push(mockVar_timeStamp);
             mockValues.push(mockParam_id);
-            const mockResult = structuredClone(data);
+            const mockResult = structuredClone(mockData);
 
             // Mock Utils generated timeStamp for easy comparison.
             jest.spyOn(Utils, "getCustomLocaleTimestamp").mockReturnValue(mockVar_timeStamp);
@@ -132,7 +117,7 @@ describe('Database tests table <meta>, priority: udpate', () => {
             );
         })
 
-        test('PUT by id for non-existing entry', async () => {
+        test('Return null for non-existing entry by invalid id', async () => {
             const mockParam_id = 1000;
             Object.values(mockParam_data).forEach((val) => {
                 mockValues.push(val);
@@ -156,26 +141,9 @@ describe('Database tests table <meta>, priority: udpate', () => {
 
     describe('Testing invalid fn calls', () => {
 
-        let data: Partial<Meta>;
-        let mockVar_timeStamp: string;
         let mockParam_data: Partial<Meta>;
         beforeEach(() => {
-            mockVar_timeStamp = "2025-10-02T21:34:00.000Z";
-            data = {
-                id: 1,
-                app: "support",
-                author: "yqni13",
-                build_on: "2025-01-01T00:00:01.000z",
-                environment: "development",
-                app_version: "0.0.1",
-                db_version: "0.0.2",
-                docker_image: "no-image",
-                docker_version: "0.0.3",
-                jenkins_version: "0.0.4",
-                last_modified: mockVar_timeStamp,
-                created_on: "2024-12-31T23:00:01.000Z"
-            };
-            mockParam_data = structuredClone(data);
+            mockParam_data = structuredClone(mockData);
             delete mockParam_data['id'];
             delete mockParam_data['last_modified'];
             delete mockParam_data['created_on'];
