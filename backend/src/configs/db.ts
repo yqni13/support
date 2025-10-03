@@ -2,14 +2,22 @@ import { Pool, PoolClient } from 'pg';
 import { secrets } from '../utils/secrets.utils';
 import { DBConnectionException, DBEmptyException } from '../utils/exceptions/db.exception';
 import { ErrorStatusCodes } from '../utils/errorStatusCodes.utils';
+import { EnvMode } from '../utils/enums/env-mode.enum';
 
 export class DBConnection {
-
+    private static instance: DBConnection;
     #pool: Pool;
 
     constructor() {
         const connectionString = this._getConnectionString(secrets.MODE);
         this.#pool = new Pool({connectionString});
+    }
+
+    static getInstance(): DBConnection {
+        if(!DBConnection.instance) {
+            DBConnection.instance = new DBConnection();
+        }
+        return DBConnection.instance;
     }
 
     _getConnectionString(env: string) {
@@ -53,14 +61,16 @@ export class DBConnection {
         } finally {
             await this.close(client);
         }
-        console.log("DB COMMUNICATION: SUCCESS");
+        if(secrets.MODE === EnvMode.DEV) {
+            console.log("DB COMMUNICATION: SUCCESS");
+        }
     }
 
     async connect(): Promise<PoolClient> {
         try {
             const client = await this.#pool.connect();
             return client;
-        } catch(error) {
+        } catch(error: any) {
             // TODO(yqni13): logging
             throw new DBConnectionException('server-535-auth#database');
         }
@@ -69,9 +79,13 @@ export class DBConnection {
     async close(client: PoolClient) {
         try {
             client.release(true);
-        } catch(error) {
+        } catch(error: any) {
             // TODO(yqni13): logging
             throw new DBConnectionException('server-535-auth#database');
         }
+    }
+
+    async shutdown() {
+        await this.#pool.end();
     }
 }

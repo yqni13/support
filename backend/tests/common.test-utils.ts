@@ -1,0 +1,25 @@
+import { QueryResult } from "pg";
+import { DBConnection } from "../src/configs/db";
+
+type MockClient = {
+    query: jest.Mock
+}
+
+export function mapMockDbClient(mockResult: any, mockErrorMsg?: string): MockClient {
+    let mockClient: MockClient;
+    if(!mockErrorMsg) {
+        mockClient = {
+            query: jest.fn().mockResolvedValueOnce({
+                rows: [mockResult]
+            } as QueryResult)
+        };
+    } else {
+        mockClient = { query: jest.fn().mockRejectedValueOnce(new Error(mockErrorMsg))}
+    }
+    (DBConnection.getInstance as jest.Mock).mockReturnValue({
+        connect: jest.fn().mockResolvedValue(mockClient),
+        close: jest.fn().mockResolvedValue(undefined)
+    });
+
+    return mockClient;
+}
