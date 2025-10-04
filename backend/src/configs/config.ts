@@ -1,0 +1,21 @@
+export const Config: any = {
+    MODE: process.env.ENV_MODE || 'development',
+    PORT: process.env.ENV_PORT || 3000,
+    EMAIL_RECEIVER: process.env.SECRET_EMAIL_RECEIVER || null,
+    EMAIL_SENDER: process.env.SECRET_EMAIL_SENDER || null,
+    EMAIL_PASS: process.env.SECRET_EMAIL_PASS || null,
+    PRIVATE_KEY_ARTDV: process.env.SECRET_PRIVATE_KEY_ARTDV || null,
+    PRIVATE_KEY_TAVA: process.env.SECRET_PRIVATE_KEY_TAVA || null,
+    BETTERSTACK_LOGGING_KEY: process.env.SECRET_BETTERSTACK_LOGGING_KEY || null,
+    BETTERSTACK_HOST: process.env.SECRET_BETTERSTACK_HOST || null,
+    DB_LOCAL_USER: process.env.SECRET_DB_LOCAL_USER || null,
+    DB_LOCAL_PASS: process.env.SECRET_DB_LOCAL_PASS || null,
+    DB_LOCAL_HOST: process.env.SECRET_DB_LOCAL_HOST || null,
+    DB_LOCAL_PORT: process.env.SECRET_DB_LOCAL_PORT || null,
+    DB_LOCAL_DB: process.env.SECRET_DB_LOCAL_DB || null,
+    DB_DOCKER_USER: process.env.SECRET_DB_DOCKER_USER || null,
+    DB_DOCKER_PASS: process.env.SECRET_DB_DOCKER_PASS || null,
+    DB_DOCKER_HOST: process.env.SECRET_DB_DOCKER_HOST || null,
+    DB_DOCKER_PORT: process.env.SECRET_DB_DOCKER_PORT || null,
+    DB_DOCKER_DB: process.env.SECRET_DB_DOCKER_DB || null
+};
