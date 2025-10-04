@@ -21,7 +21,6 @@ export class AuthException extends Error {
         this.error = this.constructor.name;
         this.status = status;
         this.data = data;
-        
     }
 }
 
