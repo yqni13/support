@@ -2,7 +2,7 @@ export function validateVersionStructure(version: string, numOfDelimiter: number
     // 1. Check if version has all necessary delimiters.
     const hasValidDelimiter: boolean = (version.split('.').length - 1) === numOfDelimiter;
     if(!hasValidDelimiter) {
-        throw new Error('backend-invalid-version');
+        throw new Error('support-invalid-version');
     }
 
     // 2. Check if values are numbers (named/combined versions are not supported).
@@ -16,7 +16,7 @@ export function validateVersionStructure(version: string, numOfDelimiter: number
         }
         const searchVal = version.substring(searchPos, searchEnd);
         if(!searchVal.match(/^[0-9]*$/g)) {
-            throw new Error('backend-invalid-version');
+            throw new Error('support-invalid-version');
         }
         searchPos = searchEnd + 1;
     }

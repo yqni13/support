@@ -35,7 +35,7 @@ describe('CustomValidator test, priority: META', () => {
             const mockParam_version = '0.0.1';
             const mockParam_numOfDelimiter = 1;
 
-            const expectResult = 'backend-invalid-version';
+            const expectResult = 'support-invalid-version';
 
             expect(() => {
                 CustomValidator.validateVersionStructure(
@@ -48,7 +48,7 @@ describe('CustomValidator test, priority: META', () => {
             const mockParam_version = '1.0.0-alpha';
             const mockParam_numOfDelimiter = 2;
 
-            const expectResult = 'backend-invalid-version';
+            const expectResult = 'support-invalid-version';
 
             expect(() => {
                 CustomValidator.validateVersionStructure(
