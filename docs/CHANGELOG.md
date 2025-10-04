@@ -4,6 +4,10 @@
 
 <br>
 
+### 2025/10/04 - $\textsf{last\ update\ 0.2.1\ >>\ {\color{pink}0.2.2}}$
+
+- $\textsf{\color{teal}Addition:}$ Added authentication middleware (to check validity by api key).
+
 ### 2025/10/02 - $\textsf{last\ update\ 0.1.1\ >>\ {\color{pink}0.2.1}}$
 
 - $\textsf{\color{teal}Addition:}$ Added meta handling in addition to full db setup.

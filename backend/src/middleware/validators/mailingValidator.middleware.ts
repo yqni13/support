@@ -4,21 +4,21 @@ export const mailingSchema: ValidationChain[] = [
     body('sender')
         .trim()
         .notEmpty()
-        .withMessage('data-required'),
+        .withMessage('support-arg-required'),
     body('subject')
         .trim()
         .notEmpty()
-        .withMessage('data-required'),
+        .withMessage('support-arg-required'),
     body('data')
         .trim()
         .notEmpty()
-        .withMessage('data-required'),
+        .withMessage('support-arg-required'),
     body('body')
         .trim()
         .notEmpty()
-        .withMessage('data-required'),
+        .withMessage('support-arg-required'),
     body('source')
         .trim()
         .notEmpty()
-        .withMessage('data-required'),
+        .withMessage('support-arg-required'),
 ];

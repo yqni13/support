@@ -41,10 +41,9 @@ The development process is structured by the TDD (test driven development) princ
 ## Updates
 [list of all updates](/docs/CHANGELOG.md)
 
-### $\textsf{last\ update\ 0.1.1\ >>\ {\color{pink}0.2.1}}$
+### $\textsf{last\ update\ 0.2.1\ >>\ {\color{pink}0.2.2}}$
 
-- $\textsf{\color{teal}Addition:}$ Added meta handling in addition to full db setup.
-- $\textsf{\color{red}Patch:}$ Updated typescript configuration to include jest testing-framework.
+- $\textsf{\color{teal}Addition:}$ Added authentication middleware (to check validity by api key).
 
 <br>
 
