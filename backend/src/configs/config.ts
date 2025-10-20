@@ -17,5 +17,15 @@ export const Config: any = {
     DB_DOCKER_PASS: process.env.SECRET_DB_DOCKER_PASS || null,
     DB_DOCKER_HOST: process.env.SECRET_DB_DOCKER_HOST || null,
     DB_DOCKER_PORT: process.env.SECRET_DB_DOCKER_PORT || null,
-    DB_DOCKER_DB: process.env.SECRET_DB_DOCKER_DB || null
+    DB_DOCKER_DB: process.env.SECRET_DB_DOCKER_DB || null,
+    DB_TEST_USER: process.env.SECRET_DB_TEST_USER || null,
+    DB_TEST_PASS: process.env.SECRET_DB_TEST_PASS || null,
+    DB_TEST_HOST: process.env.SECRET_DB_TEST_HOST || null,
+    DB_TEST_PORT: process.env.SECRET_DB_TEST_PORT || null,
+    DB_TEST_DB: process.env.SECRET_DB_TEST_DB || null,
+    DB_STAG_USER: process.env.SECRET_DB_STAG_USER || null,
+    DB_STAG_PASS: process.env.SECRET_DB_STAG_PASS || null,
+    DB_STAG_HOST: process.env.SECRET_DB_STAG_HOST || null,
+    DB_STAG_PORT: process.env.SECRET_DB_STAG_PORT || null,
+    DB_STAG_DB: process.env.SECRET_DB_STAG_DB || null,
 };
