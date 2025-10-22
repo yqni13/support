@@ -20,26 +20,53 @@ export class DBConnection {
         return DBConnection.instance;
     }
 
-    _getConnectionString(env: string) {
+    _getConnectionString(env: string = (process.env.ENV_MODE ?? EnvMode.DEV)?.trim() as EnvMode) {
         let db: string = '';
         let user: string = '';
         let pass: string = '';
         let host: string = '';
         let port: string | number = 0;
-        if(env !== 'production') {
-            db = secrets.DB_LOCAL_DB;
-            user = secrets.DB_LOCAL_USER;
-            pass = secrets.DB_LOCAL_PASS;
-            host = secrets.DB_LOCAL_HOST;
-            port = secrets.DB_LOCAL_PORT;
-        } else {
-            db = secrets.DB_DOCKER_DB;
-            user = secrets.DB_DOCKER_USER;
-            pass = secrets.DB_DOCKER_PASS;
-            host = secrets.DB_DOCKER_HOST;
-            port = secrets.DB_DOCKER_PORT;
+        switch(env) {
+            case(EnvMode.DEV): {
+                db = secrets.DB_LOCAL_DB;
+                user = secrets.DB_LOCAL_USER;
+                pass = secrets.DB_LOCAL_PASS;
+                host = secrets.DB_LOCAL_HOST;
+                port = secrets.DB_LOCAL_PORT;
+                break;
+            }
+            case(EnvMode.STAG): {
+                db = secrets.DB_STAG_DB;
+                user = secrets.DB_STAG_USER;
+                pass = secrets.DB_STAG_PASS;
+                host = secrets.DB_STAG_HOST;
+                port = secrets.DB_STAG_PORT;
+                break;
+            }
+            case(EnvMode.PROD): {
+                db = secrets.DB_DOCKER_DB;
+                user = secrets.DB_DOCKER_USER;
+                pass = secrets.DB_DOCKER_PASS;
+                host = secrets.DB_DOCKER_HOST;
+                port = secrets.DB_DOCKER_PORT;
+                break;
+            }
+            case(EnvMode.TEST): 
+            default: {
+                db = secrets.DB_TEST_DB;
+                user = secrets.DB_TEST_USER;
+                pass = secrets.DB_TEST_PASS;
+                host = secrets.DB_TEST_HOST;
+                port = process.env.DB_TEST_PORT ?? secrets.DB_TEST_PORT;
+            }
         }
-        return `postgresql://${user}:${pass}@${host}:${port}/${db}`;
+        let connectionString = '';
+        if(env === EnvMode.PROD || env === EnvMode.STAG) {
+            connectionString = `postgresql://${user}:${pass}@${host}/${db}?sslmode=require`;
+        } else {
+            connectionString = `postgresql://${user}:${pass}@${host}:${port}/${db}`;
+        }
+        return connectionString;
     }
 
     async init() {
@@ -71,7 +98,11 @@ export class DBConnection {
             const client = await this.#pool.connect();
             return client;
         } catch(error: any) {
-            // TODO(yqni13): logging
+            if((process.env.ENV_MODE?.trim() as EnvMode) === EnvMode.TEST) {
+                console.log("DBConnection, fn: connect() ERROR: ", error);
+            } else {
+                // TODO(yqni13): logging
+            }
             throw new DBConnectionException('server-535-auth#database');
         }
     }
@@ -80,7 +111,11 @@ export class DBConnection {
         try {
             client.release(true);
         } catch(error: any) {
-            // TODO(yqni13): logging
+            if((process.env.ENV_MODE?.trim() as EnvMode) === EnvMode.TEST) {
+                console.log("DBConnection, fn: close() ERROR: ", error);
+            } else {
+                // TODO(yqni13): logging
+            }
             throw new DBConnectionException('server-535-auth#database');
         }
     }

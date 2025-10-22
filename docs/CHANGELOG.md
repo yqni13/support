@@ -4,6 +4,10 @@
 
 <br>
 
+### 2025/10/22 - $\textsf{last\ update\ 0.2.2\ >>\ {\color{pink}0.3.0}}$
+
+- $\textsf{\color{teal}Addition:}$ Added new test setup including now ephemeral databases via testcontainer.
+
 ### 2025/10/04 - $\textsf{last\ update\ 0.2.1\ >>\ {\color{pink}0.2.2}}$
 
 - $\textsf{\color{teal}Addition:}$ Added authentication middleware (to check validity by api key).
