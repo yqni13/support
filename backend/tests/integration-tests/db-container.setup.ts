@@ -14,26 +14,30 @@ export class DBTestSetup {
     }
 
     async init() {
+        const connectionData = {
+            user: 'testuser',
+            pass: 'testpass',
+            db: 'testdb',
+            port: 5432
+        };
+
         this.container = await new PostgreSqlContainer("postgres:17")
-            .withUsername('testuser')
-            .withPassword('testpass')
-            .withDatabase('testdb')
+            .withUsername(connectionData.user)
+            .withPassword(connectionData.pass)
+            .withDatabase(connectionData.db)
             .start();
 
+        // Overwrite env var with temporary values.
         process.env.DB_TEST_HOST = this.container.getHost();
-        process.env.DB_TEST_PORT = this.container.getMappedPort(5432).toString();
-        process.env.DB_TEST_USER = "testuser";
-        process.env.DB_TEST_PASS = "testpass";
-        process.env.DB_TEST_DB = "testdb";
+        process.env.DB_TEST_PORT = this.container.getMappedPort(connectionData.port).toString();
 
-        const tempClient = new Client({
-            port: this.container.getMappedPort(5432),
+        this.client = new Client({
+            port: this.container.getMappedPort(connectionData.port),
             host: this.container.getHost(),
-            user: "testuser",
-            password: "testpass",
-            database: "testdb"
+            user: connectionData.user,
+            password: connectionData.pass,
+            database: connectionData.db
         });
-        this.client = tempClient;
 
         await this.client.connect();
     }

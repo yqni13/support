@@ -33,7 +33,7 @@ class MetaRepository implements IBaseRepository<Meta> {
             return result.rows[0] ?? null;
         } catch(err: any) {
             // TODO(yqni13): logging
-            if(secrets.MODE === EnvMode.DEV) {
+            if(secrets.MODE === EnvMode.DEV || secrets.MODE === EnvMode.TEST) {
                 console.log("DB ERROR ON SELECT (Meta Repository, findById): ", err);
             }
             await db.close(client);
@@ -63,7 +63,7 @@ class MetaRepository implements IBaseRepository<Meta> {
             return result.rows[0] ?? null;
         } catch(err: any) {
             // TODO(yqni13): logging
-            if(secrets.MODE === EnvMode.DEV) {
+            if(secrets.MODE === EnvMode.DEV || secrets.MODE === EnvMode.TEST) {
                 console.log("DB ERROR ON UPDATE (Meta Repository, update): ", err);
             }
             await db.close(client);

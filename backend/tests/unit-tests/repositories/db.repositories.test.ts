@@ -56,7 +56,7 @@ describe('Database tests, priority: connection', () => {
         test('Get connection string to address database, environment: production', () => {
             const mockParam_env = 'production';
             const testFn = mockDb._getConnectionString(mockParam_env);
-            const expectHost = '@dockerhost';
+            const expectHost = '@prodhost';
 
             expect(testFn).toContain(expectHost);
         })

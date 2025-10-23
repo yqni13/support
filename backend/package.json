@@ -6,8 +6,6 @@
     "migrate": "node-pg-migrate",
     "migrate-up": "node-pg-migrate up",
     "migrate-down": "node-pg-migrate down",
-    "migrate:test": "npm --loader ts-node/esm ./tests/run.test-migrations.ts",
-    "migrate:test:down": "node --loader ts-node/esm ./tests/run.test-migrations.ts down",
     "test": "set ENV_MODE=test && jest --setupFiles dotenv/config",
     "start:local": "ts-node src/server.ts",
     "build": "tsc",

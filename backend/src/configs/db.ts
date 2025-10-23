@@ -44,11 +44,11 @@ export class DBConnection {
                 break;
             }
             case(EnvMode.PROD): {
-                db = secrets.DB_DOCKER_DB;
-                user = secrets.DB_DOCKER_USER;
-                pass = secrets.DB_DOCKER_PASS;
-                host = secrets.DB_DOCKER_HOST;
-                port = secrets.DB_DOCKER_PORT;
+                db = secrets.DB_PROD_DB;
+                user = secrets.DB_PROD_USER;
+                pass = secrets.DB_PROD_PASS;
+                host = secrets.DB_PROD_HOST;
+                port = secrets.DB_PROD_PORT;
                 break;
             }
             case(EnvMode.TEST): 
@@ -98,7 +98,9 @@ export class DBConnection {
             const client = await this.#pool.connect();
             return client;
         } catch(error: any) {
-            if((process.env.ENV_MODE?.trim() as EnvMode) === EnvMode.TEST) {
+            // Get ENV_MODE without white-spaces or comparison will fail.
+            const envMode = (process.env.ENV_MODE?.trim() as EnvMode);
+            if(envMode === EnvMode.TEST || envMode === EnvMode.DEV) {
                 console.log("DBConnection, fn: connect() ERROR: ", error);
             } else {
                 // TODO(yqni13): logging
@@ -111,7 +113,9 @@ export class DBConnection {
         try {
             client.release(true);
         } catch(error: any) {
-            if((process.env.ENV_MODE?.trim() as EnvMode) === EnvMode.TEST) {
+            // Get ENV_MODE without white-spaces or comparison will fail.
+            const envMode = (process.env.ENV_MODE?.trim() as EnvMode);
+            if(envMode === EnvMode.TEST || envMode === EnvMode.DEV) {
                 console.log("DBConnection, fn: close() ERROR: ", error);
             } else {
                 // TODO(yqni13): logging

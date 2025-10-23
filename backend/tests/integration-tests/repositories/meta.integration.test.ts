@@ -1,6 +1,7 @@
 import { Meta } from './../../../src/repositories/interfaces/meta.entity.interface';
 import { NextFunction, Request, Response } from "express"
 import { DBTestSetup } from "../db-container.setup";
+import { runMigrations } from '../../db-migrations.setup';
 import metaRepository from "../../../src/repositories/meta.repository";
 
 jest.mock('../../../src/middleware/auth.middleware.ts', () => {
@@ -11,9 +12,6 @@ jest.mock('../../../src/middleware/auth.middleware.ts', () => {
 
 jest.setTimeout(60_000);
 
-import { secrets } from '../../../src/utils/secrets.utils';
-import { runMigrations } from '../../run.test-migrations';
-
 describe('Integration test (repository specific), priority: Meta', () => {
 
     describe('Testing valid fn calls', () => {
@@ -22,7 +20,6 @@ describe('Integration test (repository specific), priority: Meta', () => {
         beforeAll(async () => {
             dbTestSetup = new DBTestSetup();
             await dbTestSetup.init();
-            console.log("Running migrations ...");
             await runMigrations();
         })
 
@@ -36,7 +33,6 @@ describe('Integration test (repository specific), priority: Meta', () => {
         })
 
         test('Repository process fn findById, result: existing entry', async () => {
-            console.log("current env mode: ", secrets.MODE);
             const testParam_id = 1;
             const testResult: Meta = {
                 id: testParam_id,
