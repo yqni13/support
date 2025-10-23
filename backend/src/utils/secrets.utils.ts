@@ -3,25 +3,35 @@ import { AuthSecretNotFoundException } from'./exceptions/auth.exception';
 import fs from "fs";
 
 class Secrets {
-    readonly MODE: string ;
-    readonly PORT: number ;
-    readonly EMAIL_RECEIVER: string ;
-    readonly EMAIL_SENDER: string ;
-    readonly EMAIL_PASS: string ;
-    readonly PRIVATE_KEY_ARTDV: string ;
-    readonly PRIVATE_KEY_TAVA: string ;
-    readonly BETTERSTACK_LOGGING_KEY: string ;
-    readonly BETTERSTACK_HOST: string ;
-    readonly DB_LOCAL_USER: string ;
-    readonly DB_LOCAL_PASS: string ;
-    readonly DB_LOCAL_HOST: string ;
-    readonly DB_LOCAL_PORT: string ;
-    readonly DB_LOCAL_DB: string ;
-    readonly DB_DOCKER_USER: string ;
-    readonly DB_DOCKER_PASS: string ;
-    readonly DB_DOCKER_HOST: string ;
-    readonly DB_DOCKER_PORT: string ;
-    readonly DB_DOCKER_DB: string ;
+    readonly MODE: string;
+    readonly PORT: number;
+    readonly EMAIL_RECEIVER: string;
+    readonly EMAIL_SENDER: string;
+    readonly EMAIL_PASS: string;
+    readonly PRIVATE_KEY_ARTDV: string;
+    readonly PRIVATE_KEY_TAVA: string;
+    readonly BETTERSTACK_LOGGING_KEY: string;
+    readonly BETTERSTACK_HOST: string;
+    readonly DB_LOCAL_USER: string;
+    readonly DB_LOCAL_PASS: string;
+    readonly DB_LOCAL_HOST: string;
+    readonly DB_LOCAL_PORT: string;
+    readonly DB_LOCAL_DB: string;
+    readonly DB_PROD_USER: string;
+    readonly DB_PROD_PASS: string;
+    readonly DB_PROD_HOST: string;
+    readonly DB_PROD_PORT: string;
+    readonly DB_PROD_DB: string;
+    readonly DB_TEST_USER: string;
+    readonly DB_TEST_PASS: string;
+    readonly DB_TEST_HOST: string;
+    readonly DB_TEST_PORT: string;
+    readonly DB_TEST_DB: string;
+    readonly DB_STAG_USER: string;
+    readonly DB_STAG_PASS: string;
+    readonly DB_STAG_HOST: string;
+    readonly DB_STAG_PORT: string;
+    readonly DB_STAG_DB: string;
 
     private static _instance: Secrets;
 
@@ -40,11 +50,21 @@ class Secrets {
         this.DB_LOCAL_HOST = this.setDbLocalHost();
         this.DB_LOCAL_PORT = this.setDbLocalPort();
         this.DB_LOCAL_DB = this.setDbLocalDb();
-        this.DB_DOCKER_USER = this.setDbDockerUser();
-        this.DB_DOCKER_PASS = this.setDbDockerPass();
-        this.DB_DOCKER_HOST = this.setDbDockerHost();
-        this.DB_DOCKER_PORT = this.setDbDockerPort();
-        this.DB_DOCKER_DB = this.setDbDockerDb();
+        this.DB_PROD_USER = this.setDbProdUser();
+        this.DB_PROD_PASS = this.setDbProdPass();
+        this.DB_PROD_HOST = this.setDbProdHost();
+        this.DB_PROD_PORT = this.setDbProdPort();
+        this.DB_PROD_DB = this.setDbProdDb();
+        this.DB_TEST_USER = this.setDbTestUser();
+        this.DB_TEST_PASS = this.setDbTestPass();
+        this.DB_TEST_HOST = this.setDbTestHost();
+        this.DB_TEST_PORT = this.setDbTestPort();
+        this.DB_TEST_DB = this.setDbTestDb();
+        this.DB_STAG_USER = this.setDbStagUser();
+        this.DB_STAG_PASS = this.setDbStagPass();
+        this.DB_STAG_HOST = this.setDbStagHost();
+        this.DB_STAG_PORT = this.setDbStagPort();
+        this.DB_STAG_DB = this.setDbStagDb();
     }
 
     static get instance(): Secrets {
@@ -135,70 +155,140 @@ class Secrets {
         if(!Config.DB_LOCAL_USER) {
             throw new AuthSecretNotFoundException('secret-404-env#DB_LOCAL_USER');
         }
-        return Config.DB_LOCAL_USER
+        return Config.DB_LOCAL_USER;
     }
 
     private setDbLocalPass() {
         if(!Config.DB_LOCAL_PASS) {
             throw new AuthSecretNotFoundException('secret-404-env#DB_LOCAL_PASS');
         }
-        return Config.DB_LOCAL_PASS
+        return Config.DB_LOCAL_PASS;
     }
 
     private setDbLocalHost() {
         if(!Config.DB_LOCAL_HOST) {
             throw new AuthSecretNotFoundException('secret-404-env#DB_LOCAL_HOST');
         }
-        return Config.DB_LOCAL_HOST
+        return Config.DB_LOCAL_HOST;
     }
 
     private setDbLocalPort() {
         if(!Config.DB_LOCAL_PORT) {
             throw new AuthSecretNotFoundException('secret-404-env#DB_LOCAL_PORT');
         }
-        return Config.DB_LOCAL_PORT
+        return Config.DB_LOCAL_PORT;
     }
 
     private setDbLocalDb() {
         if(!Config.DB_LOCAL_DB) {
             throw new AuthSecretNotFoundException('secret-404-env#DB_LOCAL_DB');
         }
-        return Config.DB_LOCAL_DB
+        return Config.DB_LOCAL_DB;
     }
 
-    private setDbDockerUser() {
-        if(!Config.DB_DOCKER_USER) {
-            throw new AuthSecretNotFoundException('secret-404-env#DB_DOCKER_USER');
+    private setDbProdUser() {
+        if(!Config.DB_PROD_USER) {
+            throw new AuthSecretNotFoundException('secret-404-env#DB_PROD_USER');
         }
-        return Config.DB_DOCKER_USER
+        return Config.DB_PROD_USER;
     }
 
-    private setDbDockerPass() {
-        if(!Config.DB_DOCKER_PASS) {
-            throw new AuthSecretNotFoundException('secret-404-env#DB_DOCKER_PASS');
+    private setDbProdPass() {
+        if(!Config.DB_PROD_PASS) {
+            throw new AuthSecretNotFoundException('secret-404-env#DB_PROD_PASS');
         }
-        return Config.DB_DOCKER_PASS
+        return Config.DB_PROD_PASS;
     }
 
-    private setDbDockerHost() {
-        if(!Config.DB_DOCKER_HOST) {
-            throw new AuthSecretNotFoundException('secret-404-env#DB_DOCKER_HOST');
+    private setDbProdHost() {
+        if(!Config.DB_PROD_HOST) {
+            throw new AuthSecretNotFoundException('secret-404-env#DB_PROD_HOST');
         }
-        return Config.DB_DOCKER_HOST
+        return Config.DB_PROD_HOST;
     }
 
-    private setDbDockerPort() {
-        if(!Config.DB_DOCKER_PORT) {
-            throw new AuthSecretNotFoundException('secret-404-env#DB_DOCKER_PORT');
+    private setDbProdPort() {
+        if(!Config.DB_PROD_PORT) {
+            throw new AuthSecretNotFoundException('secret-404-env#DB_PROD_PORT');
         }
-        return Config.DB_DOCKER_PORT
+        return Config.DB_PROD_PORT;
     }
 
-    private setDbDockerDb() {
-        if(!Config.DB_DOCKER_DB) {
-            throw new AuthSecretNotFoundException('secret-404-env#DB_DOCKER_DB');
+    private setDbProdDb() {
+        if(!Config.DB_PROD_DB) {
+            throw new AuthSecretNotFoundException('secret-404-env#DB_PROD_DB');
         }
-        return Config.DB_DOCKER_DB
+        return Config.DB_PROD_DB;
+    }
+
+    private setDbTestUser() {
+        if(!Config.DB_TEST_USER) {
+            throw new AuthSecretNotFoundException('secret-404-env#DB_TEST_USER');
+        }
+        return Config.DB_TEST_USER;
+    }
+
+    private setDbTestPass() {
+        if(!Config.DB_TEST_PASS) {
+            throw new AuthSecretNotFoundException('secret-404-env#DB_TEST_PASS');
+        }
+        return Config.DB_TEST_PASS;
+    }
+
+    private setDbTestHost() {
+        if(!Config.DB_TEST_HOST) {
+            throw new AuthSecretNotFoundException('secret-404-env#DB_TEST_HOST');
+        }
+        return Config.DB_TEST_HOST;
+    }
+
+    private setDbTestPort() {
+        if(!Config.DB_TEST_PORT) {
+            throw new AuthSecretNotFoundException('secret-404-env#DB_TEST_PORT');
+        }
+        return Config.DB_TEST_PORT;
+    }
+
+    private setDbTestDb() {
+        if(!Config.DB_TEST_DB) {
+            throw new AuthSecretNotFoundException('secret-404-env#DB_TEST_DB');
+        }
+        return Config.DB_TEST_DB;
+    }
+    // ##############################
+    private setDbStagUser() {
+        if(!Config.DB_STAG_USER) {
+            throw new AuthSecretNotFoundException('secret-404-env#DB_STAG_USER');
+        }
+        return Config.DB_STAG_USER;
+    }
+
+    private setDbStagPass() {
+        if(!Config.DB_STAG_PASS) {
+            throw new AuthSecretNotFoundException('secret-404-env#DB_STAG_PASS');
+        }
+        return Config.DB_STAG_PASS;
+    }
+
+    private setDbStagHost() {
+        if(!Config.DB_STAG_HOST) {
+            throw new AuthSecretNotFoundException('secret-404-env#DB_STAG_HOST');
+        }
+        return Config.DB_STAG_HOST;
+    }
+
+    private setDbStagPort() {
+        if(!Config.DB_STAG_PORT) {
+            throw new AuthSecretNotFoundException('secret-404-env#DB_STAG_PORT');
+        }
+        return Config.DB_STAG_PORT;
+    }
+
+    private setDbStagDb() {
+        if(!Config.DB_STAG_DB) {
+            throw new AuthSecretNotFoundException('secret-404-env#DB_STAG_DB');
+        }
+        return Config.DB_STAG_DB;
     }
 }
 

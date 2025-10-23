@@ -50,11 +50,11 @@ async function up(pgm) {
             notNull: true
         },
         created_on: {
-            type: 'timestamp',
+            type: 'TIMESTAMP WITH TIME ZONE',
             notNull: true
         },
         last_modified: {
-            type: 'timestamp',
+            type: 'TIMESTAMP WITH TIME ZONE',
             notNull: true
         }
     });
