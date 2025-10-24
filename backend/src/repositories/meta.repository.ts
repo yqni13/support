@@ -60,6 +60,10 @@ class MetaRepository implements IBaseRepository<Meta> {
             client = await db.connect();
             const result: QueryResult<Meta> = await client.query(sql, values);
             await db.close(client);
+            if(result.rows[0]) {
+                result.rows[0].created_on = new Date(result.rows[0].created_on).toISOString();
+                result.rows[0].last_modified = new Date(result.rows[0].last_modified).toISOString();
+            }
             return result.rows[0] ?? null;
         } catch(err: any) {
             // TODO(yqni13): logging
