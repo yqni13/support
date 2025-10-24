@@ -21,7 +21,6 @@ export const metaUpdateSchema: ValidationChain[] = [
         .withMessage('support-arg-required'),
     body('build_on')
         .trim()
-
         .notEmpty()
         .withMessage('support-arg-required'),
     body('environment')
