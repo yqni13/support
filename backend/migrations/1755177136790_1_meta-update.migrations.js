@@ -10,7 +10,7 @@ async function up(pgm) {
     await pgm.db.query(`
         INSERT INTO meta
         (id, app, author, build_on, environment, app_version, db_version, docker_image, docker_version, jenkins_version, created_on, last_modified)
-        VALUES (DEFAULT, 'support', 'yqni13', '2025-01-01T13:00:01.000', 'development', '0.0.0', '0.0.0', 'no-image', '0.0.0', '0.0.0', '2025-01-01 13:00:01+00', '2025-01-01 13:00:01+00')
+        VALUES (DEFAULT, 'support', 'yqni13', '2025-01-01T13:00:01.000Z', 'development', '0.0.0', '0.0.0', 'no-image', '0.0.0', '0.0.0', '2025-01-01T13:00:01.000Z', '2025-01-01T13:00:01.000Z')
     `);
 };
 

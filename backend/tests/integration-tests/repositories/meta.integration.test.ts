@@ -43,15 +43,15 @@ describe('Integration test (repository specific), priority: Meta', () => {
                 id: testParam_id,
                 app: "support",
                 author: "yqni13",
-                build_on: "2025-01-01T00:00:01.000",
+                build_on: "2025-01-01T14:00:01.000",
                 environment: "test",
                 app_version: "0.0.1",
                 db_version: "0.0.2",
                 docker_image: "no-image",
                 docker_version: "0.0.3",
                 jenkins_version: "0.0.4",
-                last_modified: "2025-01-01T01:00:01.000Z",
-                created_on: "2025-01-01T01:00:01.000Z"
+                last_modified: "2025-01-01T14:00:01.000",
+                created_on: "2025-01-01T14:00:01.000"
             };
 
             dbTestSetup.addTestData();
@@ -64,7 +64,8 @@ describe('Integration test (repository specific), priority: Meta', () => {
 
         test('Repository process fn update, result: "SUCCESS"', async () => {
             const testParam_id = 1;
-            const mockParam_timeStamp = Utils.getCustomLocaleTimestamp();
+            const mockTimeStamp = "2025-02-02T14:00:00.000";
+            const mockParam_timeStamp = Utils.getTimestampByTimezone(new Date(mockTimeStamp));
             const testParam_data: Partial<Meta> = {
                 app: 'support',
                 author: 'yqni13',
@@ -79,21 +80,21 @@ describe('Integration test (repository specific), priority: Meta', () => {
             };
 
             // Mock Utils generated timeStamp for easy comparison.
-            jest.spyOn(Utils, "getCustomLocaleTimestamp").mockReturnValue(mockParam_timeStamp);
+            jest.spyOn(Utils, "getTimestampByTimezone").mockReturnValue(mockParam_timeStamp);
 
             const testResult: Meta = {
                 id: testParam_id,
                 app: 'support',
                 author: 'yqni13',
-                build_on: '2025-01-02T13:00:01.000',
+                build_on: '2025-01-02T14:00:01.000',
                 environment: 'test',
                 app_version: '0.1.0',
                 db_version: '0.2.0',
                 docker_image: 'no-image',
                 docker_version: '0.3.0',
                 jenkins_version: '0.4.0',
-                last_modified: mockParam_timeStamp,
-                created_on: '2025-01-01T01:00:01.000Z'
+                last_modified: mockTimeStamp,
+                created_on: '2025-01-01T14:00:01.000'
             }
 
             dbTestSetup.addTestData();
@@ -114,7 +115,7 @@ describe('Integration test (repository specific), priority: Meta', () => {
             const mockData = {
                 app: 'support',
                 author: 'yqni13',
-                build_on: '2025-01-02T13:00:01.000',
+                build_on: '2025-01-02T14:00:01.000',
                 environment: 'test',
                 app_version: '0.1.0',
                 db_version: '0.2.0',

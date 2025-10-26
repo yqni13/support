@@ -32,20 +32,13 @@ Set connection string as environment variable by the following command in powers
 path> $env:DATABASE_URL = "postgresql://<user>:<password>@<host>:<port>/<db>"
 ```
 
-(direction: 'up' or 'down') for all existing migrations ('up' doesn't need <all>):
+(direction: 'up' or 'down')
+for specific number of migrations (going from youngest to oldest):
 
 ```sh
-path> npx node-pg-migrate <direction> all
+path> npx node-pg-migrate <direction> <count> #==> npx node-pg-migrate down 9999#
 or
-path> npm run migrate-<direction> all
-```
-
-(direction: 'up' or 'down') for specific number of migrations (going from youngest to oldest):
-
-```sh
-path> npx node-pg-migrate <direction> <number of migrations to execute>
-or
-path> npm run migrate-<direction> <number of migrations to execute>
+path> npm run migrate-<direction> <count>
 ```
 
 or, running all migrations including specified one (up/down, migration file `without .js`):

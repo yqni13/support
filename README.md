@@ -1,5 +1,5 @@
 # yqni13 | support
-$\texttt{\color{teal}{v0.3.0}}$
+$\texttt{\color{teal}{v0.3.1}}$
 
 
 <br>
@@ -41,9 +41,9 @@ The development process is structured by the TDD (test driven development) princ
 ## Updates
 [see changelog for all updates](/docs/CHANGELOG.md)
 
-### $\textsf{last\ update\ 0.2.2\ >>\ {\color{pink}0.3.0}}$
+### $\textsf{last\ update\ 0.3.0\ >>\ {\color{pink}0.3.1}}$
 
-- $\textsf{\color{teal}Addition:}$ Added new test setup including now ephemeral databases via testcontainer.
+- $\textsf{\color{red}Patch:}$ Updated timestamp handling to incorporate timezone offsets.
 
 <br>
 

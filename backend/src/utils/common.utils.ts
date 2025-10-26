@@ -5,15 +5,6 @@ import { NextFunction, Request, Response } from "express";
 
 export type AsyncMiddleware = (req: Request, res: Response, next: NextFunction) => Promise<void>;
 
-export function isObjEmpty(obj: any): boolean {
-    for(let key in obj) {
-        if(Object.hasOwnProperty(key)) {
-            return false;
-        }
-    }
-    return true;
-}
-
 export function selectPrivateKey(source: MailSource): string {
     switch(source) {
         case(MailSource.ARTDV): {
@@ -27,32 +18,39 @@ export function selectPrivateKey(source: MailSource): string {
     }
 }
 
-export function getSourceID(source: MailSource): string {
-    switch(source) {
-        case(MailSource.ARTDV): {
-            return 'ARTDV';
-        }
-        case(MailSource.TAVA): {
-            return 'TAVA';
-        }
-        default:
-            throw new InvalidSourceException();
-    }
-}
-
-export function getCustomLocaleTimestamp(): string {
-    // TODO(yqni13): currently 2 hours off (03:20 local, 01:20 response)
-    // this solution does NOT take care of timezones (neither local nor prod)!
-    const time = new Date();
-    const date = new Date();
-    
-    const day = date.getDate() < 10 ? `0${date.getDate()}` : date.getDate().toString();
-    const month = date.getMonth()+1 < 10 ? `0${date.getMonth()+1}` : (date.getMonth()+1).toString();
+export function getCustomTimeString(time: Date): string {
+    const day = time.getDate() < 10 ? `0${time.getDate()}` : time.getDate().toString();
+    const month = time.getMonth()+1 < 10 ? `0${time.getMonth()+1}` : (time.getMonth()+1).toString();
 
     const hours = time.getHours() < 10 ? `0${time.getHours()}` : `${time.getHours()}`;
     const minutes = time.getMinutes() < 10 ? `0${time.getMinutes()}` : `${time.getMinutes()}`;
     const seconds = time.getSeconds() < 10 ? `0${time.getSeconds()}` : `${time.getSeconds()}`;
-    
+
     // need prefix-0 on single digits
-    return `${date.getFullYear()}-${month}-${day}T${hours}:${minutes}:${seconds}.000Z`;
+    return `${time.getFullYear()}-${month}-${day}T${hours}:${minutes}:${seconds}.000`;
+}
+
+export function getPropertiesFromTimezoneOffset(time: Date): any {
+    let offset: number | string = time.getTimezoneOffset();
+    const prefix = offset < 0 ? '+' : '-';
+    offset = offset < 0 ? offset * (-1) : offset;
+    offset = offset !== 0 ? offset / 60 : offset;
+    offset = offset < 10 ? `0${offset}` : `${offset}`;
+
+    return { prefix: prefix, offset: offset };
+}
+
+export function getTimestampByTimezone(time: Date): string {
+    // Get the GMT offset.
+    const gmtData = getPropertiesFromTimezoneOffset(time);
+
+    // Extract date and time data for custom string.
+    const day = time.getDate() < 10 ? `0${time.getDate()}` : time.getDate().toString();
+    const month = time.getMonth()+1 < 10 ? `0${time.getMonth()+1}` : (time.getMonth()+1).toString();
+    const hours = time.getHours() < 10 ? `0${time.getHours()}` : `${time.getHours()}`;
+    const minutes = time.getMinutes() < 10 ? `0${time.getMinutes()}` : `${time.getMinutes()}`;
+    const seconds = time.getSeconds() < 10 ? `0${time.getSeconds()}` : `${time.getSeconds()}`;
+
+    // Need prefix-0 on single digits.
+    return `${time.getFullYear()}-${month}-${day} ${hours}:${minutes}:${seconds}${gmtData.prefix}${gmtData.offset}`;
 }
