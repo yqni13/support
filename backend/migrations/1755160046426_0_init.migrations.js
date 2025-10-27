@@ -22,7 +22,7 @@ async function up(pgm) {
             notNull: true
         },
         build_on: {
-            type: 'text',
+            type: 'TIMESTAMP WITH TIME ZONE',
             notNull: true
         },
         environment: {

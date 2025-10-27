@@ -13,12 +13,13 @@ jest.mock("../../../src/configs/db", () => {
     }
 })
 
-const mockVar_timeStamp = "2025-10-02T21:34:00.000Z";
+const gmtData = Utils.getPropertiesFromTimezoneOffset(new Date());
+const mockVar_timeStamp = `2025-10-02 21:34:00${gmtData.prefix}${gmtData.offset}`;
 const mockData = {
     id: 1,
     app: "support",
     author: "yqni13",
-    build_on: "2025-01-01T00:00:01.000z",
+    build_on: "2025-01-01T13:00:01.000",
     environment: "development",
     app_version: "0.0.1",
     db_version: "0.0.2",
@@ -26,7 +27,7 @@ const mockData = {
     docker_version: "0.0.3",
     jenkins_version: "0.0.4",
     last_modified: mockVar_timeStamp,
-    created_on: "2024-12-31T23:00:01.000Z"
+    created_on: "2024-12-31T23:00:01.000"
 };
 
 describe('Database tests table <meta>, priority: findById', () => {
@@ -105,7 +106,7 @@ describe('Database tests table <meta>, priority: udpate', () => {
             const mockResult = structuredClone(mockData);
 
             // Mock Utils generated timeStamp for easy comparison.
-            jest.spyOn(Utils, "getCustomLocaleTimestamp").mockReturnValue(mockVar_timeStamp);
+            jest.spyOn(Utils, "getTimestampWithOffsetInfo").mockReturnValue(mockVar_timeStamp);
 
             const mockClient = MockUtils.mapMockDbClient(mockResult);
             const testFn = await metaRepository.update(mockParam_id, mockParam_data);

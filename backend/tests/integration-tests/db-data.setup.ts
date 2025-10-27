@@ -14,7 +14,7 @@ export class DBTestData {
 
     getMetaInsertSql(): { sql: string, values: any[]} {
         const table = 'meta'
-        const values = [1, 'support', 'yqni13', '2025-01-01T00:00:01.000', 'test', '0.0.1', '0.0.2', 'no-image', '0.0.3', '0.0.4', '2025-01-01 01:00:01+00', '2025-01-01 01:00:01+00'];
+        const values = [1, 'support', 'yqni13', '2025-01-01T13:00:01.000Z', 'test', '0.0.1', '0.0.2', 'no-image', '0.0.3', '0.0.4', '2025-01-01T13:00:01.000Z', '2025-01-01T13:00:01.000Z'];
         return {
             sql: `INSERT INTO ${table}
             (id, app, author, build_on, environment, app_version, db_version, docker_image, docker_version, jenkins_version, created_on, last_modified)

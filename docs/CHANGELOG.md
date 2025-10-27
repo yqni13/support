@@ -4,6 +4,10 @@
 
 <br>
 
+### 2025/10/26 - $\textsf{last\ update\ 0.3.0\ >>\ {\color{pink}0.3.1}}$
+
+- $\textsf{\color{red}Patch:}$ Updated timestamp handling to incorporate timezone offsets.
+
 ### 2025/10/22 - $\textsf{last\ update\ 0.2.2\ >>\ {\color{pink}0.3.0}}$
 
 - $\textsf{\color{teal}Addition:}$ Added new test setup including now ephemeral databases via testcontainer.

@@ -26,10 +26,6 @@ class MetaRepository implements IBaseRepository<Meta> {
             client = await db.connect();
             const result: QueryResult<Meta> = await client.query(sql, value);
             await db.close(client);
-            if(result.rows[0]) {
-                result.rows[0].created_on = new Date(result.rows[0].created_on).toISOString();
-                result.rows[0].last_modified = new Date(result.rows[0].last_modified).toISOString();
-            }
             return result.rows[0] ?? null;
         } catch(err: any) {
             // TODO(yqni13): logging
@@ -45,7 +41,7 @@ class MetaRepository implements IBaseRepository<Meta> {
     }
 
     async update(id: number, data: Partial<Meta>): Promise<Meta | IRepoError | null> {
-        const timeStamp = Utils.getCustomLocaleTimestamp();
+        const timeStamp = Utils.getTimestampWithOffsetInfo(new Date());
         const sql = `UPDATE ${this.table}
         SET app = $1, author = $2, build_on = $3, environment = $4, app_version = $5, db_version = $6,
         docker_image = $7, docker_version = $8, jenkins_version = $9, last_modified = $10
@@ -60,10 +56,6 @@ class MetaRepository implements IBaseRepository<Meta> {
             client = await db.connect();
             const result: QueryResult<Meta> = await client.query(sql, values);
             await db.close(client);
-            if(result.rows[0]) {
-                result.rows[0].created_on = new Date(result.rows[0].created_on).toISOString();
-                result.rows[0].last_modified = new Date(result.rows[0].last_modified).toISOString();
-            }
             return result.rows[0] ?? null;
         } catch(err: any) {
             // TODO(yqni13): logging
