@@ -18,7 +18,12 @@ export function selectPrivateKey(source: MailSource): string {
     }
 }
 
-export function getCustomTimeString(time: Date): string {
+export function isIRepoError(obj: any): boolean {
+    const properties = Object.getOwnPropertyNames(obj);
+    return properties.includes('method') && properties.includes('error');
+}
+
+export function getTimestampWithoutOffsetInfo(time: Date): string {
     const day = time.getDate() < 10 ? `0${time.getDate()}` : time.getDate().toString();
     const month = time.getMonth()+1 < 10 ? `0${time.getMonth()+1}` : (time.getMonth()+1).toString();
 
@@ -40,7 +45,7 @@ export function getPropertiesFromTimezoneOffset(time: Date): any {
     return { prefix: prefix, offset: offset };
 }
 
-export function getTimestampByTimezone(time: Date): string {
+export function getTimestampWithOffsetInfo(time: Date): string {
     // Get the GMT offset.
     const gmtData = getPropertiesFromTimezoneOffset(time);
 

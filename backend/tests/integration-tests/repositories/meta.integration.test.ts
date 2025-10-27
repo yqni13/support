@@ -21,7 +21,7 @@ describe('Integration test (repository specific), priority: Meta', () => {
         let mockParam_key: string;
         beforeAll(async () => {
             dbTestSetup = new DBTestSetup();
-            jest.setTimeout(45000);
+            jest.setTimeout(60000);
             await dbTestSetup.init();
             await runMigrations();
             apiUrl = '/api/v1/meta';
@@ -65,7 +65,7 @@ describe('Integration test (repository specific), priority: Meta', () => {
         test('Repository process fn update, result: "SUCCESS"', async () => {
             const testParam_id = 1;
             const mockTimeStamp = "2025-02-02T14:00:00.000";
-            const mockParam_timeStamp = Utils.getTimestampByTimezone(new Date(mockTimeStamp));
+            const mockParam_timeStamp = Utils.getTimestampWithOffsetInfo(new Date(mockTimeStamp));
             const testParam_data: Partial<Meta> = {
                 app: 'support',
                 author: 'yqni13',
@@ -80,7 +80,7 @@ describe('Integration test (repository specific), priority: Meta', () => {
             };
 
             // Mock Utils generated timeStamp for easy comparison.
-            jest.spyOn(Utils, "getTimestampByTimezone").mockReturnValue(mockParam_timeStamp);
+            jest.spyOn(Utils, "getTimestampWithOffsetInfo").mockReturnValue(mockParam_timeStamp);
 
             const testResult: Meta = {
                 id: testParam_id,

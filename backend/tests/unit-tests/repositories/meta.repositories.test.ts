@@ -106,7 +106,7 @@ describe('Database tests table <meta>, priority: udpate', () => {
             const mockResult = structuredClone(mockData);
 
             // Mock Utils generated timeStamp for easy comparison.
-            jest.spyOn(Utils, "getTimestampByTimezone").mockReturnValue(mockVar_timeStamp);
+            jest.spyOn(Utils, "getTimestampWithOffsetInfo").mockReturnValue(mockVar_timeStamp);
 
             const mockClient = MockUtils.mapMockDbClient(mockResult);
             const testFn = await metaRepository.update(mockParam_id, mockParam_data);
