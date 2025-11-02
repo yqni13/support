@@ -9,6 +9,7 @@ export interface Meta {
     docker_image: string,
     docker_version: string,
     jenkins_version: string,
+    maintenance_mode: string,
     created_on: string,
     last_modified: string
 }

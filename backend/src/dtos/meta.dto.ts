@@ -7,7 +7,11 @@ export interface MetaUpdateDTO {
     db_version: string,
     docker_image: string,
     docker_version: string,
-    jenkins_version: string
+    jenkins_version: string,
+}
+
+export interface MetaMaintenanceUpdateDTO {
+    maintenance_mode: string
 }
 
 export interface MetaResponseDTO {
@@ -21,6 +25,7 @@ export interface MetaResponseDTO {
     docker_image: string,
     docker_version: string,
     jenkins_version: string,
+    maintenance_mode: string,
     created_on: string,
     last_modified: string
 }

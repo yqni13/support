@@ -2,7 +2,7 @@
 
 Create a new migration file (name scheme: <target-table>-update<serial_number>.migrations).<br>This will be saved automatically at [migrations](../../migrations/).
 ```sh
-npm run migrate create <target-table>-update<serial_number>.migrations
+npm run migrate create <serial_number>-<target-table>-update.migrations
 ```
 
 
@@ -36,7 +36,7 @@ path> $env:DATABASE_URL = "postgresql://<user>:<password>@<host>:<port>/<db>"
 for specific number of migrations (going from youngest to oldest):
 
 ```sh
-path> npx node-pg-migrate <direction> <count> #==> npx node-pg-migrate down 9999#
+path> npx node-pg-migrate <direction> <count> #==> npx node-pg-migrate down 9999
 or
 path> npm run migrate-<direction> <count>
 ```

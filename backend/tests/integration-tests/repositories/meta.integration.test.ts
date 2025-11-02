@@ -6,6 +6,7 @@ import request from 'supertest';
 import app from '../../../src/app';
 import * as Utils from '../../../src/utils/common.utils';
 import { ErrorStatusCodes } from '../../../src/utils/errorStatusCodes.utils';
+import { MaintenanceMode } from '../../../src/utils/enums/maintenance-mode.enum';
 
 jest.mock('../../../src/middleware/auth.middleware', () => ({
     auth: jest.fn(() =>  (req: Request, res: Response, next: NextFunction) => next())
@@ -50,6 +51,7 @@ describe('Integration test (repository specific), priority: Meta', () => {
                 docker_image: "no-image",
                 docker_version: "0.0.3",
                 jenkins_version: "0.0.4",
+                maintenance_mode: MaintenanceMode.E000,
                 last_modified: "2025-01-01T14:00:01.000",
                 created_on: "2025-01-01T14:00:01.000"
             };
@@ -93,6 +95,7 @@ describe('Integration test (repository specific), priority: Meta', () => {
                 docker_image: 'no-image',
                 docker_version: '0.3.0',
                 jenkins_version: '0.4.0',
+                maintenance_mode: MaintenanceMode.E000,
                 last_modified: mockTimeStamp,
                 created_on: '2025-01-01T14:00:01.000'
             }
