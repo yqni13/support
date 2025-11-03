@@ -82,6 +82,103 @@ describe('Database tests table <meta>, priority: findById', () => {
     })
 })
 
+describe('Database tests table <meta>, priority: findAll', () => {
+
+    describe('Testing valid fn calls', () => {
+
+        test('Return data for multiple existing entries', async () => {
+            const mockData_entry0 = structuredClone(mockData);
+            Object.assign(mockData_entry0, {maintenance_mode: MaintenanceMode.E000});
+            const mockData_entry1 = structuredClone(mockData_entry0);
+            mockData_entry1['id'] = 2;
+            mockData_entry1['app'] = 'testapp';
+            const mockResult: any[] = [mockData_entry0, mockData_entry1];
+
+            const mockErrorMsg = undefined;
+            const mockExpectArray = true;
+            const mockClient = MockUtils.mapMockDbClient(mockResult, mockErrorMsg, mockExpectArray);
+            const sql = `SELECT * FROM meta ORDER BY id ASC;`;
+            const testFn = await metaRepository.findAll();
+
+            expect(testFn).toEqual(mockResult);
+            expect(DBConnection.getInstance).toHaveBeenCalled();
+            expect(mockClient.query).toHaveBeenCalledWith(sql);
+        });
+    })
+
+    describe('Testing invalid fn calls', () => {
+
+        test('Failing query to fall inside catch-block', async () => {
+            const mockErrorMsg = "DB ERROR ON SELECT QUERY, (Meta TEST Repository, findAll)";
+            const mockResult = null;
+            const _ = MockUtils.mapMockDbClient(mockResult, mockErrorMsg);
+            const testFn = await metaRepository.findAll();
+
+            expect(testFn).toEqual<IRepoError>({
+                method: 'support_meta_findAll',
+                error: expect.any(Error)
+            });
+            expect((testFn as IRepoError).error.message).toBe(mockErrorMsg);
+        })
+    })
+})
+
+describe('Database tests table <meta>, priority: findMaintenance', () => {
+
+    describe('Testing valid fn calls', () => {
+
+        let sql: string;
+        beforeEach(() => {
+            sql = `SELECT id, build_on, maintenance_mode, last_modified, created_on FROM meta WHERE id = $1;`;
+        })
+
+        test('Return data for existing entry, params: <key> = 1', async () => {
+            const mockParam_id = 1;
+            const mockResult = {
+                id: mockParam_id,
+                build_on: mockData.build_on,
+                maintenance_mode: MaintenanceMode.E000,
+                last_modified: mockVar_timeStamp,
+                created_on: mockData.created_on
+            }
+            const mockClient = MockUtils.mapMockDbClient(mockResult);
+            const testFn = await metaRepository.findMaintenance(mockParam_id);
+
+            expect(testFn).toEqual(mockResult);
+            expect(DBConnection.getInstance).toHaveBeenCalled();
+            expect(mockClient.query).toHaveBeenCalledWith(sql, [mockParam_id]);
+        });
+
+        test('Return null for non-existing entry, params: <key> = 0', async () => {
+            const mockParam_id = 0;
+            const mockResult = null;
+            const mockClient = MockUtils.mapMockDbClient(mockResult);
+            const testFn = await metaRepository.findMaintenance(mockParam_id);
+
+            expect(testFn).toEqual(mockResult);
+            expect(DBConnection.getInstance).toHaveBeenCalled();
+            expect(mockClient.query).toHaveBeenCalledWith(sql, [mockParam_id]);
+        })
+    })
+
+    describe('Testing invalid fn calls', () => {
+
+        test('Failing query to fall inside catch-block', async () => {
+            const mockParam_id = 1;
+            const mockErrorMsg = "DB ERROR ON SELECT QUERY, (Meta TEST Repository, findMaintenance)";
+            const mockResult = null;
+            const _ = MockUtils.mapMockDbClient(mockResult, mockErrorMsg);
+            const testFn = await metaRepository.findMaintenance(mockParam_id);
+
+            expect(testFn).toEqual<IRepoError>({
+                method: 'support_meta_findMaintenance',
+                error: expect.any(Error)
+            });
+            expect((testFn as IRepoError).error.message).toBe(mockErrorMsg);
+        })
+    })
+})
+
 describe('Database tests table <meta>, priority: udpate', () => {
 
     describe('Testing valid fn calls', () => {

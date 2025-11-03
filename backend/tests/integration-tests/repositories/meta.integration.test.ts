@@ -1,4 +1,4 @@
-import { Meta } from './../../../src/repositories/interfaces/meta.entity.interface';
+import { Maintenance, Meta } from './../../../src/repositories/interfaces/meta.entity.interface';
 import { NextFunction, Request, Response } from "express"
 import { DBTestSetup } from "../db-container.setup";
 import { runMigrations } from '../../db-migrations.setup';
@@ -81,6 +81,31 @@ describe('Integration test (repository specific), priority: Meta', () => {
             expect(testResponse.body).toMatchObject(testResult)
         })
 
+        test('Repository process fn findAll, result: "SUCCESS"', async () => {
+            const testResult: Meta[] = [{
+                id: 1,
+                app: "support",
+                author: "yqni13",
+                build_on: "2025-01-01T14:00:01.000",
+                environment: "test",
+                app_version: "0.0.1",
+                db_version: "0.0.2",
+                docker_image: "no-image",
+                docker_version: "0.0.3",
+                jenkins_version: "0.0.4",
+                maintenance_mode: MaintenanceMode.E000,
+                last_modified: "2025-01-01T14:00:01.000",
+                created_on: "2025-01-01T14:00:01.000"
+            }];
+
+            dbTestSetup.addTestData();
+            const testResponse = await request(app)
+                .get(`${apiUrl}/all/${mockParam_key}`);
+
+            expect(testResponse.statusCode).toBe(200);
+            expect(testResponse.body).toMatchObject(testResult)
+        })
+
         test('Repository process fn update, result: "SUCCESS"', async () => {
             const testParam_id = 1;
             const mockTimeStamp = "2025-02-02T14:00:00.000";
@@ -108,8 +133,26 @@ describe('Integration test (repository specific), priority: Meta', () => {
             dbTestSetup.addTestData();
             
             const testResponse = await request(app)
-                .put(`${apiUrl}/update/${testParam_id}/${mockParam_key}`)
+                .put(`${apiUrl}/info/${testParam_id}/${mockParam_key}`)
                 .send(testParam_data);
+
+            expect(testResponse.statusCode).toBe(200);
+            expect(testResponse.body).toMatchObject(testResult)
+        })
+
+        test('Repository process fn findMaintenance, result: "Success"', async () => {
+            const testParam_id = 1;
+            const testResult: Maintenance = {
+                id: testParam_id,
+                build_on: "2025-01-01T14:00:01.000",
+                maintenance_mode: MaintenanceMode.E000,
+                last_modified: "2025-01-01T14:00:01.000",
+                created_on: "2025-01-01T14:00:01.000"
+            };
+
+            dbTestSetup.addTestData();
+            const testResponse = await request(app)
+                .get(`${apiUrl}/maintenance/${testParam_id}/${mockParam_key}`);
 
             expect(testResponse.statusCode).toBe(200);
             expect(testResponse.body).toMatchObject(testResult)
@@ -126,15 +169,7 @@ describe('Integration test (repository specific), priority: Meta', () => {
 
             const testResult = {
                 id: testParam_id,
-                app: "support",
-                author: "yqni13",
                 build_on: "2025-01-01T14:00:01.000",
-                environment: "test",
-                app_version: "0.0.1",
-                db_version: "0.0.2",
-                docker_image: "no-image",
-                docker_version: "0.0.3",
-                jenkins_version: "0.0.4",
                 maintenance_mode: testParam_data.maintenance_mode,
                 last_modified: mockTimeStamp,
                 created_on: "2025-01-01T14:00:01.000"
@@ -153,7 +188,10 @@ describe('Integration test (repository specific), priority: Meta', () => {
 
     describe('Testing invalid fn calls', () => {
 
-        describe('Route: /update, priority: express-validators', () => {
+        const apiUrl = '/api/v1/meta';
+        const mockParam_key = 'testkey';
+
+        describe('Route: PUT: /info, priority: express-validators', () => {
 
             const mockData = {
                 app: 'support',
@@ -166,8 +204,6 @@ describe('Integration test (repository specific), priority: Meta', () => {
                 docker_version: '0.3.0',
                 jenkins_version: '0.4.0'
             };
-            const apiUrl = '/api/v1/meta';
-            const mockParam_key = 'testkey';
 
             // "keyof typeof mockData" creates Union-Types of keys to ensure all properties are valid.
             const testedParams = Object.keys(mockData) as (keyof typeof mockData)[];
@@ -182,10 +218,34 @@ describe('Integration test (repository specific), priority: Meta', () => {
                     msg: 'support-arg-required',
                     path: invalidParam,
                     location: 'body'
-                }
+                };
 
                 const mockResponse = await request(app)
-                    .put(`${apiUrl}/update/${mockParam_id}/${mockParam_key}`)
+                    .put(`${apiUrl}/info/${mockParam_id}/${mockParam_key}`)
+                    .send(mockParam_data);
+
+                expect(mockResponse.statusCode).toBe(ErrorStatusCodes.InvalidPropertiesException);
+                expect(mockResponse.body.headers.data).toContainEqual(mockError);
+            })
+
+            
+        })
+
+        describe('Route: PUT: /maintenance, priority: express-validators', () => {
+
+            test('Params: <maintenance_mode>, validator: notempty by undefined', async () => {
+                const mockParam_id = 1;
+                const mockParam_data = undefined;
+                const mockError = {
+                    type: 'field',
+                    value: '',
+                    msg: 'support-arg-required',
+                    path: 'maintenance_mode',
+                    location: 'body'
+                };
+
+                const mockResponse = await request(app)
+                    .put(`${apiUrl}/maintenance/${mockParam_id}/${mockParam_key}`)
                     .send(mockParam_data);
 
                 expect(mockResponse.statusCode).toBe(ErrorStatusCodes.InvalidPropertiesException);
