@@ -1,3 +1,5 @@
+import { MaintenanceMode } from "../utils/enums/maintenance-mode.enum"
+
 export interface MetaUpdateDTO {
     app: string,
     author: string,
@@ -8,10 +10,6 @@ export interface MetaUpdateDTO {
     docker_image: string,
     docker_version: string,
     jenkins_version: string,
-}
-
-export interface MetaMaintenanceUpdateDTO {
-    maintenance_mode: string
 }
 
 export interface MetaResponseDTO {
@@ -25,7 +23,19 @@ export interface MetaResponseDTO {
     docker_image: string,
     docker_version: string,
     jenkins_version: string,
-    maintenance_mode: string,
+    maintenance_mode: MaintenanceMode,
+    created_on: string,
+    last_modified: string
+}
+
+export interface MaintenanceUpdateDTO {
+    maintenance_mode: MaintenanceMode
+}
+
+export interface MaintenanceResponseDTO {
+    id: number,
+    build_on: string,
+    maintenance_mode: MaintenanceMode,
     created_on: string,
     last_modified: string
 }

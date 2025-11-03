@@ -1,3 +1,5 @@
+import { MaintenanceMode } from "../../utils/enums/maintenance-mode.enum";
+
 export interface Meta {
     id: number,
     app: string,
@@ -9,7 +11,15 @@ export interface Meta {
     docker_image: string,
     docker_version: string,
     jenkins_version: string,
-    maintenance_mode: string,
+    maintenance_mode: MaintenanceMode,
+    created_on: string,
+    last_modified: string
+}
+
+export interface Maintenance {
+    id: number,
+    build_on: string,
+    maintenance_mode: MaintenanceMode,
     created_on: string,
     last_modified: string
 }

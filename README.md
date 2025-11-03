@@ -1,5 +1,5 @@
 # yqni13 | support
-$\texttt{\color{teal}{v0.3.1}}$
+$\texttt{\color{teal}{v0.4.0}}$
 
 
 <br>
@@ -35,15 +35,24 @@ $\texttt{\color{teal}{v0.3.1}}$
 The project will be hosted by <a href="https://render.com/">Render</a> in a Docker container and a PostgreSQL database by Neon.<br>
 The development process is structured by the TDD (test driven development) principle.
 
+<br>
+
+## Overview
+
+### $\textsf{\color{teal}Features}$
+
+<dl>
+    <dd>:closed_lock_with_key: maintenance mode can en/disable application via single request</dd>
+</dl>
 
 <br>
 
 ## Updates
 [see changelog for all updates](/docs/CHANGELOG.md)
 
-### $\textsf{last\ update\ 0.3.0\ >>\ {\color{pink}0.3.1}}$
+### $\textsf{last\ update\ 0.3.1\ >>\ {\color{pink}0.4.0}}$
 
-- $\textsf{\color{red}Patch:}$ Updated timestamp handling to incorporate timezone offsets.
+- $\textsf{\color{teal}Addition:}$ Added maintenance middleware and modified database + logic to handle maintenance status via request instead of env variables.
 
 <br>
 
