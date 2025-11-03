@@ -48,9 +48,16 @@ export class UnexpectedException extends CommonException {
     }
 }
 
+export class MaintenanceException extends CommonException {
+    constructor(message: string, data?: unknown) {
+        super(ErrorCodes.MaintenanceException, message, data, ErrorStatusCodes.MaintenanceException);
+    }
+}
+
 module.exports = {
     InternalServerException,
     RequestExceedMaxException,
     InvalidSourceException,
     UnexpectedException,
+    MaintenanceException
 };

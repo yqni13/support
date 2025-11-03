@@ -3,6 +3,7 @@ import { AuthSecretNotFoundException } from'./exceptions/auth.exception';
 import fs from "fs";
 
 class Secrets {
+    readonly ADMIN_API: string;
     readonly MODE: string;
     readonly PORT: number;
     readonly EMAIL_RECEIVER: string;
@@ -36,6 +37,7 @@ class Secrets {
     private static _instance: Secrets;
 
     private constructor() {
+        this.ADMIN_API = this.setAdminApi();
         this.MODE = this.setMode();
         this.PORT = this.setPort();
         this.EMAIL_RECEIVER = this.setEmailReceiver();
@@ -72,6 +74,13 @@ class Secrets {
             Secrets._instance = new Secrets();
         }
         return Secrets._instance;
+    }
+
+    private setAdminApi() {
+        if(!Config.ADMIN_API) {
+            throw new AuthSecretNotFoundException('secret-404-env#ADMIN_API');
+        }
+        return Config.ADMIN_API;
     }
 
     private setMode() {

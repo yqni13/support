@@ -1,4 +1,5 @@
 export const Config: any = {
+    ADMIN_API: process.env.SECRET_ADMIN_API || null,
     MODE: process.env.ENV_MODE || 'development',
     PORT: process.env.ENV_PORT || 3000,
     EMAIL_RECEIVER: process.env.SECRET_EMAIL_RECEIVER || null,
