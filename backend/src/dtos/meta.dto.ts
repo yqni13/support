@@ -34,6 +34,7 @@ export interface MaintenanceUpdateDTO {
 
 export interface MaintenanceResponseDTO {
     id: number,
+    app: string,
     build_on: string,
     maintenance_mode: MaintenanceMode,
     created_on: string,

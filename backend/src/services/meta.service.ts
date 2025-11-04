@@ -5,9 +5,19 @@ import metaModel from '../models/meta.model';
 import * as Utils from "../utils/common.utils";
 
 class MetaService {
-    async getMetaData(id: number): Promise<MetaResponseDTO | IRepoError | null> {
+    async getMetaById(id: number): Promise<MetaResponseDTO | IRepoError | null> {
         let result = await metaRepository.findById(id);
-        result = !result || Utils.isIRepoError(result) ? result : metaModel.mapMetaToApi(result as MetaResponseDTO);
+        result = !result || Utils.isIRepoError(result) 
+            ? result
+            : (metaModel.mapObjtoApi(result as MetaResponseDTO)) as MetaResponseDTO;
+        return result;
+    }
+
+    async getMetaByName(name: string): Promise<MetaResponseDTO | IRepoError | null> {
+        let result = await metaRepository.findByName(name);
+        result = !result || Utils.isIRepoError(result)
+            ? result
+            : (metaModel.mapObjtoApi(result as MetaResponseDTO)) as MetaResponseDTO;
         return result;
     }
 
@@ -19,19 +29,25 @@ class MetaService {
 
     async updateMetaData(id: number, dto: MetaUpdateDTO): Promise<MetaResponseDTO | IRepoError | null> {
         let result = await metaRepository.update(id, dto);
-        result = !result || Utils.isIRepoError(result) ? result : metaModel.mapMetaToApi(result as MetaResponseDTO);
+        result = !result || Utils.isIRepoError(result)
+            ? result
+            : (metaModel.mapObjtoApi(result as MetaResponseDTO)) as MetaResponseDTO;
         return result;
     }
 
-    async getMaintenanceMode(id: number): Promise<MaintenanceResponseDTO | IRepoError | null> {
-        let result = await metaRepository.findMaintenance(id);
-        result = !result || Utils.isIRepoError(result) ? result : metaModel.mapMaintenanceToApi(result as MaintenanceResponseDTO);
+    async getMaintenanceMode(name: string): Promise<MaintenanceResponseDTO | IRepoError | null> {
+        let result = await metaRepository.findMaintenance(name);
+        result = !result || Utils.isIRepoError(result)
+            ? result
+            : (metaModel.mapObjtoApi(result as MaintenanceResponseDTO)) as MaintenanceResponseDTO;
         return result;
     }
 
-    async setMaintenanceMode(id: number, dto: MaintenanceUpdateDTO): Promise<MaintenanceResponseDTO | IRepoError | null> {
-        let result = await metaRepository.updateMaintenance(id, dto);
-        result = !result || Utils.isIRepoError(result) ? result : metaModel.mapMaintenanceToApi(result as MaintenanceResponseDTO);
+    async setMaintenanceMode(name: string, dto: MaintenanceUpdateDTO): Promise<MaintenanceResponseDTO | IRepoError | null> {
+        let result = await metaRepository.updateMaintenance(name, dto);
+        result = !result || Utils.isIRepoError(result)
+            ? result
+            : (metaModel.mapObjtoApi(result as MaintenanceResponseDTO)) as MaintenanceResponseDTO;
         return result;
     }
 }

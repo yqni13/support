@@ -8,6 +8,13 @@ export const metaFindByIdSchema: ValidationChain[] = [
         .withMessage('support-invalid-id')
 ];
 
+export const metaFindByNameSchema: ValidationChain[] = [
+    param('name')
+        .trim()
+        .notEmpty()
+        .withMessage('support-invalid-app')
+];
+
 export const metaUpdateSchema: ValidationChain[] = [
     param('id')
         .isInt()
@@ -59,15 +66,17 @@ export const metaUpdateSchema: ValidationChain[] = [
 ];
 
 export const maintenanceFindSchema: ValidationChain[] = [
-    param('id')
-        .isInt()
-        .withMessage('support-invalid-id')
+    param('name')
+        .trim()
+        .notEmpty()
+        .withMessage('support-invalid-app')
 ];
 
 export const maintenanceUpdateSchema: ValidationChain[] = [
-    param('id')
-        .isInt()
-        .withMessage('support-invalid-id'),
+    param('name')
+        .trim()
+        .notEmpty()
+        .withMessage('support-invalid-app'),
     body('maintenance_mode')
         .trim()
         .notEmpty()

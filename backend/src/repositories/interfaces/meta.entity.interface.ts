@@ -18,6 +18,7 @@ export interface Meta {
 
 export interface Maintenance {
     id: number,
+    app: string,
     build_on: string,
     maintenance_mode: MaintenanceMode,
     created_on: string,

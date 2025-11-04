@@ -3,21 +3,12 @@ import * as Utils from "../utils/common.utils";
 
 class MetaModel {
 
-    mapMetaToApi(meta: Meta): Meta {
+    mapObjtoApi(data: Meta | Maintenance): Meta | Maintenance {
         return {
-            ...meta,
-            build_on: Utils.getTimestampWithoutOffsetInfo(new Date(meta.build_on)),
-            created_on: Utils.getTimestampWithoutOffsetInfo(new Date(meta.created_on)),
-            last_modified: Utils.getTimestampWithoutOffsetInfo(new Date(meta.last_modified))
-        };
-    }
-
-    mapMaintenanceToApi(meta: Maintenance): Maintenance {
-        return {
-            ...meta,
-            build_on: Utils.getTimestampWithoutOffsetInfo(new Date(meta.build_on ?? '')),
-            created_on: Utils.getTimestampWithoutOffsetInfo(new Date(meta.created_on ?? '')),
-            last_modified: Utils.getTimestampWithoutOffsetInfo(new Date(meta.last_modified ?? ''))
+            ...data,
+            build_on: Utils.getTimestampWithoutOffsetInfo(new Date(data.build_on)),
+            created_on: Utils.getTimestampWithoutOffsetInfo(new Date(data.created_on)),
+            last_modified: Utils.getTimestampWithoutOffsetInfo(new Date(data.last_modified))
         };
     }
 

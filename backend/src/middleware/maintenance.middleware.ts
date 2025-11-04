@@ -10,8 +10,8 @@ import { MaintenanceMode } from "../utils/enums/maintenance-mode.enum";
 export function maintain() {
     return async function (req: Request, res: Response, next: NextFunction) {
         try {
-            const maintenanceResult = await metaService.getMaintenanceMode(1);
-            const mode = !maintenanceResult || Utils.isIRepoError(maintenanceResult) ? null : maintenanceResult as MaintenanceResponseDTO;            
+            let mode = await metaService.getMaintenanceMode('support');
+            mode = !mode || Utils.isIRepoError(mode) ? null : mode as MaintenanceResponseDTO;            
             if(!mode || mode.maintenance_mode !== MaintenanceMode.E000) {
                 throw new MaintenanceException(!mode ? MaintenanceMode.D013 : mode.maintenance_mode);
             }

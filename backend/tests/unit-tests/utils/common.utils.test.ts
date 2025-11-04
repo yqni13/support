@@ -33,6 +33,22 @@ describe('Utils tets, priority: common', () => {
 
     describe('Testing invalid fn calls', () => {
 
+        test('fn: isIRepoError, result as null', () => {
+            const mockParam_obj = null;
+            const testFn = Utils.isIRepoError(mockParam_obj);
+            const expectResult = false;
+
+            expect(testFn).toBe(expectResult);
+        })
+
+        test('fn: isIRepoError, result as undefined', () => {
+            const mockParam_obj = undefined;
+            const testFn = Utils.isIRepoError(mockParam_obj);
+            const expectResult = false;
+
+            expect(testFn).toBe(expectResult);
+        })
+
         test('fn: isIRepoError, result as object', () => {
             const mockParam_obj = { app: 'support', author: 'yqni13' };
             const testFn = Utils.isIRepoError(mockParam_obj);
