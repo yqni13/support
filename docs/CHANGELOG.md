@@ -4,6 +4,10 @@
 
 <br>
 
+### 2025/11/03 - $\textsf{last\ update\ 0.3.1\ >>\ {\color{pink}0.4.0}}$
+
+- $\textsf{\color{teal}Addition:}$ Added maintenance middleware and modified database + logic to handle maintenance status via request instead of env variables.
+
 ### 2025/10/26 - $\textsf{last\ update\ 0.3.0\ >>\ {\color{pink}0.3.1}}$
 
 - $\textsf{\color{red}Patch:}$ Updated timestamp handling to incorporate timezone offsets.

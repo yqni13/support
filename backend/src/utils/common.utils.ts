@@ -19,6 +19,10 @@ export function selectPrivateKey(source: MailSource): string {
 }
 
 export function isIRepoError(obj: any): boolean {
+    // Check if obj is an array instead (result with multiple data like from findAll) or null.
+    if(!obj || obj.length) {
+        return false;
+    }
     const properties = Object.getOwnPropertyNames(obj);
     return properties.includes('method') && properties.includes('error');
 }

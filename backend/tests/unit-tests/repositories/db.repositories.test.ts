@@ -32,10 +32,10 @@ describe('Database tests, priority: connection', () => {
             }
             jest.spyOn(mockDbInit, 'connect').mockResolvedValue(mockClient_init);
             jest.spyOn(mockDbInit, 'close').mockResolvedValue(null);
-        })
+        });
         afterEach(() => {
             jest.restoreAllMocks();
-        })
+        });
 
         test('Get connection string to address database, environment: development', () => {
             const mockParam_env = 'development';

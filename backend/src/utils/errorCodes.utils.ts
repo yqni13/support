@@ -15,5 +15,6 @@ export const ErrorCodes: any = {
     InvalidSourceException: 13,
     UnexpectedApiResponseException: 14,
     DBConnectionException: 15,
-    DBEmptyException: 16
+    DBEmptyException: 16,
+    MaintenanceException: 17,
 };

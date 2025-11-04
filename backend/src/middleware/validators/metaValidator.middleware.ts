@@ -1,10 +1,18 @@
 import { body, param, ValidationChain } from 'express-validator';
 import * as CustomValidator from '../../utils/customValidator.utils';
+import { MaintenanceMode } from '../../utils/enums/maintenance-mode.enum';
 
 export const metaFindByIdSchema: ValidationChain[] = [
     param('id')
         .isInt()
         .withMessage('support-invalid-id')
+];
+
+export const metaFindByNameSchema: ValidationChain[] = [
+    param('name')
+        .trim()
+        .notEmpty()
+        .withMessage('support-invalid-app')
 ];
 
 export const metaUpdateSchema: ValidationChain[] = [
@@ -55,4 +63,24 @@ export const metaUpdateSchema: ValidationChain[] = [
         .withMessage('support-arg-required')
         .bail()
         .custom((val) => CustomValidator.validateVersionStructure(val, 2)),
+];
+
+export const maintenanceFindSchema: ValidationChain[] = [
+    param('name')
+        .trim()
+        .notEmpty()
+        .withMessage('support-invalid-app')
+];
+
+export const maintenanceUpdateSchema: ValidationChain[] = [
+    param('name')
+        .trim()
+        .notEmpty()
+        .withMessage('support-invalid-app'),
+    body('maintenance_mode')
+        .trim()
+        .notEmpty()
+        .withMessage('support-arg-required')
+        .bail()
+        .custom((val) => CustomValidator.validateEnum(val, MaintenanceMode, 'maintenanceMode'))
 ];

@@ -6,5 +6,6 @@ export const ErrorStatusCodes: any = {
     UnimplementedException: 501,
     DBConnectionException: 535,
     DBEmptyException: 544,
-    InvalidPropertiesException: 400
+    InvalidPropertiesException: 400,
+    MaintenanceException: 598,
 };
