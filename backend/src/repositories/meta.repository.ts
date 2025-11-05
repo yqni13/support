@@ -33,7 +33,7 @@ class MetaRepository implements IBaseRepository<Meta>, IFindRepository<Meta> {
             return result.rows[0] ?? null;
         } catch(err: any) {
             // TODO(yqni13): logging
-            if(secrets.MODE === EnvMode.DEV || secrets.MODE === EnvMode.TEST) {
+            if(secrets.ENV_MODE === EnvMode.DEV || secrets.ENV_MODE === EnvMode.TEST) {
                 console.log("DB ERROR ON SELECT (Meta Repository, findById): ", err);
             }
             await db.close(client);
@@ -62,7 +62,7 @@ class MetaRepository implements IBaseRepository<Meta>, IFindRepository<Meta> {
             return result.rows[0] ?? null;
         } catch(err: any) {
             // TODO(yqni13): logging
-            if(secrets.MODE === EnvMode.DEV || secrets.MODE === EnvMode.TEST) {
+            if(secrets.ENV_MODE === EnvMode.DEV || secrets.ENV_MODE === EnvMode.TEST) {
                 console.log("DB ERROR ON SELECT (Meta Repository, findByName): ", err);
             }
             await db.close(client);
@@ -85,7 +85,7 @@ class MetaRepository implements IBaseRepository<Meta>, IFindRepository<Meta> {
             return result.rows ?? null;
         } catch(err: any) {
             // TODO(yqni13): logging
-            if(secrets.MODE === EnvMode.DEV || secrets.MODE === EnvMode.TEST) {
+            if(secrets.ENV_MODE === EnvMode.DEV || secrets.ENV_MODE === EnvMode.TEST) {
                 console.log("DB ERROR ON SELECT (Meta Repository, findAll): ", err);
             }
             await db.close(client);
@@ -110,7 +110,7 @@ class MetaRepository implements IBaseRepository<Meta>, IFindRepository<Meta> {
             return result.rows[0] ?? null;
         } catch(err: any) {
             // TODO(yqni13): logging
-            if(secrets.MODE === EnvMode.DEV || secrets.MODE === EnvMode.TEST) {
+            if(secrets.ENV_MODE === EnvMode.DEV || secrets.ENV_MODE === EnvMode.TEST) {
                 console.log("DB ERROR ON SELECT (Meta Repository, findMaintenance): ", err);
             }
             await db.close(client);
@@ -141,7 +141,7 @@ class MetaRepository implements IBaseRepository<Meta>, IFindRepository<Meta> {
             return result.rows[0] ?? null;
         } catch(err: any) {
             // TODO(yqni13): logging
-            if(secrets.MODE === EnvMode.DEV || secrets.MODE === EnvMode.TEST) {
+            if(secrets.ENV_MODE === EnvMode.DEV || secrets.ENV_MODE === EnvMode.TEST) {
                 console.log("DB ERROR ON UPDATE (Meta Repository, update): ", err);
             }
             await db.close(client);
@@ -171,7 +171,7 @@ class MetaRepository implements IBaseRepository<Meta>, IFindRepository<Meta> {
             return result.rows[0] ?? null;
         } catch(err: any) {
             // TODO(yqni13): logging
-            if(secrets.MODE === EnvMode.DEV || secrets.MODE === EnvMode.TEST) {
+            if(secrets.ENV_MODE === EnvMode.DEV || secrets.ENV_MODE === EnvMode.TEST) {
                 console.log("DB ERROR ON UPDATEMAINTENANCE (Meta Repository, updateMaintenance): ", err);
             }
             await db.close(client);
