@@ -1,5 +1,5 @@
 # yqni13 | support
-$\texttt{\color{teal}{v0.4.0}}$
+$\texttt{\color{teal}{v0.5.0}}$
 
 
 <br>
@@ -50,15 +50,14 @@ The development process is structured by the TDD (test driven development) princ
 ## Updates
 [see changelog for all updates](/docs/CHANGELOG.md)
 
-### $\textsf{last\ update\ 0.3.1\ >>\ {\color{pink}0.4.0}}$
+### $\textsf{last\ update\ 0.4.0\ >>\ {\color{pink}0.5.0}}$
 
-- $\textsf{\color{teal}Addition:}$ Added maintenance middleware and modified database + logic to handle maintenance status via request instead of env variables.
+- $\textsf{\color{teal}Addition:}$ Added Docker configuration to run application in container (local only at the moment).
 
 <br>
 
 ### Update objectives:
 <dl>
-    <dd>- docker setup</dd>
     <dd>- cloudflare setup</dd>
     <dd>- jenkins setup</dd>
     <dd>- host setup</dd>

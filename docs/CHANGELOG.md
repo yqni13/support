@@ -4,6 +4,10 @@
 
 <br>
 
+### 2025/11/05 - $\textsf{last\ update\ 0.4.0\ >>\ {\color{pink}0.5.0}}$
+
+- $\textsf{\color{teal}Addition:}$ Added Docker configuration to run application in container (local only at the moment).
+
 ### 2025/11/03 - $\textsf{last\ update\ 0.3.1\ >>\ {\color{pink}0.4.0}}$
 
 - $\textsf{\color{teal}Addition:}$ Added maintenance middleware and modified database + logic to handle maintenance status via request instead of env variables.
