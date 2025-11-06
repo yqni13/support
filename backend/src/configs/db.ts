@@ -21,7 +21,7 @@ export class DBConnection {
     }
 
     _getConnectionString(env: string) {
-        // Rremove white spaces for truthful comparison.
+        // Remove white spaces to be comparable with enum values.
         env = env.trim() as EnvMode;
         let db: string;
         let user: string;

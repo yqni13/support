@@ -12,7 +12,7 @@ services:
     ports:
       - "3000:3000"
     environment:
-      # Refer to "localhost" outside of docker environment, otherwise docker volume is target.
+      # Refer to "localhost" outside of docker environment, otherwise docker volume is targeted.
       SECRET_DB_HOST: host.docker.internal
     env_file:
       - .env
