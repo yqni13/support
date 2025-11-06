@@ -1,5 +1,5 @@
 # yqni13 | support
-$\texttt{\color{teal}{v0.5.0}}$
+$\texttt{\color{teal}{v0.5.1}}$
 
 
 <br>
@@ -50,9 +50,11 @@ The development process is structured by the TDD (test driven development) princ
 ## Updates
 [see changelog for all updates](/docs/CHANGELOG.md)
 
-### $\textsf{last\ update\ 0.4.0\ >>\ {\color{pink}0.5.0}}$
+### $\textsf{\color{orange}last update:}$
 
-- $\textsf{\color{teal}Addition:}$ Added Docker configuration to run application in container (local only at the moment).
+$\textsf{[v0.5.0\ =>\ {\color{pink}0.5.1]}}$ $\textsf{\color{salmon} app}$<br>
+$\textsf{[v1.0.0\ =>\ {\color{pink}1.0.1]}}$ $\textsf{\color{royalblue} docker}$
+- $\textsf{\color{red}Patch:}$ Updated secret variables to simplify settings on STAG/PROD environments.
 
 <br>
 
