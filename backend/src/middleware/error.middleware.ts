@@ -9,7 +9,7 @@ export function errorMiddleware(err: any, req: Request, res: Response, next: Nex
 
     let { message, code, error, status, data, stack } = err;
 
-    if(secrets.MODE === 'development') {
+    if(secrets.ENV_MODE === 'development') {
         console.log(`[Exception] ${error}, [Code] ${code}`);
         console.log(`[Error] ${message}`);
         console.log(`[Stack] ${stack}`);

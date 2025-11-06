@@ -4,7 +4,7 @@ import fs from "fs";
 
 class Secrets {
     readonly ADMIN_API: string;
-    readonly MODE: string;
+    readonly ENV_MODE: string;
     readonly PORT: number;
     readonly EMAIL_RECEIVER: string;
     readonly EMAIL_SENDER: string;
@@ -38,7 +38,7 @@ class Secrets {
 
     private constructor() {
         this.ADMIN_API = this.setAdminApi();
-        this.MODE = this.setMode();
+        this.ENV_MODE = this.setEnvMode();
         this.PORT = this.setPort();
         this.EMAIL_RECEIVER = this.setEmailReceiver();
         this.EMAIL_SENDER = this.setEmailSender();
@@ -83,11 +83,11 @@ class Secrets {
         return Config.ADMIN_API;
     }
 
-    private setMode() {
-        if(!Config.MODE) {
-            throw new AuthSecretNotFoundException('secret-404-env#MODE');
+    private setEnvMode() {
+        if(!Config.ENV_MODE) {
+            throw new AuthSecretNotFoundException('secret-404-env#ENV_MODE');
         }
-        return Config.MODE;
+        return Config.ENV_MODE;
     }
 
     private setPort() {

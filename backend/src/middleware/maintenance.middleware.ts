@@ -17,7 +17,7 @@ export function maintain() {
             }
             next();
         } catch(err: any) {
-            if(secrets.MODE === EnvMode.DEV || secrets.MODE === EnvMode.TEST) {
+            if(secrets.ENV_MODE === EnvMode.DEV || secrets.ENV_MODE === EnvMode.TEST) {
                 console.log("MAINTENANCE ERROR ON API CALL: ", err.message);
             }
             err.status = 598;

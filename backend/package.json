@@ -6,10 +6,11 @@
     "migrate": "node-pg-migrate",
     "migrate-up": "node-pg-migrate up",
     "migrate-down": "node-pg-migrate down",
-    "test": "set ENV_MODE=test && jest --setupFiles dotenv/config",
-    "start:local": "ts-node src/server.ts",
+    "test": "set NODE_ENV=test && jest --setupFiles dotenv/config",
     "build": "tsc",
-    "start-prod": "node dist/server.js"
+    "start:dev": "ts-node src/server.ts",
+    "start:stag": "ts-node dist/server.js",
+    "start:prod": "ts-node dist/server.js"
   },
   "author": "yqni13",
   "license": "ISC",

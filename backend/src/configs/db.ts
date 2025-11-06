@@ -9,7 +9,7 @@ export class DBConnection {
     #pool: Pool;
 
     constructor() {
-        const connectionString = this._getConnectionString(secrets.MODE);
+        const connectionString = this._getConnectionString(secrets.ENV_MODE);
         this.#pool = new Pool({connectionString});
     }
 
@@ -88,7 +88,7 @@ export class DBConnection {
         } finally {
             await this.close(client);
         }
-        if(secrets.MODE === EnvMode.DEV) {
+        if(secrets.ENV_MODE === EnvMode.DEV) {
             console.log("DB COMMUNICATION: SUCCESS");
         }
     }
@@ -99,7 +99,7 @@ export class DBConnection {
             return client;
         } catch(error: any) {
             // Get ENV_MODE without white-spaces or comparison will fail.
-            const envMode = (process.env.ENV_MODE?.trim() as EnvMode);
+            const envMode = (process.env.NODE_ENV?.trim() as EnvMode);
             if(envMode === EnvMode.TEST || envMode === EnvMode.DEV) {
                 console.log("DBConnection, fn: connect() ERROR: ", error);
             } else {
