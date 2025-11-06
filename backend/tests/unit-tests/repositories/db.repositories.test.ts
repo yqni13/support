@@ -53,14 +53,6 @@ describe('Database tests, priority: connection', () => {
             expect(testFn).toContain(expectHost);
         })
 
-        test('Get connection string to address database, environment: production', () => {
-            const mockParam_env = 'production';
-            const testFn = mockDb._getConnectionString(mockParam_env);
-            const expectHost = '@prodhost';
-
-            expect(testFn).toContain(expectHost);
-        })
-
         test('Open connection to database', async () => {
             const testFn = await mockDb.connect();
 

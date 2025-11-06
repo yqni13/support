@@ -20,47 +20,28 @@ export class DBConnection {
         return DBConnection.instance;
     }
 
-    _getConnectionString(env: string = (process.env.ENV_MODE ?? EnvMode.DEV)?.trim() as EnvMode) {
-        let db: string = '';
-        let user: string = '';
-        let pass: string = '';
-        let host: string = '';
-        let port: string | number = 0;
-        switch(env) {
-            case(EnvMode.DEV): {
-                db = secrets.DB_LOCAL_DB;
-                user = secrets.DB_LOCAL_USER;
-                pass = secrets.DB_LOCAL_PASS;
-                host = secrets.DB_LOCAL_HOST;
-                port = secrets.DB_LOCAL_PORT;
-                break;
-            }
-            case(EnvMode.STAG): {
-                db = secrets.DB_STAG_DB;
-                user = secrets.DB_STAG_USER;
-                pass = secrets.DB_STAG_PASS;
-                host = secrets.DB_STAG_HOST;
-                port = secrets.DB_STAG_PORT;
-                break;
-            }
-            case(EnvMode.PROD): {
-                db = secrets.DB_PROD_DB;
-                user = secrets.DB_PROD_USER;
-                pass = secrets.DB_PROD_PASS;
-                host = secrets.DB_PROD_HOST;
-                port = secrets.DB_PROD_PORT;
-                break;
-            }
-            case(EnvMode.TEST): 
-            default: {
-                db = secrets.DB_TEST_DB;
-                user = secrets.DB_TEST_USER;
-                pass = secrets.DB_TEST_PASS;
-                host = secrets.DB_TEST_HOST;
-                port = process.env.DB_TEST_PORT ?? secrets.DB_TEST_PORT;
-            }
+    _getConnectionString(env: string) {
+        // Remove white spaces to be comparable with enum values.
+        env = env.trim() as EnvMode;
+        let db: string;
+        let user: string;
+        let pass: string;
+        let host: string;
+        let port: string | number;
+        if(env === EnvMode.TEST) {
+            db = secrets.DB_TEST_DATABASE;
+            user = secrets.DB_TEST_USER;
+            pass = secrets.DB_TEST_PASS;
+            host = secrets.DB_TEST_HOST;
+            port = process.env.DB_TEST_PORT ?? secrets.DB_TEST_PORT;
+        } else {
+            db = secrets.DB_DATABASE;
+            user = secrets.DB_USER;
+            pass = secrets.DB_PASS;
+            host = secrets.DB_HOST;
+            port = secrets.DB_PORT;
         }
-        let connectionString = '';
+        let connectionString: string;
         if(env === EnvMode.PROD || env === EnvMode.STAG) {
             connectionString = `postgresql://${user}:${pass}@${host}/${db}?sslmode=require`;
         } else {
