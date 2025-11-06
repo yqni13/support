@@ -2,7 +2,7 @@ name: support
 
 services:
   app:
-    image: yqni13/support:1.0
+    image: yqni13/support:v1.0.0 # keep version up-to-date
     build: .
     command: npm run start:dev
     volumes:
@@ -11,6 +11,7 @@ services:
     ports:
       - "3000:3000"
     environment:
+      # Refer to "localhost" outside of docker environment, otherwise docker volume is target.
       SECRET_DB_LOCAL_HOST: host.docker.internal
     env_file:
       - .env
