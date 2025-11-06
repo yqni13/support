@@ -10,4 +10,6 @@ module.exports = {
   transform: {
     ...tsJestTransformCfg,
   },
+  extensionsToTreatAsEsm: [".ts"],
+  moduleFileExtensions: ["ts", "js", "json"]
 };

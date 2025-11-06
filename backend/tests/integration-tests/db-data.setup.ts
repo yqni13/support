@@ -1,0 +1,27 @@
+import { MaintenanceMode } from "../../src/utils/enums/maintenance-mode.enum";
+
+export class DBTestData {
+    private static instance: DBTestData;
+
+    constructor() {
+        //
+    }
+
+    static getInstance(): DBTestData {
+        if(!DBTestData.instance) {
+            DBTestData.instance = new DBTestData();
+        }
+        return DBTestData.instance;
+    }
+
+    getMetaInsertSql(): { sql: string, values: any[]} {
+        const table = 'meta'
+        const values = [1, 'support', 'yqni13', '2025-01-01T13:00:01.000Z', 'test', '0.0.1', '0.0.2', 'no-image', '0.0.3', '0.0.4', MaintenanceMode.E000, '2025-01-01T13:00:01.000Z', '2025-01-01T13:00:01.000Z'];
+        return {
+            sql: `INSERT INTO ${table}
+            (id, app, author, build_on, environment, app_version, db_version, docker_image, docker_version, jenkins_version, maintenance_mode, created_on, last_modified)
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13);`,
+            values: values
+        };
+    }
+}

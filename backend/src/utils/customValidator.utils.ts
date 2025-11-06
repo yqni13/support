@@ -23,3 +23,11 @@ export function validateVersionStructure(version: string, numOfDelimiter: number
 
     return true;
 }
+
+export function validateEnum(value: unknown, enumObj: any, enumName: string): boolean {
+    const enumValues = Object.values(enumObj);
+    if(!enumValues.includes(value)) {
+        throw new Error(`support-invalid-entry#${enumName}`);
+    }
+    return true;
+}

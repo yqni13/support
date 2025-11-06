@@ -1,5 +1,5 @@
 # yqni13 | support
-$\texttt{\color{teal}{v0.2.1}}$
+$\texttt{\color{teal}{v0.5.0}}$
 
 
 <br>
@@ -14,6 +14,7 @@ $\texttt{\color{teal}{v0.2.1}}$
     <img src="assets/icons/nodejs.png" alt="NodeJS">
     <img src="assets/icons/express.png" alt="Express">
     <img src="assets/icons/jest.png" alt="Jest">
+    <img src="assets/icons/neon.png" alt="Neon">
 </div>
 <div style="display:flex; align-items:center;">
     <img src="assets/icons/docker.png" alt="Docker">
@@ -31,28 +32,34 @@ $\texttt{\color{teal}{v0.2.1}}$
 ## How to
 
 ### Build & Deploy
-The project is hosted by <a href="https://render.com/">Render</a> in a Docker container together with a PostgreSQL database.<br>
+The project will be hosted by <a href="https://render.com/">Render</a> in a Docker container and a PostgreSQL database by Neon.<br>
 The development process is structured by the TDD (test driven development) principle.
 
+<br>
 
+## Overview
+
+### $\textsf{\color{teal}Features}$
+
+<dl>
+    <dd>:closed_lock_with_key: maintenance mode can en/disable application via single request</dd>
+</dl>
 
 <br>
 
 ## Updates
-[list of all updates](/docs/CHANGELOG.md)
+[see changelog for all updates](/docs/CHANGELOG.md)
 
-### $\textsf{last\ update\ 0.2.1\ >>\ {\color{pink}0.2.2}}$
+### $\textsf{last\ update\ 0.4.0\ >>\ {\color{pink}0.5.0}}$
 
-- $\textsf{\color{teal}Addition:}$ Added authentication middleware (to check validity by api key).
+- $\textsf{\color{teal}Addition:}$ Added Docker configuration to run application in container (local only at the moment).
 
 <br>
 
 ### Update objectives:
 <dl>
-    <dd>- docker setup</dd>
     <dd>- cloudflare setup</dd>
     <dd>- jenkins setup</dd>
     <dd>- host setup</dd>
-    <dd>- testing setup</dd>
     <dd>- mail setup</dd>
 </dl>

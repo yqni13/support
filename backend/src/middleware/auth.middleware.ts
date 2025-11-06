@@ -7,17 +7,15 @@ export function auth(isApiKeyAuth: boolean = false) {
     return async function (req: Request, res: Response, next: NextFunction) {
         try {
             if(isApiKeyAuth) {
-                // TODO(yqni13): temporary state => change key-check by SUPPORT-13
-                const hasValidKey = req.params.key === 'testkey';
-
-                const isDeployMode = secrets.MODE === EnvMode.PROD || secrets.MODE === EnvMode.STAG ? true : false;
+                const hasValidKey = req.params.key === secrets.ADMIN_API;
+                const isDeployMode = secrets.ENV_MODE === EnvMode.PROD || secrets.ENV_MODE === EnvMode.STAG ? true : false;
                 if(isDeployMode && !hasValidKey) {
                     throw new InvalidCredentialsException('support-invalid-authkey');
                 }
             }
             next();
         } catch(err: any) {
-            if(secrets.MODE === EnvMode.DEV) {
+            if(secrets.ENV_MODE === EnvMode.DEV) {
                 console.log('AUTH ERROR ON VERIFICATION (Auth Middleware): ', err.message);
             }
             err.status = 401;

@@ -5,5 +5,7 @@ export const ErrorStatusCodes: any = {
     UnexpectedApiResponseException: 502,
     UnimplementedException: 501,
     DBConnectionException: 535,
-    DBEmptyException: 544
+    DBEmptyException: 544,
+    InvalidPropertiesException: 400,
+    MaintenanceException: 598,
 };

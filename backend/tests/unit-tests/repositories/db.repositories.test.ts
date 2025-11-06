@@ -32,10 +32,10 @@ describe('Database tests, priority: connection', () => {
             }
             jest.spyOn(mockDbInit, 'connect').mockResolvedValue(mockClient_init);
             jest.spyOn(mockDbInit, 'close').mockResolvedValue(null);
-        })
+        });
         afterEach(() => {
             jest.restoreAllMocks();
-        })
+        });
 
         test('Get connection string to address database, environment: development', () => {
             const mockParam_env = 'development';
@@ -45,8 +45,8 @@ describe('Database tests, priority: connection', () => {
             expect(testFn).toContain(expectHost);
         })
 
-        test('Get connection string to address database, environment: staging', () => {
-            const mockParam_env = 'staging';
+        test('Get connection string to address database, environment: test', () => {
+            const mockParam_env = 'test';
             const testFn = mockDb._getConnectionString(mockParam_env);
             const expectHost = '@localhost';
 
@@ -56,7 +56,7 @@ describe('Database tests, priority: connection', () => {
         test('Get connection string to address database, environment: production', () => {
             const mockParam_env = 'production';
             const testFn = mockDb._getConnectionString(mockParam_env);
-            const expectHost = '@dockerhost';
+            const expectHost = '@prodhost';
 
             expect(testFn).toContain(expectHost);
         })

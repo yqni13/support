@@ -6,7 +6,7 @@ export interface IBaseRepository<T> {
 }
 
 export interface IFindRepository<T> {
-    findAll(): Promise<T[] | IRepoError>;
+    findAll(): Promise<T[] | IRepoError | null>;
 }
 
 export interface ICreateRepository<T> {
