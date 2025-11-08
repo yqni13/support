@@ -19,4 +19,6 @@ export const Config: any = {
     DB_TEST_HOST: process.env.SECRET_DB_TEST_HOST || null,
     DB_TEST_PORT: process.env.SECRET_DB_TEST_PORT || null,
     DB_TEST_DATABASE: process.env.SECRET_DB_TEST_DATABASE || null,
+    TEST_APIKEY_RAW: process.env.SECRET_TEST_APIKEY_RAW || null,
+    TEST_APIKEY_HASH: process.env.SECRET_TEST_APIKEY_HASH || null,
 };

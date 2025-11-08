@@ -2,6 +2,7 @@ import { InvalidSourceException } from './exceptions/common.exception';
 import { MailSource } from './enums/mail-source.enum';
 import { secrets } from './secrets.utils';
 import { NextFunction, Request, Response } from "express";
+import { v4 as uuid_v4 } from 'uuid';
 
 export type AsyncMiddleware = (req: Request, res: Response, next: NextFunction) => Promise<void>;
 
@@ -62,4 +63,8 @@ export function getTimestampWithOffsetInfo(time: Date): string {
 
     // Need prefix-0 on single digits.
     return `${time.getFullYear()}-${month}-${day} ${hours}:${minutes}:${seconds}${gmtData.prefix}${gmtData.offset}`;
+}
+
+export function generateUUID(): string {
+    return uuid_v4();
 }

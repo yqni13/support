@@ -1,5 +1,5 @@
 import { DBConnection } from "../../../src/configs/db";
-import metaRepository from "../../../src/repositories/meta.repository"
+import metaRepository from "../../../src/repositories/meta.repository";
 import { Maintenance, Meta } from "../../../src/repositories/interfaces/meta.entity.interface";
 import * as Utils from "../../../src/utils/common.utils";
 import * as MockUtils from "../../common.test-utils";
@@ -275,6 +275,7 @@ describe('Database tests table <meta>, priority: udpate', () => {
             const testFn = await metaRepository.update(mockParam_id, mockParam_data);
 
             expect(testFn).toEqual(mockResult);
+            expect(DBConnection.getInstance).toHaveBeenCalled();
             expect(mockClient.query).toHaveBeenCalledWith(
                 expect.stringContaining(sql),
                 expect.arrayContaining(mockValues)
@@ -296,6 +297,7 @@ describe('Database tests table <meta>, priority: udpate', () => {
             const testFn = await metaRepository.update(mockParam_id, mockParam_data);
 
             expect(testFn).toEqual(mockResult);
+            expect(DBConnection.getInstance).toHaveBeenCalled();
             expect(mockClient.query).toHaveBeenCalledWith(
                 expect.stringContaining(sql),
                 expect.arrayContaining(mockValues)
@@ -363,6 +365,7 @@ describe('Database tests table <meta>, priority: updateMaintenance', () => {
             const testFn = await metaRepository.updateMaintenance(mockParam_name, mockParam_data);
 
             expect(testFn).toEqual(mockResult);
+            expect(DBConnection.getInstance).toHaveBeenCalled();
             expect(mockClient.query).toHaveBeenCalledWith(
                 expect.stringContaining(sql),
                 expect.arrayContaining(mockValues)
@@ -379,6 +382,7 @@ describe('Database tests table <meta>, priority: updateMaintenance', () => {
             const testFn = await metaRepository.updateMaintenance(mockParam_name, mockParam_data);
 
             expect(testFn).toEqual(mockResult);
+            expect(DBConnection.getInstance).toHaveBeenCalled();
             expect(mockClient.query).toHaveBeenCalledWith(
                 expect.stringContaining(sql),
                 expect.arrayContaining(mockValues)
