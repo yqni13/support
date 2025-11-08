@@ -1,5 +1,6 @@
 import { ApiKeyStatus } from "../../src/utils/enums/api-key-status.enum";
 import { MaintenanceMode } from "../../src/utils/enums/maintenance-mode.enum";
+import { secrets } from "../../src/utils/secrets.utils";
 
 export class DBTestData {
     private static instance: DBTestData;
@@ -13,6 +14,13 @@ export class DBTestData {
             DBTestData.instance = new DBTestData();
         }
         return DBTestData.instance;
+    }
+
+    getDatabaseTables(): string[] {
+        return [
+            'meta',
+            'clients'
+        ];
     }
 
     getMetaInsertSql(): { sql: string, values: any[] } {
@@ -31,7 +39,7 @@ export class DBTestData {
         (client_id, name, api_key_hash, status, last_use, last_modified, created_on)
         VALUES ($1, $2, $3, $4, $5, $6, $7);
         `;
-        const values = ['9e024539-32e8-4317-8007-84a3956e6b57', 'TESTCLIENT', '6ecdeef99b7489e2689a770320f227639da3924fcd0204a0efb6879759601935', ApiKeyStatus.ACTIVE, '2025-01-01T14:00:01.000Z', '2025-01-01T14:00:01.000Z', '2025-01-01T14:00:01.000Z'];
+        const values = ['9e024539-32e8-4317-8007-84a3956e6b57', 'TESTCLIENT', secrets.TEST_APIKEY_HASH, ApiKeyStatus.ACTIVE, '2025-01-01T14:00:01.000Z', '2025-01-01T14:00:01.000Z', '2025-01-01T14:00:01.000Z'];
         return { sql: sql, values: values };
     }
 }

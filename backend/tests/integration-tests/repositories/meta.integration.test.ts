@@ -1,5 +1,5 @@
 import { Maintenance, Meta } from './../../../src/repositories/interfaces/meta.entity.interface';
-import { NextFunction, Request, Response } from "express"
+import { NextFunction, Request, Response } from "express";
 import { DBTestSetup } from "../db-container.setup";
 import { runMigrations } from '../../db-migrations.setup';
 import request from 'supertest';
@@ -48,7 +48,7 @@ describe('Integration test (repository specific), priority: Meta', () => {
 
         beforeEach(async () => {
             // Clean tables before each test to fill test data individually.
-            await dbTestSetup.clearTables(['meta']);
+            await dbTestSetup.clearTables();
         });
 
         afterAll(async () => {

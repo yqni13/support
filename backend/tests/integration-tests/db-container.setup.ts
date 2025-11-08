@@ -76,7 +76,9 @@ export class DBTestSetup {
         }
     }
 
-    async clearTables(tables: string[]) {
+    async clearTables() {
+        const dbTestData = DBTestData.getInstance();
+        let tables: string[] = dbTestData.getDatabaseTables();
         tables = tables.reverse();
         Object.values(tables).forEach(async (table) => {
             await this.client.query(`TRUNCATE TABLE ${table};`);

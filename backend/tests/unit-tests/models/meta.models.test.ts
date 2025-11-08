@@ -26,7 +26,7 @@ describe('Model tests, class: <meta>, priority: mapObjToApi', () => {
 
         test('Map timestamps of meta object, entity: <Meta>', () => {
             const mockParam_data: Meta = structuredClone(mockData);
-            const testFn = metaModel.mapObjtoApi(mockParam_data);
+            const testFn = metaModel.mapObjToApi(mockParam_data);
             let expectResult = structuredClone(mockData);
             expectResult.build_on = `2025-01-01T${13+(+gmtData.offset)}:00:01.000`;
             expectResult.created_on = `2025-01-01T${13+(+gmtData.offset)}:00:01.000`;
@@ -44,7 +44,7 @@ describe('Model tests, class: <meta>, priority: mapObjToApi', () => {
                 last_modified: "2025-01-01T13:00:01.000Z",
                 created_on: "2025-01-01T13:00:01.000Z"
             }
-            const testFn = metaModel.mapObjtoApi(mockParam_data);
+            const testFn = metaModel.mapObjToApi(mockParam_data);
             const expectResult = structuredClone(mockParam_data);
             expectResult.build_on = `2025-01-01T${13+(+gmtData.offset)}:00:01.000`;
             expectResult.created_on = `2025-01-01T${13+(+gmtData.offset)}:00:01.000`;

@@ -1,4 +1,4 @@
-import { ClientsResponseDTO } from "../../../src/dtos/clients.dto";
+import { ClientsCreateResponseDTO } from "../../../src/dtos/clients.dto";
 import clientsModel from "../../../src/models/clients.model";
 import { Clients } from "../../../src/repositories/interfaces/clients.entity.interface";
 import * as Utils from "../../../src/utils/common.utils";
@@ -25,7 +25,7 @@ describe('Model tests, class: <clients>, priority: mapToResponseDTO', () => {
             };
 
             const testFn = clientsModel.mapToResponseDTO(mockParam_data, mockParam_apiKey.keyRaw);
-            const expectResult: ClientsResponseDTO = {
+            const expectResult: ClientsCreateResponseDTO = {
                 client_id: mockParam_id,
                 name: 'testclient',
                 api_key: mockParam_apiKey.keyRaw,

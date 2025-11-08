@@ -6,6 +6,7 @@ import { ApiKeyStatus } from "../../../src/utils/enums/api-key-status.enum";
 import clientsRepository from "../../../src/repositories/clients.repository";
 import clientsModel from "../../../src/models/clients.model";
 import { secrets } from "../../../src/utils/secrets.utils";
+import { IRepoError } from "../../../src/repositories/interfaces/error.repository.interface";
 
 jest.mock("../../../src/configs/db", () => {
     return {
@@ -29,6 +30,62 @@ const mockData: Clients = {
     last_modified: mockVar_timeStamp,
     created_on: '2025-01-01T14:00:01.000',
 };
+
+describe('Database tests table <clients>, priority: findByKey', () => {
+
+    describe('Testing valid fn calls', () => {
+
+        let sql: string;
+        beforeEach(() => {
+            sql = `SELECT`;
+        })
+
+        test('Return data for existing entry, params: <apikey>', async () => {
+            const mockParam_hash = structuredClone(mockVar_keyHash);
+            const mockResult: Clients = structuredClone(mockData);
+            const mockClient = MockUtils.mapMockDbClient(mockResult);
+            const testFn = await clientsRepository.findByKey(mockParam_hash);
+
+            expect(testFn).toEqual(mockResult);
+            expect(DBConnection.getInstance).toHaveBeenCalled();
+            expect(mockClient.query).toHaveBeenCalledWith(
+                expect.stringContaining(sql),
+                expect.arrayContaining([mockParam_hash])
+            );
+        })
+
+        test('Return null for non-existing entry, params: <apikey>', async () => {
+            const mockParam_hash = 'test_hash_value';
+            const mockResult = null;
+            const mockClient = MockUtils.mapMockDbClient(mockResult);
+            const testFn = await clientsRepository.findByKey(mockParam_hash);
+
+            expect(testFn).toEqual(mockResult);
+            expect(DBConnection.getInstance).toHaveBeenCalled();
+            expect(mockClient.query).toHaveBeenCalledWith(
+                expect.stringContaining(sql),
+                expect.arrayContaining([mockParam_hash])
+            );
+        })
+    })
+
+    describe('Testing invalid fn calls', () => {
+
+        test('Failing query to fall inside catch-block', async () => {
+            const mockParam_hash = 'test_hash_value';
+            const mockErrorMsg = "DB ERROR ON SELECT QUERY, (Clients TEST Repository, findByKey)";
+            const mockResult = null;
+            const _ = MockUtils.mapMockDbClient(mockResult, mockErrorMsg);
+            const testFn = await clientsRepository.findByKey(mockParam_hash);
+
+            expect(testFn).toEqual<IRepoError>({
+                method: 'support_clients_findByKey',
+                error: expect.any(Error)
+            });
+            expect((testFn as IRepoError).error.message).toBe(mockErrorMsg);
+        })
+    })
+})
 
 describe('Database tests table <clients>, priority: create', () => {
 
@@ -70,30 +127,47 @@ describe('Database tests table <clients>, priority: create', () => {
                 expect.arrayContaining(mockValues)
             );
         })
-    })
-})
 
-describe('Database tests table <clients>, priority: findByKey', () => {
+        test('Return null for non-existing entry by non-unique name', async () => {
+            const mockVar_apiKey = clientsModel.generateApiKeyObj();
+            const mockParam_id = Utils.generateUUID();
+            const mockParam_name = 'TESTCLIENT';
+            const mockValues = [mockParam_id, mockParam_name, mockVar_apiKey.keyHash, ApiKeyStatus.ACTIVE, mockVar_timeStamp, mockVar_timeStamp, mockVar_timeStamp];
 
-    describe('Testing valid fn calls', () => {
+            const mockResult = null;
 
-        let sql: string;
-        beforeEach(() => {
-            sql = `SELECT`;
-        })
-
-        test('Return data for existing entry, params: <apikey>', async () => {
-            const mockParam_apikey = structuredClone(mockVar_keyRaw);
-            const mockResult: Clients = structuredClone(mockData);
             const mockClient = MockUtils.mapMockDbClient(mockResult);
-            const testFn = await clientsRepository.findByKey(mockParam_apikey);
+            const testFn = await clientsRepository.create(
+                mockParam_id, mockParam_name, mockVar_apiKey.keyHash
+            );
 
             expect(testFn).toEqual(mockResult);
             expect(DBConnection.getInstance).toHaveBeenCalled();
             expect(mockClient.query).toHaveBeenCalledWith(
                 expect.stringContaining(sql),
-                expect.arrayContaining([mockParam_apikey])
+                expect.arrayContaining(mockValues)
             );
+        })
+    })
+
+    describe('Testing invalid fn calls', () => {
+
+        test('Failing query to fall inside catch-block', async () => {
+            const mockParam_id = 'test_id';
+            const mockParam_name = 'test_client';
+            const mockParam_hash = 'test_hash_value';
+            const mockErrorMsg = "DB ERROR ON SELECT QUERY, (Clients TEST Repository, create)";
+            const mockResult = null;
+            const _ = MockUtils.mapMockDbClient(mockResult, mockErrorMsg);
+            const testFn = await clientsRepository.create(
+                mockParam_id, mockParam_name, mockParam_hash
+            );
+
+            expect(testFn).toEqual<IRepoError>({
+                method: 'support_clients_create',
+                error: expect.any(Error)
+            });
+            expect((testFn as IRepoError).error.message).toBe(mockErrorMsg);
         })
     })
 })
