@@ -9,7 +9,7 @@ class MetaService {
         let result = await metaRepository.findById(id);
         result = !result || Utils.isIRepoError(result) 
             ? result
-            : (metaModel.mapObjtoApi(result as MetaResponseDTO)) as MetaResponseDTO;
+            : (metaModel.mapObjToApi(result as MetaResponseDTO)) as MetaResponseDTO;
         return result;
     }
 
@@ -17,7 +17,7 @@ class MetaService {
         let result = await metaRepository.findByName(name);
         result = !result || Utils.isIRepoError(result)
             ? result
-            : (metaModel.mapObjtoApi(result as MetaResponseDTO)) as MetaResponseDTO;
+            : (metaModel.mapObjToApi(result as MetaResponseDTO)) as MetaResponseDTO;
         return result;
     }
 
@@ -31,7 +31,7 @@ class MetaService {
         let result = await metaRepository.update(id, dto);
         result = !result || Utils.isIRepoError(result)
             ? result
-            : (metaModel.mapObjtoApi(result as MetaResponseDTO)) as MetaResponseDTO;
+            : (metaModel.mapObjToApi(result as MetaResponseDTO)) as MetaResponseDTO;
         return result;
     }
 
@@ -39,7 +39,7 @@ class MetaService {
         let result = await metaRepository.findMaintenance(name);
         result = !result || Utils.isIRepoError(result)
             ? result
-            : (metaModel.mapObjtoApi(result as MaintenanceResponseDTO)) as MaintenanceResponseDTO;
+            : (metaModel.mapObjToApi(result as MaintenanceResponseDTO)) as MaintenanceResponseDTO;
         return result;
     }
 
@@ -47,7 +47,7 @@ class MetaService {
         let result = await metaRepository.updateMaintenance(name, dto);
         result = !result || Utils.isIRepoError(result)
             ? result
-            : (metaModel.mapObjtoApi(result as MaintenanceResponseDTO)) as MaintenanceResponseDTO;
+            : (metaModel.mapObjToApi(result as MaintenanceResponseDTO)) as MaintenanceResponseDTO;
         return result;
     }
 }

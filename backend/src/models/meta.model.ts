@@ -3,7 +3,7 @@ import * as Utils from "../utils/common.utils";
 
 class MetaModel {
 
-    mapObjtoApi(data: Meta | Maintenance): Meta | Maintenance {
+    mapObjToApi(data: Meta | Maintenance): Meta | Maintenance {
         return {
             ...data,
             build_on: Utils.getTimestampWithoutOffsetInfo(new Date(data.build_on)),
