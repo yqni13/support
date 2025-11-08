@@ -7,6 +7,7 @@ import clientsRepository from "../../../src/repositories/clients.repository";
 import clientsModel from "../../../src/models/clients.model";
 import { secrets } from "../../../src/utils/secrets.utils";
 import { IRepoError } from "../../../src/repositories/interfaces/error.repository.interface";
+import { ClientsResponseStatusDTO, ClientsResponseUseDTO } from "../../../src/dtos/clients.dto";
 
 jest.mock("../../../src/configs/db", () => {
     return {
@@ -38,7 +39,7 @@ describe('Database tests table <clients>, priority: findByKey', () => {
         let sql: string;
         beforeEach(() => {
             sql = `SELECT`;
-        })
+        });
 
         test('Return data for existing entry, params: <apikey>', async () => {
             const mockParam_hash = structuredClone(mockVar_keyHash);
@@ -80,6 +81,71 @@ describe('Database tests table <clients>, priority: findByKey', () => {
 
             expect(testFn).toEqual<IRepoError>({
                 method: 'support_clients_findByKey',
+                error: expect.any(Error)
+            });
+            expect((testFn as IRepoError).error.message).toBe(mockErrorMsg);
+        })
+    })
+})
+
+describe('Database tests table <clients>, priority: findStatusByName', () => {
+    
+    describe('Testing valid fn calls', () => {
+
+        let sql: string;
+        beforeEach(() => {
+            sql = `SELECT`;
+        });
+
+        test('Return data for existing entry, params: <name>', async () => {
+            const mockParam_name = 'test_client';
+            const timeStamp = Utils.getTimestampWithOffsetInfo(new Date('2025-01-01T14:00:01.000'));
+            const mockResult: ClientsResponseStatusDTO = {
+                client_id: 'test_id',
+                name: mockParam_name,
+                status: ApiKeyStatus.ACTIVE,
+                last_use: timeStamp,
+                last_modified: timeStamp,
+                created_on: timeStamp
+            };
+
+            const mockClient = MockUtils.mapMockDbClient(mockResult);
+            const testFn = await clientsRepository.findStatusByName(mockParam_name);
+
+            expect(testFn).toEqual(mockResult);
+            expect(DBConnection.getInstance).toHaveBeenCalled();
+            expect(mockClient.query).toHaveBeenCalledWith(
+                expect.stringContaining(sql),
+                expect.arrayContaining([mockParam_name])
+            );
+        })
+
+        test('Return null for non-existing entry, params: <name>', async () => {
+            const mockParam_name = 'test_client';
+            const mockResult = null;
+            const mockClient = MockUtils.mapMockDbClient(mockResult);
+            const testFn = await clientsRepository.findStatusByName(mockParam_name);
+
+            expect(testFn).toEqual(mockResult);
+            expect(DBConnection.getInstance).toHaveBeenCalled();
+            expect(mockClient.query).toHaveBeenCalledWith(
+                expect.stringContaining(sql),
+                expect.arrayContaining([mockParam_name])
+            );
+        })
+    })
+
+    describe('Testing invalid fn calls', () => {
+
+        test('Failing query to fall inside catch-block', async () => {
+            const mockParam_name = 'non_existing_test_client_name';
+            const mockErrorMsg = "DB ERROR ON SELECT QUERY, (Meta TEST Repository, findStatusByName)";
+            const mockResult = null;
+            const _ = MockUtils.mapMockDbClient(mockResult, mockErrorMsg);
+            const testFn = await clientsRepository.findStatusByName(mockParam_name);
+
+            expect(testFn).toEqual<IRepoError>({
+                method: 'support_clients_findStatusByName',
                 error: expect.any(Error)
             });
             expect((testFn as IRepoError).error.message).toBe(mockErrorMsg);
@@ -172,26 +238,145 @@ describe('Database tests table <clients>, priority: create', () => {
     })
 })
 
-// describe('Database tests table <clients>, priority: getStatusByName', () => {
+describe('Database tests table <clients>, priority: updateStatus', () => {
     
-//     describe('Testing valid fn calls', () => {
+    describe('Testing valid fn calls', () => {
 
-//         test('', () => {})
-//     })
-// })
+        let sql: string;
+        let mockParam_name: string;
+        beforeEach(() => {
+            sql = `UPDATE`;
+            mockParam_name = 'test_client';
+        });
 
-// describe('Database tests table <clients>, priority: setStatus', () => {
+        test('Return data of changed entry by valid id', async () => {
+            const mockParam_id = 'valid_test_id';
+            const mockParam_status = ApiKeyStatus.DISABLED;
+            const mockValues = [mockParam_id, mockParam_status, mockVar_timeStamp];
+
+            jest.spyOn(Utils, "getTimestampWithOffsetInfo").mockReturnValue(mockVar_timeStamp);
+
+            const mockResult: ClientsResponseStatusDTO = {
+                client_id: mockParam_id,
+                name: mockParam_name,
+                status: mockParam_status,
+                last_use: '2025-10-01T14:00:01.000',
+                last_modified: mockVar_timeStamp,
+                created_on: '2025-10-01T14:00:01.000'
+            };
+            const mockClient = MockUtils.mapMockDbClient(mockResult);
+            const testFn = await clientsRepository.updateStatus(mockParam_id, mockParam_status);
+
+            expect(testFn).toEqual(mockResult);
+            expect(DBConnection.getInstance).toHaveBeenCalled();
+            expect(mockClient.query).toHaveBeenCalledWith(
+                expect.stringContaining(sql),
+                expect.arrayContaining(mockValues)
+            );
+        })
+
+        test('Return null for non-existing entry by invalid id', async () => {
+            const mockParam_id = 'invalid_test_id';
+            const mockParam_status = ApiKeyStatus.DISABLED;
+            const mockValues = [mockParam_id, mockParam_status, mockVar_timeStamp];
+
+            const mockResult = null;
+            const mockClient = MockUtils.mapMockDbClient(mockResult);
+            const testFn = await clientsRepository.updateStatus(mockParam_id, mockParam_status);
+
+            expect(testFn).toEqual(mockResult);
+            expect(DBConnection.getInstance).toHaveBeenCalled();
+            expect(mockClient.query).toHaveBeenCalledWith(
+                expect.stringContaining(sql),
+                expect.arrayContaining(mockValues)
+            );
+        })
+    })
+
+    describe('Testing invalid fn calls', () => {
+
+        test('Failing query to fall inside catch-block', async () => {
+            const mockParam_id = 'valid_test_id';
+            const mockErrorMsg = "DB ERROR ON UPDATE QUERY, (Clients TEST Repository, updateStatus)";
+            const mockResult = null;
+            const _ = MockUtils.mapMockDbClient(mockResult, mockErrorMsg);
+            const testFn = await clientsRepository.updateStatus(mockParam_id);
+
+            expect(testFn).toEqual<IRepoError>({
+                method: 'support_clients_updateStatus',
+                error: expect.any(Error)
+            });
+            expect((testFn as IRepoError).error.message).toBe(mockErrorMsg);
+        })
+    })
+})
+
+describe('Database tests table <clients>, priority: updateLastUse', () => {
     
-//     describe('Testing valid fn calls', () => {
+    describe('Testing valid fn calls', () => {
 
-//         test('', () => {})
-//     })
-// })
+        let sql: string;
+        let mockParam_name: string;
+        beforeEach(() => {
+            sql = `UPDATE`;
+            mockParam_name = 'test_client';
+        });
 
-// describe('Database tests table <clients>, priority: setLastUse', () => {
-    
-//     describe('Testing valid fn calls', () => {
+        test('Return data of changed entry by valid id', async () => {
+            const mockParam_id = 'valid_test_id';
+            const mockValues = [mockParam_id, mockVar_timeStamp];
 
-//         test('', () => {})
-//     })
-// })
+            jest.spyOn(Utils, "getTimestampWithOffsetInfo").mockReturnValue(mockVar_timeStamp);
+
+            const mockResult: ClientsResponseUseDTO = {
+                client_id: mockParam_id,
+                name: mockParam_name,
+                last_use: mockVar_timeStamp,
+                last_modified: '2025-10-01T14:00:01.000',
+                created_on: '2025-10-01T14:00:01.000'
+            };
+            const mockClient = MockUtils.mapMockDbClient(mockResult);
+            const testFn = await clientsRepository.updateLastUse(mockParam_id);
+
+            expect(testFn).toEqual(mockResult);
+            expect(DBConnection.getInstance).toHaveBeenCalled();
+            expect(mockClient.query).toHaveBeenCalledWith(
+                expect.stringContaining(sql),
+                expect.arrayContaining(mockValues)
+            );
+        })
+
+        test('Return null for non-existing entry by invalid id', async () => {
+            const mockParam_id = 'invalid_test_id';
+            const mockValues = [mockParam_id, mockVar_timeStamp];
+
+            const mockResult = null;
+            const mockClient = MockUtils.mapMockDbClient(mockResult);
+            const testFn = await clientsRepository.updateLastUse(mockParam_id);
+
+            expect(testFn).toEqual(mockResult);
+            expect(DBConnection.getInstance).toHaveBeenCalled();
+            expect(mockClient.query).toHaveBeenCalledWith(
+                expect.stringContaining(sql),
+                expect.arrayContaining(mockValues)
+            );
+        })
+    })
+
+    describe('Testing invalid fn calls', () => {
+
+        test('Failing query to fall inside catch-block', async () => {
+            const mockParam_id = 'valid_test_id';
+            const mockErrorMsg = "DB ERROR ON UPDATE QUERY, (Clients TEST Repository, updateLastUse)";
+            const mockResult = null;
+            const _ = MockUtils.mapMockDbClient(mockResult, mockErrorMsg);
+            const testFn = await clientsRepository.updateLastUse(mockParam_id);
+
+            expect(testFn).toEqual<IRepoError>({
+                method: 'support_clients_updateLastUse',
+                error: expect.any(Error)
+            });
+            expect((testFn as IRepoError).error.message).toBe(mockErrorMsg);
+        })
+    })
+})

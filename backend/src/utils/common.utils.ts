@@ -28,6 +28,9 @@ export function isIRepoError(obj: any): boolean {
     return properties.includes('method') && properties.includes('error');
 }
 
+/**
+ * @returns yyyy-mm-ddThh:mm:ss.000
+ */
 export function getTimestampWithoutOffsetInfo(time: Date): string {
     const day = time.getDate() < 10 ? `0${time.getDate()}` : time.getDate().toString();
     const month = time.getMonth()+1 < 10 ? `0${time.getMonth()+1}` : (time.getMonth()+1).toString();
@@ -50,6 +53,9 @@ export function getPropertiesFromTimezoneOffset(time: Date): any {
     return { prefix: prefix, offset: offset };
 }
 
+/**
+ * @returns yyyy-mm-dd hh:mm:ss+/-hh
+ */
 export function getTimestampWithOffsetInfo(time: Date): string {
     // Get the GMT offset.
     const gmtData = getPropertiesFromTimezoneOffset(time);
