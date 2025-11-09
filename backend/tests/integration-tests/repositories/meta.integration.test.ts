@@ -227,7 +227,7 @@ describe('Integration test (repository specific), priority: Meta', () => {
             };
         });
 
-        describe('Route: PUT: /info, priority: express-validators', () => {
+        describe('Route: PUT/info, priority: express-validators', () => {
 
             const mockData: Partial<Meta> = {
                 app: 'support',
@@ -262,9 +262,9 @@ describe('Integration test (repository specific), priority: Meta', () => {
             
         })
 
-        describe('Route: PUT: /maintenance, priority: express-validators', () => {
+        describe('Route: PUT/maintenance, priority: express-validators', () => {
 
-            test('Params: <maintenance_mode>, validator: notempty by undefined', async () => {
+            test('Params: <maintenance_mode>, validator: notEmpty by undefined', async () => {
                 const mockParam_id = 1;
                 const mockParam_data = undefined;
                 const testError = structuredClone(mockError);

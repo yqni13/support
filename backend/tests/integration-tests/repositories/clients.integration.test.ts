@@ -6,9 +6,10 @@ import { ErrorStatusCodes } from '../../../src/utils/errorStatusCodes.utils';
 import { ApiKeyStatus } from "../../../src/utils/enums/api-key-status.enum";
 import { DBTestSetup } from "../db-container.setup";
 import { runMigrations } from '../../db-migrations.setup';
-import { Clients } from "../../../src/repositories/interfaces/clients.entity.interface";
-import { ClientsCreateResponseDTO } from "../../../src/dtos/clients.dto";
+import { ClientsCreateResponseDTO, ClientsStatusResponseDTO } from "../../../src/dtos/clients.dto";
 import clientsModel from "../../../src/models/clients.model";
+import { Clients } from "../../../src/repositories/interfaces/clients.entity.interface";
+import { secrets } from "../../../src/utils/secrets.utils";
 
 jest.mock('../../../src/middleware/auth.middleware', () => ({
     auth: jest.fn(() =>  (req: Request, res: Response, next: NextFunction) => next())
@@ -42,6 +43,27 @@ describe('Integration test (repository specific), priority: Clients', () => {
             await dbTestSetup.shutdown();
         });
 
+        test('Repository process fn findStatusByName, result: "SUCCESS"', async () => {
+            const testParam_name = 'TESTCLIENT';
+            const mockTimeStamp = '2025-01-01T14:00:01.000';
+            const mockParam_timeStamp = Utils.getTimestampWithOffsetInfo(new Date(mockTimeStamp));
+            const testResult: ClientsStatusResponseDTO = {
+                client_id: '9e024539-32e8-4317-8007-84a3956e6b57',
+                name: testParam_name,
+                status: ApiKeyStatus.ACTIVE,
+                last_use: '2025-01-01T15:00:01.000',
+                last_modified: '2025-01-01T15:00:01.000',
+                created_on: '2025-01-01T15:00:01.000'
+            };
+
+            dbTestSetup.addTestData();
+            const testResponse = await request(app)
+                .get(`${apiUrl}/status/${testParam_name}/${mockParam_authKey}`);
+
+            expect(testResponse.statusCode).toBe(200);
+            expect(testResponse.body).toMatchObject(testResult);
+        })
+
         test('Repository process fn create, result: "SUCCESS"', async () => {
             const testParam_client_id = Utils.generateUUID();
             const testParam_name = 'testclient_test_create';
@@ -68,7 +90,68 @@ describe('Integration test (repository specific), priority: Clients', () => {
                 .send({name: testParam_name});
 
             expect(testResponse.statusCode).toBe(200);
-            expect(testResponse.body).toMatchObject(testResult)
+            expect(testResponse.body).toMatchObject(testResult);
+        })
+
+        test('Repository process fn updateStatus, result: "SUCCESS"', async () => {
+            const testParam_id = '9e024539-32e8-4317-8007-84a3956e6b57';
+            const mockTimeStamp = '2025-01-01T14:00:01.000';
+            const mockParam_timeStamp = Utils.getTimestampWithOffsetInfo(new Date(mockTimeStamp));
+            const testParam_data: Partial<Clients> = {
+                status: ApiKeyStatus.DISABLED
+            };
+
+            jest.spyOn(Utils, "getTimestampWithOffsetInfo").mockReturnValue(mockParam_timeStamp);
+
+            const testResult: ClientsStatusResponseDTO = {
+                client_id: testParam_id,
+                name: 'TESTCLIENT',
+                status: ApiKeyStatus.DISABLED,
+                last_use: '2025-01-01T15:00:01.000',
+                last_modified: mockTimeStamp,
+                created_on: '2025-01-01T15:00:01.000'
+            };
+
+            dbTestSetup.addTestData();
+            const testResponse = await request(app)
+                .put(`${apiUrl}/status/${testParam_id}/${mockParam_authKey}`)
+                .send(testParam_data);
+
+            expect(testResponse.statusCode).toBe(200);
+            expect(testResponse.body).toMatchObject(testResult);
+        })
+    })
+
+    describe('Testing invalid fn calls', () => {
+
+        const apiUrl = '/api/v1/clients';
+        const mockParam_authKey = 'testkey';
+        let mockError: any;
+        beforeEach(() => {
+            mockError = {
+                type: 'field',
+                value: '',
+                msg: 'support-arg-required',
+                path: '',
+                location: 'body'
+            };
+        });
+
+        describe('Route: PUT/status, priority: express-validators', () => {
+
+            test('Params: <status>, validator: notEmpty by undefined', async () => {
+                const mockParam_id = 'test_id';
+                const mockParam_data = undefined;
+                const testError = structuredClone(mockError);
+                testError['path'] = 'status';
+
+                const mockResponse = await request(app)
+                    .put(`${apiUrl}/status/${mockParam_id}/${mockParam_authKey}`)
+                    .send(mockParam_data);
+
+                expect(mockResponse.statusCode).toBe(ErrorStatusCodes.InvalidPropertiesException);
+                expect(mockResponse.body.headers.data).toContainEqual(testError);
+            })
         })
     })
 })

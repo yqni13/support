@@ -4,9 +4,18 @@
 
 <br>
 
+### $\textsf{\color{white}2025/11/09}$
+
+$\textsf{[v0.5.1\ =>\ {\color{yellow}0.7.0}]}$ app<br>
+$\textsf{[v1.0.1\ =>\ {\color{yellow}1.1.0}]}$ database
+- $\textsf{\color{teal}Addition:}$ Added verification middleware to validate requests by api-keys.
+- $\textsf{\color{teal}Addition:}$ Added clients entity to database and logic to handle status changes and api-key verifications.
+
+<br>
+
 ### $\textsf{\color{white}2025/11/06}$
 
-$\textsf{[v0.5.0\ =>\ {\color{yellow}0.5.1}]}$ $\textsf{\color{lightgrey} app}$<br>
+$\textsf{[v0.5.0\ =>\ {\color{lightgrey}0.5.1}]}$ $\textsf{\color{lightgrey} app}$<br>
 $\textsf{[v1.0.0\ =>\ {\color{yellow}1.0.1}]}$ $\textsf{\color{lightgrey} docker}$
 - $\textsf{\color{orange}Patch:}$ Updated secret variables to simplify settings on STAG/PROD environments.
 
@@ -23,7 +32,7 @@ $\textsf{[v0.0.0\ =>\ {\color{lightgrey}1.0.0}]}$ $\textsf{\color{lightgrey} doc
 ### $\textsf{\color{white}2025/11/03}$
 
 $\textsf{[v0.3.1\ =>\ {\color{lightgrey}0.4.0}]}$ $\textsf{\color{lightgrey} app}$<br>
-$\textsf{[v1.0.0\ =>\ {\color{yellow}1.0.1}]}$ $\textsf{\color{lightgrey} database}$
+$\textsf{[v1.0.0\ =>\ {\color{lightgrey}1.0.1}]}$ $\textsf{\color{lightgrey} database}$
 - $\textsf{\color{teal}Addition:}$ Added maintenance middleware and modified database + logic to handle maintenance status via request (instead of env variables).
 
 <br>
