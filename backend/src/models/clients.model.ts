@@ -1,4 +1,4 @@
-import { ClientsCreateResponseDTO } from "../dtos/clients.dto";
+import { ClientsCreateResponseDTO, ClientsLastUseResponseDTO, ClientsStatusResponseDTO } from "../dtos/clients.dto";
 import { Clients } from "../repositories/interfaces/clients.entity.interface";
 import { getTimestampWithoutOffsetInfo as convert } from "../utils/common.utils";
 import crypto from 'crypto';
@@ -13,13 +13,36 @@ class ClientsModel {
         }
     }
 
-    mapToResponseDTO(data: Clients, apiKey: string): ClientsCreateResponseDTO {
+    mapToCreateResponseDTO(data: Clients, apiKey: string): ClientsCreateResponseDTO {
         data = this.mapObjToApi(data);
         return {
             client_id: data.client_id,
             name: data.name,
             api_key: apiKey,
             status: data.status,
+            last_use: data.last_use,
+            last_modified: data.last_modified,
+            created_on: data.created_on
+        };
+    }
+
+    mapToStatusResponseDTO(data: Clients): ClientsStatusResponseDTO {
+        data = this.mapObjToApi(data);
+        return {
+            client_id: data.client_id,
+            name: data.name,
+            status: data.status,
+            last_use: data.last_use,
+            last_modified: data.last_modified,
+            created_on: data.created_on
+        };
+    }
+
+    mapToLastUseResponseDTO(data: Clients): ClientsLastUseResponseDTO {
+        data = this.mapObjToApi(data);
+        return {
+            client_id: data.client_id,
+            name: data.name,
             last_use: data.last_use,
             last_modified: data.last_modified,
             created_on: data.created_on

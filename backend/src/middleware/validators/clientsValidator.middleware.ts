@@ -1,5 +1,4 @@
-import { body, param, ValidationChain } from 'express-validator';
-import { ApiKeyStatus } from '../../utils/enums/api-key-status.enum';
+import { body, ValidationChain } from 'express-validator';
 
 export const clientsCreateSchema: ValidationChain[] = [
     body('name')

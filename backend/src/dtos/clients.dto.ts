@@ -1,12 +1,7 @@
 import { ApiKeyStatus } from "../utils/enums/api-key-status.enum";
 
-export interface ClientsUpdateStatusDTO {
-    client_id: string,
+export interface ClientsStatusUpdateDTO {
     status: ApiKeyStatus
-}
-
-export interface ClientsUpdateUseDTO {
-    client_id: string
 }
 
 export interface ClientsExistResponseDTO {
@@ -29,7 +24,7 @@ export interface ClientsCreateResponseDTO {
     created_on: string
 }
 
-export interface ClientsResponseStatusDTO {
+export interface ClientsStatusResponseDTO {
     client_id: string,
     name: string,
     status: ApiKeyStatus,
@@ -38,7 +33,7 @@ export interface ClientsResponseStatusDTO {
     created_on: string
 }
 
-export interface ClientsResponseUseDTO {
+export interface ClientsLastUseResponseDTO {
     client_id: string,
     name: string,
     last_use: string,

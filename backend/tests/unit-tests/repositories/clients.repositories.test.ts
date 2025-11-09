@@ -7,7 +7,7 @@ import clientsRepository from "../../../src/repositories/clients.repository";
 import clientsModel from "../../../src/models/clients.model";
 import { secrets } from "../../../src/utils/secrets.utils";
 import { IRepoError } from "../../../src/repositories/interfaces/error.repository.interface";
-import { ClientsResponseStatusDTO, ClientsResponseUseDTO } from "../../../src/dtos/clients.dto";
+import { ClientsStatusResponseDTO, ClientsLastUseResponseDTO } from "../../../src/dtos/clients.dto";
 
 jest.mock("../../../src/configs/db", () => {
     return {
@@ -100,7 +100,7 @@ describe('Database tests table <clients>, priority: findStatusByName', () => {
         test('Return data for existing entry, params: <name>', async () => {
             const mockParam_name = 'test_client';
             const timeStamp = Utils.getTimestampWithOffsetInfo(new Date('2025-01-01T14:00:01.000'));
-            const mockResult: ClientsResponseStatusDTO = {
+            const mockResult: ClientsStatusResponseDTO = {
                 client_id: 'test_id',
                 name: mockParam_name,
                 status: ApiKeyStatus.ACTIVE,
@@ -251,21 +251,21 @@ describe('Database tests table <clients>, priority: updateStatus', () => {
 
         test('Return data of changed entry by valid id', async () => {
             const mockParam_id = 'valid_test_id';
-            const mockParam_status = ApiKeyStatus.DISABLED;
-            const mockValues = [mockParam_id, mockParam_status, mockVar_timeStamp];
+            const mockParam_data = { status: ApiKeyStatus.DISABLED };
+            const mockValues = [mockParam_data.status, mockVar_timeStamp, mockParam_id];
 
             jest.spyOn(Utils, "getTimestampWithOffsetInfo").mockReturnValue(mockVar_timeStamp);
 
-            const mockResult: ClientsResponseStatusDTO = {
+            const mockResult: ClientsStatusResponseDTO = {
                 client_id: mockParam_id,
                 name: mockParam_name,
-                status: mockParam_status,
+                status: mockParam_data.status,
                 last_use: '2025-10-01T14:00:01.000',
                 last_modified: mockVar_timeStamp,
                 created_on: '2025-10-01T14:00:01.000'
             };
             const mockClient = MockUtils.mapMockDbClient(mockResult);
-            const testFn = await clientsRepository.updateStatus(mockParam_id, mockParam_status);
+            const testFn = await clientsRepository.updateStatus(mockParam_id, mockParam_data);
 
             expect(testFn).toEqual(mockResult);
             expect(DBConnection.getInstance).toHaveBeenCalled();
@@ -277,12 +277,12 @@ describe('Database tests table <clients>, priority: updateStatus', () => {
 
         test('Return null for non-existing entry by invalid id', async () => {
             const mockParam_id = 'invalid_test_id';
-            const mockParam_status = ApiKeyStatus.DISABLED;
-            const mockValues = [mockParam_id, mockParam_status, mockVar_timeStamp];
+            const mockParam_data = { status: ApiKeyStatus.DISABLED };
+            const mockValues = [mockParam_id, mockParam_data.status, mockVar_timeStamp];
 
             const mockResult = null;
             const mockClient = MockUtils.mapMockDbClient(mockResult);
-            const testFn = await clientsRepository.updateStatus(mockParam_id, mockParam_status);
+            const testFn = await clientsRepository.updateStatus(mockParam_id, mockParam_data);
 
             expect(testFn).toEqual(mockResult);
             expect(DBConnection.getInstance).toHaveBeenCalled();
@@ -297,10 +297,11 @@ describe('Database tests table <clients>, priority: updateStatus', () => {
 
         test('Failing query to fall inside catch-block', async () => {
             const mockParam_id = 'valid_test_id';
+            const mockParam_data = { status: ApiKeyStatus.DISABLED };
             const mockErrorMsg = "DB ERROR ON UPDATE QUERY, (Clients TEST Repository, updateStatus)";
             const mockResult = null;
             const _ = MockUtils.mapMockDbClient(mockResult, mockErrorMsg);
-            const testFn = await clientsRepository.updateStatus(mockParam_id);
+            const testFn = await clientsRepository.updateStatus(mockParam_id, mockParam_data);
 
             expect(testFn).toEqual<IRepoError>({
                 method: 'support_clients_updateStatus',
@@ -324,11 +325,11 @@ describe('Database tests table <clients>, priority: updateLastUse', () => {
 
         test('Return data of changed entry by valid id', async () => {
             const mockParam_id = 'valid_test_id';
-            const mockValues = [mockParam_id, mockVar_timeStamp];
+            const mockValues = [mockVar_timeStamp, mockParam_id];
 
             jest.spyOn(Utils, "getTimestampWithOffsetInfo").mockReturnValue(mockVar_timeStamp);
 
-            const mockResult: ClientsResponseUseDTO = {
+            const mockResult: ClientsLastUseResponseDTO = {
                 client_id: mockParam_id,
                 name: mockParam_name,
                 last_use: mockVar_timeStamp,
@@ -348,7 +349,7 @@ describe('Database tests table <clients>, priority: updateLastUse', () => {
 
         test('Return null for non-existing entry by invalid id', async () => {
             const mockParam_id = 'invalid_test_id';
-            const mockValues = [mockParam_id, mockVar_timeStamp];
+            const mockValues = [mockVar_timeStamp, mockParam_id];
 
             const mockResult = null;
             const mockClient = MockUtils.mapMockDbClient(mockResult);

@@ -1,4 +1,4 @@
-import { ClientsCreateResponseDTO, ClientsExistResponseDTO } from "../dtos/clients.dto";
+import { ClientsCreateResponseDTO, ClientsExistResponseDTO, ClientsLastUseResponseDTO, ClientsStatusResponseDTO, ClientsStatusUpdateDTO } from "../dtos/clients.dto";
 import { IRepoError } from "../repositories/interfaces/error.repository.interface";
 import clientsModel from '../models/clients.model';
 import * as Utils from '../utils/common.utils';
@@ -19,6 +19,17 @@ class ClientsService {
         return result;
     }
 
+    async findStatusByName(name: string): Promise<ClientsStatusResponseDTO | IRepoError | null> {
+        let result = await clientsRepository.findStatusByName(name);
+        if(!result) {
+            return result;
+        } else if(Utils.isIRepoError(result)) {
+            return result as IRepoError;
+        } else {
+            return clientsModel.mapToStatusResponseDTO(result as Clients);
+        }
+    }
+
     async createClient(name: string): Promise<ClientsCreateResponseDTO | IRepoError | null> {
         const id = Utils.generateUUID();
         const apiKey = clientsModel.generateApiKeyObj();
@@ -28,7 +39,29 @@ class ClientsService {
         } else if(Utils.isIRepoError(result)) {
             return result as IRepoError;
         } else {
-            return clientsModel.mapToResponseDTO(result as Clients, apiKey.keyRaw);
+            return clientsModel.mapToCreateResponseDTO(result as Clients, apiKey.keyRaw);
+        }
+    }
+
+    async updateStatus(id: string, dto: ClientsStatusUpdateDTO): Promise<ClientsStatusResponseDTO | IRepoError | null> {
+        let result = await clientsRepository.updateStatus(id, dto);
+        if(!result) {
+            return result;
+        } else if(Utils.isIRepoError(result)) {
+            return result as IRepoError;
+        } else {
+            return clientsModel.mapToStatusResponseDTO(result as Clients);
+        }
+    }
+
+    async updateLastUse(id: string): Promise<ClientsLastUseResponseDTO | IRepoError | null> {
+        let result = await clientsRepository.updateLastUse(id);
+        if(!result) {
+            return result;
+        } else if(Utils.isIRepoError(result)) {
+            return result as IRepoError;
+        } else {
+            return clientsModel.mapToLastUseResponseDTO(result as Clients);
         }
     }
 }
