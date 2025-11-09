@@ -1,4 +1,8 @@
-import { ClientsCreateResponseDTO, ClientsLastUseResponseDTO, ClientsStatusResponseDTO } from "../../../src/dtos/clients.dto";
+import {
+    ClientsCreateResponseDTO,
+    ClientsLastUseResponseDTO,
+    ClientsStatusResponseDTO
+} from "../../../src/dtos/clients.dto";
 import clientsModel from "../../../src/models/clients.model";
 import { Clients } from "../../../src/repositories/interfaces/clients.entity.interface";
 import * as Utils from "../../../src/utils/common.utils";
@@ -100,21 +104,6 @@ describe('Model tests, class: <clients>, priority: mapToLastUseResponseDTO', () 
                 last_modified: `2025-01-01T${13+(+gmtData.offset)}:00:01.000`,
                 created_on: `2025-01-01T${13+(+gmtData.offset)}:00:01.000`
             };
-
-            expect(testFn).toEqual(expectResult);
-        })
-    })
-})
-
-describe('Model tests, class: <clients>, priority: mapKeyToHash', () => {
-
-    describe('Testing valid fn calls', () => {
-
-        test('Map raw key to hash value, param: <key>', () => {
-            const mockParam_key: string = secrets.TEST_APIKEY_RAW;
-
-            const testFn = clientsModel.mapKeyToHash(mockParam_key);
-            const expectResult: string = secrets.TEST_APIKEY_HASH;
 
             expect(testFn).toEqual(expectResult);
         })

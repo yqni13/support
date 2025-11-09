@@ -60,6 +60,18 @@ export class InvalidTokenException extends AuthException {
     }
 }
 
+export class ApiKeyMissingException extends AuthException {
+    constructor(message: string = 'support-missing-apikey', data?: unknown) {
+        super(ErrorCodes.ApiKeyMissingException, message, data)
+    }
+}
+
+export class InvalidApiKeyException extends AuthException {
+    constructor(message: string = 'support-invalid-apikey', data?: unknown) {
+        super(ErrorCodes.ApiKeyMissingException, message, data, ErrorStatusCodes.InvalidApiKeyException)
+    }
+}
+
 export class MalformedApiKeyException extends AuthException {
     constructor(message: string = 'support-malformed-apikey', data?: unknown) {
         super(ErrorCodes.MalformedApiKeyException, message, data)

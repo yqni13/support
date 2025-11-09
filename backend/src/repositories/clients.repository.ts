@@ -90,7 +90,7 @@ class ClientsRepository {
     }
 
     async updateStatus(id: string, data: Partial<Clients>): Promise<Clients | IRepoError | null> {
-        const filterColumn = 'id';
+        const filterColumn = 'client_id';
         const timeStamp = Utils.getTimestampWithOffsetInfo(new Date());
         const sql = `UPDATE ${this.table}
         SET status = $1, last_modified = $2
@@ -119,7 +119,7 @@ class ClientsRepository {
     }
 
     async updateLastUse(id: string): Promise<Clients | IRepoError | null> {
-        const filterColumn = 'id';
+        const filterColumn = 'client_id';
         const timeStamp = Utils.getTimestampWithOffsetInfo(new Date());
         const sql = `UPDATE ${this.table}
         SET last_use = $1

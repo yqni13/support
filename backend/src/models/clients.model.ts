@@ -62,10 +62,6 @@ class ClientsModel {
         const hash = crypto.createHash('sha256').update(key).digest('hex');
         return { keyRaw: key, keyHash: hash };
     }
-
-    mapKeyToHash(key: string): string {
-        return crypto.createHash('sha256').update(key).digest('hex');
-    }
 }
 
 export default new ClientsModel();

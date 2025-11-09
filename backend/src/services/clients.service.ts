@@ -11,7 +11,7 @@ class ClientsService {
      * @description Usage for apikey authentication in auth.middleware.ts.
      */
     async findByKey(key: string): Promise<ClientsExistResponseDTO | IRepoError | null> {
-        const hash = clientsModel.mapKeyToHash(key);
+        const hash = Utils.mapKeyToHash(key);
         let result = await clientsRepository.findByKey(hash);
         result = !result || Utils.isIRepoError(result)
             ? null

@@ -18,4 +18,5 @@ export const ErrorCodes: any = {
     DBEmptyException: 16,
     MaintenanceException: 17,
     MalformedApiKeyException: 18,
+    ApiKeyMissingException: 19
 };
