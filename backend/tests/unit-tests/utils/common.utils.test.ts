@@ -1,8 +1,18 @@
 import * as Utils from "../../../src/utils/common.utils";
+import { secrets } from "../../../src/utils/secrets.utils";
 
 describe('Utils tets, priority: common', () => {
 
     describe('Testing valid fn calls', () => {
+
+        test('fn: mapKeyToHash', () => {
+            const mockParam_key: string = secrets.TEST_APIKEY_RAW;
+
+            const testFn = Utils.mapKeyToHash(mockParam_key);
+            const expectResult: string = secrets.TEST_APIKEY_HASH;
+
+            expect(testFn).toEqual(expectResult);
+        })
 
         test('fn: isIRepoError', () => {
             const mockParam_obj = { method: 'support_IRepoError_test', error: null };

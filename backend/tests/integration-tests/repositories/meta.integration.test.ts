@@ -1,5 +1,5 @@
 import { Maintenance, Meta } from './../../../src/repositories/interfaces/meta.entity.interface';
-import { NextFunction, Request, Response } from "express"
+import { NextFunction, Request, Response } from "express";
 import { DBTestSetup } from "../db-container.setup";
 import { runMigrations } from '../../db-migrations.setup';
 import request from 'supertest';
@@ -48,7 +48,7 @@ describe('Integration test (repository specific), priority: Meta', () => {
 
         beforeEach(async () => {
             // Clean tables before each test to fill test data individually.
-            await dbTestSetup.clearTables(['meta']);
+            await dbTestSetup.clearTables();
         });
 
         afterAll(async () => {
@@ -227,7 +227,7 @@ describe('Integration test (repository specific), priority: Meta', () => {
             };
         });
 
-        describe('Route: PUT: /info, priority: express-validators', () => {
+        describe('Route: PUT/info, priority: express-validators', () => {
 
             const mockData: Partial<Meta> = {
                 app: 'support',
@@ -262,9 +262,9 @@ describe('Integration test (repository specific), priority: Meta', () => {
             
         })
 
-        describe('Route: PUT: /maintenance, priority: express-validators', () => {
+        describe('Route: PUT/maintenance, priority: express-validators', () => {
 
-            test('Params: <maintenance_mode>, validator: notempty by undefined', async () => {
+            test('Params: <maintenance_mode>, validator: notEmpty by undefined', async () => {
                 const mockParam_id = 1;
                 const mockParam_data = undefined;
                 const testError = structuredClone(mockError);

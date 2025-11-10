@@ -23,6 +23,8 @@ class Secrets {
     readonly DB_TEST_HOST: string;
     readonly DB_TEST_PORT: string;
     readonly DB_TEST_DATABASE: string;
+    readonly TEST_APIKEY_RAW: string;
+    readonly TEST_APIKEY_HASH: string;
 
     private static _instance: Secrets;
 
@@ -47,6 +49,8 @@ class Secrets {
         this.DB_TEST_HOST = this.setDbTestHost();
         this.DB_TEST_PORT = this.setDbTestPort();
         this.DB_TEST_DATABASE = this.setDbTestDatabase();
+        this.TEST_APIKEY_RAW = this.setTestApiKeyRaw();
+        this.TEST_APIKEY_HASH = this.setTestApiKeyHash();
     }
 
     static get instance(): Secrets {
@@ -208,6 +212,20 @@ class Secrets {
             throw new AuthSecretNotFoundException('secret-404-env#DB_TEST_DATABASE');
         }
         return Config.DB_TEST_DATABASE;
+    }
+
+    private setTestApiKeyRaw() {
+        if(!Config.TEST_APIKEY_RAW) {
+            throw new AuthSecretNotFoundException('secret-404-env#TEST_APIKEY_RAW');
+        }
+        return Config.TEST_APIKEY_RAW;
+    }
+
+    private setTestApiKeyHash() {
+        if(!Config.TEST_APIKEY_HASH) {
+            throw new AuthSecretNotFoundException('secret-404-env#TEST_APIKEY_HASH');
+        }
+        return Config.TEST_APIKEY_HASH;
     }
 }
 

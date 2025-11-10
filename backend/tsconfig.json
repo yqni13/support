@@ -1,6 +1,6 @@
 {
     "compilerOptions": {
-        "types": ["node", "jest"],
+        "types": ["node", "jest", "express"],
         "target": "ES2020",
         "module": "NodeNext",
         "outDir": "./dist",
@@ -13,6 +13,6 @@
         "forceConsistentCasingInFileNames": true,
         "skipLibCheck": true,
     },
-    "include": ["src", "tests"],
+    "include": ["src", "tests", "src/**/*"],
     "exclude": ["node_modules", "dist"]
 }

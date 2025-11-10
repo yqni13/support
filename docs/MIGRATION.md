@@ -2,7 +2,7 @@
 
 Create a new migration file (name scheme: <target-table>-update<serial_number>.migrations).<br>This will be saved automatically at [migrations](../../migrations/).
 ```sh
-npm run migrate create <serial_number>-<target-table>-update.migrations
+npm run migrate create <serial_number>-<target-table>-<create/update/delete>.migrations
 ```
 
 
