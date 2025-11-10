@@ -72,7 +72,7 @@ describe('Database tests table <meta>, priority: findById', () => {
 
     describe('Testing invalid fn calls', () => {
 
-        test('Failing query to fall inside catch-block', async () => {
+        test('Return IRepoError by catch-block', async () => {
             const mockParam_id = 1;
             const mockErrorMsg = "DB ERROR ON SELECT QUERY, (Meta TEST Repository, findById)";
             const mockResult = null;
@@ -128,7 +128,7 @@ describe('Database tests table <meta>, priority: findByName', () => {
 
     describe('Testing invalid fn calls', () => {
 
-        test('Failing query to fall inside catch-block', async () => {
+        test('Return IRepoError by catch-block', async () => {
             const mockParam_name = 'support';
             const mockErrorMsg = "DB ERROR ON SELECT QUERY, (Meta TEST Repository, findByName)";
             const mockResult = null;
@@ -169,7 +169,7 @@ describe('Database tests table <meta>, priority: findAll', () => {
 
     describe('Testing invalid fn calls', () => {
 
-        test('Failing query to fall inside catch-block', async () => {
+        test('Return IRepoError by catch-block', async () => {
             const mockErrorMsg = "DB ERROR ON SELECT QUERY, (Meta TEST Repository, findAll)";
             const mockResult = null;
             const _ = MockUtils.mapMockDbClient(mockResult, mockErrorMsg);
@@ -226,7 +226,7 @@ describe('Database tests table <meta>, priority: findMaintenance', () => {
 
     describe('Testing invalid fn calls', () => {
 
-        test('Failing query to fall inside catch-block', async () => {
+        test('Return IRepoError by catch-block', async () => {
             const mockParam_name = 'support';
             const mockErrorMsg = "DB ERROR ON SELECT QUERY, (Meta TEST Repository, findMaintenance)";
             const mockResult = null;
@@ -315,7 +315,7 @@ describe('Database tests table <meta>, priority: udpate', () => {
             delete mockParam_data['created_on'];
         });
 
-        test('Failing query to fall inside catch-block', async () => {
+        test('Return IRepoError by catch-block', async () => {
             const mockParam_id = 1;
             const mockErrorMsg = "DB ERROR ON UPDATE QUERY, (Meta TEST Repository, update)";
             const mockResult = null;
@@ -397,7 +397,7 @@ describe('Database tests table <meta>, priority: updateMaintenance', () => {
             mockParam_data = { maintenance_mode: MaintenanceMode.D013 };
         });
 
-        test('Failing query to fall inside catch-block', async () => {
+        test('Return IRepoError by catch-block', async () => {
             const mockParam_name = 'support';
             const mockErrorMsg = "DB ERROR ON UPDATEMAINTENANCE QUERY, (Meta TEST Repository, updateMaintenance)";
             const mockResult = null;

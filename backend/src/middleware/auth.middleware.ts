@@ -1,5 +1,5 @@
 import {
-    ApiKeyMissingException,
+    MissingApiKeyException,
     InvalidApiKeyException,
     InvalidCredentialsException
 } from "../utils/exceptions/auth.exception";
@@ -39,19 +39,18 @@ export function verifyApiKey() {
             const key = req.header('Support-Api-Key');
 
             if(!key) {
-                throw new ApiKeyMissingException();
+                throw new MissingApiKeyException();
             }
 
             validateApiKey(key);
 
-            let clientData = await clientsService.findByKey(key);
+            let clientData = await clientsService.findByActiveKey(key);
             if(!clientData) {
                 throw new InvalidApiKeyException()
             }
 
             clientData = clientData as Clients;
             req.apiClients = clientData;
-
             await clientsService.updateLastUse(clientData.client_id)
 
             next();

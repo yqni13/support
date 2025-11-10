@@ -19,7 +19,6 @@ jest.mock("../../../src/configs/db", () => {
 
 const gmtData = Utils.getPropertiesFromTimezoneOffset(new Date());
 const mockVar_id = '9e024539-32e8-4317-8007-84a3956e6b57';
-const mockVar_keyRaw = secrets.TEST_APIKEY_RAW;
 const mockVar_keyHash = secrets.TEST_APIKEY_HASH;
 const mockVar_timeStamp = `2025-10-02 21:34:00${gmtData.prefix}${gmtData.offset}`;
 const mockData: Clients = {
@@ -32,7 +31,7 @@ const mockData: Clients = {
     created_on: '2025-01-01T14:00:01.000',
 };
 
-describe('Database tests table <clients>, priority: findByKey', () => {
+describe('Database tests table <clients>, priority: findByActiveKey', () => {
 
     describe('Testing valid fn calls', () => {
 
@@ -45,7 +44,7 @@ describe('Database tests table <clients>, priority: findByKey', () => {
             const mockParam_hash = structuredClone(mockVar_keyHash);
             const mockResult: Clients = structuredClone(mockData);
             const mockClient = MockUtils.mapMockDbClient(mockResult);
-            const testFn = await clientsRepository.findByKey(mockParam_hash);
+            const testFn = await clientsRepository.findByActiveKey(mockParam_hash);
 
             expect(testFn).toEqual(mockResult);
             expect(DBConnection.getInstance).toHaveBeenCalled();
@@ -59,7 +58,7 @@ describe('Database tests table <clients>, priority: findByKey', () => {
             const mockParam_hash = 'test_hash_value';
             const mockResult = null;
             const mockClient = MockUtils.mapMockDbClient(mockResult);
-            const testFn = await clientsRepository.findByKey(mockParam_hash);
+            const testFn = await clientsRepository.findByActiveKey(mockParam_hash);
 
             expect(testFn).toEqual(mockResult);
             expect(DBConnection.getInstance).toHaveBeenCalled();
@@ -72,15 +71,15 @@ describe('Database tests table <clients>, priority: findByKey', () => {
 
     describe('Testing invalid fn calls', () => {
 
-        test('Failing query to fall inside catch-block', async () => {
+        test('Return IRepoError by catch-block', async () => {
             const mockParam_hash = 'test_hash_value';
-            const mockErrorMsg = "DB ERROR ON SELECT QUERY, (Clients TEST Repository, findByKey)";
+            const mockErrorMsg = "DB ERROR ON SELECT QUERY, (Clients TEST Repository, findByActiveKey)";
             const mockResult = null;
             const _ = MockUtils.mapMockDbClient(mockResult, mockErrorMsg);
-            const testFn = await clientsRepository.findByKey(mockParam_hash);
+            const testFn = await clientsRepository.findByActiveKey(mockParam_hash);
 
             expect(testFn).toEqual<IRepoError>({
-                method: 'support_clients_findByKey',
+                method: 'support_clients_findByActiveKey',
                 error: expect.any(Error)
             });
             expect((testFn as IRepoError).error.message).toBe(mockErrorMsg);
@@ -137,7 +136,7 @@ describe('Database tests table <clients>, priority: findStatusByName', () => {
 
     describe('Testing invalid fn calls', () => {
 
-        test('Failing query to fall inside catch-block', async () => {
+        test('Return IRepoError by catch-block', async () => {
             const mockParam_name = 'non_existing_test_client_name';
             const mockErrorMsg = "DB ERROR ON SELECT QUERY, (Meta TEST Repository, findStatusByName)";
             const mockResult = null;
@@ -165,13 +164,13 @@ describe('Database tests table <clients>, priority: create', () => {
         test('Return data for created entry, params: <name> = "testclient"', async () => {
             const mockVar_apiKey = clientsModel.generateApiKeyObj();
             const mockParam_id = mockVar_id;
-            const mockParam_name = 'testclient';
+            const mockParam_dto = { name: 'TESTCLIENT' };
             const mockParam_hash = mockVar_apiKey.keyHash;
-            const mockValues = [mockParam_id, mockParam_name, mockVar_apiKey.keyHash, ApiKeyStatus.ACTIVE, mockVar_timeStamp, mockVar_timeStamp, mockVar_timeStamp];
+            const mockValues = [mockParam_id, mockParam_dto.name, mockVar_apiKey.keyHash, ApiKeyStatus.ACTIVE, mockVar_timeStamp, mockVar_timeStamp, mockVar_timeStamp];
 
             const mockResult: Clients = {
                 client_id: mockParam_id,
-                name: mockParam_name,
+                name: mockParam_dto.name,
                 api_key_hash: mockVar_apiKey.keyHash,
                 status: ApiKeyStatus.ACTIVE,
                 last_use: mockVar_timeStamp,
@@ -183,7 +182,7 @@ describe('Database tests table <clients>, priority: create', () => {
 
             const mockClient = MockUtils.mapMockDbClient(mockResult);
             const testFn = await clientsRepository.create(
-                mockParam_id, mockParam_name, mockParam_hash
+                mockParam_id, mockParam_hash, mockParam_dto
             );
 
             expect(testFn).toEqual(mockResult);
@@ -197,14 +196,14 @@ describe('Database tests table <clients>, priority: create', () => {
         test('Return null for non-existing entry by non-unique name', async () => {
             const mockVar_apiKey = clientsModel.generateApiKeyObj();
             const mockParam_id = Utils.generateUUID();
-            const mockParam_name = 'TESTCLIENT';
-            const mockValues = [mockParam_id, mockParam_name, mockVar_apiKey.keyHash, ApiKeyStatus.ACTIVE, mockVar_timeStamp, mockVar_timeStamp, mockVar_timeStamp];
+            const mockParam_dto = { name: 'TESTCLIENT' };
+            const mockValues = [mockParam_id, mockParam_dto.name, mockVar_apiKey.keyHash, ApiKeyStatus.ACTIVE, mockVar_timeStamp, mockVar_timeStamp, mockVar_timeStamp];
 
             const mockResult = null;
 
             const mockClient = MockUtils.mapMockDbClient(mockResult);
             const testFn = await clientsRepository.create(
-                mockParam_id, mockParam_name, mockVar_apiKey.keyHash
+                mockParam_id, mockVar_apiKey.keyHash, mockParam_dto
             );
 
             expect(testFn).toEqual(mockResult);
@@ -218,15 +217,15 @@ describe('Database tests table <clients>, priority: create', () => {
 
     describe('Testing invalid fn calls', () => {
 
-        test('Failing query to fall inside catch-block', async () => {
+        test('Return IRepoError by catch-block', async () => {
             const mockParam_id = 'test_id';
-            const mockParam_name = 'test_client';
+            const mockParam_dto = { name: 'TESTCLIENT' };
             const mockParam_hash = 'test_hash_value';
             const mockErrorMsg = "DB ERROR ON SELECT QUERY, (Clients TEST Repository, create)";
             const mockResult = null;
             const _ = MockUtils.mapMockDbClient(mockResult, mockErrorMsg);
             const testFn = await clientsRepository.create(
-                mockParam_id, mockParam_name, mockParam_hash
+                mockParam_id, mockParam_hash, mockParam_dto
             );
 
             expect(testFn).toEqual<IRepoError>({
@@ -295,7 +294,7 @@ describe('Database tests table <clients>, priority: updateStatus', () => {
 
     describe('Testing invalid fn calls', () => {
 
-        test('Failing query to fall inside catch-block', async () => {
+        test('Return IRepoError by catch-block', async () => {
             const mockParam_id = 'valid_test_id';
             const mockParam_data = { status: ApiKeyStatus.DISABLED };
             const mockErrorMsg = "DB ERROR ON UPDATE QUERY, (Clients TEST Repository, updateStatus)";
@@ -366,7 +365,7 @@ describe('Database tests table <clients>, priority: updateLastUse', () => {
 
     describe('Testing invalid fn calls', () => {
 
-        test('Failing query to fall inside catch-block', async () => {
+        test('Return IRepoError by catch-block', async () => {
             const mockParam_id = 'valid_test_id';
             const mockErrorMsg = "DB ERROR ON UPDATE QUERY, (Clients TEST Repository, updateLastUse)";
             const mockResult = null;

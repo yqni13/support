@@ -9,7 +9,7 @@
 $\textsf{[v0.5.1\ =>\ {\color{yellow}0.7.0}]}$ app<br>
 $\textsf{[v1.0.1\ =>\ {\color{yellow}1.1.0}]}$ database
 - $\textsf{\color{teal}Addition:}$ Added verification middleware to validate requests by api-keys.
-- $\textsf{\color{teal}Addition:}$ Added clients entity to database and logic to handle status changes and api-key verifications.
+- $\textsf{\color{teal}Addition:}$ Migrated clients table to database and added logic to handle status changes and api-key verifications.
 
 <br>
 

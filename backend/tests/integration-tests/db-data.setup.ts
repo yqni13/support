@@ -4,9 +4,13 @@ import { secrets } from "../../src/utils/secrets.utils";
 
 export class DBTestData {
     private static instance: DBTestData;
+    private tableRecord: Record<string, string>;
 
     constructor() {
-        //
+        this.tableRecord = {
+            meta: 'meta',
+            clients: 'clients'
+        };
     }
 
     static getInstance(): DBTestData {
@@ -17,15 +21,15 @@ export class DBTestData {
     }
 
     getDatabaseTables(): string[] {
-        return [
-            'meta',
-            'clients'
-        ];
+        let tables: string[] = [];
+        Object.values(this.tableRecord).forEach((table) => {
+            tables.push(table);
+        })
+        return tables;
     }
 
     getMetaInsertSql(): { sql: string, values: any[] } {
-        const table = 'meta';
-        const sql = `INSERT INTO ${table}
+        const sql = `INSERT INTO ${this.tableRecord['meta']}
         (id, app, author, build_on, environment, app_version, db_version, docker_image, docker_version, jenkins_version, maintenance_mode, created_on, last_modified)
         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13);
         `;
@@ -34,8 +38,7 @@ export class DBTestData {
     }
 
     getClientsInsertSql(): { sql: string, values: any[] } {
-        const table = 'clients';
-        const sql = `INSERT INTO ${table}
+        const sql = `INSERT INTO ${this.tableRecord['clients']}
         (client_id, name, api_key_hash, status, last_use, last_modified, created_on)
         VALUES ($1, $2, $3, $4, $5, $6, $7);
         `;

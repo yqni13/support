@@ -9,7 +9,6 @@ import { runMigrations } from '../../db-migrations.setup';
 import { ClientsCreateResponseDTO, ClientsStatusResponseDTO } from "../../../src/dtos/clients.dto";
 import clientsModel from "../../../src/models/clients.model";
 import { Clients } from "../../../src/repositories/interfaces/clients.entity.interface";
-import { secrets } from "../../../src/utils/secrets.utils";
 
 jest.mock('../../../src/middleware/auth.middleware', () => ({
     auth: jest.fn(() =>  (req: Request, res: Response, next: NextFunction) => next())
@@ -45,15 +44,14 @@ describe('Integration test (repository specific), priority: Clients', () => {
 
         test('Repository process fn findStatusByName, result: "SUCCESS"', async () => {
             const testParam_name = 'TESTCLIENT';
-            const mockTimeStamp = '2025-01-01T14:00:01.000';
-            const mockParam_timeStamp = Utils.getTimestampWithOffsetInfo(new Date(mockTimeStamp));
+            const mockTimeStamp = '2025-01-01T15:00:01.000';
             const testResult: ClientsStatusResponseDTO = {
                 client_id: '9e024539-32e8-4317-8007-84a3956e6b57',
                 name: testParam_name,
                 status: ApiKeyStatus.ACTIVE,
-                last_use: '2025-01-01T15:00:01.000',
-                last_modified: '2025-01-01T15:00:01.000',
-                created_on: '2025-01-01T15:00:01.000'
+                last_use: mockTimeStamp,
+                last_modified: mockTimeStamp,
+                created_on: mockTimeStamp
             };
 
             dbTestSetup.addTestData();
@@ -66,7 +64,7 @@ describe('Integration test (repository specific), priority: Clients', () => {
 
         test('Repository process fn create, result: "SUCCESS"', async () => {
             const testParam_client_id = Utils.generateUUID();
-            const testParam_name = 'testclient_test_create';
+            const testParam_dto = { name: 'testclient_test_create' };
             const mockTimeStamp = '2025-01-01T14:00:01.000';
             const mockParam_timeStamp = Utils.getTimestampWithOffsetInfo(new Date(mockTimeStamp))
 
@@ -76,7 +74,7 @@ describe('Integration test (repository specific), priority: Clients', () => {
 
             const testResult: ClientsCreateResponseDTO = {
                 client_id: testParam_client_id,
-                name: testParam_name,
+                name: testParam_dto.name,
                 api_key: mockParam_apiKeyObj.keyRaw,
                 status: ApiKeyStatus.ACTIVE,
                 last_use: mockTimeStamp,
@@ -87,7 +85,7 @@ describe('Integration test (repository specific), priority: Clients', () => {
             dbTestSetup.addTestData();
             const testResponse = await request(app)
                 .post(`${apiUrl}/create/${mockParam_authKey}`)
-                .send({name: testParam_name});
+                .send(testParam_dto);
 
             expect(testResponse.statusCode).toBe(200);
             expect(testResponse.body).toMatchObject(testResult);

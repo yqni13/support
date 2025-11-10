@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { checkValidation } from "../middleware/validation.middleware";
-import { ClientsCreateResponseDTO, ClientsStatusResponseDTO, ClientsStatusUpdateDTO } from "../dtos/clients.dto";
+import { ClientsCreateDTO, ClientsCreateResponseDTO, ClientsStatusResponseDTO, ClientsStatusUpdateDTO } from "../dtos/clients.dto";
 import { IRepoError } from "../repositories/interfaces/error.repository.interface";
 import clientsService from "../services/clients.service";
 
@@ -19,8 +19,8 @@ class ClientsController {
     async createClient(req: Request, res: Response, next: NextFunction) {
         try {
             checkValidation(req);
-            const name = req.body.name;
-            const response: ClientsCreateResponseDTO | IRepoError | null = await clientsService.createClient(name);
+            const dto: ClientsCreateDTO = req.body;
+            const response: ClientsCreateResponseDTO | IRepoError | null = await clientsService.createClient(dto);
             res.send(response);
         } catch(err: any) {
             next(err);

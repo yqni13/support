@@ -2,6 +2,7 @@ import { MaintenanceMode } from "../../../src/utils/enums/maintenance-mode.enum"
 import * as CustomValidators from "../../../src/utils/customValidator.utils";
 import { EnvMode } from "../../../src/utils/enums/env-mode.enum";
 import { MailSource } from "../../../src/utils/enums/mail-source.enum";
+import { ApiKeyStatus } from "../../../src/utils/enums/api-key-status.enum";
 
 describe('CustomValidator tests, priority: no model specification', () => {
 
@@ -38,6 +39,20 @@ describe('CustomValidator tests, priority: no model specification', () => {
         test('fn: validateEnum, params: <enumObj> = MailSource', () => {
             const mockParam_enumObj = MailSource;
             const mockParam_enumName = 'mailSource';
+            const expectResult = true;
+
+            Object.values(mockParam_enumObj).forEach((value) => {
+                expect(CustomValidators.validateEnum(
+                    value,
+                    mockParam_enumObj,
+                    mockParam_enumName
+                )).toBe(expectResult);
+            })
+        })
+
+        test('fn: validateEnum, params: <enumObj> = ApiKeyStatus', () => {
+            const mockParam_enumObj = ApiKeyStatus;
+            const mockParam_enumName = 'apiKeyStatus';
             const expectResult = true;
 
             Object.values(mockParam_enumObj).forEach((value) => {

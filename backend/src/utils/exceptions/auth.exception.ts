@@ -60,15 +60,15 @@ export class InvalidTokenException extends AuthException {
     }
 }
 
-export class ApiKeyMissingException extends AuthException {
+export class MissingApiKeyException extends AuthException {
     constructor(message: string = 'support-missing-apikey', data?: unknown) {
-        super(ErrorCodes.ApiKeyMissingException, message, data)
+        super(ErrorCodes.MissingApiKeyException, message, data)
     }
 }
 
 export class InvalidApiKeyException extends AuthException {
     constructor(message: string = 'support-invalid-apikey', data?: unknown) {
-        super(ErrorCodes.ApiKeyMissingException, message, data, ErrorStatusCodes.InvalidApiKeyException)
+        super(ErrorCodes.InvalidApiKeyException, message, data, ErrorStatusCodes.InvalidApiKeyException)
     }
 }
 

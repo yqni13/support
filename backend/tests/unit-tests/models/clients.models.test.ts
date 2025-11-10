@@ -7,7 +7,6 @@ import clientsModel from "../../../src/models/clients.model";
 import { Clients } from "../../../src/repositories/interfaces/clients.entity.interface";
 import * as Utils from "../../../src/utils/common.utils";
 import { ApiKeyStatus } from "../../../src/utils/enums/api-key-status.enum";
-import { secrets } from "../../../src/utils/secrets.utils";
 
 const gmtData = Utils.getPropertiesFromTimezoneOffset(new Date());
 const mockApiKeyObj = clientsModel.generateApiKeyObj();
