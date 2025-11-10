@@ -10,15 +10,21 @@ import { EnvMode } from "../utils/enums/env-mode.enum";
 import clientsService from "../services/clients.service";
 import { Clients } from "../repositories/interfaces/clients.entity.interface";
 
-export function auth(isApiKeyAuth: boolean = false) {
+/**
+ * @description Authentication for admin only access.
+ */
+export function auth() {
     return async function (req: Request, res: Response, next: NextFunction) {
         try {
-            if(isApiKeyAuth) {
-                const hasValidKey = req.params.key === secrets.ADMIN_API;
-                const isDeployMode = secrets.ENV_MODE === EnvMode.PROD || secrets.ENV_MODE === EnvMode.STAG ? true : false;
-                if(isDeployMode && !hasValidKey) {
-                    throw new InvalidCredentialsException('support-invalid-authkey');
-                }
+            const adminKey = req.header('Support-Admin-Key');
+            if(!adminKey) {
+                throw new MissingApiKeyException('support-missing-admin-auth');
+            }
+
+            const hasValidKey = (adminKey.trim()) === secrets.ADMIN_API;
+            const isTestMode = (secrets.ENV_MODE.trim()) === EnvMode.TEST;
+            if(!isTestMode && !hasValidKey) {
+                throw new InvalidCredentialsException('support-invalid-admin-auth');
             }
             next();
         } catch(err: any) {
@@ -31,7 +37,10 @@ export function auth(isApiKeyAuth: boolean = false) {
     }
 }
 
-export function verifyApiKey() {
+/**
+ * @description Verify request by checking on validity and status of api key.
+ */
+export function verify() {
     return async function(req: Request, res: Response, next: NextFunction) {
         try {
             // Header naming convention (also noted in GLOSSARY) regarding:
