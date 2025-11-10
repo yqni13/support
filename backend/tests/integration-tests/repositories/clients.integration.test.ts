@@ -13,6 +13,9 @@ import { Clients } from "../../../src/repositories/interfaces/clients.entity.int
 jest.mock('../../../src/middleware/auth.middleware', () => ({
     auth: jest.fn(() =>  (req: Request, res: Response, next: NextFunction) => next())
 }));
+jest.mock('../../../src/middleware/maintenance.middleware', () => ({
+    maintain: jest.fn(() =>  (req: Request, res: Response, next: NextFunction) => next())
+}));
 
 jest.setTimeout(60000);
 
@@ -23,7 +26,6 @@ describe('Integration test (repository specific), priority: Clients', () => {
         let dbTestSetup: DBTestSetup;
         let apiUrl: string;
 
-        let mockParam_authKey: string;
         const mockParam_apiKeyObj = clientsModel.generateApiKeyObj();
         beforeAll(async () => {
             dbTestSetup = new DBTestSetup();
