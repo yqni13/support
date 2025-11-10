@@ -11,6 +11,9 @@ import { MaintenanceMode } from '../../../src/utils/enums/maintenance-mode.enum'
 jest.mock('../../../src/middleware/auth.middleware', () => ({
     auth: jest.fn(() =>  (req: Request, res: Response, next: NextFunction) => next())
 }));
+jest.mock('../../../src/middleware/maintenance.middleware', () => ({
+    maintain: jest.fn(() => (req: Request, res: Response, next: NextFunction) => next())
+}));
 
 jest.setTimeout(60000);
 
@@ -20,14 +23,12 @@ describe('Integration test (repository specific), priority: Meta', () => {
 
         let dbTestSetup: DBTestSetup;
         let apiUrl: string;
-        let mockParam_key: string;
         let mockResult: Meta;
         beforeAll(async () => {
             dbTestSetup = new DBTestSetup();
             await dbTestSetup.init();
             await runMigrations();
             apiUrl = '/api/v1/meta';
-            mockParam_key = 'testkey';
 
             mockResult = {
                 id: 1,
@@ -75,7 +76,7 @@ describe('Integration test (repository specific), priority: Meta', () => {
 
             dbTestSetup.addTestData();
             const testResponse = await request(app)
-                .get(`${apiUrl}/by-id/${testParam_id}/${mockParam_key}`);
+                .get(`${apiUrl}/by-id/${testParam_id}`);
 
             expect(testResponse.statusCode).toBe(200);
             expect(testResponse.body).toMatchObject(testResult)
@@ -101,7 +102,7 @@ describe('Integration test (repository specific), priority: Meta', () => {
 
             dbTestSetup.addTestData();
             const testResponse = await request(app)
-                .get(`${apiUrl}/by-name/${testParam_name}/${mockParam_key}`);
+                .get(`${apiUrl}/by-name/${testParam_name}`);
 
             expect(testResponse.statusCode).toBe(200);
             expect(testResponse.body).toMatchObject(testResult)
@@ -126,7 +127,7 @@ describe('Integration test (repository specific), priority: Meta', () => {
 
             dbTestSetup.addTestData();
             const testResponse = await request(app)
-                .get(`${apiUrl}/all/${mockParam_key}`);
+                .get(`${apiUrl}/all`);
 
             expect(testResponse.statusCode).toBe(200);
             expect(testResponse.body).toMatchObject(testResult);
@@ -158,7 +159,7 @@ describe('Integration test (repository specific), priority: Meta', () => {
 
             dbTestSetup.addTestData();
             const testResponse = await request(app)
-                .put(`${apiUrl}/info/${testParam_id}/${mockParam_key}`)
+                .put(`${apiUrl}/info/${testParam_id}`)
                 .send(testParam_data);
 
             expect(testResponse.statusCode).toBe(200);
@@ -178,7 +179,7 @@ describe('Integration test (repository specific), priority: Meta', () => {
 
             dbTestSetup.addTestData();
             const testResponse = await request(app)
-                .get(`${apiUrl}/maintenance/${testParam_name}/${mockParam_key}`);
+                .get(`${apiUrl}/maintenance/${testParam_name}`);
 
             expect(testResponse.statusCode).toBe(200);
             expect(testResponse.body).toMatchObject(testResult)
@@ -204,7 +205,7 @@ describe('Integration test (repository specific), priority: Meta', () => {
 
             dbTestSetup.addTestData();
             const testResponse = await request(app)
-                .put(`${apiUrl}/maintenance/${testParam_name}/${mockParam_key}`)
+                .put(`${apiUrl}/maintenance/${testParam_name}`)
                 .send(testParam_data);
 
             expect(testResponse.statusCode).toBe(200);
@@ -215,7 +216,6 @@ describe('Integration test (repository specific), priority: Meta', () => {
     describe('Testing invalid fn calls', () => {
 
         const apiUrl = '/api/v1/meta';
-        const mockParam_key = 'testkey';
         let mockError: any;
         beforeEach(() => {
             mockError = {
@@ -252,7 +252,7 @@ describe('Integration test (repository specific), priority: Meta', () => {
                 testError['path'] = invalidParam;
 
                 const mockResponse = await request(app)
-                    .put(`${apiUrl}/info/${mockParam_id}/${mockParam_key}`)
+                    .put(`${apiUrl}/info/${mockParam_id}`)
                     .send(mockParam_data);
 
                 expect(mockResponse.statusCode).toBe(ErrorStatusCodes.InvalidPropertiesException);
@@ -271,7 +271,7 @@ describe('Integration test (repository specific), priority: Meta', () => {
                 testError['path'] = 'maintenance_mode';
 
                 const mockResponse = await request(app)
-                    .put(`${apiUrl}/maintenance/${mockParam_id}/${mockParam_key}`)
+                    .put(`${apiUrl}/maintenance/${mockParam_id}`)
                     .send(mockParam_data);
 
                 expect(mockResponse.statusCode).toBe(ErrorStatusCodes.InvalidPropertiesException);

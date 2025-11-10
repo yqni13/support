@@ -1,5 +1,5 @@
 # yqni13 | support
-$\texttt{\color{teal}{v0.7.0}}$
+$\texttt{\color{teal}{v0.7.1}}$
 
 
 <br>
@@ -53,10 +53,8 @@ The development process is structured by the TDD (test driven development) princ
 
 ### $\textsf{\color{orange}last update:}$
 
-$\textsf{[v0.5.1\ =>\ {\color{pink}0.7.0}]}$ app<br>
-$\textsf{[v1.0.1\ =>\ {\color{pink}1.1.0}]}$ database
-- $\textsf{\color{teal}Addition:}$ Added verification middleware to validate requests by api-keys.
-- $\textsf{\color{teal}Addition:}$ Migrated clients table to database and added logic to handle status changes and api-key verifications.
+$\textsf{[v0.7.0\ =>\ {\color{yellow}0.7.1}]}$ app<br>
+- $\textsf{\color{orange}Patch:}$ Updated admin authentication by key from header.
 
 <br>
 

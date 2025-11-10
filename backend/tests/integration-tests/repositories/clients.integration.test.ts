@@ -13,6 +13,9 @@ import { Clients } from "../../../src/repositories/interfaces/clients.entity.int
 jest.mock('../../../src/middleware/auth.middleware', () => ({
     auth: jest.fn(() =>  (req: Request, res: Response, next: NextFunction) => next())
 }));
+jest.mock('../../../src/middleware/maintenance.middleware', () => ({
+    maintain: jest.fn(() =>  (req: Request, res: Response, next: NextFunction) => next())
+}));
 
 jest.setTimeout(60000);
 
@@ -23,14 +26,12 @@ describe('Integration test (repository specific), priority: Clients', () => {
         let dbTestSetup: DBTestSetup;
         let apiUrl: string;
 
-        let mockParam_authKey: string;
         const mockParam_apiKeyObj = clientsModel.generateApiKeyObj();
         beforeAll(async () => {
             dbTestSetup = new DBTestSetup();
             await dbTestSetup.init();
             await runMigrations();
             apiUrl = '/api/v1/clients';
-            mockParam_authKey = 'testkey';
         });
 
         beforeEach(async () => {
@@ -56,7 +57,7 @@ describe('Integration test (repository specific), priority: Clients', () => {
 
             dbTestSetup.addTestData();
             const testResponse = await request(app)
-                .get(`${apiUrl}/status/${testParam_name}/${mockParam_authKey}`);
+                .get(`${apiUrl}/status/${testParam_name}`);
 
             expect(testResponse.statusCode).toBe(200);
             expect(testResponse.body).toMatchObject(testResult);
@@ -84,7 +85,7 @@ describe('Integration test (repository specific), priority: Clients', () => {
 
             dbTestSetup.addTestData();
             const testResponse = await request(app)
-                .post(`${apiUrl}/create/${mockParam_authKey}`)
+                .post(`${apiUrl}/create`)
                 .send(testParam_dto);
 
             expect(testResponse.statusCode).toBe(200);
@@ -112,7 +113,7 @@ describe('Integration test (repository specific), priority: Clients', () => {
 
             dbTestSetup.addTestData();
             const testResponse = await request(app)
-                .put(`${apiUrl}/status/${testParam_id}/${mockParam_authKey}`)
+                .put(`${apiUrl}/status/${testParam_id}`)
                 .send(testParam_data);
 
             expect(testResponse.statusCode).toBe(200);
@@ -123,7 +124,6 @@ describe('Integration test (repository specific), priority: Clients', () => {
     describe('Testing invalid fn calls', () => {
 
         const apiUrl = '/api/v1/clients';
-        const mockParam_authKey = 'testkey';
         let mockError: any;
         beforeEach(() => {
             mockError = {
@@ -144,7 +144,7 @@ describe('Integration test (repository specific), priority: Clients', () => {
                 testError['path'] = 'status';
 
                 const mockResponse = await request(app)
-                    .put(`${apiUrl}/status/${mockParam_id}/${mockParam_authKey}`)
+                    .put(`${apiUrl}/status/${mockParam_id}`)
                     .send(mockParam_data);
 
                 expect(mockResponse.statusCode).toBe(ErrorStatusCodes.InvalidPropertiesException);
