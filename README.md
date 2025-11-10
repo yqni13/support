@@ -1,5 +1,5 @@
 # yqni13 | support
-$\texttt{\color{teal}{v0.7.1}}$
+$\texttt{\color{teal}{v0.7.2}}$
 
 
 <br>
@@ -51,10 +51,10 @@ The development process is structured by the TDD (test driven development) princ
 ## Updates
 [see changelog for all updates](/docs/CHANGELOG.md)
 
-### $\textsf{\color{orange}last update:}$
+### $\textsf{\color{forestgreen}last update:}$
 
-$\textsf{[v0.7.0\ =>\ {\color{yellow}0.7.1}]}$ app<br>
-- $\textsf{\color{orange}Patch:}$ Updated admin authentication by key from header.
+$\textsf{[v0.7.1\ =>\ {\textbf{\color{brown}0.7.2}]}}$ app<br>
+- $\textsf{\color{teal}Addition:}$ Added script to run tests on GitHub PR's (feat* => DEV, DEV => STAG, STAG => PROD).
 
 <br>
 
