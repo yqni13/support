@@ -1,5 +1,5 @@
 import { Maintenance, Meta } from "../repositories/interfaces/meta.entity.interface";
-import { getUTCTimestamp as convert} from "../utils/common.utils";
+import { getTimestampWithoutOffsetInfo as convert} from "../utils/common.utils";
 
 class MetaModel {
 

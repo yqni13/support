@@ -95,21 +95,20 @@ describe('Integration test (repository specific), priority: Clients', () => {
         test('Repository process fn updateStatus, result: "SUCCESS"', async () => {
             const testParam_id = '9e024539-32e8-4317-8007-84a3956e6b57';
             const mockTimeStamp = '2025-01-01T14:00:01.000';
-            const mockParam_timeStamp = Utils.getTimestampWithOffsetInfo(new Date(mockTimeStamp));
-            const testParam_timestamp = Utils.getUTCTimestamp(new Date(mockTimeStamp));
+            const mockParam_timestamp = Utils.getUTCTimestamp(new Date(mockTimeStamp));
             const testParam_data: Partial<Clients> = {
                 status: ApiKeyStatus.DISABLED
             };
 
-            jest.spyOn(Utils, "getTimestampWithOffsetInfo").mockReturnValue(mockParam_timeStamp);
+            jest.spyOn(Utils, "getTimestampWithOffsetInfo").mockReturnValue('2025-01-01T14:00:01.000Z');
 
             const testResult: ClientsStatusResponseDTO = {
                 client_id: testParam_id,
                 name: 'TESTCLIENT',
                 status: ApiKeyStatus.DISABLED,
-                last_use: testParam_timestamp,
-                last_modified: mockTimeStamp,
-                created_on: testParam_timestamp
+                last_use: mockTimeStamp,
+                last_modified: mockParam_timestamp,
+                created_on: mockTimeStamp
             };
 
             dbTestSetup.addTestData();
