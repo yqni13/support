@@ -11,8 +11,6 @@ on:
 jobs:
   jest-tests:
     runs-on: ubuntu-latest
-    env:
-      TZ: Europe/Vienna
     defaults:
       run:
         working-directory: ./backend
@@ -32,6 +30,7 @@ jobs:
           --health-retries 5
 
     env:
+      TZ: Europe/Vienna
       NODE_ENV: ${{ secrets.NODE_ENV }}
       SECRET_ADMIN_API: ${{ secrets.SECRET_ADMIN_API }}
       SECRET_EMAIL_RECEIVER: ${{ secrets.SECRET_EMAIL_RECEIVER }}
