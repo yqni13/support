@@ -31,11 +31,11 @@ describe('Utils tets, priority: common', () => {
         })
 
         test('fn: getTimestampWithOffsetInfo', () => {
-            const mockParam_time = new Date('2025-01-01T09:00:01.000Z');
+            const mockParam_time = new Date('2025-01-01T10:00:01.000Z');
             const gmtData = Utils.getPropertiesFromTimezoneOffset(mockParam_time);
 
             const testFn = Utils.getTimestampWithOffsetInfo(mockParam_time);
-            const expectResult = `2025-01-01 ${9+(+gmtData.offset)}:00:01${gmtData.prefix}${gmtData.offset}`;
+            const expectResult = `2025-01-01 ${10+(+gmtData.offset)}:00:01${gmtData.prefix}${gmtData.offset}`;
 
             expect(testFn).toBe(expectResult);
         })

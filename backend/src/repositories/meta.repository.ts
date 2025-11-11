@@ -4,8 +4,6 @@ import { IBaseRepository, IFindRepository } from "./interfaces/base.repository.i
 import { IRepoError } from "./interfaces/error.repository.interface";
 import { Maintenance, Meta } from "./interfaces/meta.entity.interface";
 import * as Utils from '../utils/common.utils';
-import { secrets } from "../utils/secrets.utils";
-import { EnvMode } from "../utils/enums/env-mode.enum";
 
 class MetaRepository implements IBaseRepository<Meta>, IFindRepository<Meta> {
 
@@ -32,10 +30,8 @@ class MetaRepository implements IBaseRepository<Meta>, IFindRepository<Meta> {
             await db.close(client);
             return result.rows[0] ?? null;
         } catch(err: any) {
-            // TODO(yqni13): logging
-            if(secrets.ENV_MODE === EnvMode.DEV || secrets.ENV_MODE === EnvMode.TEST) {
-                console.log("DB ERROR ON SELECT (Meta Repository, findById): ", err);
-            }
+            const logMsg = "DB ERROR ON SELECT (Meta Repository, findById): ";
+            Utils.logRepoError(logMsg, err);
             await db.close(client);
             return {
                 method: 'support_meta_findById',
@@ -61,10 +57,8 @@ class MetaRepository implements IBaseRepository<Meta>, IFindRepository<Meta> {
             await db.close(client);
             return result.rows[0] ?? null;
         } catch(err: any) {
-            // TODO(yqni13): logging
-            if(secrets.ENV_MODE === EnvMode.DEV || secrets.ENV_MODE === EnvMode.TEST) {
-                console.log("DB ERROR ON SELECT (Meta Repository, findByName): ", err);
-            }
+            const logMsg = "DB ERROR ON SELECT (Meta Repository, findByName): ";
+            Utils.logRepoError(logMsg, err);
             await db.close(client);
             return {
                 method: 'support_meta_findByName',
@@ -84,10 +78,8 @@ class MetaRepository implements IBaseRepository<Meta>, IFindRepository<Meta> {
             await db.close(client);
             return result.rows ?? null;
         } catch(err: any) {
-            // TODO(yqni13): logging
-            if(secrets.ENV_MODE === EnvMode.DEV || secrets.ENV_MODE === EnvMode.TEST) {
-                console.log("DB ERROR ON SELECT (Meta Repository, findAll): ", err);
-            }
+            const logMsg = "DB ERROR ON SELECT (Meta Repository, findAll): ";
+            Utils.logRepoError(logMsg, err);
             await db.close(client);
             return {
                 method: 'support_meta_findAll',
@@ -109,10 +101,8 @@ class MetaRepository implements IBaseRepository<Meta>, IFindRepository<Meta> {
             await db.close(client);
             return result.rows[0] ?? null;
         } catch(err: any) {
-            // TODO(yqni13): logging
-            if(secrets.ENV_MODE === EnvMode.DEV || secrets.ENV_MODE === EnvMode.TEST) {
-                console.log("DB ERROR ON SELECT (Meta Repository, findMaintenance): ", err);
-            }
+            const logMsg = "DB ERROR ON SELECT (Meta Repository, findMaintenance): ";
+            Utils.logRepoError(logMsg, err);
             await db.close(client);
             return {
                 method: 'support_meta_findMaintenance',
@@ -140,10 +130,8 @@ class MetaRepository implements IBaseRepository<Meta>, IFindRepository<Meta> {
             await db.close(client);
             return result.rows[0] ?? null;
         } catch(err: any) {
-            // TODO(yqni13): logging
-            if(secrets.ENV_MODE === EnvMode.DEV || secrets.ENV_MODE === EnvMode.TEST) {
-                console.log("DB ERROR ON UPDATE (Meta Repository, update): ", err);
-            }
+            const logMsg = "DB ERROR ON UPDATE (Meta Repository, update): ";
+            Utils.logRepoError(logMsg, err);
             await db.close(client);
             return {
                 method: 'support_meta_update',
@@ -170,10 +158,8 @@ class MetaRepository implements IBaseRepository<Meta>, IFindRepository<Meta> {
             await db.close(client);
             return result.rows[0] ?? null;
         } catch(err: any) {
-            // TODO(yqni13): logging
-            if(secrets.ENV_MODE === EnvMode.DEV || secrets.ENV_MODE === EnvMode.TEST) {
-                console.log("DB ERROR ON UPDATEMAINTENANCE (Meta Repository, updateMaintenance): ", err);
-            }
+            const logMsg = "DB ERROR ON UPDATEMAINTENANCE (Meta Repository, updateMaintenance): ";
+            Utils.logRepoError(logMsg, err);
             await db.close(client);
             return {
                 method: 'support_meta_updateMaintenance',

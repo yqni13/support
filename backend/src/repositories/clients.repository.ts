@@ -2,8 +2,6 @@ import { Clients } from "./interfaces/clients.entity.interface";
 import { IRepoError } from "./interfaces/error.repository.interface";
 import { DBConnection } from "../configs/db";
 import { QueryResult } from "pg";
-import { secrets } from "../utils/secrets.utils";
-import { EnvMode } from "../utils/enums/env-mode.enum";
 import { ApiKeyStatus } from "../utils/enums/api-key-status.enum";
 import * as Utils from "../utils/common.utils";
 
@@ -25,10 +23,8 @@ class ClientsRepository {
             await db.close(client);
             return result.rows[0] ?? null;
         } catch(err: any) {
-            // TODO(yqni13): logging
-            if(secrets.ENV_MODE === EnvMode.DEV || secrets.ENV_MODE === EnvMode.TEST) {
-                console.log("DB ERROR ON SELECT (Clients Repository, findByActiveKey): ", err);
-            }
+            const logMsg = "DB ERROR ON SELECT (Clients Repository, findByActiveKey): ";
+            Utils.logRepoError(logMsg, err);
             await db.close(client);
             return {
                 method: 'support_clients_findByActiveKey',
@@ -48,10 +44,8 @@ class ClientsRepository {
             await db.close(client);
             return result.rows[0] ?? null;
         } catch(err: any) {
-            // TODO(yqni13): logging
-            if(secrets.ENV_MODE === EnvMode.DEV || secrets.ENV_MODE === EnvMode.TEST) {
-                console.log("DB ERROR ON SELECT (Clients Repository, findStatusByName): ", err);
-            }
+            const logMsg = "DB ERROR ON SELECT (Clients Repository, findStatusByName): ";
+            Utils.logRepoError(logMsg, err);
             await db.close(client);
             return {
                 method: 'support_clients_findStatusByName',
@@ -76,10 +70,8 @@ class ClientsRepository {
             await db.close(client);
             return result.rows[0] ?? null;
         } catch(err: any) {
-            // TODO(yqni13): logging
-            if(secrets.ENV_MODE === EnvMode.DEV || secrets.ENV_MODE === EnvMode.TEST) {
-                console.log("DB ERROR ON SELECT (Clients Repository, create): ", err);
-            }
+            const logMsg = "DB ERROR ON SELECT (Clients Repository, create): ";
+            Utils.logRepoError(logMsg, err);
             await db.close(client);
             return {
                 method: 'support_clients_create',
@@ -105,10 +97,8 @@ class ClientsRepository {
             await db.close(client);
             return result.rows[0] ?? null;
         } catch(err: any) {
-            // TODO(yqni13): logging
-            if(secrets.ENV_MODE === EnvMode.DEV || secrets.ENV_MODE === EnvMode.TEST) {
-                console.log("DB ERROR ON SELECT (Clients Repository, updateStatus): ", err);
-            }
+            const logMsg = "DB ERROR ON SELECT (Clients Repository, updateStatus): ";
+            Utils.logRepoError(logMsg, err);
             await db.close(client);
             return {
                 method: 'support_clients_updateStatus',
@@ -134,10 +124,8 @@ class ClientsRepository {
             await db.close(client);
             return result.rows[0] ?? null;
         } catch(err: any) {
-            // TODO(yqni13): logging
-            if(secrets.ENV_MODE === EnvMode.DEV || secrets.ENV_MODE === EnvMode.TEST) {
-                console.log("DB ERROR ON SELECT (Clients Repository, updateLastUse): ", err);
-            }
+            const logMsg = "DB ERROR ON SELECT (Clients Repository, updateLastUse): ";
+            Utils.logRepoError(logMsg, err);
             await db.close(client);
             return {
                 method: 'support_clients_updateLastUse',
