@@ -11,6 +11,7 @@ Consistency within these rules improve readability, maintenance and modular deve
 |-----------|------------------------------------------------|
 | `support` | global/reusable components/directives (common) |
 | `app`     | feature-specific components (modules)          |
+| `SUPPORT` | custom request headers (middleware)            |
 
 <br>
 

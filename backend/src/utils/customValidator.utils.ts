@@ -1,3 +1,5 @@
+import { MalformedApiKeyException } from "./exceptions/auth.exception";
+
 export function validateVersionStructure(version: string, numOfDelimiter: number): boolean {
     // 1. Check if version has all necessary delimiters.
     const hasValidDelimiter: boolean = (version.split('.').length - 1) === numOfDelimiter;
@@ -28,6 +30,14 @@ export function validateEnum(value: unknown, enumObj: any, enumName: string): bo
     const enumValues = Object.values(enumObj);
     if(!enumValues.includes(value)) {
         throw new Error(`support-invalid-entry#${enumName}`);
+    }
+    return true;
+}
+
+export function validateApiKey(key: string): boolean {
+    const API_KEY_REGEX = /^[0-9a-zA-Z]{42}$/;
+    if(!API_KEY_REGEX.test(key)) {
+        throw new MalformedApiKeyException();
     }
     return true;
 }

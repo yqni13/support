@@ -8,4 +8,5 @@ export const ErrorStatusCodes: any = {
     DBEmptyException: 544,
     InvalidPropertiesException: 400,
     MaintenanceException: 598,
+    InvalidApiKeyException: 403
 };

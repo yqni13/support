@@ -1,5 +1,5 @@
 # yqni13 | support
-$\texttt{\color{teal}{v0.5.0}}$
+$\texttt{\color{teal}{v0.7.2}}$
 
 
 <br>
@@ -43,6 +43,7 @@ The development process is structured by the TDD (test driven development) princ
 
 <dl>
     <dd>:closed_lock_with_key: maintenance mode can en/disable application via single request</dd>
+    <dd>:key: request verification by api-keys</dd>
 </dl>
 
 <br>
@@ -50,9 +51,12 @@ The development process is structured by the TDD (test driven development) princ
 ## Updates
 [see changelog for all updates](/docs/CHANGELOG.md)
 
-### $\textsf{last\ update\ 0.4.0\ >>\ {\color{pink}0.5.0}}$
+### $\textsf{\color{forestgreen}last update:}$
 
-- $\textsf{\color{teal}Addition:}$ Added Docker configuration to run application in container (local only at the moment).
+$\textsf{[v0.7.1\ =>\ {\textbf{\color{brown}0.7.2}]}}$ app<br>
+$\textsf{[v1.0.1\ =>\ {\textbf{\color{brown}1.0.2}]}}$ docker<br>
+- $\textsf{\color{teal}Addition:}$ Added script to run tests on GitHub PR's (feat* => DEV, DEV => STAG, STAG => PROD).
+- $\textsf{\color{orange}Patch:}$ Updated docker-compose with additional env var (set timezone to fix difference between local system and docker container).
 
 <br>
 

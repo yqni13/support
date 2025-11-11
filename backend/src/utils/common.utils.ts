@@ -2,8 +2,19 @@ import { InvalidSourceException } from './exceptions/common.exception';
 import { MailSource } from './enums/mail-source.enum';
 import { secrets } from './secrets.utils';
 import { NextFunction, Request, Response } from "express";
+import { v4 as uuid_v4 } from 'uuid';
+import crypto from 'crypto';
+import { EnvMode } from './enums/env-mode.enum';
 
 export type AsyncMiddleware = (req: Request, res: Response, next: NextFunction) => Promise<void>;
+
+export function generateUUID(): string {
+    return uuid_v4();
+}
+
+export function mapKeyToHash(key: string): string {
+    return crypto.createHash('sha256').update(key).digest('hex');
+}
 
 export function selectPrivateKey(source: MailSource): string {
     switch(source) {
@@ -27,6 +38,9 @@ export function isIRepoError(obj: any): boolean {
     return properties.includes('method') && properties.includes('error');
 }
 
+/**
+ * @returns yyyy-mm-ddThh:mm:ss.000
+ */
 export function getTimestampWithoutOffsetInfo(time: Date): string {
     const day = time.getDate() < 10 ? `0${time.getDate()}` : time.getDate().toString();
     const month = time.getMonth()+1 < 10 ? `0${time.getMonth()+1}` : (time.getMonth()+1).toString();
@@ -49,6 +63,9 @@ export function getPropertiesFromTimezoneOffset(time: Date): any {
     return { prefix: prefix, offset: offset };
 }
 
+/**
+ * @returns yyyy-mm-dd hh:mm:ss+/-hh
+ */
 export function getTimestampWithOffsetInfo(time: Date): string {
     // Get the GMT offset.
     const gmtData = getPropertiesFromTimezoneOffset(time);
@@ -62,4 +79,11 @@ export function getTimestampWithOffsetInfo(time: Date): string {
 
     // Need prefix-0 on single digits.
     return `${time.getFullYear()}-${month}-${day} ${hours}:${minutes}:${seconds}${gmtData.prefix}${gmtData.offset}`;
+}
+
+export function logRepoError(logMsg: string, err: any) {
+    // TODO(yqni13): logging
+    if((secrets.ENV_MODE).trim() === EnvMode.DEV || (secrets.ENV_MODE).trim() === EnvMode.TEST) {
+        console.log(logMsg, err);
+    }
 }

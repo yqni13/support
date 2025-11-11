@@ -7,7 +7,7 @@ export async function runMigrations() {
         DB_TEST_PORT = "5432",
         DB_TEST_USER = "testuser",
         DB_TEST_PASS = "testpass",
-        DB_TEST_DB = "testdb"
+        DB_TEST_DATABASE = "testdb"
     } = process.env;
     
     try {
@@ -20,7 +20,7 @@ export async function runMigrations() {
                 port: +(DB_TEST_PORT), // convert string to number
                 user: DB_TEST_USER,
                 password: DB_TEST_PASS,
-                database: DB_TEST_DB
+                database: DB_TEST_DATABASE
             },
             dir: migrationsDir,
             direction: "up",

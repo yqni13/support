@@ -17,4 +17,7 @@ export const ErrorCodes: any = {
     DBConnectionException: 15,
     DBEmptyException: 16,
     MaintenanceException: 17,
+    MalformedApiKeyException: 18,
+    MissingApiKeyException: 19,
+    InvalidApiKeyException: 20
 };
