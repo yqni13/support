@@ -4,6 +4,7 @@ import { secrets } from './secrets.utils';
 import { NextFunction, Request, Response } from "express";
 import { v4 as uuid_v4 } from 'uuid';
 import crypto from 'crypto';
+import { EnvMode } from './enums/env-mode.enum';
 
 export type AsyncMiddleware = (req: Request, res: Response, next: NextFunction) => Promise<void>;
 
@@ -78,4 +79,23 @@ export function getTimestampWithOffsetInfo(time: Date): string {
 
     // Need prefix-0 on single digits.
     return `${time.getFullYear()}-${month}-${day} ${hours}:${minutes}:${seconds}${gmtData.prefix}${gmtData.offset}`;
+}
+
+export function logRepoError(logMsg: string, err: any) {
+    // TODO(yqni13): logging
+    if((secrets.ENV_MODE).trim() === EnvMode.DEV || (secrets.ENV_MODE).trim() === EnvMode.TEST) {
+        console.log(logMsg, err);
+    }
+}
+
+export function getCustomUTCString(time: Date): string {
+    const day = time.getUTCDate() < 10 ? `0${time.getUTCDate()}` : time.getUTCDate().toString();
+    const month = time.getUTCMonth()+1 < 10 ? `0${time.getMonth()+1}` : (time.getMonth()+1).toString();
+
+    const hours = time.getUTCHours() < 10 ? `0${time.getUTCHours()}` : `${time.getUTCHours()}`;
+    const minutes = time.getUTCMinutes() < 10 ? `0${time.getUTCMinutes()}` : `${time.getUTCMinutes()}`;
+    const seconds = time.getUTCSeconds() < 10 ? `0${time.getUTCSeconds()}` : `${time.getUTCSeconds()}`;
+
+    // need prefix-0 on single digits
+    return `${time.getUTCFullYear()}-${month}-${day}T${hours}:${minutes}:${seconds}.000`;
 }
