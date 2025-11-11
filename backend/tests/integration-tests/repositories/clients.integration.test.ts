@@ -45,7 +45,7 @@ describe('Integration test (repository specific), priority: Clients', () => {
 
         test('Repository process fn findStatusByName, result: "SUCCESS"', async () => {
             const testParam_name = 'TESTCLIENT';
-            const mockTimeStamp = '2025-01-01T15:00:01.000';
+            const mockTimeStamp = '2025-01-01T14:00:01.000';
             const testResult: ClientsStatusResponseDTO = {
                 client_id: '9e024539-32e8-4317-8007-84a3956e6b57',
                 name: testParam_name,
@@ -106,9 +106,9 @@ describe('Integration test (repository specific), priority: Clients', () => {
                 client_id: testParam_id,
                 name: 'TESTCLIENT',
                 status: ApiKeyStatus.DISABLED,
-                last_use: '2025-01-01T15:00:01.000',
+                last_use: mockTimeStamp,
                 last_modified: mockTimeStamp,
-                created_on: '2025-01-01T15:00:01.000'
+                created_on: mockTimeStamp
             };
 
             dbTestSetup.addTestData();

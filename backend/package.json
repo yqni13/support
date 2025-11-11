@@ -6,7 +6,7 @@
     "migrate": "node-pg-migrate",
     "migrate-up": "node-pg-migrate up",
     "migrate-down": "node-pg-migrate down",
-    "test": "set NODE_ENV=test && jest --setupFiles dotenv/config",
+    "test": "set NODE_ENV=test && set TZ=Europe/Vienna && jest --setupFiles dotenv/config",
     "build": "tsc",
     "start:dev": "ts-node --files src/server.ts",
     "start:stag": "ts-node --files dist/server.js",

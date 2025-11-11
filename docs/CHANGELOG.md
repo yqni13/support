@@ -7,7 +7,9 @@
 ### $\textsf{\color{skyblue}2025/11/11}$
 
 $\textsf{[v0.7.1\ => {\textbf{\color{brown}0.7.2}]}}$ app<br>
+$\textsf{[v1.0.1\ => {\textbf{\color{brown}1.0.2}]}}$ docker<br>
 - $\textsf{\color{teal}Addition:}$ Added script to run tests on GitHub PR's (feat* => DEV, DEV => STAG, STAG => PROD).
+- $\textsf{\color{orange}Patch:}$ Updated docker-compose with additional env var (set timezone to temporarily fix testing in other environments).
 
 <br>
 
@@ -30,7 +32,7 @@ $\textsf{[v1.0.1\ =>\ {\textbf{\color{brown}1.1.0}]}}$ database
 ### $\textsf{\color{skyblue}2025/11/06}$
 
 $\textsf{[v0.5.0\ =>\ 0.5.1]}$ app<br>
-$\textsf{[v1.0.0\ =>\ {\textbf{\color{brown}1.0.1}]}}$ docker
+$\textsf{[v1.0.0\ =>\ 1.0.1]}$ docker
 - $\textsf{\color{orange}Patch:}$ Updated secret variables to simplify settings on STAG/PROD environments.
 
 <br>
