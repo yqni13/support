@@ -1,6 +1,6 @@
 import { ClientsCreateResponseDTO, ClientsLastUseResponseDTO, ClientsStatusResponseDTO } from "../dtos/clients.dto";
 import { Clients } from "../repositories/interfaces/clients.entity.interface";
-import { getTimestampWithoutOffsetInfo as convert } from "../utils/common.utils";
+import { getUTCTimestamp as convert } from "../utils/common.utils";
 import crypto from 'crypto';
 
 class ClientsModel {
