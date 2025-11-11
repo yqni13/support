@@ -24,8 +24,8 @@ describe('Utils tets, priority: common', () => {
 
         test('fn: getTimestampWithoutOffsetInfo', () => {
             const mockParam_time = new Date('2025-01-01 10:00:01+01');
-            const testFn = Utils.getUTCTimestamp(mockParam_time);
-            const expectResult = '2025-01-01T09:00:01.000';
+            const testFn = Utils.getTimestampWithoutOffsetInfo(mockParam_time);
+            const expectResult = '2025-01-01T10:00:01.000';
 
             expect(testFn).toBe(expectResult);
         })

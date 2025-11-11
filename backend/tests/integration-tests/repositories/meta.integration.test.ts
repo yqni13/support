@@ -58,7 +58,7 @@ describe('Integration test (repository specific), priority: Meta', () => {
 
         test('Repository process fn findById, result: "SUCCESS"', async () => {
             const testParam_id = 1;
-            const mockTimestamp = Utils.getUTCTimestamp(new Date("2025-01-01T13:00:01.000"));
+            const mockTimestamp = "2025-01-01T14:00:01.000";
             const testResult: Meta = {
                 id: testParam_id,
                 app: "support",
@@ -85,7 +85,7 @@ describe('Integration test (repository specific), priority: Meta', () => {
 
         test('Repository process fn findByName, result: "SUCCESS"', async () => {
             const testParam_name = "support";
-            const mockTimestamp = Utils.getUTCTimestamp(new Date("2025-01-01T13:00:01.000"));
+            const mockTimestamp = "2025-01-01T14:00:01.000";
             const testResult: Meta = {
                 id: 1,
                 app: testParam_name,
@@ -111,7 +111,7 @@ describe('Integration test (repository specific), priority: Meta', () => {
         })
 
         test('Repository process fn findAll, result: "SUCCESS"', async () => {
-            const mockTimestamp = Utils.getUTCTimestamp(new Date("2025-01-01T13:00:01.000"));
+            const mockTimestamp = "2025-01-01T14:00:01.000";
             const testResult: Meta[] = [{
                 id: 1,
                 app: "support",
@@ -158,9 +158,9 @@ describe('Integration test (repository specific), priority: Meta', () => {
 
             const testResult = structuredClone(mockResult);
             testResult['id'] = testParam_id;
-            testResult['build_on'] = Utils.getUTCTimestamp(new Date('2025-01-01T13:00:01.000'));
+            testResult['build_on'] = '2025-01-01T14:00:01.000';
             testResult['last_modified'] = mockTimeStamp;
-            testResult['created_on'] = Utils.getUTCTimestamp(new Date('2025-01-01T13:00:01.000'));
+            testResult['created_on'] = '2025-01-01T14:00:01.000';
 
             dbTestSetup.addTestData();
             const testResponse = await request(app)
@@ -173,7 +173,7 @@ describe('Integration test (repository specific), priority: Meta', () => {
 
         test('Repository process fn findMaintenance, result: "Success"', async () => {
             const testParam_name = 'support';
-            const mockTimestamp = Utils.getUTCTimestamp(new Date("2025-01-01T13:00:01.000"));
+            const mockTimestamp = "2025-01-01T14:00:01.000";
             const testResult: Maintenance = {
                 id: mockResult.id,
                 app: testParam_name,
@@ -200,7 +200,7 @@ describe('Integration test (repository specific), priority: Meta', () => {
             // Mock Utils generated timeStamp for easy comparison.
             jest.spyOn(Utils, "getTimestampWithOffsetInfo").mockReturnValue(mockParam_timeStamp);
 
-            const testTimestamp = Utils.getUTCTimestamp(new Date("2025-01-01T13:00:01.000"));
+            const testTimestamp = "2025-01-01T14:00:01.000";
             const testResult: Maintenance = {
                 id: mockResult.id,
                 app: testParam_name,

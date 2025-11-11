@@ -87,18 +87,3 @@ export function logRepoError(logMsg: string, err: any) {
         console.log(logMsg, err);
     }
 }
-
-/**
- * @returns yyyy-mm-ddThh:mm:ss.000
- */
-export function getUTCTimestamp(time: Date): string {
-    const day = time.getUTCDate() < 10 ? `0${time.getUTCDate()}` : time.getUTCDate().toString();
-    const month = time.getUTCMonth()+1 < 10 ? `0${time.getMonth()+1}` : (time.getMonth()+1).toString();
-
-    const hours = time.getUTCHours() < 10 ? `0${time.getUTCHours()}` : `${time.getUTCHours()}`;
-    const minutes = time.getUTCMinutes() < 10 ? `0${time.getUTCMinutes()}` : `${time.getUTCMinutes()}`;
-    const seconds = time.getUTCSeconds() < 10 ? `0${time.getUTCSeconds()}` : `${time.getUTCSeconds()}`;
-
-    // need prefix-0 on single digits
-    return `${time.getUTCFullYear()}-${month}-${day}T${hours}:${minutes}:${seconds}.000`;
-}

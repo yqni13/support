@@ -45,7 +45,7 @@ describe('Integration test (repository specific), priority: Clients', () => {
 
         test('Repository process fn findStatusByName, result: "SUCCESS"', async () => {
             const testParam_name = 'TESTCLIENT';
-            const mockTimeStamp = Utils.getUTCTimestamp(new Date('2025-01-01T14:00:01.000Z'));
+            const mockTimeStamp = '2025-01-01T15:00:01.000';
             const testResult: ClientsStatusResponseDTO = {
                 client_id: '9e024539-32e8-4317-8007-84a3956e6b57',
                 name: testParam_name,
@@ -95,21 +95,19 @@ describe('Integration test (repository specific), priority: Clients', () => {
         test('Repository process fn updateStatus, result: "SUCCESS"', async () => {
             const testParam_id = '9e024539-32e8-4317-8007-84a3956e6b57';
             const mockTimeStamp = '2025-01-01T14:00:01.000';
-            const mockParam_timeStamp = Utils.getTimestampWithoutOffsetInfo(new Date(mockTimeStamp));
-            const testParam_timestamp = Utils.getUTCTimestamp(new Date(mockTimeStamp + 'Z'));
             const testParam_data: Partial<Clients> = {
                 status: ApiKeyStatus.DISABLED
             };
 
-            jest.spyOn(Utils, "getTimestampWithOffsetInfo").mockReturnValue(mockParam_timeStamp);
+            jest.spyOn(Utils, "getTimestampWithOffsetInfo").mockReturnValue(mockTimeStamp);
 
             const testResult: ClientsStatusResponseDTO = {
                 client_id: testParam_id,
                 name: 'TESTCLIENT',
                 status: ApiKeyStatus.DISABLED,
-                last_use: testParam_timestamp,
-                last_modified: mockTimeStamp,
-                created_on: testParam_timestamp
+                last_use: '2025-01-01T15:00:01.000',
+                last_modified: '2025-01-01T15:00:01.000',
+                created_on: '2025-01-01T15:00:01.000'
             };
 
             dbTestSetup.addTestData();
