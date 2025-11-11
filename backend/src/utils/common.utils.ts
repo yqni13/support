@@ -4,6 +4,7 @@ import { secrets } from './secrets.utils';
 import { NextFunction, Request, Response } from "express";
 import { v4 as uuid_v4 } from 'uuid';
 import crypto from 'crypto';
+import { EnvMode } from './enums/env-mode.enum';
 
 export type AsyncMiddleware = (req: Request, res: Response, next: NextFunction) => Promise<void>;
 
@@ -78,4 +79,11 @@ export function getTimestampWithOffsetInfo(time: Date): string {
 
     // Need prefix-0 on single digits.
     return `${time.getFullYear()}-${month}-${day} ${hours}:${minutes}:${seconds}${gmtData.prefix}${gmtData.offset}`;
+}
+
+export function logRepoError(logMsg: string, err: any) {
+    // TODO(yqni13): logging
+    if((secrets.ENV_MODE).trim() === EnvMode.DEV || (secrets.ENV_MODE).trim() === EnvMode.TEST) {
+        console.log(logMsg, err);
+    }
 }
