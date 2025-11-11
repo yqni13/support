@@ -1,5 +1,5 @@
 # yqni13 | support
-$\texttt{\color{teal}{v0.7.2}}$
+$\texttt{\color{teal}{v0.7.3}}$
 
 
 <br>
@@ -53,9 +53,10 @@ The development process is structured by the TDD (test driven development) princ
 
 ### $\textsf{\color{forestgreen}last update:}$
 
-$\textsf{[v0.7.1\ =>\ {\textbf{\color{brown}0.7.2}]}}$ app<br>
+$\textsf{[v0.7.1\ =>\ {\textbf{\color{brown}0.7.3}]}}$ app<br>
 $\textsf{[v1.0.1\ =>\ {\textbf{\color{brown}1.0.2}]}}$ docker<br>
 - $\textsf{\color{teal}Addition:}$ Added script to run tests on GitHub PR's (feat* => DEV, DEV => STAG, STAG => PROD).
+- $\textsf{\color{orange}Patch:}$ Updated tests for existing timestamps to convert by UTC.
 - $\textsf{\color{orange}Patch:}$ Updated docker-compose with additional env var (set timezone to temporarily fix testing in other environments).
 
 <br>

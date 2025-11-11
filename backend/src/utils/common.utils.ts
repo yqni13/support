@@ -88,7 +88,10 @@ export function logRepoError(logMsg: string, err: any) {
     }
 }
 
-export function getCustomUTCString(time: Date): string {
+/**
+ * @returns yyyy-mm-ddThh:mm:ss.000
+ */
+export function getUTCTimestamp(time: Date): string {
     const day = time.getUTCDate() < 10 ? `0${time.getUTCDate()}` : time.getUTCDate().toString();
     const month = time.getUTCMonth()+1 < 10 ? `0${time.getMonth()+1}` : (time.getMonth()+1).toString();
 
