@@ -11,7 +11,7 @@ import clientsModel from "../../../src/models/clients.model";
 import { Clients } from "../../../src/repositories/interfaces/clients.entity.interface";
 
 jest.mock('../../../src/middleware/auth.middleware', () => ({
-    auth: jest.fn(() =>  (req: Request, res: Response, next: NextFunction) => next())
+    authAdmin: jest.fn(() =>  (req: Request, res: Response, next: NextFunction) => next())
 }));
 jest.mock('../../../src/middleware/maintenance.middleware', () => ({
     maintain: jest.fn(() =>  (req: Request, res: Response, next: NextFunction) => next())

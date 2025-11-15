@@ -11,9 +11,9 @@ import clientsService from "../services/clients.service";
 import { Clients } from "../repositories/interfaces/clients.entity.interface";
 
 /**
- * @description Authentication for admin only access.
+ * @description Authentication for admin only access by validating admin-key.
  */
-export function auth() {
+export function authAdmin() {
     return async function (req: Request, res: Response, next: NextFunction) {
         try {
             const adminKey = req.header('Support-Admin-Key');
@@ -28,8 +28,9 @@ export function auth() {
             }
             next();
         } catch(err: any) {
-            if(secrets.ENV_MODE === EnvMode.DEV) {
-                console.log('AUTH ERROR ON VERIFICATION (Auth Middleware): ', err.message);
+            // TODO(yqni13): logging
+            if((secrets.ENV_MODE).trim() === EnvMode.DEV || (secrets.ENV_MODE).trim() === EnvMode.TEST) {
+                console.log('AUTH ERROR ON VERIFICATION (Auth-Admin Middleware): ', err.message);
             }
             err.status = 401;
             next(err);
@@ -38,9 +39,9 @@ export function auth() {
 }
 
 /**
- * @description Verify request by checking on validity and status of api key.
+ * @description Authentication of client request by checking on validity and status of api key.
  */
-export function verify() {
+export function authClient() {
     return async function(req: Request, res: Response, next: NextFunction) {
         try {
             // Header naming convention (also noted in GLOSSARY) regarding:
@@ -64,8 +65,9 @@ export function verify() {
 
             next();
         } catch(err: any) {
-            if(secrets.ENV_MODE === EnvMode.DEV) {
-                console.log('VALIDATE API_KEY ERROR ON VERIFICATION (Auth Middleware): ', err.message);
+            // TODO(yqni13): logging
+            if((secrets.ENV_MODE).trim() === EnvMode.DEV || (secrets.ENV_MODE).trim() === EnvMode.TEST) {
+                console.log('AUTH ERROR ON VERIFICATION (Auth-Client Middleware): ', err.message);
             }
             err.status = 401;
             next(err);

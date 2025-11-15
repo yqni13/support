@@ -9,10 +9,7 @@ import { ErrorStatusCodes } from '../../../src/utils/errorStatusCodes.utils';
 import { MaintenanceMode } from '../../../src/utils/enums/maintenance-mode.enum';
 
 jest.mock('../../../src/middleware/auth.middleware', () => ({
-    auth: jest.fn(() =>  (req: Request, res: Response, next: NextFunction) => next())
-}));
-jest.mock('../../../src/middleware/maintenance.middleware', () => ({
-    maintain: jest.fn(() => (req: Request, res: Response, next: NextFunction) => next())
+    authAdmin: jest.fn(() =>  (req: Request, res: Response, next: NextFunction) => next())
 }));
 
 jest.setTimeout(60000);
