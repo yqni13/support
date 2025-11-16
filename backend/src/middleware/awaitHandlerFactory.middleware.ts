@@ -1,5 +1,5 @@
 import { RequestHandler } from "express";
-import { AsyncMiddleware } from "../utils/common.utils";
+import { AsyncMiddleware } from "./interfaces/factory.interface";
 
 export function awaitHandlerFactory(middleware: AsyncMiddleware): RequestHandler {
     return async (req, res, next) => {
