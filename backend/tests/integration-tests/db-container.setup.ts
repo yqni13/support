@@ -69,6 +69,8 @@ export class DBTestSetup {
             await this.client.query(metaData.sql, metaData.values);
             const clientData = dbTestData.getClientsInsertSql();
             await this.client.query(clientData.sql, clientData.values);
+            const userData = dbTestData.getUsersInsertSql();
+            await this.client.query(userData.sql, userData.values);
             await this.client.query('COMMIT');
         } catch (err: any) {
             await this.client.query('ROLLBACK');

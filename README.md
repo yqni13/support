@@ -1,5 +1,5 @@
 # yqni13 | support
-$\texttt{\color{teal}{v0.7.2}}$
+$\texttt{\color{teal}{v0.7.4}}$
 
 
 <br>
@@ -53,8 +53,11 @@ The development process is structured by the TDD (test driven development) princ
 
 ### $\textsf{\color{forestgreen}last update:}$
 
-$\textsf{[v0.7.2\ =>\ {\textbf{\color{brown}v0.7.3}]}}$ app
-- $\textsf{\color{teal}Addition:}$ Added new middleware to observe and check requests fulfilling or infringing certail rules like rate-limits and activates maitenance mode in emergency (no logic at the moment, only blueprint).
+$\textsf{[v0.7.3\ =>\ {\textbf{\color{brown}v0.7.4}]}}$ app<br>
+$\textsf{[v1.1.0\ =>\ {\textbf{\color{brown}v1.2.0}]}}$ database
+- $\textsf{\color{teal}Addition:}$ Added enums to handle flags and user status.
+- $\textsf{\color{teal}Addition:}$ Added insert command to testcontainers ('users' table).
+- $\textsf{\color{teal}Addition:}$ Migrated users table to database (no logic).
 
 <br>
 
