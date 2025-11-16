@@ -6,8 +6,6 @@ import { v4 as uuid_v4 } from 'uuid';
 import crypto from 'crypto';
 import { EnvMode } from './enums/env-mode.enum';
 
-export type AsyncMiddleware = (req: Request, res: Response, next: NextFunction) => Promise<void>;
-
 export function generateUUID(): string {
     return uuid_v4();
 }

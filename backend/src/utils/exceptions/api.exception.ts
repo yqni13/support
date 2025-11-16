@@ -42,3 +42,8 @@ export class UnimplementedException extends ApiException {
     }
 }
 
+export class ExceedMaxEndpointException extends ApiException {
+    constructor(message: string, data?: unknown) {
+        super(ErrorCodes.ExceedMaxEndpointException, message, data, ErrorStatusCodes.ExceedMaxEndpointException);
+    }
+}
