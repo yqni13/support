@@ -55,7 +55,7 @@ describe('Integration test (repository specific), priority: Clients', () => {
                 created_on: mockTimeStamp
             };
 
-            dbTestSetup.addTestData();
+            await dbTestSetup.addTestData();
             const testResponse = await request(app)
                 .get(`${apiUrl}/status/${testParam_name}`);
 
@@ -83,7 +83,7 @@ describe('Integration test (repository specific), priority: Clients', () => {
                 created_on: mockTimeStamp
             };
 
-            dbTestSetup.addTestData();
+            await dbTestSetup.addTestData();
             const testResponse = await request(app)
                 .post(`${apiUrl}/create`)
                 .send(testParam_dto);
@@ -110,7 +110,7 @@ describe('Integration test (repository specific), priority: Clients', () => {
                 created_on: '2025-01-01T15:00:01.000'
             };
 
-            dbTestSetup.addTestData();
+            await dbTestSetup.addTestData();
             const testResponse = await request(app)
                 .put(`${apiUrl}/status/${testParam_id}`)
                 .send(testParam_data);

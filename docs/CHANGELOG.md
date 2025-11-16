@@ -4,9 +4,19 @@
 
 <br>
 
+### $\textsf{\color{skyblue}2025/11/16}$
+
+$\textsf{[v0.7.3\ =>\ {\textbf{\color{brown}v0.7.4}]}}$ app<br>
+$\textsf{[v1.1.0\ =>\ {\textbf{\color{brown}v1.2.0}]}}$ database
+- $\textsf{\color{teal}Addition:}$ Added enums to handle flags and user status.
+- $\textsf{\color{teal}Addition:}$ Added insert command to testcontainers ('users' table).
+- $\textsf{\color{teal}Addition:}$ Migrated users table to database (no logic).
+
+<br>
+
 ### $\textsf{\color{skyblue}2025/11/15}$
 
-$\textsf{[v0.7.2\ =>\ {\textbf{\color{brown}v0.7.3}]}}$ app
+$\textsf{[v0.7.2\ =>\ v0.7.3]}$ app
 - $\textsf{\color{teal}Addition:}$ Added new middleware to observe and check requests fulfilling or infringing certail rules like rate-limits and activates maitenance mode in emergency (no logic at the moment, only blueprint).
 
 <br>
@@ -30,9 +40,9 @@ $\textsf{[v0.7.0\ =>\ v0.7.1]}$ app<br>
 ### $\textsf{\color{skyblue}2025/11/09}$
 
 $\textsf{[v0.5.1\ =>\ v0.7.0]}$ app<br>
-$\textsf{[v1.0.1\ =>\ {\textbf{\color{brown}1.1.0}]}}$ database
+$\textsf{[v1.0.1\ =>\ v1.1.0]}$ database
 - $\textsf{\color{teal}Addition:}$ Added verification middleware to validate requests by api-keys.
-- $\textsf{\color{teal}Addition:}$ Migrated clients table to database and added logic to handle status changes and api-key verifications.
+- $\textsf{\color{teal}Addition:}$ Migrated 'clients' table to database and added logic to handle status changes and api-key verifications.
 
 <br>
 
@@ -86,7 +96,7 @@ $\textsf{[v0.2.1\ =>\ v0.2.2]}$ app
 $\textsf{[v0.1.0\ =>\ v0.2.1]}$ app<br>
 $\textsf{[v0.0.0\ =>\ v1.0.0]}$ database
 - $\textsf{\color{orange}Patch:}$ Updated typescript configuration to include jest testing-framework.
-- $\textsf{\color{teal}Addition:}$ Added meta handling in addition to full db setup.
+- $\textsf{\color{teal}Addition:}$ Added 'meta' handling in addition to full db setup.
 
 <br>
 

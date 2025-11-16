@@ -1,5 +1,6 @@
 import { ApiKeyStatus } from "../../src/utils/enums/api-key-status.enum";
 import { MaintenanceMode } from "../../src/utils/enums/maintenance-mode.enum";
+import { UserStatus } from "../../src/utils/enums/user-status.enum";
 import { secrets } from "../../src/utils/secrets.utils";
 
 export class DBTestData {
@@ -9,7 +10,8 @@ export class DBTestData {
     constructor() {
         this.tableRecord = {
             meta: 'meta',
-            clients: 'clients'
+            clients: 'clients',
+            users: 'users'
         };
     }
 
@@ -43,6 +45,15 @@ export class DBTestData {
         VALUES ($1, $2, $3, $4, $5, $6, $7);
         `;
         const values = ['9e024539-32e8-4317-8007-84a3956e6b57', 'TESTCLIENT', secrets.TEST_APIKEY_HASH, ApiKeyStatus.ACTIVE, '2025-01-01T14:00:01.000Z', '2025-01-01T14:00:01.000Z', '2025-01-01T14:00:01.000Z'];
+        return { sql: sql, values: values };
+    }
+
+    getUsersInsertSql(): { sql: string, values: any[] } {
+        const sql = `INSERT INTO ${this.tableRecord['users']}
+        (user_id, email, status, flag, last_modified, created_on)
+        VALUES ($1, $2, $3, $4, $5, $6);
+        `;
+        const values = ['87e4d6e3-d678-4de0-8806-e89135cbd38c', 'max.mustermann@yqni13.com', UserStatus.ACTIVE, null, '2025-01-01T14:00:03.000', '2025-01-01T14:00:03.000'];
         return { sql: sql, values: values };
     }
 }
