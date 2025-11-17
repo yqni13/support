@@ -13,7 +13,7 @@ async function up(pgm) {
             primaryKey: true
         },
         email: {
-            type: 'varchar(318)',
+            type: 'varchar(320)',
             notNull: true,
             unique: true
         },

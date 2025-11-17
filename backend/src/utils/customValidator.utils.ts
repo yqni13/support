@@ -43,6 +43,7 @@ export function validateApiKey(key: string): boolean {
 }
 
 export function validateEmail(email: string): boolean {
+    // Rules based on: https://mailcon.com/email-address-formatting/ [17.11.2025, 14:00]
     if((email.split('@').length - 1) !== 1) {
         throw new Error('support-invalid-length#email<@>$1')
     }
@@ -58,19 +59,21 @@ export function validateEmail(email: string): boolean {
 export function validateEmailLength(email: string, posATsign: number): boolean {
     // Length ruleset
     // Minimum: username (1 char) + "@" + mail server (1 char) + "." + domain (2 char)
-    // Maximum: username (63 char) + "@" + mail server, ".", domain (254 char)
+    // Maximum: username (64 char) + "@" + mail server & "." & domain (255 char)
+
     if(email.length < 6) {
         throw new Error('support-invalid-min#email?6');
-    } else if(email.length > 318) {
-        throw new Error('support-invalid-max#email!318');
+    } else if(email.length > 320) {
+        throw new Error('support-invalid-max#email!320');
     }
 
-    if(posATsign < 1 || posATsign > 62) { // check by position
+    const username = email.substring(0, posATsign);
+    if(username.length < 1 || username.length > 64) {
         throw new Error('support-invalid-length#email-username');
     }
 
     const domain = email.substring(posATsign+1);
-    if(domain.length < 4 || domain.length > 254) { // check by length
+    if(domain.length < 4 || domain.length > 255) {
         throw new Error('support-invalid-length#email-domain');
     }
 

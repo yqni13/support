@@ -71,6 +71,14 @@ describe('CustomValidator tests, priority: no model specification', () => {
 
             expect(testFn).toBe(expectResult);
         })
+
+        test('fn: validateEmail, params: <email> = user@test.co.at', () => {
+            const mockParam_email = 'user@test.co.at';
+            const testFn = CustomValidators.validateEmail(mockParam_email);
+            const expectResult = true;
+
+            expect(testFn).toBe(expectResult);
+        })
     })
 
     describe('Testing invalid fn calls', () => {
@@ -127,7 +135,7 @@ describe('CustomValidator tests, priority: no model specification', () => {
         test('fn: validateEmailLength, params: invalid <email> by total length (max)', () => {
             const mockParam_email = 'Iam70characterslongAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA@ToExpandOn.TotalOf400CharactersBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB';
             const mockParam_posATsign = 71;
-            const expectResult = 'support-invalid-max#email!318';
+            const expectResult = 'support-invalid-max#email!320';
 
             expect(() => {
                 CustomValidators.validateEmailLength(mockParam_email, mockParam_posATsign);
