@@ -1,5 +1,5 @@
 # yqni13 | support
-$\texttt{\color{teal}{v0.7.2}}$
+$\texttt{\color{teal}{v0.7.6}}$
 
 
 <br>
@@ -53,10 +53,12 @@ The development process is structured by the TDD (test driven development) princ
 
 ### $\textsf{\color{forestgreen}last update:}$
 
-$\textsf{[v0.7.1\ =>\ {\textbf{\color{brown}0.7.2}]}}$ app<br>
-$\textsf{[v1.0.1\ =>\ {\textbf{\color{brown}1.0.2}]}}$ docker<br>
-- $\textsf{\color{teal}Addition:}$ Added script to run tests on GitHub PR's (feat* => DEV, DEV => STAG, STAG => PROD).
-- $\textsf{\color{orange}Patch:}$ Updated docker-compose with additional env var (set timezone to fix difference between local system and docker container).
+$\textsf{[v0.7.4\ =>\ {\textbf{\color{brown}v0.7.6}]}}$ app<br>
+$\textsf{[v1.2.0\ =>\ {\textbf{\color{brown}v1.3.0}]}}$ database
+- $\textsf{\color{teal}Addition:}$ Added customized email validation.
+- $\textsf{\color{teal}Addition:}$ Added enum to handle ticket status.
+- $\textsf{\color{teal}Addition:}$ Added insert command to testcontainers ('tickets' table).
+- $\textsf{\color{teal}Addition:}$ Migrated 'tickets' table to database (no logic).
 
 <br>
 

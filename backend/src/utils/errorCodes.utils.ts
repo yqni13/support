@@ -19,5 +19,6 @@ export const ErrorCodes: any = {
     MaintenanceException: 17,
     MalformedApiKeyException: 18,
     MissingApiKeyException: 19,
-    InvalidApiKeyException: 20
+    InvalidApiKeyException: 20,
+    ExceedMaxEndpointException: 21
 };
