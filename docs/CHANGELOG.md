@@ -4,13 +4,23 @@
 
 <br>
 
+### $\textsf{\color{skyblue}2025/11/17}$
+
+$\textsf{[v0.7.4\ =>\ {\textbf{\color{brown}v0.7.5}]}}$ app<br>
+$\textsf{[v1.2.0\ =>\ {\textbf{\color{brown}v1.3.0}]}}$ database
+- $\textsf{\color{teal}Addition:}$ Added enum to handle ticket status.
+- $\textsf{\color{teal}Addition:}$ Added insert command to testcontainers ('tickets' table).
+- $\textsf{\color{teal}Addition:}$ Migrated 'tickets' table to database (no logic).
+
+<br>
+
 ### $\textsf{\color{skyblue}2025/11/16}$
 
-$\textsf{[v0.7.3\ =>\ {\textbf{\color{brown}v0.7.4}]}}$ app<br>
-$\textsf{[v1.1.0\ =>\ {\textbf{\color{brown}v1.2.0}]}}$ database
+$\textsf{[v0.7.3\ =>\ v0.7.4]}$ app<br>
+$\textsf{[v1.1.0\ =>\ v1.2.0]}$ database
 - $\textsf{\color{teal}Addition:}$ Added enums to handle flags and user status.
 - $\textsf{\color{teal}Addition:}$ Added insert command to testcontainers ('users' table).
-- $\textsf{\color{teal}Addition:}$ Migrated users table to database (no logic).
+- $\textsf{\color{teal}Addition:}$ Migrated 'users' table to database (no logic).
 
 <br>
 
