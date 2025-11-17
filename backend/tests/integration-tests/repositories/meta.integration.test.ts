@@ -9,10 +9,7 @@ import { ErrorStatusCodes } from '../../../src/utils/errorStatusCodes.utils';
 import { MaintenanceMode } from '../../../src/utils/enums/maintenance-mode.enum';
 
 jest.mock('../../../src/middleware/auth.middleware', () => ({
-    auth: jest.fn(() =>  (req: Request, res: Response, next: NextFunction) => next())
-}));
-jest.mock('../../../src/middleware/maintenance.middleware', () => ({
-    maintain: jest.fn(() => (req: Request, res: Response, next: NextFunction) => next())
+    authAdmin: jest.fn(() =>  (req: Request, res: Response, next: NextFunction) => next())
 }));
 
 jest.setTimeout(60000);
@@ -75,7 +72,7 @@ describe('Integration test (repository specific), priority: Meta', () => {
                 created_on: mockTimestamp
             };
 
-            dbTestSetup.addTestData();
+            await dbTestSetup.addTestData();
             const testResponse = await request(app)
                 .get(`${apiUrl}/by-id/${testParam_id}`);
 
@@ -102,7 +99,7 @@ describe('Integration test (repository specific), priority: Meta', () => {
                 created_on: mockTimestamp
             };
 
-            dbTestSetup.addTestData();
+            await dbTestSetup.addTestData();
             const testResponse = await request(app)
                 .get(`${apiUrl}/by-name/${testParam_name}`);
 
@@ -128,7 +125,7 @@ describe('Integration test (repository specific), priority: Meta', () => {
                 created_on: mockTimestamp
             }];
 
-            dbTestSetup.addTestData();
+            await dbTestSetup.addTestData();
             const testResponse = await request(app)
                 .get(`${apiUrl}/all`);
 
@@ -162,7 +159,7 @@ describe('Integration test (repository specific), priority: Meta', () => {
             testResult['last_modified'] = mockTimeStamp;
             testResult['created_on'] = '2025-01-01T14:00:01.000';
 
-            dbTestSetup.addTestData();
+            await dbTestSetup.addTestData();
             const testResponse = await request(app)
                 .put(`${apiUrl}/info/${testParam_id}`)
                 .send(testParam_data);
@@ -183,7 +180,7 @@ describe('Integration test (repository specific), priority: Meta', () => {
                 created_on: mockTimestamp
             };
 
-            dbTestSetup.addTestData();
+            await dbTestSetup.addTestData();
             const testResponse = await request(app)
                 .get(`${apiUrl}/maintenance/${testParam_name}`);
 
@@ -210,7 +207,7 @@ describe('Integration test (repository specific), priority: Meta', () => {
                 created_on: testTimestamp
             }
 
-            dbTestSetup.addTestData();
+            await dbTestSetup.addTestData();
             const testResponse = await request(app)
                 .put(`${apiUrl}/maintenance/${testParam_name}`)
                 .send(testParam_data);
