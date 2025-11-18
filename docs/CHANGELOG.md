@@ -4,9 +4,17 @@
 
 <br>
 
+### $\textsf{\color{skyblue}2025/11/18}$
+
+$\textsf{[v0.7.6\ =>\ {\textbf{\color{brown}v0.8.1}]}}$ app
+- $\textsf{\color{green}Change:}$ Added 'issued' state to ticket status enum (default).
+- $\textsf{\color{teal}Addition:}$ Added routes + basic logic to handle 'Users' data.
+
+<br>
+
 ### $\textsf{\color{skyblue}2025/11/17}$
 
-$\textsf{[v0.7.4\ =>\ {\textbf{\color{brown}v0.7.6}]}}$ app<br>
+$\textsf{[v0.7.4\ =>\ v0.7.6]}$ app<br>
 $\textsf{[v1.2.0\ =>\ {\textbf{\color{brown}v1.3.0}]}}$ database
 - $\textsf{\color{teal}Addition:}$ Added customized email validation.
 - $\textsf{\color{teal}Addition:}$ Added enum to handle ticket status.
