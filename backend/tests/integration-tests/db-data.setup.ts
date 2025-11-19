@@ -61,10 +61,10 @@ export class DBTestData {
 
     getTicketsInsertSql(): { sql: string, values: any[] } {
         const sql = `INSERT INTO ${this.tableRecord['tickets']}
-        (ticket_id, client_id, user_id, status, message_hash, resource_paths, flag, last_modified, created_on)
+        (ticket_id, client_id, user_id, status, message, resource_paths, flag, last_modified, created_on)
         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9);
         `;
-        const values = ['ae9550fc-16fd-4e9a-8ab5-d6ab55b84cb4', '9e024539-32e8-4317-8007-84a3956e6b57', '87e4d6e3-d678-4de0-8806-e89135cbd38c', TicketStatus.ACTIVE, 'e51cc9ac2d8bb2bcb5ad072d0bee5dfe97c061a657f6d1a9a2712a9fd48b5f6e', ['test/path/num0', 'test/path/num1'], null, '2025-01-01T14:00:04.000', '2025-01-01T14:00:04.000'];
+        const values = ['ae9550fc-16fd-4e9a-8ab5-d6ab55b84cb4', '9e024539-32e8-4317-8007-84a3956e6b57', '87e4d6e3-d678-4de0-8806-e89135cbd38c', TicketStatus.ISSUED, 'test-message', ['test/path/num0', 'test/path/num1'], null, '2025-01-01T14:00:04.000', '2025-01-01T14:00:04.000'];
         return { sql: sql, values: values };
     }
 }

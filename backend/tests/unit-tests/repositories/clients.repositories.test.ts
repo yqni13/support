@@ -195,6 +195,7 @@ describe('Database tests table <clients>, priority: create', () => {
             );
         })
 
+        // TODO(yqni13): remove test and null return in repository method
         test('Return null for non-existing entry by non-unique name', async () => {
             const mockVar_apiKey = clientsModel.generateApiKeyObj();
             const mockParam_id = Utils.generateUUID();

@@ -1,7 +1,6 @@
 import { InvalidSourceException } from './exceptions/common.exception';
 import { MailSource } from './enums/mail-source.enum';
 import { secrets } from './secrets.utils';
-import { NextFunction, Request, Response } from "express";
 import { v4 as uuid_v4 } from 'uuid';
 import crypto from 'crypto';
 import { EnvMode } from './enums/env-mode.enum';
@@ -77,6 +76,21 @@ export function getTimestampWithOffsetInfo(time: Date): string {
 
     // Need prefix-0 on single digits.
     return `${time.getFullYear()}-${month}-${day} ${hours}:${minutes}:${seconds}${gmtData.prefix}${gmtData.offset}`;
+}
+
+/**
+ * @returns yyyy-mm-ddThh:mm:ss.000
+ */
+export function getCustomUTCString(time: Date): string {
+    const day = time.getUTCDate() < 10 ? `0${time.getUTCDate()}` : time.getUTCDate().toString();
+    const month = time.getUTCMonth()+1 < 10 ? `0${time.getUTCMonth()+1}` : (time.getUTCMonth()+1).toString();
+
+    const hours = time.getUTCHours() < 10 ? `0${time.getUTCHours()}` : `${time.getUTCHours()}`;
+    const minutes = time.getUTCMinutes() < 10 ? `0${time.getUTCMinutes()}` : `${time.getUTCMinutes()}`;
+    const seconds = time.getUTCSeconds() < 10 ? `0${time.getUTCSeconds()}` : `${time.getUTCSeconds()}`;
+
+    // need prefix-0 on single digits
+    return `${time.getUTCFullYear()}-${month}-${day}T${hours}:${minutes}:${seconds}.000`;
 }
 
 export function logRepoError(logMsg: string, err: any) {

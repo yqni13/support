@@ -53,7 +53,7 @@ describe('Database tests table <meta>, priority: findById', () => {
                 expect.stringContaining(sql),
                 expect.arrayContaining([mockParam_id])
             );
-        });
+        })
 
         test('Return null for non-existing entry, params: <key> = 0', async () => {
             const mockParam_id = 0;

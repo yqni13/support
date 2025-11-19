@@ -1,3 +1,6 @@
+import { UsersFilterDTO } from "../dtos/users.dto";
+import { Users } from "../repositories/interfaces/users.entity.interface";
+import usersRepository from "../repositories/users.repository";
 import { MalformedApiKeyException } from "./exceptions/auth.exception";
 
 export function validateVersionStructure(version: string, numOfDelimiter: number): boolean {
@@ -116,5 +119,15 @@ export function validateEmailPolicies(email: string): boolean {
         }
     })
 
+    return true;
+}
+
+export async function validateEmailUniqueness(email: string): Promise<boolean> {
+    const dto: UsersFilterDTO = { email: email };
+    const result = await usersRepository.findByFilter(dto);
+    const isUnique = result && (result as Users[]).length > 0 ? false : true;
+    if(!isUnique) {
+        throw new Error('support-nonunique-email');
+    }
     return true;
 }
