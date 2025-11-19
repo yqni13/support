@@ -8,7 +8,7 @@ class UsersModel {
             ...data,
             last_modified: Utils.getCustomUTCString(new Date(data.last_modified)),
             created_on: Utils.getCustomUTCString(new Date(data.created_on))
-        }
+        };
     }
 
     mapArrayToApi(users: Users[]): Users[] {
@@ -29,7 +29,7 @@ class UsersModel {
             flag: !dto.flag ? null : dto.flag,
             last_modified: timestamp,
             created_on: timestamp
-        }
+        };
     }
 }
 

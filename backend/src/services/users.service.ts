@@ -1,4 +1,4 @@
-import { UsersCreateUpdateDTO, UsersResponseDTO } from "../dtos/users.dto";
+import { UsersCreateUpdateDTO, UsersFilterDTO, UsersResponseDTO } from "../dtos/users.dto";
 import { IRepoError } from "../repositories/interfaces/error.repository.interface";
 import usersRepository from "../repositories/users.repository";
 import * as Utils from "../utils/common.utils";
@@ -16,13 +16,21 @@ class UsersService {
 
     async findAll(): Promise<UsersResponseDTO[] | IRepoError | null> {
         let result = await usersRepository.findAll();
-        result = !result || Utils.isIRepoError(result)
+        result = Utils.isIRepoError(result)
             ? result
             : usersModel.mapArrayToApi(result as UsersResponseDTO[]);
         return result;
     }
 
-    async create(dto: UsersCreateUpdateDTO): Promise<UsersResponseDTO | IRepoError | null> {
+    async findByFilter(dto: UsersFilterDTO): Promise<UsersResponseDTO[] | IRepoError | null> {
+        let result = await usersRepository.findByFilter(dto);
+        result = Utils.isIRepoError(result)
+            ? result
+            : usersModel.mapArrayToApi(result as UsersResponseDTO[]);
+        return result;
+    }
+
+    async create(dto: UsersCreateUpdateDTO): Promise<UsersResponseDTO | IRepoError> {
         const user: Users = usersModel.generateUser(dto);
         let result = await usersRepository.create(user);
         result = !result || Utils.isIRepoError(result)

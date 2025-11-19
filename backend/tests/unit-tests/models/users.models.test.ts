@@ -1,5 +1,5 @@
 import { Users } from "../../../src/repositories/interfaces/users.entity.interface";
-import { UsersCreateUpdateDTO, UsersResponseDTO } from "../../../src/dtos/users.dto";
+import { UsersCreateUpdateDTO } from "../../../src/dtos/users.dto";
 import usersModel from "../../../src/models/users.model";
 import * as Utils from "../../../src/utils/common.utils";
 import { UserStatus } from "../../../src/utils/enums/user-status.enum";
@@ -67,8 +67,10 @@ describe('Model tests, class: <users>, priority: generateUser', () => {
             };
             const testParam_id = 'valid_users_test_id';
             const testParam_timestamp = '2025-11-17T18:48:00.000';
+
             jest.spyOn(Utils, "generateUUID").mockReturnValue(testParam_id);
             jest.spyOn(Utils, "getCustomUTCString").mockReturnValue(testParam_timestamp);
+
             const testFn = usersModel.generateUser(mockParam_dto);
             const expectResult: Users = {
                 user_id: testParam_id,

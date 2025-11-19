@@ -5,11 +5,10 @@ import app from '../../../src/app';
 import { ErrorStatusCodes } from '../../../src/utils/errorStatusCodes.utils';
 import { DBTestSetup } from "../db-container.setup";
 import { runMigrations } from '../../db-migrations.setup';
-import { UsersResponseDTO } from "../../../src/dtos/users.dto";
+import { UsersFilterDTO, UsersResponseDTO } from "../../../src/dtos/users.dto";
 import { Users } from "../../../src/repositories/interfaces/users.entity.interface";
 import { UserStatus } from "../../../src/utils/enums/user-status.enum";
 import { Flag } from "../../../src/utils/enums/flag.enum";
-
 
 jest.mock('../../../src/middleware/auth.middleware', () => ({
     authAdmin: jest.fn(() =>  (req: Request, res: Response, next: NextFunction) => next())
@@ -19,25 +18,25 @@ jest.setTimeout(60000);
 
 describe('Integration test (repository specific), priority: Users', () => {
 
+    let dbTestSetup: DBTestSetup;
+    let apiUrl: string;
+    beforeAll(async () => {
+        dbTestSetup = new DBTestSetup();
+        await dbTestSetup.init();
+        await runMigrations();
+        apiUrl = '/api/v1/users';
+    });
+
+    beforeEach(async () => {
+        // Clean tables before each test to fill test data individually.
+        await dbTestSetup.clearTables();
+    });
+
+    afterAll(async () => {
+        await dbTestSetup.shutdown();
+    });
+
     describe('Testing valid fn calls', () => {
-
-        let dbTestSetup: DBTestSetup;
-        let apiUrl: string;
-        beforeAll(async () => {
-            dbTestSetup = new DBTestSetup();
-            await dbTestSetup.init();
-            await runMigrations();
-            apiUrl = '/api/v1/users';
-        });
-
-        beforeEach(async () => {
-            // Clean tables before each test to fill test data individually.
-            await dbTestSetup.clearTables();
-        });
-
-        afterAll(async () => {
-            await dbTestSetup.shutdown();
-        });
 
         test('Repository process fn findById, result: "SUCCESS"', async () => {
             const testParam_id = '87e4d6e3-d678-4de0-8806-e89135cbd38c';
@@ -79,6 +78,73 @@ describe('Integration test (repository specific), priority: Users', () => {
             expect(testResponse.body).toMatchObject(testResult);
         })
 
+        test('Repository process fn findByFilter, params: <email> result: []', async () => {
+            const testParam_dto: UsersFilterDTO = {
+                email: 'user@test.com'
+            };
+            // No entry exists in db with email value from dto.
+            const testResult: UsersResponseDTO[] = [];
+
+            await dbTestSetup.addTestData();
+            const testResponse = await request(app)
+                .post(`${apiUrl}/search`)
+                .send(testParam_dto);
+
+            expect(testResponse.statusCode).toBe(200);
+            expect(testResponse.body).toMatchObject(testResult);
+        })
+
+        test('Repository process fn findByFilter, params: <email[], status> result: "SUCCESS"', async () => {
+            const testParam_dto: UsersFilterDTO = {
+                email: ['max.mustermann@yqni13.com', 'user@test.com'],
+                status: UserStatus.ACTIVE
+            };
+            const mockTimeStamp = '2025-01-01T13:00:03.000';
+            const testResult: UsersResponseDTO[] = [{
+                user_id: '87e4d6e3-d678-4de0-8806-e89135cbd38c',
+                email: 'max.mustermann@yqni13.com',
+                status: UserStatus.ACTIVE,
+                flag: null,
+                last_modified: mockTimeStamp,
+                created_on: mockTimeStamp
+            }];
+
+            jest.spyOn(Utils, "getCustomUTCString").mockReturnValue(mockTimeStamp);
+
+            await dbTestSetup.addTestData();
+            const testResponse = await request(app)
+                .post(`${apiUrl}/search`)
+                .send(testParam_dto);
+
+            expect(testResponse.statusCode).toBe(200);
+            expect(testResponse.body).toMatchObject(testResult);
+        })
+
+        test('Repository process fn findByFilter, params: <flag> result: "SUCCESS"', async () => {
+            const testParam_dto: UsersFilterDTO = {
+                flag: null
+            };
+            const mockTimeStamp = '2025-01-01T13:00:03.000';
+            const testResult: UsersResponseDTO[] = [{
+                user_id: '87e4d6e3-d678-4de0-8806-e89135cbd38c',
+                email: 'max.mustermann@yqni13.com',
+                status: UserStatus.ACTIVE,
+                flag: null,
+                last_modified: mockTimeStamp,
+                created_on: mockTimeStamp
+            }];
+
+            jest.spyOn(Utils, "getCustomUTCString").mockReturnValue(mockTimeStamp);
+
+            await dbTestSetup.addTestData();
+            const testResponse = await request(app)
+                .post(`${apiUrl}/search`)
+                .send(testParam_dto);
+
+            expect(testResponse.statusCode).toBe(200);
+            expect(testResponse.body).toMatchObject(testResult);
+        })
+
         test('Repository process fn create, result: "SUCCESS"', async () => {
             const mockParam_id = '92f22e89-237b-4775-b170-1df288acad54';
             const mockTimeStamp = '2025-02-04T14:00:03.000';
@@ -113,8 +179,7 @@ describe('Integration test (repository specific), priority: Users', () => {
             const testParam_dto: Partial<Users> = {
                 email: 'user@test.com',
                 status: UserStatus.ACTIVE,
-                flag: Flag.WARNING,
-                last_modified: mockTimeStamp
+                flag: Flag.WARNING
             };
 
             // Mock Utils generated timeStamp for easy comparison.
@@ -123,6 +188,7 @@ describe('Integration test (repository specific), priority: Users', () => {
             const testResult = structuredClone(testParam_dto);
             Object.assign(testResult, {
                 user_id: testParam_id,
+                last_modified: mockTimeStamp,
                 created_on: mockTimeStamp
             });
 
@@ -157,7 +223,6 @@ describe('Integration test (repository specific), priority: Users', () => {
                 status: UserStatus.ACTIVE
             };
 
-            // "keyof typeof mockData" creates Union-Types of keys to ensure all properties are valid.
             const testedParams = Object.keys(mockData) as (keyof typeof mockData)[];
 
             test.each(testedParams)('Params: <%s>, validator: notEmpty by undefined', async (invalidParam) => {
@@ -183,7 +248,6 @@ describe('Integration test (repository specific), priority: Users', () => {
                 status: UserStatus.BLACKLISTED
             };
 
-            // "keyof typeof mockData" creates Union-Types of keys to ensure all properties are valid.
             const testedParams = Object.keys(mockData) as (keyof typeof mockData)[];
 
             test.each(testedParams)('Params: <%s>, validator: notEmpty by undefined', async (invalidParam) => {
@@ -200,6 +264,33 @@ describe('Integration test (repository specific), priority: Users', () => {
 
                 expect(mockResponse.statusCode).toBe(ErrorStatusCodes.InvalidPropertiesException);
                 expect(mockResponse.body.headers.data).toContainEqual(testError);
+            })
+        })
+
+        describe('Route: POST/create, priority: validateEmailUniqueness', () => {
+            
+            test('Params: <email> by existing "max.mustermann@yqni13.com" in db', async () => {
+                const mockParam_dto: Partial<Users> = {
+                    email: 'max.mustermann@yqni13.com',
+                    status: UserStatus.ACTIVE,
+                    flag: null
+                };
+
+                const testError = [{
+                    type: 'field',
+                    value: mockParam_dto.email,
+                    msg: 'support-nonunique-email',
+                    path: 'email',
+                    location: 'body'
+                }];
+
+                await dbTestSetup.addTestData();
+                const mockResponse = await request(app)
+                    .post(`${apiUrl}/create`)
+                    .send(mockParam_dto);
+
+                expect(mockResponse.statusCode).toBe(ErrorStatusCodes.InvalidPropertiesException);
+                expect(mockResponse.body.headers.data).toStrictEqual(testError);
             })
         })
     })

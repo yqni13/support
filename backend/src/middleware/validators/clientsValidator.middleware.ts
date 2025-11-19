@@ -9,6 +9,7 @@ export const clientsStatusFindSchema: ValidationChain[] = [
         .withMessage('support-arg-required')
 ];
 
+// TODO(yqni13): add validation to check unique name constraint
 export const clientsCreateSchema: ValidationChain[] = [
     body('name')
         .trim()
