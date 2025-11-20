@@ -111,16 +111,15 @@ class MetaRepository implements IBaseRepository<Meta>, IFindRepository<Meta> {
         }
     }
 
-    async update(id: number, data: Partial<Meta>): Promise<Meta | IRepoError | null> {
+    async update(id: number, dto: Partial<Meta>): Promise<Meta | IRepoError | null> {
         const filterColumn = 'id';
-        const timeStamp = Utils.getTimestampWithOffsetInfo(new Date());
         const sql = `UPDATE ${this.table}
         SET app = $1, author = $2, build_on = $3, environment = $4, app_version = $5, db_version = $6,
         docker_image = $7, docker_version = $8, jenkins_version = $9, last_modified = $10
         WHERE ${filterColumn} = $11
         RETURNING id, app, author, build_on, environment, app_version, db_version, docker_image, docker_version, jenkins_version, maintenance_mode, created_on, last_modified;
         `;
-        const values = [data.app, data.author, data.build_on, data.environment, data.app_version, data.db_version, data.docker_image, data.docker_version, data.jenkins_version, timeStamp, id];
+        const values = [dto.app, dto.author, dto.build_on, dto.environment, dto.app_version, dto.db_version, dto.docker_image, dto.docker_version, dto.jenkins_version, dto.last_modified, id];
 
         let db = DBConnection.getInstance();
         let client: any;
@@ -140,16 +139,14 @@ class MetaRepository implements IBaseRepository<Meta>, IFindRepository<Meta> {
         }
     }
 
-    async updateMaintenance(name: string, data: Partial<Meta>): Promise<Maintenance | IRepoError | null> {
+    async updateMaintenance(name: string, dto: Partial<Meta>): Promise<Maintenance | IRepoError | null> {
         const filterColumn = 'app';
-        const timeStamp = Utils.getTimestampWithOffsetInfo(new Date());
         const sql = `UPDATE ${this.table}
         SET maintenance_mode = $1, last_modified = $2
         WHERE ${filterColumn} = $3
         RETURNING id, app, build_on, maintenance_mode, created_on, last_modified;
         `;
-        const values = [data.maintenance_mode, timeStamp, name];
-
+        const values = [dto.maintenance_mode, dto.last_modified, name];
         let db = DBConnection.getInstance();
         let client: any;
         try {

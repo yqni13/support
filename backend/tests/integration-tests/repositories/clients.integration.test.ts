@@ -25,8 +25,8 @@ describe('Integration test (repository specific), priority: Clients', () => {
 
         let dbTestSetup: DBTestSetup;
         let apiUrl: string;
-
-        const mockParam_apiKeyObj = clientsModel.generateApiKeyObj();
+        const mockTimestamp = '2025-01-01T14:00:02.000Z';
+        const mockVar_apiKey = clientsModel._generateApiKeyObj();
         beforeAll(async () => {
             dbTestSetup = new DBTestSetup();
             await dbTestSetup.init();
@@ -45,14 +45,13 @@ describe('Integration test (repository specific), priority: Clients', () => {
 
         test('Repository process fn findStatusByName, result: "SUCCESS"', async () => {
             const testParam_name = 'TESTCLIENT';
-            const mockTimeStamp = '2025-01-01T15:00:01.000';
             const testResult: ClientsStatusResponseDTO = {
                 client_id: '9e024539-32e8-4317-8007-84a3956e6b57',
                 name: testParam_name,
                 status: ApiKeyStatus.ACTIVE,
-                last_use: mockTimeStamp,
-                last_modified: mockTimeStamp,
-                created_on: mockTimeStamp
+                last_use: mockTimestamp,
+                last_modified: mockTimestamp,
+                created_on: mockTimestamp
             };
 
             await dbTestSetup.addTestData();
@@ -66,21 +65,19 @@ describe('Integration test (repository specific), priority: Clients', () => {
         test('Repository process fn create, result: "SUCCESS"', async () => {
             const testParam_client_id = Utils.generateUUID();
             const testParam_dto = { name: 'testclient_test_create' };
-            const mockTimeStamp = '2025-01-01T14:00:01.000';
-            const mockParam_timeStamp = Utils.getTimestampWithOffsetInfo(new Date(mockTimeStamp))
 
             jest.spyOn(Utils, 'generateUUID').mockReturnValue(testParam_client_id);
-            jest.spyOn(clientsModel, 'generateApiKeyObj').mockReturnValue(mockParam_apiKeyObj);
-            jest.spyOn(Utils, "getTimestampWithOffsetInfo").mockReturnValue(mockParam_timeStamp);
+            jest.spyOn(clientsModel, '_generateApiKeyObj').mockReturnValue(mockVar_apiKey);
+            jest.spyOn(Utils, "getTimestampUTC").mockReturnValue(mockTimestamp);
 
             const testResult: ClientsCreateResponseDTO = {
                 client_id: testParam_client_id,
                 name: testParam_dto.name,
-                api_key: mockParam_apiKeyObj.keyRaw,
+                api_key: mockVar_apiKey.keyRaw,
                 status: ApiKeyStatus.ACTIVE,
-                last_use: mockTimeStamp,
-                last_modified: mockTimeStamp,
-                created_on: mockTimeStamp
+                last_use: mockTimestamp,
+                last_modified: mockTimestamp,
+                created_on: mockTimestamp
             };
 
             await dbTestSetup.addTestData();
@@ -94,20 +91,19 @@ describe('Integration test (repository specific), priority: Clients', () => {
 
         test('Repository process fn updateStatus, result: "SUCCESS"', async () => {
             const testParam_id = '9e024539-32e8-4317-8007-84a3956e6b57';
-            const mockTimeStamp = '2025-01-01T14:00:01.000';
             const testParam_data: Partial<Clients> = {
                 status: ApiKeyStatus.DISABLED
             };
 
-            jest.spyOn(Utils, "getTimestampWithOffsetInfo").mockReturnValue(mockTimeStamp);
+            jest.spyOn(Utils, "getTimestampUTC").mockReturnValue(mockTimestamp);
 
             const testResult: ClientsStatusResponseDTO = {
                 client_id: testParam_id,
                 name: 'TESTCLIENT',
                 status: ApiKeyStatus.DISABLED,
-                last_use: '2025-01-01T15:00:01.000',
-                last_modified: '2025-01-01T15:00:01.000',
-                created_on: '2025-01-01T15:00:01.000'
+                last_use: mockTimestamp,
+                last_modified: mockTimestamp,
+                created_on: mockTimestamp
             };
 
             await dbTestSetup.addTestData();
@@ -138,13 +134,13 @@ describe('Integration test (repository specific), priority: Clients', () => {
 
             test('Params: <status>, validator: notEmpty by undefined', async () => {
                 const mockParam_id = 'test_id';
-                const mockParam_data = undefined;
+                const mockParam_dto = undefined;
                 const testError = structuredClone(mockError);
                 testError['path'] = 'status';
 
                 const mockResponse = await request(app)
                     .put(`${apiUrl}/status/${mockParam_id}`)
-                    .send(mockParam_data);
+                    .send(mockParam_dto);
 
                 expect(mockResponse.statusCode).toBe(ErrorStatusCodes.InvalidPropertiesException);
                 expect(mockResponse.body.headers.data).toContainEqual(testError);

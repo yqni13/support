@@ -1,15 +1,16 @@
-import { ClientsCreateResponseDTO, ClientsLastUseResponseDTO, ClientsStatusResponseDTO } from "../dtos/clients.dto";
+import { ClientsCreateDTO, ClientsCreateResponseDTO, ClientsLastUseResponseDTO, ClientsStatusResponseDTO } from "../dtos/clients.dto";
 import { Clients } from "../repositories/interfaces/clients.entity.interface";
-import { getTimestampWithoutOffsetInfo as convert } from "../utils/common.utils";
 import crypto from 'crypto';
+import * as Utils from "../utils/common.utils";
+import { ApiKeyStatus } from "../utils/enums/api-key-status.enum";
 
 class ClientsModel {
     mapObjToApi(data: Clients): Clients {
         return {
             ...data,
-            last_use: convert(new Date(data.last_use)),
-            last_modified: convert(new Date(data.last_modified)),
-            created_on: convert(new Date(data.created_on))
+            last_use: Utils.getTimestampUTC(new Date(data.last_use)),
+            last_modified: Utils.getTimestampUTC(new Date(data.last_modified)),
+            created_on: Utils.getTimestampUTC(new Date(data.created_on))
         }
     }
 
@@ -49,7 +50,7 @@ class ClientsModel {
         };
     }
 
-    generateApiKeyObj(): { keyRaw: string, keyHash: string } {
+    _generateApiKeyObj(): { keyRaw: string, keyHash: string } {
         const keyLength = 42;
         const charset = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
         const bytes = crypto.randomBytes(keyLength);
@@ -61,6 +62,22 @@ class ClientsModel {
 
         const hash = crypto.createHash('sha256').update(key).digest('hex');
         return { keyRaw: key, keyHash: hash };
+    }
+
+    generateClientsCreateObj(dto: ClientsCreateDTO): { client: Clients, keyRaw: string } {
+        const id = Utils.generateUUID();
+        const keyObj = this._generateApiKeyObj();
+        const timestamp = Utils.getTimestampUTC();
+        const client: Clients = {
+            client_id: id,
+            name: dto.name,
+            api_key_hash: keyObj.keyHash,
+            status: ApiKeyStatus.ACTIVE,
+            last_use: timestamp,
+            last_modified: timestamp,
+            created_on: timestamp
+        };
+        return { client: client, keyRaw: keyObj.keyRaw };
     }
 }
 

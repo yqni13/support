@@ -37,7 +37,7 @@ export class DBTestData {
         (id, app, author, build_on, environment, app_version, db_version, docker_image, docker_version, jenkins_version, maintenance_mode, created_on, last_modified)
         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13);
         `;
-        const values = [1, 'support', 'yqni13', '2025-01-01T13:00:01.000Z', 'test', '0.0.1', '0.0.2', 'no-image', '0.0.3', '0.0.4', MaintenanceMode.E000, '2025-01-01T13:00:01.000Z', '2025-01-01T13:00:01.000Z'];
+        const values = [1, 'support', 'yqni13', '2025-01-01T14:00:01.000Z', 'test', '0.0.1', '0.0.2', 'no-image', '0.0.3', '0.0.4', MaintenanceMode.E000, '2025-01-01T14:00:01.000Z', '2025-01-01T14:00:01.000Z'];
         return { sql: sql, values: values };
     }
 
@@ -46,7 +46,7 @@ export class DBTestData {
         (client_id, name, api_key_hash, status, last_use, last_modified, created_on)
         VALUES ($1, $2, $3, $4, $5, $6, $7);
         `;
-        const values = ['9e024539-32e8-4317-8007-84a3956e6b57', 'TESTCLIENT', secrets.TEST_APIKEY_HASH, ApiKeyStatus.ACTIVE, '2025-01-01T14:00:01.000Z', '2025-01-01T14:00:01.000Z', '2025-01-01T14:00:01.000Z'];
+        const values = ['9e024539-32e8-4317-8007-84a3956e6b57', 'TESTCLIENT', secrets.TEST_APIKEY_HASH, ApiKeyStatus.ACTIVE, '2025-01-01T14:00:02.000Z', '2025-01-01T14:00:02.000Z', '2025-01-01T14:00:02.000Z'];
         return { sql: sql, values: values };
     }
 
@@ -55,7 +55,7 @@ export class DBTestData {
         (user_id, email, status, flag, last_modified, created_on)
         VALUES ($1, $2, $3, $4, $5, $6);
         `;
-        const values = ['87e4d6e3-d678-4de0-8806-e89135cbd38c', 'max.mustermann@yqni13.com', UserStatus.ACTIVE, null, '2025-01-01T14:00:03.000', '2025-01-01T14:00:03.000'];
+        const values = ['87e4d6e3-d678-4de0-8806-e89135cbd38c', 'max.mustermann@yqni13.com', UserStatus.ACTIVE, null, '2025-01-01T14:00:03.000Z', '2025-01-01T14:00:03.000Z'];
         return { sql: sql, values: values };
     }
 
@@ -64,7 +64,7 @@ export class DBTestData {
         (ticket_id, client_id, user_id, status, message, resource_paths, flag, last_modified, created_on)
         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9);
         `;
-        const values = ['ae9550fc-16fd-4e9a-8ab5-d6ab55b84cb4', '9e024539-32e8-4317-8007-84a3956e6b57', '87e4d6e3-d678-4de0-8806-e89135cbd38c', TicketStatus.ISSUED, 'test-message', ['test/path/num0', 'test/path/num1'], null, '2025-01-01T14:00:04.000', '2025-01-01T14:00:04.000'];
+        const values = ['ae9550fc-16fd-4e9a-8ab5-d6ab55b84cb4', '9e024539-32e8-4317-8007-84a3956e6b57', '87e4d6e3-d678-4de0-8806-e89135cbd38c', TicketStatus.ISSUED, 'test-message', ['test/path/num0', 'test/path/num1'], null, '2025-01-01T14:00:04.000Z', '2025-01-01T14:00:04.000Z'];
         return { sql: sql, values: values };
     }
 }

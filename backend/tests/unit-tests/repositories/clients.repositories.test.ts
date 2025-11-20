@@ -17,18 +17,17 @@ jest.mock("../../../src/configs/db", () => {
     }
 });
 
-const gmtData = Utils.getPropertiesFromTimezoneOffset(new Date());
 const mockVar_id = '9e024539-32e8-4317-8007-84a3956e6b57';
 const mockVar_keyHash = secrets.TEST_APIKEY_HASH;
-const mockVar_timeStamp = `2025-10-02 21:34:00${gmtData.prefix}${gmtData.offset}`;
+const mockTimestamp = '2025-01-01T14:00:02.000Z';
 const mockData: Clients = {
     client_id: mockVar_id,
     name: 'testclient',
     api_key_hash: mockVar_keyHash,
     status: ApiKeyStatus.ACTIVE,
-    last_use: mockVar_timeStamp,
-    last_modified: mockVar_timeStamp,
-    created_on: '2025-01-01T14:00:01.000',
+    last_use: mockTimestamp,
+    last_modified: mockTimestamp,
+    created_on: mockTimestamp,
 };
 
 describe('Database tests table <clients>, priority: findByActiveKey', () => {
@@ -99,14 +98,13 @@ describe('Database tests table <clients>, priority: findStatusByName', () => {
 
         test('Return data for existing entry, params: <name>', async () => {
             const mockParam_name = 'test_client';
-            const timeStamp = Utils.getTimestampWithOffsetInfo(new Date('2025-01-01T14:00:01.000'));
             const mockResult: ClientsStatusResponseDTO = {
                 client_id: 'test_id',
                 name: mockParam_name,
                 status: ApiKeyStatus.ACTIVE,
-                last_use: timeStamp,
-                last_modified: timeStamp,
-                created_on: timeStamp
+                last_use: mockTimestamp,
+                last_modified: mockTimestamp,
+                created_on: mockTimestamp
             };
 
             const mockClient = MockUtils.mapMockDbClient(mockResult);
@@ -164,50 +162,30 @@ describe('Database tests table <clients>, priority: create', () => {
         });
 
         test('Return data for created entry, params: <name> = "testclient"', async () => {
-            const mockVar_apiKey = clientsModel.generateApiKeyObj();
-            const mockParam_id = mockVar_id;
-            const mockParam_dto = { name: 'TESTCLIENT' };
-            const mockParam_hash = mockVar_apiKey.keyHash;
-            const mockValues = [mockParam_id, mockParam_dto.name, mockVar_apiKey.keyHash, ApiKeyStatus.ACTIVE, mockVar_timeStamp, mockVar_timeStamp, mockVar_timeStamp];
-
-            const mockResult: Clients = {
-                client_id: mockParam_id,
-                name: mockParam_dto.name,
+            const mockVar_apiKey = clientsModel._generateApiKeyObj();
+            const mockParam_entity: Clients = {
+                client_id: mockVar_id,
+                name: 'TESTCLIENT',
                 api_key_hash: mockVar_apiKey.keyHash,
                 status: ApiKeyStatus.ACTIVE,
-                last_use: mockVar_timeStamp,
-                last_modified: mockVar_timeStamp,
-                created_on: '2025-01-01T14:00:01.000'
-            };
+                last_use: mockTimestamp,
+                last_modified: mockTimestamp,
+                created_on: mockTimestamp
+            }
+            const mockValues = [
+                mockParam_entity.client_id,
+                mockParam_entity.name,
+                mockParam_entity.api_key_hash,
+                mockParam_entity.status,
+                mockParam_entity.last_use,
+                mockParam_entity.last_modified,
+                mockParam_entity.created_on
+            ];
 
-            jest.spyOn(Utils, "getTimestampWithOffsetInfo").mockReturnValue(mockVar_timeStamp);
-
-            const mockClient = MockUtils.mapMockDbClient(mockResult);
-            const testFn = await clientsRepository.create(
-                mockParam_id, mockParam_hash, mockParam_dto
-            );
-
-            expect(testFn).toEqual(mockResult);
-            expect(DBConnection.getInstance).toHaveBeenCalled();
-            expect(mockClient.query).toHaveBeenCalledWith(
-                expect.stringContaining(sql),
-                expect.arrayContaining(mockValues)
-            );
-        })
-
-        // TODO(yqni13): remove test and null return in repository method
-        test('Return null for non-existing entry by non-unique name', async () => {
-            const mockVar_apiKey = clientsModel.generateApiKeyObj();
-            const mockParam_id = Utils.generateUUID();
-            const mockParam_dto = { name: 'TESTCLIENT' };
-            const mockValues = [mockParam_id, mockParam_dto.name, mockVar_apiKey.keyHash, ApiKeyStatus.ACTIVE, mockVar_timeStamp, mockVar_timeStamp, mockVar_timeStamp];
-
-            const mockResult = null;
+            const mockResult: Clients = structuredClone(mockParam_entity);
 
             const mockClient = MockUtils.mapMockDbClient(mockResult);
-            const testFn = await clientsRepository.create(
-                mockParam_id, mockVar_apiKey.keyHash, mockParam_dto
-            );
+            const testFn = await clientsRepository.create(mockParam_entity);
 
             expect(testFn).toEqual(mockResult);
             expect(DBConnection.getInstance).toHaveBeenCalled();
@@ -221,16 +199,21 @@ describe('Database tests table <clients>, priority: create', () => {
     describe('Testing invalid fn calls', () => {
 
         test('Return IRepoError by catch-block', async () => {
-            const mockParam_id = 'test_id';
-            const mockParam_dto = { name: 'TESTCLIENT' };
             const mockParam_hash = 'test_hash_value';
+            const mockParam_entity: Clients = {
+                client_id: mockVar_id,
+                name: 'TESTCLIENT',
+                api_key_hash: mockParam_hash,
+                status: ApiKeyStatus.ACTIVE,
+                last_use: mockTimestamp,
+                last_modified: mockTimestamp,
+                created_on: mockTimestamp
+            }
             const mockErrorMsg = "DB ERROR ON SELECT QUERY, (Clients TEST Repository, create)";
             const mockResult = null;
             jest.spyOn(Utils, "logRepoError").mockReturnValue();
             const _ = MockUtils.mapMockDbClient(mockResult, mockErrorMsg);
-            const testFn = await clientsRepository.create(
-                mockParam_id, mockParam_hash, mockParam_dto
-            );
+            const testFn = await clientsRepository.create(mockParam_entity);
 
             expect(testFn).toEqual<IRepoError>({
                 method: 'support_clients_create',
@@ -254,21 +237,19 @@ describe('Database tests table <clients>, priority: updateStatus', () => {
 
         test('Return data of changed entry by valid id', async () => {
             const mockParam_id = 'valid_test_id';
-            const mockParam_data = { status: ApiKeyStatus.DISABLED };
-            const mockValues = [mockParam_data.status, mockVar_timeStamp, mockParam_id];
-
-            jest.spyOn(Utils, "getTimestampWithOffsetInfo").mockReturnValue(mockVar_timeStamp);
+            const mockParam_dto = { status: ApiKeyStatus.DISABLED, last_modified: mockTimestamp };
+            const mockValues = [mockParam_dto.status, mockTimestamp, mockParam_id];
 
             const mockResult: ClientsStatusResponseDTO = {
                 client_id: mockParam_id,
                 name: mockParam_name,
-                status: mockParam_data.status,
-                last_use: '2025-10-01T14:00:01.000',
-                last_modified: mockVar_timeStamp,
-                created_on: '2025-10-01T14:00:01.000'
+                status: mockParam_dto.status,
+                last_use: mockTimestamp,
+                last_modified: mockTimestamp,
+                created_on: mockTimestamp
             };
             const mockClient = MockUtils.mapMockDbClient(mockResult);
-            const testFn = await clientsRepository.updateStatus(mockParam_id, mockParam_data);
+            const testFn = await clientsRepository.updateStatus(mockParam_id, mockParam_dto);
 
             expect(testFn).toEqual(mockResult);
             expect(DBConnection.getInstance).toHaveBeenCalled();
@@ -280,12 +261,12 @@ describe('Database tests table <clients>, priority: updateStatus', () => {
 
         test('Return null for non-existing entry by invalid id', async () => {
             const mockParam_id = 'invalid_test_id';
-            const mockParam_data = { status: ApiKeyStatus.DISABLED };
-            const mockValues = [mockParam_id, mockParam_data.status, mockVar_timeStamp];
+            const mockParam_dto = { status: ApiKeyStatus.DISABLED, last_modified: mockTimestamp };
+            const mockValues = [mockParam_id, mockParam_dto.status, mockTimestamp];
 
             const mockResult = null;
             const mockClient = MockUtils.mapMockDbClient(mockResult);
-            const testFn = await clientsRepository.updateStatus(mockParam_id, mockParam_data);
+            const testFn = await clientsRepository.updateStatus(mockParam_id, mockParam_dto);
 
             expect(testFn).toEqual(mockResult);
             expect(DBConnection.getInstance).toHaveBeenCalled();
@@ -300,12 +281,12 @@ describe('Database tests table <clients>, priority: updateStatus', () => {
 
         test('Return IRepoError by catch-block', async () => {
             const mockParam_id = 'valid_test_id';
-            const mockParam_data = { status: ApiKeyStatus.DISABLED };
+            const mockParam_dto = { status: ApiKeyStatus.DISABLED, last_modified: mockTimestamp };
             const mockErrorMsg = "DB ERROR ON UPDATE QUERY, (Clients TEST Repository, updateStatus)";
             const mockResult = null;
             jest.spyOn(Utils, "logRepoError").mockReturnValue();
             const _ = MockUtils.mapMockDbClient(mockResult, mockErrorMsg);
-            const testFn = await clientsRepository.updateStatus(mockParam_id, mockParam_data);
+            const testFn = await clientsRepository.updateStatus(mockParam_id, mockParam_dto);
 
             expect(testFn).toEqual<IRepoError>({
                 method: 'support_clients_updateStatus',
@@ -329,19 +310,20 @@ describe('Database tests table <clients>, priority: updateLastUse', () => {
 
         test('Return data of changed entry by valid id', async () => {
             const mockParam_id = 'valid_test_id';
-            const mockValues = [mockVar_timeStamp, mockParam_id];
+            const mockParam_dto = { last_use: mockTimestamp };
+            const mockValues = [mockTimestamp, mockParam_id];
 
-            jest.spyOn(Utils, "getTimestampWithOffsetInfo").mockReturnValue(mockVar_timeStamp);
+            jest.spyOn(Utils, "getTimestampUTC").mockReturnValue(mockTimestamp);
 
             const mockResult: ClientsLastUseResponseDTO = {
                 client_id: mockParam_id,
                 name: mockParam_name,
-                last_use: mockVar_timeStamp,
-                last_modified: '2025-10-01T14:00:01.000',
-                created_on: '2025-10-01T14:00:01.000'
+                last_use: mockTimestamp,
+                last_modified: mockTimestamp,
+                created_on: mockTimestamp
             };
             const mockClient = MockUtils.mapMockDbClient(mockResult);
-            const testFn = await clientsRepository.updateLastUse(mockParam_id);
+            const testFn = await clientsRepository.updateLastUse(mockParam_id, mockParam_dto);
 
             expect(testFn).toEqual(mockResult);
             expect(DBConnection.getInstance).toHaveBeenCalled();
@@ -353,11 +335,12 @@ describe('Database tests table <clients>, priority: updateLastUse', () => {
 
         test('Return null for non-existing entry by invalid id', async () => {
             const mockParam_id = 'invalid_test_id';
-            const mockValues = [mockVar_timeStamp, mockParam_id];
+            const mockParam_dto = { last_use: mockTimestamp };
+            const mockValues = [mockTimestamp, mockParam_id];
 
             const mockResult = null;
             const mockClient = MockUtils.mapMockDbClient(mockResult);
-            const testFn = await clientsRepository.updateLastUse(mockParam_id);
+            const testFn = await clientsRepository.updateLastUse(mockParam_id, mockParam_dto);
 
             expect(testFn).toEqual(mockResult);
             expect(DBConnection.getInstance).toHaveBeenCalled();
@@ -372,11 +355,12 @@ describe('Database tests table <clients>, priority: updateLastUse', () => {
 
         test('Return IRepoError by catch-block', async () => {
             const mockParam_id = 'valid_test_id';
+            const mockParam_dto = { last_use: mockTimestamp };
             const mockErrorMsg = "DB ERROR ON UPDATE QUERY, (Clients TEST Repository, updateLastUse)";
             const mockResult = null;
             jest.spyOn(Utils, "logRepoError").mockReturnValue();
             const _ = MockUtils.mapMockDbClient(mockResult, mockErrorMsg);
-            const testFn = await clientsRepository.updateLastUse(mockParam_id);
+            const testFn = await clientsRepository.updateLastUse(mockParam_id, mockParam_dto);
 
             expect(testFn).toEqual<IRepoError>({
                 method: 'support_clients_updateLastUse',

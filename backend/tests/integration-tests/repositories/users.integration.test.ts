@@ -40,7 +40,7 @@ describe('Integration test (repository specific), priority: Users', () => {
 
         test('Repository process fn findById, result: "SUCCESS"', async () => {
             const testParam_id = '87e4d6e3-d678-4de0-8806-e89135cbd38c';
-            const mockTimeStamp = '2025-01-01T13:00:03.000';
+            const mockTimeStamp = '2025-01-01T14:00:03.000Z';
             const testResult: UsersResponseDTO = {
                 user_id: testParam_id,
                 email: 'max.mustermann@yqni13.com',
@@ -60,7 +60,7 @@ describe('Integration test (repository specific), priority: Users', () => {
 
         test('Repository process fn findAll, result: "SUCCESS"', async () => {
             const testParam_id = '87e4d6e3-d678-4de0-8806-e89135cbd38c';
-            const mockTimeStamp = '2025-01-01T13:00:03.000';
+            const mockTimeStamp = '2025-01-01T14:00:03.000Z';
             const testResult: Users[] = [{
                 user_id: testParam_id,
                 email: 'max.mustermann@yqni13.com',
@@ -99,7 +99,7 @@ describe('Integration test (repository specific), priority: Users', () => {
                 email: ['max.mustermann@yqni13.com', 'user@test.com'],
                 status: UserStatus.ACTIVE
             };
-            const mockTimeStamp = '2025-01-01T13:00:03.000';
+            const mockTimeStamp = '2025-01-01T14:00:03.000Z';
             const testResult: UsersResponseDTO[] = [{
                 user_id: '87e4d6e3-d678-4de0-8806-e89135cbd38c',
                 email: 'max.mustermann@yqni13.com',
@@ -109,7 +109,7 @@ describe('Integration test (repository specific), priority: Users', () => {
                 created_on: mockTimeStamp
             }];
 
-            jest.spyOn(Utils, "getCustomUTCString").mockReturnValue(mockTimeStamp);
+            jest.spyOn(Utils, "getTimestampUTC").mockReturnValue(mockTimeStamp);
 
             await dbTestSetup.addTestData();
             const testResponse = await request(app)
@@ -124,7 +124,7 @@ describe('Integration test (repository specific), priority: Users', () => {
             const testParam_dto: UsersFilterDTO = {
                 flag: null
             };
-            const mockTimeStamp = '2025-01-01T13:00:03.000';
+            const mockTimeStamp = '2025-01-01T14:00:03.000Z';
             const testResult: UsersResponseDTO[] = [{
                 user_id: '87e4d6e3-d678-4de0-8806-e89135cbd38c',
                 email: 'max.mustermann@yqni13.com',
@@ -134,7 +134,7 @@ describe('Integration test (repository specific), priority: Users', () => {
                 created_on: mockTimeStamp
             }];
 
-            jest.spyOn(Utils, "getCustomUTCString").mockReturnValue(mockTimeStamp);
+            jest.spyOn(Utils, "getTimestampUTC").mockReturnValue(mockTimeStamp);
 
             await dbTestSetup.addTestData();
             const testResponse = await request(app)
@@ -147,7 +147,7 @@ describe('Integration test (repository specific), priority: Users', () => {
 
         test('Repository process fn create, result: "SUCCESS"', async () => {
             const mockParam_id = '92f22e89-237b-4775-b170-1df288acad54';
-            const mockTimeStamp = '2025-02-04T14:00:03.000';
+            const mockTimeStamp = '2025-02-04T14:00:03.000Z';
             const mockParam_dto: Partial<Users> = {
                 email: 'new-user@test.com',
                 status: UserStatus.ACTIVE,
@@ -155,7 +155,7 @@ describe('Integration test (repository specific), priority: Users', () => {
             };
 
             jest.spyOn(Utils, "generateUUID").mockReturnValue(mockParam_id);
-            jest.spyOn(Utils, "getCustomUTCString").mockReturnValue(mockTimeStamp);
+            jest.spyOn(Utils, "getTimestampUTC").mockReturnValue(mockTimeStamp);
 
             const testResult = structuredClone(mockParam_dto);
             Object.assign(testResult, {
@@ -175,7 +175,7 @@ describe('Integration test (repository specific), priority: Users', () => {
 
         test('Repository process fn update, result: "SUCCESS"', async () => {
             const testParam_id = '87e4d6e3-d678-4de0-8806-e89135cbd38c';
-            const mockTimeStamp = '2025-02-04T14:00:03.000';
+            const mockTimeStamp = '2025-02-04T14:00:03.000Z';
             const testParam_dto: Partial<Users> = {
                 email: 'user@test.com',
                 status: UserStatus.ACTIVE,
@@ -183,7 +183,7 @@ describe('Integration test (repository specific), priority: Users', () => {
             };
 
             // Mock Utils generated timeStamp for easy comparison.
-            jest.spyOn(Utils, "getCustomUTCString").mockReturnValue(mockTimeStamp);
+            jest.spyOn(Utils, "getTimestampUTC").mockReturnValue(mockTimeStamp);
 
             const testResult = structuredClone(testParam_dto);
             Object.assign(testResult, {
