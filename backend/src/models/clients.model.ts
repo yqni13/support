@@ -1,7 +1,9 @@
-import { ClientsCreateResponseDTO, ClientsLastUseResponseDTO, ClientsStatusResponseDTO } from "../dtos/clients.dto";
+import { ClientsCreateDTO, ClientsCreateResponseDTO, ClientsLastUseResponseDTO, ClientsStatusResponseDTO } from "../dtos/clients.dto";
 import { Clients } from "../repositories/interfaces/clients.entity.interface";
-import { getTimestampWithoutOffsetInfo as convert } from "../utils/common.utils";
+import { getTimestampUTC as convert } from "../utils/common.utils";
 import crypto from 'crypto';
+import * as Utils from "../utils/common.utils";
+import { ApiKeyStatus } from "../utils/enums/api-key-status.enum";
 
 class ClientsModel {
     mapObjToApi(data: Clients): Clients {
@@ -61,6 +63,22 @@ class ClientsModel {
 
         const hash = crypto.createHash('sha256').update(key).digest('hex');
         return { keyRaw: key, keyHash: hash };
+    }
+
+    generateClientsObj(dto: ClientsCreateDTO): { client: Clients, keyRaw: string } {
+        const id = Utils.generateUUID();
+        const keyObj = this.generateApiKeyObj();
+        const timestamp = Utils.getTimestampUTC();
+        const client: Clients = {
+            client_id: id,
+            name: dto.name,
+            api_key_hash: keyObj.keyHash,
+            status: ApiKeyStatus.ACTIVE,
+            last_use: timestamp,
+            last_modified: timestamp,
+            created_on: timestamp
+        };
+        return { client: client, keyRaw: keyObj.keyRaw };
     }
 }
 

@@ -45,7 +45,7 @@ describe('Integration test (repository specific), priority: Clients', () => {
 
         test('Repository process fn findStatusByName, result: "SUCCESS"', async () => {
             const testParam_name = 'TESTCLIENT';
-            const mockTimeStamp = '2025-01-01T15:00:01.000';
+            const mockTimeStamp = '2025-01-01T14:00:01.000Z';
             const testResult: ClientsStatusResponseDTO = {
                 client_id: '9e024539-32e8-4317-8007-84a3956e6b57',
                 name: testParam_name,
@@ -66,12 +66,11 @@ describe('Integration test (repository specific), priority: Clients', () => {
         test('Repository process fn create, result: "SUCCESS"', async () => {
             const testParam_client_id = Utils.generateUUID();
             const testParam_dto = { name: 'testclient_test_create' };
-            const mockTimeStamp = '2025-01-01T14:00:01.000';
-            const mockParam_timeStamp = Utils.getTimestampWithOffsetInfo(new Date(mockTimeStamp))
+            const mockTimeStamp = '2025-01-01T14:00:01.000Z';
 
             jest.spyOn(Utils, 'generateUUID').mockReturnValue(testParam_client_id);
             jest.spyOn(clientsModel, 'generateApiKeyObj').mockReturnValue(mockParam_apiKeyObj);
-            jest.spyOn(Utils, "getTimestampWithOffsetInfo").mockReturnValue(mockParam_timeStamp);
+            jest.spyOn(Utils, "getTimestampUTC").mockReturnValue(mockTimeStamp);
 
             const testResult: ClientsCreateResponseDTO = {
                 client_id: testParam_client_id,
@@ -94,20 +93,20 @@ describe('Integration test (repository specific), priority: Clients', () => {
 
         test('Repository process fn updateStatus, result: "SUCCESS"', async () => {
             const testParam_id = '9e024539-32e8-4317-8007-84a3956e6b57';
-            const mockTimeStamp = '2025-01-01T14:00:01.000';
+            const mockTimeStamp = '2025-01-01T14:00:01.000Z';
             const testParam_data: Partial<Clients> = {
                 status: ApiKeyStatus.DISABLED
             };
 
-            jest.spyOn(Utils, "getTimestampWithOffsetInfo").mockReturnValue(mockTimeStamp);
+            jest.spyOn(Utils, "getTimestampUTC").mockReturnValue(mockTimeStamp);
 
             const testResult: ClientsStatusResponseDTO = {
                 client_id: testParam_id,
                 name: 'TESTCLIENT',
                 status: ApiKeyStatus.DISABLED,
-                last_use: '2025-01-01T15:00:01.000',
-                last_modified: '2025-01-01T15:00:01.000',
-                created_on: '2025-01-01T15:00:01.000'
+                last_use: mockTimeStamp,
+                last_modified: mockTimeStamp,
+                created_on: mockTimeStamp
             };
 
             await dbTestSetup.addTestData();

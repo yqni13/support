@@ -27,5 +27,8 @@ export const clientsStatusUpdateSchema: ValidationChain[] = [
         .notEmpty()
         .withMessage('support-arg-required')
         .bail()
-        .custom((val) => CustomValidator.validateEnum(val, ApiKeyStatus, 'apiKeyStatus'))
+        .custom((val) => CustomValidator.validateEnum(val, ApiKeyStatus, 'apiKeyStatus')),
+    body('last_modified')
+        .isEmpty()
+        .withMessage('support-arg-forbidden')
 ];
