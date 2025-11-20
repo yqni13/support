@@ -46,7 +46,7 @@ export class DBTestData {
         (client_id, name, api_key_hash, status, last_use, last_modified, created_on)
         VALUES ($1, $2, $3, $4, $5, $6, $7);
         `;
-        const values = ['9e024539-32e8-4317-8007-84a3956e6b57', 'TESTCLIENT', secrets.TEST_APIKEY_HASH, ApiKeyStatus.ACTIVE, '2025-01-01T14:00:01.000Z', '2025-01-01T14:00:01.000Z', '2025-01-01T14:00:01.000Z'];
+        const values = ['9e024539-32e8-4317-8007-84a3956e6b57', 'TESTCLIENT', secrets.TEST_APIKEY_HASH, ApiKeyStatus.ACTIVE, '2025-01-01T14:00:02.000Z', '2025-01-01T14:00:02.000Z', '2025-01-01T14:00:02.000Z'];
         return { sql: sql, values: values };
     }
 

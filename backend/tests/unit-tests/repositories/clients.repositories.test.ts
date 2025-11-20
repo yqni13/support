@@ -98,7 +98,7 @@ describe('Database tests table <clients>, priority: findStatusByName', () => {
 
         test('Return data for existing entry, params: <name>', async () => {
             const mockParam_name = 'test_client';
-            const timeStamp = '2025-01-01T14:00:01.000';
+            const timeStamp = '2025-01-01T14:00:02.000Z';
             const mockResult: ClientsStatusResponseDTO = {
                 client_id: 'test_id',
                 name: mockParam_name,
@@ -171,7 +171,7 @@ describe('Database tests table <clients>, priority: create', () => {
                 status: ApiKeyStatus.ACTIVE,
                 last_use: mockVar_timeStamp,
                 last_modified: mockVar_timeStamp,
-                created_on: '2025-01-01T14:00:01.000Z'
+                created_on: '2025-01-01T14:00:02.000Z'
             }
             const mockValues = [
                 mockParam_entity.client_id,
@@ -245,9 +245,9 @@ describe('Database tests table <clients>, priority: updateStatus', () => {
                 client_id: mockParam_id,
                 name: mockParam_name,
                 status: mockParam_dto.status,
-                last_use: '2025-10-01T14:00:01.000Z',
+                last_use: '2025-10-01T14:00:02.000Z',
                 last_modified: mockVar_timeStamp,
-                created_on: '2025-10-01T14:00:01.000Z'
+                created_on: '2025-10-01T14:00:02.000Z'
             };
             const mockClient = MockUtils.mapMockDbClient(mockResult);
             const testFn = await clientsRepository.updateStatus(mockParam_id, mockParam_dto);
@@ -314,14 +314,14 @@ describe('Database tests table <clients>, priority: updateLastUse', () => {
             const mockParam_dto = { last_use: mockVar_timeStamp };
             const mockValues = [mockVar_timeStamp, mockParam_id];
 
-            jest.spyOn(Utils, "getTimestampWithOffsetInfo").mockReturnValue(mockVar_timeStamp);
+            jest.spyOn(Utils, "getTimestampUTC").mockReturnValue(mockVar_timeStamp);
 
             const mockResult: ClientsLastUseResponseDTO = {
                 client_id: mockParam_id,
                 name: mockParam_name,
                 last_use: mockVar_timeStamp,
-                last_modified: '2025-10-01T14:00:01.000Z',
-                created_on: '2025-10-01T14:00:01.000Z'
+                last_modified: '2025-10-01T14:00:02.000Z',
+                created_on: '2025-10-01T14:00:02.000Z'
             };
             const mockClient = MockUtils.mapMockDbClient(mockResult);
             const testFn = await clientsRepository.updateLastUse(mockParam_id, mockParam_dto);

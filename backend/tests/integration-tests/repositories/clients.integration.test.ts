@@ -45,7 +45,7 @@ describe('Integration test (repository specific), priority: Clients', () => {
 
         test('Repository process fn findStatusByName, result: "SUCCESS"', async () => {
             const testParam_name = 'TESTCLIENT';
-            const mockTimeStamp = '2025-01-01T14:00:01.000Z';
+            const mockTimeStamp = '2025-01-01T14:00:02.000Z';
             const testResult: ClientsStatusResponseDTO = {
                 client_id: '9e024539-32e8-4317-8007-84a3956e6b57',
                 name: testParam_name,
@@ -66,7 +66,7 @@ describe('Integration test (repository specific), priority: Clients', () => {
         test('Repository process fn create, result: "SUCCESS"', async () => {
             const testParam_client_id = Utils.generateUUID();
             const testParam_dto = { name: 'testclient_test_create' };
-            const mockTimeStamp = '2025-01-01T14:00:01.000Z';
+            const mockTimeStamp = '2025-01-01T14:00:02.000Z';
 
             jest.spyOn(Utils, 'generateUUID').mockReturnValue(testParam_client_id);
             jest.spyOn(clientsModel, 'generateApiKeyObj').mockReturnValue(mockParam_apiKeyObj);
@@ -93,7 +93,7 @@ describe('Integration test (repository specific), priority: Clients', () => {
 
         test('Repository process fn updateStatus, result: "SUCCESS"', async () => {
             const testParam_id = '9e024539-32e8-4317-8007-84a3956e6b57';
-            const mockTimeStamp = '2025-01-01T14:00:01.000Z';
+            const mockTimeStamp = '2025-01-01T14:00:02.000Z';
             const testParam_data: Partial<Clients> = {
                 status: ApiKeyStatus.DISABLED
             };
@@ -137,13 +137,13 @@ describe('Integration test (repository specific), priority: Clients', () => {
 
             test('Params: <status>, validator: notEmpty by undefined', async () => {
                 const mockParam_id = 'test_id';
-                const mockParam_data = undefined;
+                const mockParam_dto = undefined;
                 const testError = structuredClone(mockError);
                 testError['path'] = 'status';
 
                 const mockResponse = await request(app)
                     .put(`${apiUrl}/status/${mockParam_id}`)
-                    .send(mockParam_data);
+                    .send(mockParam_dto);
 
                 expect(mockResponse.statusCode).toBe(ErrorStatusCodes.InvalidPropertiesException);
                 expect(mockResponse.body.headers.data).toContainEqual(testError);

@@ -1,5 +1,5 @@
 # yqni13 | support
-$\texttt{\color{teal}{v0.8.1}}$
+$\texttt{\color{teal}{v0.8.2}}$
 
 
 <br>
@@ -53,9 +53,12 @@ The development process is structured by the TDD (test driven development) princ
 
 ### $\textsf{\color{forestgreen}last update:}$
 
-$\textsf{[v0.7.6\ =>\ {\textbf{\color{brown}v0.8.1}]}}$ app
-- $\textsf{\color{green}Change:}$ Added 'issued' state to ticket status enum (default).
-- $\textsf{\color{teal}Addition:}$ Added routes + basic logic to handle 'Users' data.
+$\textsf{[v0.8.1\ =>\ {\textbf{\color{brown}v0.8.2}]}}$ app<br>
+$\textsf{[v1.3.0\ =>\ {\textbf{\color{brown}v1.3.1}]}}$ database<br>
+$\textsf{[v1.0.2\ =>\ {\textbf{\color{brown}v1.0.3}]}}$ docker
+- $\textsf{\color{orange}Patch:}$ Updated timestamp handling without timezone in backend (db saves with timezone and only converts in Frontend).
+- $\textsf{\color{orange}Patch:}$ Added migration to change type for timestamps of table 'users' and 'tickets'.
+- $\textsf{\color{green}Change:}$ Removed timezone setting from docker due to UTC-Update.
 
 <br>
 
