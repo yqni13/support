@@ -254,8 +254,6 @@ describe('Integration test (repository specific), priority: Meta', () => {
                 expect(mockResponse.statusCode).toBe(ErrorStatusCodes.InvalidPropertiesException);
                 expect(mockResponse.body.headers.data).toContainEqual(testError);
             })
-
-            
         })
 
         describe('Route: PUT/maintenance, priority: express-validators', () => {

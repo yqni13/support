@@ -38,14 +38,14 @@ class ClientsService {
     }
 
     async createClient(dto: ClientsCreateDTO): Promise<ClientsCreateResponseDTO | IRepoError | null> {
-        const newClientObj = clientsModel.generateClientsObj(dto);
-        let result = await clientsRepository.create(newClientObj.client);
+        const clientsCreateObj = clientsModel.generateClientsCreateObj(dto);
+        let result = await clientsRepository.create(clientsCreateObj.client);
         if(!result) {
             return result;
         } else if(Utils.isIRepoError(result)) {
             return result as IRepoError;
         } else {
-            return clientsModel.mapToCreateResponseDTO(result as Clients, newClientObj.keyRaw);
+            return clientsModel.mapToCreateResponseDTO(result as Clients, clientsCreateObj.keyRaw);
         }
     }
 

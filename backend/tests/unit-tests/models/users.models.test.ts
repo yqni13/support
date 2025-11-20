@@ -4,13 +4,14 @@ import usersModel from "../../../src/models/users.model";
 import * as Utils from "../../../src/utils/common.utils";
 import { UserStatus } from "../../../src/utils/enums/user-status.enum";
 
-let mockData: Users = {
+const mockTimestamp = '2025-01-03T14:00:03.000Z';
+const mockData: Users = {
     user_id: 'valid_users_test_id',
     email: 'user@test.com',
     status: UserStatus.ACTIVE,
     flag: null,
-    last_modified: '2025-01-03T14:00:03.000Z',
-    created_on: '2025-01-03T14:00:03.000Z'
+    last_modified: mockTimestamp,
+    created_on: mockTimestamp
 }
 
 describe('Model tests, class: <users>, priority: mapObjToApi', () => {
@@ -25,8 +26,8 @@ describe('Model tests, class: <users>, priority: mapObjToApi', () => {
                 email: mockParam_data.email,
                 status: mockParam_data.status,
                 flag: mockParam_data.flag,
-                last_modified: '2025-01-03T14:00:03.000Z',
-                created_on: '2025-01-03T14:00:03.000Z'
+                last_modified: mockTimestamp,
+                created_on: mockTimestamp
             };
 
             expect(testFn).toEqual(expectResult);
@@ -46,8 +47,8 @@ describe('Model tests, class: <users>, priority: mapArrayToApi', () => {
                 email: mockParam_data[0].email,
                 status: mockParam_data[0].status,
                 flag: mockParam_data[0].flag,
-                last_modified: '2025-01-03T14:00:03.000Z',
-                created_on: '2025-01-03T14:00:03.000Z'
+                last_modified: mockTimestamp,
+                created_on: mockTimestamp
             }];
 
             expect(testFn).toEqual(expectResult);
@@ -60,16 +61,15 @@ describe('Model tests, class: <users>, priority: generateUser', () => {
     describe('Testing valid fn calls', () => {
 
         test('Generate new user object, entity: <Users>', () => {
+            const testParam_id = 'valid_users_test_id';
             const mockParam_dto: UsersCreateUpdateDTO = {
                 email: 'valid.user@test.com',
                 status: UserStatus.ACTIVE,
                 flag: null
             };
-            const testParam_id = 'valid_users_test_id';
-            const testParam_timestamp = '2025-11-17T18:48:00.000Z';
 
             jest.spyOn(Utils, "generateUUID").mockReturnValue(testParam_id);
-            jest.spyOn(Utils, "getTimestampUTC").mockReturnValue(testParam_timestamp);
+            jest.spyOn(Utils, "getTimestampUTC").mockReturnValue(mockTimestamp);
 
             const testFn = usersModel.generateUser(mockParam_dto);
             const expectResult: Users = {
@@ -77,8 +77,8 @@ describe('Model tests, class: <users>, priority: generateUser', () => {
                 email: mockParam_dto.email,
                 status: mockParam_dto.status,
                 flag: mockParam_dto.flag,
-                last_modified: testParam_timestamp,
-                created_on: testParam_timestamp
+                last_modified: mockTimestamp,
+                created_on: mockTimestamp
             };
 
             expect(testFn).toEqual(expectResult);
