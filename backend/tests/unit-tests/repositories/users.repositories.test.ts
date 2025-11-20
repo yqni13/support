@@ -15,7 +15,7 @@ jest.mock("../../../src/configs/db", () => {
     }
 });
 
-const mockVar_timestamp = '2025-01-03T14:00:01.000';
+const mockVar_timestamp = '2025-01-03T14:00:03.000Z';
 const mockData: Users = {
     user_id: 'valid_users_test_id',
     email: 'user@test.com',

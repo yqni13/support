@@ -40,7 +40,7 @@ class UsersService {
     }
 
     async update(id: string, dto: UsersCreateUpdateDTO): Promise<UsersResponseDTO | IRepoError | null> {
-        dto.last_modified = Utils.getCustomUTCString(new Date());
+        dto.last_modified = Utils.getTimestampUTC();
         let result = await usersRepository.update(id, dto);
         result = !result || Utils.isIRepoError(result)
             ? result

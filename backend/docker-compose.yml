@@ -3,7 +3,7 @@ name: support
 services:
   app:
     container_name: app_support
-    image: yqni13/support:v1.0.2 # keep version up-to-date
+    image: yqni13/support:v1.0.3 # keep version up-to-date
     build: .
     command: npm run start:dev
     volumes:
@@ -14,8 +14,6 @@ services:
     environment:
       # Refer to "localhost" outside of docker environment, otherwise docker volume is targeted.
       SECRET_DB_HOST: host.docker.internal
-      # Set timezone until integration of UTC standard.
-      TZ: Europe/Vienna
     env_file:
       - .env
     extra_hosts:

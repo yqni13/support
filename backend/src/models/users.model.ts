@@ -6,22 +6,22 @@ class UsersModel {
     mapObjToApi(data: Users): Users {
         return {
             ...data,
-            last_modified: Utils.getCustomUTCString(new Date(data.last_modified)),
-            created_on: Utils.getCustomUTCString(new Date(data.created_on))
+            last_modified: Utils.getTimestampUTC(new Date(data.last_modified)),
+            created_on: Utils.getTimestampUTC(new Date(data.created_on))
         };
     }
 
     mapArrayToApi(users: Users[]): Users[] {
         Object.values(users).forEach((user) => {
-            user.last_modified = Utils.getCustomUTCString(new Date(user.last_modified));
-            user.created_on = Utils.getCustomUTCString(new Date(user.created_on));
+            user.last_modified = Utils.getTimestampUTC(new Date(user.last_modified));
+            user.created_on = Utils.getTimestampUTC(new Date(user.created_on));
         });
         return users;
     }
 
     generateUser(dto: UsersCreateUpdateDTO): Users {
         const id: string = Utils.generateUUID();
-        const timestamp = Utils.getCustomUTCString(new Date());
+        const timestamp = Utils.getTimestampUTC();
         return {
             user_id: id,
             email: dto.email,

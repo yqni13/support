@@ -13,6 +13,10 @@ export function mapKeyToHash(key: string): string {
     return crypto.createHash('sha256').update(key).digest('hex');
 }
 
+export function getTimestampUTC(timestamp?: Date): string {
+    return timestamp ? new Date(timestamp).toISOString() : new Date().toISOString();
+}
+
 export function selectPrivateKey(source: MailSource): string {
     switch(source) {
         case(MailSource.ARTDV): {
@@ -76,21 +80,6 @@ export function getTimestampWithOffsetInfo(time: Date): string {
 
     // Need prefix-0 on single digits.
     return `${time.getFullYear()}-${month}-${day} ${hours}:${minutes}:${seconds}${gmtData.prefix}${gmtData.offset}`;
-}
-
-/**
- * @returns yyyy-mm-ddThh:mm:ss.000
- */
-export function getCustomUTCString(time: Date): string {
-    const day = time.getUTCDate() < 10 ? `0${time.getUTCDate()}` : time.getUTCDate().toString();
-    const month = time.getUTCMonth()+1 < 10 ? `0${time.getUTCMonth()+1}` : (time.getUTCMonth()+1).toString();
-
-    const hours = time.getUTCHours() < 10 ? `0${time.getUTCHours()}` : `${time.getUTCHours()}`;
-    const minutes = time.getUTCMinutes() < 10 ? `0${time.getUTCMinutes()}` : `${time.getUTCMinutes()}`;
-    const seconds = time.getUTCSeconds() < 10 ? `0${time.getUTCSeconds()}` : `${time.getUTCSeconds()}`;
-
-    // need prefix-0 on single digits
-    return `${time.getUTCFullYear()}-${month}-${day}T${hours}:${minutes}:${seconds}.000`;
 }
 
 export function logRepoError(logMsg: string, err: any) {
