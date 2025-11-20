@@ -63,6 +63,9 @@ export const metaUpdateSchema: ValidationChain[] = [
         .withMessage('support-arg-required')
         .bail()
         .custom((val) => CustomValidator.validateVersionStructure(val, 2)),
+    body('last_modified')
+        .isEmpty()
+        .withMessage('support-arg-forbidden')
 ];
 
 export const maintenanceFindSchema: ValidationChain[] = [
@@ -82,5 +85,8 @@ export const maintenanceUpdateSchema: ValidationChain[] = [
         .notEmpty()
         .withMessage('support-arg-required')
         .bail()
-        .custom((val) => CustomValidator.validateEnum(val, MaintenanceMode, 'maintenanceMode'))
+        .custom((val) => CustomValidator.validateEnum(val, MaintenanceMode, 'maintenanceMode')),
+    body('last_modified')
+        .isEmpty()
+        .withMessage('support-arg-forbidden')
 ];

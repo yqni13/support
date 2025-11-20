@@ -28,6 +28,7 @@ class MetaService {
     }
 
     async updateMetaData(id: number, dto: MetaUpdateDTO): Promise<MetaResponseDTO | IRepoError | null> {
+        dto.last_modified = Utils.getTimestampUTC();
         let result = await metaRepository.update(id, dto);
         result = !result || Utils.isIRepoError(result)
             ? result
@@ -44,6 +45,7 @@ class MetaService {
     }
 
     async setMaintenanceMode(name: string, dto: MaintenanceUpdateDTO): Promise<MaintenanceResponseDTO | IRepoError | null> {
+        dto.last_modified = Utils.getTimestampUTC();
         let result = await metaRepository.updateMaintenance(name, dto);
         result = !result || Utils.isIRepoError(result)
             ? result
