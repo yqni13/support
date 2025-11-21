@@ -42,7 +42,7 @@ class ClientsRepository {
             client = await db.connect();
             const result: QueryResult<Clients> = await client.query(sql, value);
             await db.close(client);
-            return result.rows[0] ?? null;
+            return result.rows[0] ?? {};
         } catch(err: any) {
             const logMsg = "DB ERROR ON SELECT (Clients Repository, findStatusByName): ";
             logRepoError(logMsg, err);

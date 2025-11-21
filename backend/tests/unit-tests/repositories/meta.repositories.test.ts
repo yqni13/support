@@ -6,6 +6,7 @@ import * as MockUtils from "../../common.test-utils";
 import { IRepoError } from "../../../src/repositories/interfaces/error.repository.interface";
 import { MaintenanceMode } from "../../../src/utils/enums/maintenance-mode.enum";
 import { MaintenanceUpdateDTO } from "../../../src/dtos/meta.dto";
+import { EnvMode } from "../../../src/utils/enums/env-mode.enum";
 
 jest.mock("../../../src/configs/db", () => {
     return {
@@ -21,7 +22,7 @@ const mockData: Meta = {
     app: "support",
     author: "yqni13",
     build_on: mockTimestamp,
-    environment: "development",
+    environment: EnvMode.DEV,
     app_version: "0.0.1",
     db_version: "0.0.2",
     docker_image: "no-image",

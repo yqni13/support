@@ -1,5 +1,6 @@
 import metaModel from "../../../src/models/meta.model";
 import { Maintenance, Meta } from "../../../src/repositories/interfaces/meta.entity.interface";
+import { EnvMode } from "../../../src/utils/enums/env-mode.enum";
 import { MaintenanceMode } from "../../../src/utils/enums/maintenance-mode.enum";
 
 const mockTimestamp = '2025-01-01T14:00:01.000Z';
@@ -8,7 +9,7 @@ const mockData: Meta = {
     app: "support",
     author: "yqni13",
     build_on: mockTimestamp,
-    environment: "development",
+    environment: EnvMode.DEV,
     app_version: "0.0.1",
     db_version: "0.0.2",
     docker_image: "no-image",

@@ -17,6 +17,10 @@ export function getTimestampUTC(timestamp?: Date): string {
     return timestamp ? new Date(timestamp).toISOString() : new Date().toISOString();
 }
 
+export function isEmptyObj(obj: any): boolean {
+    return JSON.stringify(obj) === '{}';
+}
+
 export function selectPrivateKey(source: MailSource): string {
     switch(source) {
         case(MailSource.ARTDV): {
@@ -41,7 +45,7 @@ export function isIRepoError(obj: any): boolean {
 
 export function logRepoError(logMsg: string, err: any) {
     // TODO(yqni13): logging
-    if((secrets.ENV_MODE).trim() === EnvMode.DEV || (secrets.ENV_MODE).trim() === EnvMode.TEST) {
+    if(secrets.ENV_MODE.trim() === EnvMode.DEV || secrets.ENV_MODE.trim() === EnvMode.TEST) {
         console.log(logMsg, err);
     }
 }

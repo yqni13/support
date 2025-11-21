@@ -47,7 +47,7 @@ ICreateRepository<Users> {
             client = await db.connect();
             const result: QueryResult<Users> = await client.query(sql);
             await db.close(client);
-            return result.rows ?? null;
+            return result.rows ?? [];
         } catch(err: any) {
             const logMsg = "DB ERROR ON SELECT (Users Repository, findAll): ";
             logRepoError(logMsg, err);
@@ -67,7 +67,7 @@ ICreateRepository<Users> {
             client = await db.connect();
             const result: QueryResult<Users> = await client.query(queryData.sql, queryData.values);
             await db.close(client);
-            return result.rows;
+            return result.rows ?? [];
         } catch(err: any) {
             const logMsg = "DB ERROR ON SELECT (Users Repository, findByFilter): ";
             logRepoError(logMsg, err);

@@ -21,15 +21,15 @@ export function authAdmin() {
                 throw new MissingApiKeyException('support-missing-admin-auth');
             }
 
-            const hasValidKey = (adminKey.trim()) === secrets.ADMIN_API;
-            const isTestMode = (secrets.ENV_MODE.trim()) === EnvMode.TEST;
+            const hasValidKey = adminKey.trim() === secrets.ADMIN_API.trim();
+            const isTestMode = secrets.ENV_MODE.trim() === EnvMode.TEST;
             if(!isTestMode && !hasValidKey) {
                 throw new InvalidCredentialsException('support-invalid-admin-auth');
             }
             next();
         } catch(err: any) {
             // TODO(yqni13): logging
-            if((secrets.ENV_MODE).trim() === EnvMode.DEV || (secrets.ENV_MODE).trim() === EnvMode.TEST) {
+            if(secrets.ENV_MODE.trim() === EnvMode.DEV || secrets.ENV_MODE.trim() === EnvMode.TEST) {
                 console.log('AUTH ERROR ON VERIFICATION (Auth-Admin Middleware): ', err.message);
             }
             err.status = 401;
@@ -66,7 +66,7 @@ export function authClient() {
             next();
         } catch(err: any) {
             // TODO(yqni13): logging
-            if((secrets.ENV_MODE).trim() === EnvMode.DEV || (secrets.ENV_MODE).trim() === EnvMode.TEST) {
+            if(secrets.ENV_MODE.trim() === EnvMode.DEV || secrets.ENV_MODE.trim() === EnvMode.TEST) {
                 console.log('AUTH ERROR ON VERIFICATION (Auth-Client Middleware): ', err.message);
             }
             err.status = 401;
