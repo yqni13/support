@@ -34,7 +34,7 @@ export const usersFindByFilterSchema: ValidationChain[] = [
                 return true;
             }
             content = Array.isArray(content) ? content : [content];
-            content.forEach((status: SingleOrArray<UserStatus>) => CustomValidator.validateEnum(status, UserStatus, 'userStatus'))
+            content.forEach((status) => CustomValidator.validateEnum(status, Flag, 'flag'))
             return true;
         })
 ];

@@ -207,7 +207,7 @@ describe('Integration test (repository specific), priority: Users', () => {
 
         const apiUrl = '/api/v1/users';
 
-        describe('All routes, priority: express-validators (param)', () => {
+        describe('All routes, priority: express-validators, location: <params>', () => {
 
             let mockError: any;
             beforeEach(() => {
@@ -260,7 +260,7 @@ describe('Integration test (repository specific), priority: Users', () => {
             })
         })
 
-        describe('All routes, priority: express-validators (body)', () => {
+        describe('All routes, priority: express-validators, location: <body>', () => {
 
             let mockError: any;
             beforeEach(() => {

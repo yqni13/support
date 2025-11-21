@@ -216,7 +216,7 @@ describe('Integration test (repository specific), priority: Meta', () => {
         const apiUrl = '/api/v1/meta';
         const mockTimestamp = '2025-01-01T14:00:01.000Z';
 
-        describe('All routes, priority: express-validators (param)', () => {
+        describe('All routes, priority: express-validators, location: <params>', () => {
 
             let mockError: any;
             beforeEach(() => {
@@ -265,7 +265,7 @@ describe('Integration test (repository specific), priority: Meta', () => {
 
             describe('Route: GET/by-name/:name', () => {
 
-                test('Route: GET/by-name, params: <name>, validator: notEmpty by undefined', async () => {
+                test('Params: <name>, validator: notEmpty by undefined', async () => {
                     const mockParam_name = '%20';
                     const testError = structuredClone(mockError);
                     testError['path'] = 'name';
@@ -280,7 +280,7 @@ describe('Integration test (repository specific), priority: Meta', () => {
 
             describe('Route: PUT/info/:id', () => {
 
-                test('Route: PUT/info, params: <id>, validator: notEmpty by undefined', async () => {
+                test('Params: <id>, validator: notEmpty by undefined', async () => {
                     const mockParam_id = '%20';
                     const mockVersion = '0.0.0';
                     const mockParam_dto: MetaUpdateDTO = {
@@ -306,7 +306,7 @@ describe('Integration test (repository specific), priority: Meta', () => {
                     expect(mockResponse.body.headers.data).toEqual([testError]);
                 })
     
-                test('Route: PUT/info, params: <id>, validator: isInt by string', async () => {
+                test('Params: <id>, validator: isInt by string', async () => {
                     const mockParam_id = 'invalid_test_id';
                     const mockVersion = '0.0.0';
                     const mockParam_dto: MetaUpdateDTO = {
@@ -340,7 +340,7 @@ describe('Integration test (repository specific), priority: Meta', () => {
 
             describe('Route: GET/maintenance/:name', () => {
 
-                test('Route: GET/maintenance, params: <name>, validator: notEmpty by undefined', async () => {
+                test('Params: <name>, validator: notEmpty by undefined', async () => {
                     const mockParam_name = '%20';
                     const testError = structuredClone(mockError);
                     testError['path'] = 'name';
@@ -352,7 +352,7 @@ describe('Integration test (repository specific), priority: Meta', () => {
                     expect(mockResponse.body.headers.data).toEqual([testError]);
                 })
 
-                test('Route: PUT/maintenance, params: <name>, validator: notEmpty by undefined', async () => {
+                test('Params: <name>, validator: notEmpty by undefined', async () => {
                     const mockParam_name = '%20';
                     const mockParam_dto: MaintenanceUpdateDTO = {
                         maintenance_mode: MaintenanceMode.A008
@@ -371,7 +371,7 @@ describe('Integration test (repository specific), priority: Meta', () => {
             })
         })
 
-        describe('All routes, priority: express-validators (body)', () => {
+        describe('All routes, priority: express-validators, location: <body>', () => {
 
             let mockError: any;
             beforeEach(() => {
