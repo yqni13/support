@@ -15,7 +15,7 @@ class UsersService {
         let result = await usersRepository.findById(id);
         result = !result || Utils.isIRepoError(result)
             ? result
-            : (Utils.mapObjToApi(result as UsersResponseDTO, this.timeMapTargets)) as UsersResponseDTO;
+            : (Utils.mapObjTimestamps(result as UsersResponseDTO, this.timeMapTargets)) as UsersResponseDTO;
         return result;
     }
 
@@ -23,7 +23,7 @@ class UsersService {
         let result = await usersRepository.findAll();
         result = Utils.isIRepoError(result)
             ? result
-            : Utils.mapArrayToApi(result as UsersResponseDTO[], this.timeMapTargets);
+            : Utils.mapArrayTimestamps(result as UsersResponseDTO[], this.timeMapTargets);
         return result;
     }
 
@@ -31,7 +31,7 @@ class UsersService {
         let result = await usersRepository.findByFilter(dto);
         result = Utils.isIRepoError(result)
             ? result
-            : Utils.mapArrayToApi(result as UsersResponseDTO[], this.timeMapTargets);
+            : Utils.mapArrayTimestamps(result as UsersResponseDTO[], this.timeMapTargets);
         return result;
     }
 
@@ -40,7 +40,7 @@ class UsersService {
         let result = await usersRepository.create(user);
         result = !result || Utils.isIRepoError(result)
             ? result
-            : (Utils.mapObjToApi(result as UsersResponseDTO, this.timeMapTargets)) as UsersResponseDTO;
+            : (Utils.mapObjTimestamps(result as UsersResponseDTO, this.timeMapTargets)) as UsersResponseDTO;
         return result;
     }
 
@@ -49,7 +49,7 @@ class UsersService {
         let result = await usersRepository.update(id, dto);
         result = !result || Utils.isIRepoError(result)
             ? result
-            : (Utils.mapObjToApi(result as UsersResponseDTO, this.timeMapTargets)) as UsersResponseDTO;
+            : (Utils.mapObjTimestamps(result as UsersResponseDTO, this.timeMapTargets)) as UsersResponseDTO;
         return result;
     }
 }

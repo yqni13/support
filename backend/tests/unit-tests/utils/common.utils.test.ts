@@ -32,7 +32,7 @@ describe('Utils tets, priority: common', () => {
             expect(testFn).toBe(expectResult);
         })
 
-        test('fn: mapObjToApi', () => {
+        test('fn: mapObjTimestamps', () => {
             const mockParam_data: Users = {
                 user_id: 'valid_users_test_id',
                 email: 'user@test.com',
@@ -43,7 +43,7 @@ describe('Utils tets, priority: common', () => {
             };
             const mockParam_timeMapTargets = ['last_modified', 'created_on'];
 
-            const testFn = Utils.mapObjToApi(mockParam_data, mockParam_timeMapTargets);
+            const testFn = Utils.mapObjTimestamps(mockParam_data, mockParam_timeMapTargets);
             const expectResult: Users = {
                 user_id: 'valid_users_test_id',
                 email: 'user@test.com',
@@ -56,7 +56,7 @@ describe('Utils tets, priority: common', () => {
             expect(testFn).toStrictEqual(expectResult);
         })
 
-        test('fn: mapArrayToApi', () => {
+        test('fn: mapArrayTimestamps', () => {
             const mockParam_data: Users[] = [
                 {
                     user_id: 'valid_users_test_id_0',
@@ -77,7 +77,7 @@ describe('Utils tets, priority: common', () => {
             ];
             const mockParam_timeMapTargets = ['last_modified', 'created_on'];
 
-            const testFn = Utils.mapArrayToApi(mockParam_data, mockParam_timeMapTargets);
+            const testFn = Utils.mapArrayTimestamps(mockParam_data, mockParam_timeMapTargets);
             const expectResult: Users[] = [
                 {
                     user_id: 'valid_users_test_id_0',

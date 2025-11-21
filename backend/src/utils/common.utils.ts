@@ -50,16 +50,16 @@ export function logRepoError(logMsg: string, err: any) {
     }
 }
 
-export function mapObjToApi<T>(data: T, timeMapTargets: string[]): T {
+export function mapObjTimestamps<T>(data: T, timeMapTargets: string[]): T {
     timeMapTargets.forEach((key: string) => {
         (data as any)[key] = getTimestampUTC(new Date((data as any)[key]));
     })
     return data;
 }
 
-export function mapArrayToApi<T>(data: T[], timeMapTargets: string[]): T[] {
+export function mapArrayTimestamps<T>(data: T[], timeMapTargets: string[]): T[] {
     data.forEach((obj: T) => {
-        obj = mapObjToApi(obj, timeMapTargets);
+        obj = mapObjTimestamps(obj, timeMapTargets);
     })
     return data;
 }

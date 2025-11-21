@@ -19,6 +19,7 @@ class ClientsService {
     constructor() {
         this.timeMapTargets = ['last_use', 'last_modified', 'created_on'];
     }
+
     /**
      * @description Usage for apikey authentication in auth.middleware.ts.
      */
@@ -27,7 +28,7 @@ class ClientsService {
         let result = await clientsRepository.findByActiveKey(hash);
         result = !result || Utils.isIRepoError(result)
             ? null
-            : (Utils.mapObjToApi(result as ClientsExistResponseDTO, this.timeMapTargets)) as ClientsExistResponseDTO;
+            : (Utils.mapObjTimestamps(result as ClientsExistResponseDTO, this.timeMapTargets)) as ClientsExistResponseDTO;
         return result;
     }
 

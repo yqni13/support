@@ -12,7 +12,7 @@ class ClientsModel {
     }
 
     mapToCreateResponseDTO(data: Clients, apiKey: string): ClientsCreateResponseDTO {
-        data = Utils.mapObjToApi(data, this.timeMapTargets);
+        data = Utils.mapObjTimestamps(data, this.timeMapTargets);
         return {
             client_id: data.client_id,
             name: data.name,
@@ -25,7 +25,7 @@ class ClientsModel {
     }
 
     mapToStatusResponseDTO(data: Clients): ClientsStatusResponseDTO {
-        data = Utils.mapObjToApi(data, this.timeMapTargets);
+        data = Utils.mapObjTimestamps(data, this.timeMapTargets);
         return {
             client_id: data.client_id,
             name: data.name,
@@ -37,7 +37,7 @@ class ClientsModel {
     }
 
     mapToLastUseResponseDTO(data: Clients): ClientsLastUseResponseDTO {
-        data = Utils.mapObjToApi(data, this.timeMapTargets);
+        data = Utils.mapObjTimestamps(data, this.timeMapTargets);
         return {
             client_id: data.client_id,
             name: data.name,

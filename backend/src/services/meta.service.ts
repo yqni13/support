@@ -14,7 +14,7 @@ class MetaService {
         let result = await metaRepository.findById(id);
         result = !result || Utils.isIRepoError(result) 
             ? result
-            : (Utils.mapObjToApi(result as MetaResponseDTO, this.timeMapTargets)) as MetaResponseDTO;
+            : (Utils.mapObjTimestamps(result as MetaResponseDTO, this.timeMapTargets)) as MetaResponseDTO;
         return result;
     }
 
@@ -22,7 +22,7 @@ class MetaService {
         let result = await metaRepository.findByName(name);
         result = !result || Utils.isIRepoError(result)
             ? result
-            : (Utils.mapObjToApi(result as MetaResponseDTO, this.timeMapTargets)) as MetaResponseDTO;
+            : (Utils.mapObjTimestamps(result as MetaResponseDTO, this.timeMapTargets)) as MetaResponseDTO;
         return result;
     }
 
@@ -30,7 +30,7 @@ class MetaService {
         let result = await metaRepository.findAll();
         result = !result || Utils.isIRepoError(result) 
             ? result
-            : Utils.mapArrayToApi(result as MetaResponseDTO[], this.timeMapTargets);
+            : Utils.mapArrayTimestamps(result as MetaResponseDTO[], this.timeMapTargets);
         return result;
     }
 
@@ -39,7 +39,7 @@ class MetaService {
         let result = await metaRepository.update(id, dto);
         result = !result || Utils.isIRepoError(result)
             ? result
-            : (Utils.mapObjToApi(result as MetaResponseDTO, this.timeMapTargets)) as MetaResponseDTO;
+            : (Utils.mapObjTimestamps(result as MetaResponseDTO, this.timeMapTargets)) as MetaResponseDTO;
         return result;
     }
 
@@ -47,7 +47,7 @@ class MetaService {
         let result = await metaRepository.findMaintenance(name);
         result = !result || Utils.isIRepoError(result)
             ? result
-            : (Utils.mapObjToApi(result as MaintenanceResponseDTO, this.timeMapTargets)) as MaintenanceResponseDTO;
+            : (Utils.mapObjTimestamps(result as MaintenanceResponseDTO, this.timeMapTargets)) as MaintenanceResponseDTO;
         return result;
     }
 
@@ -56,7 +56,7 @@ class MetaService {
         let result = await metaRepository.updateMaintenance(name, dto);
         result = !result || Utils.isIRepoError(result)
             ? result
-            : (Utils.mapObjToApi(result as MaintenanceResponseDTO, this.timeMapTargets)) as MaintenanceResponseDTO;
+            : (Utils.mapObjTimestamps(result as MaintenanceResponseDTO, this.timeMapTargets)) as MaintenanceResponseDTO;
         return result;
     }
 }
