@@ -5,17 +5,14 @@ import * as Utils from "../utils/common.utils";
 import { ApiKeyStatus } from "../utils/enums/api-key-status.enum";
 
 class ClientsModel {
-    mapObjToApi(data: Clients): Clients {
-        return {
-            ...data,
-            last_use: Utils.getTimestampUTC(new Date(data.last_use)),
-            last_modified: Utils.getTimestampUTC(new Date(data.last_modified)),
-            created_on: Utils.getTimestampUTC(new Date(data.created_on))
-        }
+    private timeMapTargets: string[];
+
+    constructor() {
+        this.timeMapTargets = ['last_use', 'last_modified', 'created_on'];
     }
 
     mapToCreateResponseDTO(data: Clients, apiKey: string): ClientsCreateResponseDTO {
-        data = this.mapObjToApi(data);
+        data = Utils.mapObjTimestamps(data, this.timeMapTargets);
         return {
             client_id: data.client_id,
             name: data.name,
@@ -28,7 +25,7 @@ class ClientsModel {
     }
 
     mapToStatusResponseDTO(data: Clients): ClientsStatusResponseDTO {
-        data = this.mapObjToApi(data);
+        data = Utils.mapObjTimestamps(data, this.timeMapTargets);
         return {
             client_id: data.client_id,
             name: data.name,
@@ -40,7 +37,7 @@ class ClientsModel {
     }
 
     mapToLastUseResponseDTO(data: Clients): ClientsLastUseResponseDTO {
-        data = this.mapObjToApi(data);
+        data = Utils.mapObjTimestamps(data, this.timeMapTargets);
         return {
             client_id: data.client_id,
             name: data.name,

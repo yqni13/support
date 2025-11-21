@@ -21,29 +21,6 @@ let mockData: Clients = {
     created_on: mockTimestamp
 };
 
-describe('Model tests, class: <clients>, priority: mapObjToApi', () => {
-
-    describe('Testing valid fn calls', () => {
-
-        test('Map timestamps of clients object, entity: <Clients>', () => {
-            const mockParam_data: Clients = structuredClone(mockData);
-
-            const testFn = clientsModel.mapObjToApi(mockParam_data);
-            const expectResult: Clients = {
-                client_id: mockParam_data.client_id,
-                name: mockParam_data.name,
-                api_key_hash: mockParam_data.api_key_hash,
-                status: mockParam_data.status,
-                last_use: mockTimestamp,
-                last_modified: mockTimestamp,
-                created_on: mockTimestamp
-            };
-
-            expect(testFn).toEqual(expectResult);
-        })
-    })
-})
-
 describe('Model tests, class: <clients>, priority: mapToCreateResponseDTO', () => {
 
     describe('Testing valid fn calls', () => {

@@ -1,15 +1,20 @@
 import { MaintenanceResponseDTO, MaintenanceUpdateDTO, MetaResponseDTO, MetaUpdateDTO } from '../dtos/meta.dto';
 import { IRepoError } from '../repositories/interfaces/error.repository.interface';
 import metaRepository from '../repositories/meta.repository';
-import metaModel from '../models/meta.model';
 import * as Utils from "../utils/common.utils";
 
 class MetaService {
+    private timeMapTargets: string[];
+
+    constructor() {
+        this.timeMapTargets = ['build_on', 'created_on', 'last_modified'];
+    }
+
     async getMetaById(id: number): Promise<MetaResponseDTO | IRepoError | null> {
         let result = await metaRepository.findById(id);
         result = !result || Utils.isIRepoError(result) 
             ? result
-            : (metaModel.mapObjToApi(result as MetaResponseDTO)) as MetaResponseDTO;
+            : (Utils.mapObjTimestamps(result as MetaResponseDTO, this.timeMapTargets)) as MetaResponseDTO;
         return result;
     }
 
@@ -17,13 +22,15 @@ class MetaService {
         let result = await metaRepository.findByName(name);
         result = !result || Utils.isIRepoError(result)
             ? result
-            : (metaModel.mapObjToApi(result as MetaResponseDTO)) as MetaResponseDTO;
+            : (Utils.mapObjTimestamps(result as MetaResponseDTO, this.timeMapTargets)) as MetaResponseDTO;
         return result;
     }
 
     async getAllData(): Promise<MetaResponseDTO[] | IRepoError | null> {
         let result = await metaRepository.findAll();
-        result = !result || Utils.isIRepoError(result) ? result : metaModel.mapArrayToApi(result as MetaResponseDTO[]);
+        result = !result || Utils.isIRepoError(result) 
+            ? result
+            : Utils.mapArrayTimestamps(result as MetaResponseDTO[], this.timeMapTargets);
         return result;
     }
 
@@ -32,7 +39,7 @@ class MetaService {
         let result = await metaRepository.update(id, dto);
         result = !result || Utils.isIRepoError(result)
             ? result
-            : (metaModel.mapObjToApi(result as MetaResponseDTO)) as MetaResponseDTO;
+            : (Utils.mapObjTimestamps(result as MetaResponseDTO, this.timeMapTargets)) as MetaResponseDTO;
         return result;
     }
 
@@ -40,7 +47,7 @@ class MetaService {
         let result = await metaRepository.findMaintenance(name);
         result = !result || Utils.isIRepoError(result)
             ? result
-            : (metaModel.mapObjToApi(result as MaintenanceResponseDTO)) as MaintenanceResponseDTO;
+            : (Utils.mapObjTimestamps(result as MaintenanceResponseDTO, this.timeMapTargets)) as MaintenanceResponseDTO;
         return result;
     }
 
@@ -49,7 +56,7 @@ class MetaService {
         let result = await metaRepository.updateMaintenance(name, dto);
         result = !result || Utils.isIRepoError(result)
             ? result
-            : (metaModel.mapObjToApi(result as MaintenanceResponseDTO)) as MaintenanceResponseDTO;
+            : (Utils.mapObjTimestamps(result as MaintenanceResponseDTO, this.timeMapTargets)) as MaintenanceResponseDTO;
         return result;
     }
 }
