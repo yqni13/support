@@ -41,7 +41,7 @@ export function isIRepoError(obj: any): boolean {
 
 export function logRepoError(logMsg: string, err: any) {
     // TODO(yqni13): logging
-    if((secrets.ENV_MODE).trim() === EnvMode.DEV || (secrets.ENV_MODE).trim() === EnvMode.TEST) {
+    if(secrets.ENV_MODE.trim() === EnvMode.DEV || secrets.ENV_MODE.trim() === EnvMode.TEST) {
         console.log(logMsg, err);
     }
 }

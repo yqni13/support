@@ -69,7 +69,7 @@ export class DBConnection {
         } finally {
             await this.close(client);
         }
-        if(secrets.ENV_MODE === EnvMode.DEV) {
+        if(secrets.ENV_MODE.trim() === EnvMode.DEV) {
             console.log("DB COMMUNICATION: SUCCESS");
         }
     }
