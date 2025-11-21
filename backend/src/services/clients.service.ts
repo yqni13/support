@@ -28,7 +28,7 @@ class ClientsService {
 
     async findStatusByName(name: string): Promise<ClientsStatusResponseDTO | IRepoError | null> {
         let result = await clientsRepository.findStatusByName(name);
-        if(!result) {
+        if(Utils.isEmptyObj(result)) {
             return result;
         } else if(Utils.isIRepoError(result)) {
             return result as IRepoError;

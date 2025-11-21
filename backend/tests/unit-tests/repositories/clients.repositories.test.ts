@@ -118,9 +118,9 @@ describe('Database tests table <clients>, priority: findStatusByName', () => {
             );
         })
 
-        test('Return null for non-existing entry, params: <name>', async () => {
+        test('Return empty obj for non-existing entry, params: <name>', async () => {
             const mockParam_name = 'test_client';
-            const mockResult = null;
+            const mockResult = {};
             const mockClient = MockUtils.mapMockDbClient(mockResult);
             const testFn = await clientsRepository.findStatusByName(mockParam_name);
 

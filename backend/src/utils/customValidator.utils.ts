@@ -1,7 +1,10 @@
+import { ClientsStatusResponseDTO } from "../dtos/clients.dto";
 import { UsersFilterDTO } from "../dtos/users.dto";
+import clientsRepository from "../repositories/clients.repository";
 import { Users } from "../repositories/interfaces/users.entity.interface";
 import usersRepository from "../repositories/users.repository";
 import { MalformedApiKeyException } from "./exceptions/auth.exception";
+import * as Utils from "./common.utils";
 
 export function validateVersionStructure(version: string, numOfDelimiter: number): boolean {
     // 1. Check if version has all necessary delimiters.
@@ -128,6 +131,15 @@ export async function validateEmailUniqueness(email: string): Promise<boolean> {
     const isUnique = result && (result as Users[]).length > 0 ? false : true;
     if(!isUnique) {
         throw new Error('support-nonunique-email');
+    }
+    return true;
+}
+
+export async function validateClientUniqueness(name: string): Promise<boolean> {
+    const result = await clientsRepository.findStatusByName(name);
+    const isUnique = !Utils.isEmptyObj(result) || Utils.isIRepoError(result) ? false : true;
+    if(!isUnique) {
+        throw new Error('support-nonunique-client');
     }
     return true;
 }

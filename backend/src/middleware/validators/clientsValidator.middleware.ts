@@ -10,12 +10,13 @@ export const clientsStatusFindSchema: ValidationChain[] = [
         .withMessage(Message.REQUIRED)
 ];
 
-// TODO(yqni13): add validation to check unique name constraint
 export const clientsCreateSchema: ValidationChain[] = [
     body('name')
         .trim()
         .notEmpty()
         .withMessage(Message.REQUIRED)
+        .bail()
+        .custom(async(val: string) => await CustomValidator.validateClientUniqueness(val))
 ];
 
 export const clientsStatusUpdateSchema: ValidationChain[] = [

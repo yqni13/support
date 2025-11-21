@@ -21,6 +21,14 @@ describe('Utils tets, priority: common', () => {
 
             expect(testFn).toBe(expectResult);
         })
+
+        test('fn: isEmptyObj', () => {
+            const mockParam_obj = {};
+            const testFn = Utils.isEmptyObj(mockParam_obj);
+            const expectResult = true;
+
+            expect(testFn).toBe(expectResult);
+        })
     })
 
     describe('Testing invalid fn calls', () => {
@@ -52,6 +60,54 @@ describe('Utils tets, priority: common', () => {
         test('fn: isIRepoError, result as array', () => {
             const mockParam_obj = [{app: 'taxi-varga', author: 'yqni13'}, {app: 'artcreation-dv', author: 'yqni13'}];
             const testFn = Utils.isIRepoError(mockParam_obj);
+            const expectResult = false;
+
+            expect(testFn).toBe(expectResult);
+        })
+
+        test('fn: isEmptyObj, result as null', () => {
+            const mockParam_obj = null;
+            const testFn = Utils.isEmptyObj(mockParam_obj);
+            const expectResult = false;
+
+            expect(testFn).toBe(expectResult);
+        })
+
+        test('fn: isEmptyObj, result as undefined', () => {
+            const mockParam_obj = undefined;
+            const testFn = Utils.isEmptyObj(mockParam_obj);
+            const expectResult = false;
+
+            expect(testFn).toBe(expectResult);
+        })
+
+        test('fn: isEmptyObj, result as filled obj', () => {
+            const mockParam_obj = { test: 'test' };
+            const testFn = Utils.isEmptyObj(mockParam_obj);
+            const expectResult = false;
+
+            expect(testFn).toBe(expectResult);
+        })
+
+        test('fn: isEmptyObj, result as empty array', () => {
+            const mockParam_obj: any[] = [];
+            const testFn = Utils.isEmptyObj(mockParam_obj);
+            const expectResult = false;
+
+            expect(testFn).toBe(expectResult);
+        })
+
+        test('fn: isEmptyObj, result as array with empty obj', () => {
+            const mockParam_obj = [{}];
+            const testFn = Utils.isEmptyObj(mockParam_obj);
+            const expectResult = false;
+
+            expect(testFn).toBe(expectResult);
+        })
+
+        test('fn: isEmptyObj, result as array with filled obj', () => {
+            const mockParam_obj = [ { test: 'test' } ];
+            const testFn = Utils.isEmptyObj(mockParam_obj);
             const expectResult = false;
 
             expect(testFn).toBe(expectResult);

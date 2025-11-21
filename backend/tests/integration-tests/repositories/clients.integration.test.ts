@@ -6,7 +6,7 @@ import { ErrorStatusCodes } from '../../../src/utils/errorStatusCodes.utils';
 import { ApiKeyStatus } from "../../../src/utils/enums/api-key-status.enum";
 import { DBTestSetup } from "../db-container.setup";
 import { runMigrations } from '../../db-migrations.setup';
-import { ClientsCreateResponseDTO, ClientsStatusResponseDTO, ClientsStatusUpdateDTO } from "../../../src/dtos/clients.dto";
+import { ClientsCreateDTO, ClientsCreateResponseDTO, ClientsStatusResponseDTO, ClientsStatusUpdateDTO } from "../../../src/dtos/clients.dto";
 import clientsModel from "../../../src/models/clients.model";
 import { Clients } from "../../../src/repositories/interfaces/clients.entity.interface";
 import { CommonExceptionMessage } from "../../../src/utils/enums/common-exception-messages.enum";
@@ -22,27 +22,27 @@ jest.setTimeout(60000);
 
 describe('Integration test (repository specific), priority: Clients', () => {
 
+    let dbTestSetup: DBTestSetup;
+    let apiUrl: string;
+    const mockTimestamp = '2025-01-01T14:00:02.000Z';
+    const mockVar_apiKey = clientsModel._generateApiKeyObj();
+    beforeAll(async () => {
+        dbTestSetup = new DBTestSetup();
+        await dbTestSetup.init();
+        await runMigrations();
+        apiUrl = '/api/v1/clients';
+    });
+
+    beforeEach(async () => {
+        // Clean tables before each test to fill test data individually.
+        await dbTestSetup.clearTables();
+    });
+
+    afterAll(async () => {
+        await dbTestSetup.shutdown();
+    });
+
     describe('Testing valid fn calls', () => {
-
-        let dbTestSetup: DBTestSetup;
-        let apiUrl: string;
-        const mockTimestamp = '2025-01-01T14:00:02.000Z';
-        const mockVar_apiKey = clientsModel._generateApiKeyObj();
-        beforeAll(async () => {
-            dbTestSetup = new DBTestSetup();
-            await dbTestSetup.init();
-            await runMigrations();
-            apiUrl = '/api/v1/clients';
-        });
-
-        beforeEach(async () => {
-            // Clean tables before each test to fill test data individually.
-            await dbTestSetup.clearTables();
-        });
-
-        afterAll(async () => {
-            await dbTestSetup.shutdown();
-        });
 
         test('Repository process fn findStatusByName, result: "SUCCESS"', async () => {
             const testParam_name = 'TESTCLIENT';
@@ -54,6 +54,18 @@ describe('Integration test (repository specific), priority: Clients', () => {
                 last_modified: mockTimestamp,
                 created_on: mockTimestamp
             };
+
+            await dbTestSetup.addTestData();
+            const testResponse = await request(app)
+                .get(`${apiUrl}/status/${testParam_name}`);
+
+            expect(testResponse.statusCode).toBe(200);
+            expect(testResponse.body).toMatchObject(testResult);
+        })
+
+        test('Repository process fn findStatusByName, result: "NO-ENTRY-FOUND"', async () => {
+            const testParam_name = 'non-existing-client';
+            const testResult = {};
 
             await dbTestSetup.addTestData();
             const testResponse = await request(app)
@@ -199,6 +211,31 @@ describe('Integration test (repository specific), priority: Clients', () => {
 
                     expect(mockResponse.statusCode).toBe(ErrorStatusCodes.InvalidPropertiesException);
                     expect(mockResponse.body.headers.data).toContainEqual(testError);
+                })
+            })
+
+            describe('Route: POST/create, priority: validateClientUniqueness', () => {
+
+                test('Params: <name> by existing "TESTCLIENT" in db', async () => {
+                    const mockParam_dto: ClientsCreateDTO = {
+                        name: 'TESTCLIENT'
+                    };
+
+                    const testError = [{
+                        type: 'field',
+                        value: mockParam_dto.name,
+                        msg: 'support-nonunique-client',
+                        path: 'name',
+                        location: 'body'
+                    }];
+
+                    await dbTestSetup.addTestData();
+                    const mockResponse = await request(app)
+                        .post(`${apiUrl}/create`)
+                        .send(mockParam_dto);
+
+                    expect(mockResponse.statusCode).toBe(ErrorStatusCodes.InvalidPropertiesException);
+                    expect(mockResponse.body.headers.data).toStrictEqual(testError);
                 })
             })
         })

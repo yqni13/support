@@ -17,6 +17,10 @@ export function getTimestampUTC(timestamp?: Date): string {
     return timestamp ? new Date(timestamp).toISOString() : new Date().toISOString();
 }
 
+export function isEmptyObj(obj: any): boolean {
+    return JSON.stringify(obj) === '{}';
+}
+
 export function selectPrivateKey(source: MailSource): string {
     switch(source) {
         case(MailSource.ARTDV): {
