@@ -5,10 +5,11 @@ import app from '../../../src/app';
 import { ErrorStatusCodes } from '../../../src/utils/errorStatusCodes.utils';
 import { DBTestSetup } from "../db-container.setup";
 import { runMigrations } from '../../db-migrations.setup';
-import { UsersFilterDTO, UsersResponseDTO } from "../../../src/dtos/users.dto";
+import { UsersCreateUpdateDTO, UsersFilterDTO, UsersResponseDTO } from "../../../src/dtos/users.dto";
 import { Users } from "../../../src/repositories/interfaces/users.entity.interface";
 import { UserStatus } from "../../../src/utils/enums/user-status.enum";
 import { Flag } from "../../../src/utils/enums/flag.enum";
+import { CommonExceptionMessage } from "../../../src/utils/enums/common-exception-messages.enum";
 
 jest.mock('../../../src/middleware/auth.middleware', () => ({
     authAdmin: jest.fn(() =>  (req: Request, res: Response, next: NextFunction) => next())
@@ -205,92 +206,149 @@ describe('Integration test (repository specific), priority: Users', () => {
     describe('Testing invalid fn calls', () => {
 
         const apiUrl = '/api/v1/users';
-        let mockError: any;
-        beforeEach(() => {
-            mockError = {
-                type: 'field',
-                value: '',
-                msg: 'support-arg-required',
-                path: '',
-                location: 'body'
-            };
-        });
 
-        describe('Route: POST/create, priority: express-validators', () => {
+        describe('All routes, priority: express-validators (param)', () => {
 
-            const mockData: Partial<Users> = {
-                email: 'new-user@test.com',
-                status: UserStatus.ACTIVE
-            };
+            let mockError: any;
+            beforeEach(() => {
+                mockError = {
+                    type: 'field',
+                    value: '',
+                    msg: CommonExceptionMessage.REQUIRED,
+                    path: '',
+                    location: 'params'
+                };
+            });
 
-            const testedParams = Object.keys(mockData) as (keyof typeof mockData)[];
+            describe('Route: GET/by-id/:id', () => {
 
-            test.each(testedParams)('Params: <%s>, validator: notEmpty by undefined', async (invalidParam) => {
-                let mockParam_dto = structuredClone(mockData);
-                delete mockParam_dto[invalidParam];
+                test('Params: <id>, validator: notEmpty by undefined', async () => {
+                    // To test undefined, we need empty string but still match ':id' as part of route:
+                    // Simulate by URL-encoded SPACE + trim() => ''
+                    const mockParam_id = '%20';
+                    const testError = structuredClone(mockError);
+                    testError['path'] = 'id';
 
-                const testError = structuredClone(mockError);
-                testError['path'] = invalidParam;
+                    const mockResponse = await request(app)
+                        .get(`${apiUrl}/by-id/${mockParam_id}`);
 
-                const mockResponse = await request(app)
-                    .post(`${apiUrl}/create`)
-                    .send(mockParam_dto);
+                    expect(mockResponse.statusCode).toBe(ErrorStatusCodes.InvalidPropertiesException);
+                    expect(mockResponse.body.headers.data).toEqual([testError]);
+                })
+            })
 
-                expect(mockResponse.statusCode).toBe(ErrorStatusCodes.InvalidPropertiesException);
-                expect(mockResponse.body.headers.data).toContainEqual(testError);
+            describe('Route: PUT/update/:id', () => {
+
+                test('Params: <id>, validator: notEmpty by undefined', async () => {
+                    const mockParam_id = '%20';
+                    const mockParam_dto: UsersCreateUpdateDTO = {
+                        email: 'new-user@test.com',
+                        status: UserStatus.ACTIVE,
+                        flag: null
+                    };
+    
+                    const testError = structuredClone(mockError);
+                    testError['path'] = 'id';
+    
+                    const mockResponse = await request(app)
+                        .put(`${apiUrl}/update/${mockParam_id}`)
+                        .send(mockParam_dto);
+    
+                    expect(mockResponse.statusCode).toBe(ErrorStatusCodes.InvalidPropertiesException);
+                    expect(mockResponse.body.headers.data).toEqual([testError]);
+                })
             })
         })
 
-        describe('Route: PUT/update, priority: express-validators', () => {
+        describe('All routes, priority: express-validators (body)', () => {
 
-            const mockData: Partial<Users> = {
-                email: 'updated-user@test.com',
-                status: UserStatus.BLACKLISTED
-            };
+            let mockError: any;
+            beforeEach(() => {
+                mockError = {
+                    type: 'field',
+                    value: '',
+                    msg: CommonExceptionMessage.REQUIRED,
+                    path: '',
+                    location: 'body'
+                };
+            });
 
-            const testedParams = Object.keys(mockData) as (keyof typeof mockData)[];
+            describe('Route: POST/create', () => {
 
-            test.each(testedParams)('Params: <%s>, validator: notEmpty by undefined', async (invalidParam) => {
-                const mockParam_id = '87e4d6e3-d678-4de0-8806-e89135cbd38c';
-                let mockParam_dto = structuredClone(mockData);
-                delete mockParam_dto[invalidParam];
-
-                const testError = structuredClone(mockError);
-                testError['path'] = invalidParam;
-
-                const mockResponse = await request(app)
-                    .put(`${apiUrl}/update/${mockParam_id}`)
-                    .send(mockParam_dto);
-
-                expect(mockResponse.statusCode).toBe(ErrorStatusCodes.InvalidPropertiesException);
-                expect(mockResponse.body.headers.data).toContainEqual(testError);
-            })
-        })
-
-        describe('Route: POST/create, priority: validateEmailUniqueness', () => {
-            
-            test('Params: <email> by existing "max.mustermann@yqni13.com" in db', async () => {
-                const mockParam_dto: Partial<Users> = {
-                    email: 'max.mustermann@yqni13.com',
-                    status: UserStatus.ACTIVE,
-                    flag: null
+                const mockData: Partial<Users> = {
+                    email: 'new-user@test.com',
+                    status: UserStatus.ACTIVE
                 };
 
-                const testError = [{
-                    type: 'field',
-                    value: mockParam_dto.email,
-                    msg: 'support-nonunique-email',
-                    path: 'email',
-                    location: 'body'
-                }];
+                const testedParams = Object.keys(mockData) as (keyof typeof mockData)[];
 
-                await dbTestSetup.addTestData();
-                const mockResponse = await request(app)
-                    .post(`${apiUrl}/create`)
-                    .send(mockParam_dto);
+                test.each(testedParams)('Params: <%s>, validator: notEmpty by undefined', async (invalidParam) => {
+                    let mockParam_dto = structuredClone(mockData);
+                    delete mockParam_dto[invalidParam];
 
-                expect(mockResponse.statusCode).toBe(ErrorStatusCodes.InvalidPropertiesException);
-                expect(mockResponse.body.headers.data).toStrictEqual(testError);
+                    const testError = structuredClone(mockError);
+                    testError['path'] = invalidParam;
+
+                    const mockResponse = await request(app)
+                        .post(`${apiUrl}/create`)
+                        .send(mockParam_dto);
+
+                    expect(mockResponse.statusCode).toBe(ErrorStatusCodes.InvalidPropertiesException);
+                    expect(mockResponse.body.headers.data).toContainEqual(testError);
+                })
+            })
+
+            describe('Route: PUT/update/:id', () => {
+
+                const mockData: Partial<Users> = {
+                    email: 'updated-user@test.com',
+                    status: UserStatus.BLACKLISTED
+                };
+
+                const testedParams = Object.keys(mockData) as (keyof typeof mockData)[];
+
+                test.each(testedParams)('Params: <%s>, validator: notEmpty by undefined', async (invalidParam) => {
+                    const mockParam_id = '87e4d6e3-d678-4de0-8806-e89135cbd38c';
+                    let mockParam_dto = structuredClone(mockData);
+                    delete mockParam_dto[invalidParam];
+
+                    const testError = structuredClone(mockError);
+                    testError['path'] = invalidParam;
+
+                    const mockResponse = await request(app)
+                        .put(`${apiUrl}/update/${mockParam_id}`)
+                        .send(mockParam_dto);
+
+                    expect(mockResponse.statusCode).toBe(ErrorStatusCodes.InvalidPropertiesException);
+                    expect(mockResponse.body.headers.data).toContainEqual(testError);
+                })
+            })
+
+            describe('Route: POST/create, priority: validateEmailUniqueness', () => {
+                
+                test('Params: <email> by existing "max.mustermann@yqni13.com" in db', async () => {
+                    const mockParam_dto: Partial<Users> = {
+                        email: 'max.mustermann@yqni13.com',
+                        status: UserStatus.ACTIVE,
+                        flag: null
+                    };
+
+                    const testError = [{
+                        type: 'field',
+                        value: mockParam_dto.email,
+                        msg: 'support-nonunique-email',
+                        path: 'email',
+                        location: 'body'
+                    }];
+
+                    await dbTestSetup.addTestData();
+                    const mockResponse = await request(app)
+                        .post(`${apiUrl}/create`)
+                        .send(mockParam_dto);
+
+                    expect(mockResponse.statusCode).toBe(ErrorStatusCodes.InvalidPropertiesException);
+                    expect(mockResponse.body.headers.data).toStrictEqual(testError);
+                })
             })
         })
     })
