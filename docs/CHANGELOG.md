@@ -6,7 +6,8 @@
 
 ### $\textsf{\color{skyblue}2025/11/21}$
 
-$\textsf{[v0.8.2\ =>\ {\textbf{\color{brown}v0.8.4}]}}$ app
+$\textsf{[v0.8.2\ =>\ {\textbf{\color{brown}v0.8.5}]}}$ app
+- $\textsf{\color{orange}Patch:}$ Refactored timestamp mapping from different model functions to two generic type handling helper functions.
 - $\textsf{\color{orange}Patch:}$ Updated validations and added tests for params-located arguments (checked only body-located arguments before).
 - $\textsf{\color{teal}Addition:}$ Added validation on create method of entity 'Clients' to check if name already exists in database (unique constraint).
 

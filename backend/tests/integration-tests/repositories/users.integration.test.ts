@@ -176,7 +176,7 @@ describe('Integration test (repository specific), priority: Users', () => {
 
         test('Repository process fn update, result: "SUCCESS"', async () => {
             const testParam_id = '87e4d6e3-d678-4de0-8806-e89135cbd38c';
-            const mockTimeStamp = '2025-02-04T14:00:03.000Z';
+            const mockTimeStamp = '2025-01-01T14:00:03.000Z';
             const testParam_dto: Partial<Users> = {
                 email: 'user@test.com',
                 status: UserStatus.ACTIVE,

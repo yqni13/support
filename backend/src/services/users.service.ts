@@ -6,11 +6,16 @@ import usersModel from "../models/users.model";
 import { Users } from "../repositories/interfaces/users.entity.interface";
 
 class UsersService {
+    private timeMapTargets: string[];
+
+    constructor() {
+        this.timeMapTargets = ['last_modified', 'created_on'];
+    }
     async findById(id: string): Promise<UsersResponseDTO | IRepoError | null> {
         let result = await usersRepository.findById(id);
         result = !result || Utils.isIRepoError(result)
             ? result
-            : (usersModel.mapObjToApi(result as UsersResponseDTO)) as UsersResponseDTO;
+            : (Utils.mapObjToApi(result as UsersResponseDTO, this.timeMapTargets)) as UsersResponseDTO;
         return result;
     }
 
@@ -18,7 +23,7 @@ class UsersService {
         let result = await usersRepository.findAll();
         result = Utils.isIRepoError(result)
             ? result
-            : usersModel.mapArrayToApi(result as UsersResponseDTO[]);
+            : Utils.mapArrayToApi(result as UsersResponseDTO[], this.timeMapTargets);
         return result;
     }
 
@@ -26,7 +31,7 @@ class UsersService {
         let result = await usersRepository.findByFilter(dto);
         result = Utils.isIRepoError(result)
             ? result
-            : usersModel.mapArrayToApi(result as UsersResponseDTO[]);
+            : Utils.mapArrayToApi(result as UsersResponseDTO[], this.timeMapTargets);
         return result;
     }
 
@@ -35,7 +40,7 @@ class UsersService {
         let result = await usersRepository.create(user);
         result = !result || Utils.isIRepoError(result)
             ? result
-            : (usersModel.mapObjToApi(result as UsersResponseDTO)) as UsersResponseDTO;
+            : (Utils.mapObjToApi(result as UsersResponseDTO, this.timeMapTargets)) as UsersResponseDTO;
         return result;
     }
 
@@ -44,7 +49,7 @@ class UsersService {
         let result = await usersRepository.update(id, dto);
         result = !result || Utils.isIRepoError(result)
             ? result
-            : (usersModel.mapObjToApi(result as UsersResponseDTO)) as UsersResponseDTO;
+            : (Utils.mapObjToApi(result as UsersResponseDTO, this.timeMapTargets)) as UsersResponseDTO;
         return result;
     }
 }

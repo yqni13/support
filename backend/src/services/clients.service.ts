@@ -14,6 +14,11 @@ import clientsRepository from '../repositories/clients.repository';
 import { Clients } from "../repositories/interfaces/clients.entity.interface";
 
 class ClientsService {
+    private timeMapTargets: string[];
+
+    constructor() {
+        this.timeMapTargets = ['last_use', 'last_modified', 'created_on'];
+    }
     /**
      * @description Usage for apikey authentication in auth.middleware.ts.
      */
@@ -22,7 +27,7 @@ class ClientsService {
         let result = await clientsRepository.findByActiveKey(hash);
         result = !result || Utils.isIRepoError(result)
             ? null
-            : (clientsModel.mapObjToApi(result as ClientsExistResponseDTO)) as ClientsExistResponseDTO;
+            : (Utils.mapObjToApi(result as ClientsExistResponseDTO, this.timeMapTargets)) as ClientsExistResponseDTO;
         return result;
     }
 

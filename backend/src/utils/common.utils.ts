@@ -49,3 +49,17 @@ export function logRepoError(logMsg: string, err: any) {
         console.log(logMsg, err);
     }
 }
+
+export function mapObjToApi<T>(data: T, timeMapTargets: string[]): T {
+    timeMapTargets.forEach((key: string) => {
+        (data as any)[key] = getTimestampUTC(new Date((data as any)[key]));
+    })
+    return data;
+}
+
+export function mapArrayToApi<T>(data: T[], timeMapTargets: string[]): T[] {
+    data.forEach((obj: T) => {
+        obj = mapObjToApi(obj, timeMapTargets);
+    })
+    return data;
+}

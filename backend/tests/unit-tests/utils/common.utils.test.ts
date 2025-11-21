@@ -1,4 +1,6 @@
+import { Users } from "../../../src/repositories/interfaces/users.entity.interface";
 import * as Utils from "../../../src/utils/common.utils";
+import { UserStatus } from "../../../src/utils/enums/user-status.enum";
 import { secrets } from "../../../src/utils/secrets.utils";
 
 describe('Utils tets, priority: common', () => {
@@ -28,6 +30,74 @@ describe('Utils tets, priority: common', () => {
             const expectResult = true;
 
             expect(testFn).toBe(expectResult);
+        })
+
+        test('fn: mapObjToApi', () => {
+            const mockParam_data: Users = {
+                user_id: 'valid_users_test_id',
+                email: 'user@test.com',
+                status: UserStatus.ACTIVE,
+                flag: null,
+                last_modified: '2025-01-01 14:00:03.000+01',
+                created_on: '2025-01-01 14:00:03.000+01'
+            };
+            const mockParam_timeMapTargets = ['last_modified', 'created_on'];
+
+            const testFn = Utils.mapObjToApi(mockParam_data, mockParam_timeMapTargets);
+            const expectResult: Users = {
+                user_id: 'valid_users_test_id',
+                email: 'user@test.com',
+                status: UserStatus.ACTIVE,
+                flag: null,
+                last_modified: '2025-01-01T13:00:03.000Z',
+                created_on: '2025-01-01T13:00:03.000Z'
+            };
+
+            expect(testFn).toStrictEqual(expectResult);
+        })
+
+        test('fn: mapArrayToApi', () => {
+            const mockParam_data: Users[] = [
+                {
+                    user_id: 'valid_users_test_id_0',
+                    email: 'user0@test.com',
+                    status: UserStatus.ACTIVE,
+                    flag: null,
+                    last_modified: '2025-01-01 14:00:03.000+01',
+                    created_on: '2025-01-01 14:00:03.000+01'
+                },
+                {
+                    user_id: 'valid_users_test_id_1',
+                    email: 'user1@test.com',
+                    status: UserStatus.ACTIVE,
+                    flag: null,
+                    last_modified: '2025-01-01 14:00:03.000+01',
+                    created_on: '2025-01-01 14:00:03.000+01'
+                }
+            ];
+            const mockParam_timeMapTargets = ['last_modified', 'created_on'];
+
+            const testFn = Utils.mapArrayToApi(mockParam_data, mockParam_timeMapTargets);
+            const expectResult: Users[] = [
+                {
+                    user_id: 'valid_users_test_id_0',
+                    email: 'user0@test.com',
+                    status: UserStatus.ACTIVE,
+                    flag: null,
+                    last_modified: '2025-01-01T13:00:03.000Z',
+                    created_on: '2025-01-01T13:00:03.000Z'
+                },
+                {
+                    user_id: 'valid_users_test_id_1',
+                    email: 'user1@test.com',
+                    status: UserStatus.ACTIVE,
+                    flag: null,
+                    last_modified: '2025-01-01T13:00:03.000Z',
+                    created_on: '2025-01-01T13:00:03.000Z'
+                }
+            ];
+
+            expect(testFn).toStrictEqual(expectResult);
         })
     })
 
