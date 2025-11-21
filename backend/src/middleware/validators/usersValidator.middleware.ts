@@ -3,12 +3,13 @@ import * as CustomValidator from "../../utils/customValidator.utils";
 import { UserStatus } from '../../utils/enums/user-status.enum';
 import { Flag } from '../../utils/enums/flag.enum';
 import { SingleOrArray } from '../../utils/custom-types.utils';
+import { CommonExceptionMessage as Message } from '../../utils/enums/common-exception-messages.enum';
 
 export const usersFindByIdSchema: ValidationChain[] = [
     param('id')
         .trim()
         .notEmpty()
-        .withMessage('support-arg-required')
+        .withMessage(Message.REQUIRED)
 ];
 
 export const usersFindByFilterSchema: ValidationChain[] = [
@@ -42,7 +43,7 @@ export const usersCreateSchema: ValidationChain[] = [
     body('email')
         .trim()
         .notEmpty()
-        .withMessage('support-arg-required')
+        .withMessage(Message.REQUIRED)
         .bail()
         .custom(async(val: string) => {
             CustomValidator.validateEmail(val);
@@ -51,7 +52,7 @@ export const usersCreateSchema: ValidationChain[] = [
     body('status')
         .trim()
         .notEmpty()
-        .withMessage('support-arg-required')
+        .withMessage(Message.REQUIRED)
         .bail()
         .custom((val: string) => CustomValidator.validateEnum(val, UserStatus, 'userStatus')),
     body('flag')
@@ -60,18 +61,18 @@ export const usersCreateSchema: ValidationChain[] = [
         .optional({values: 'null'}),
     body('last_modified')
         .isEmpty()
-        .withMessage('support-arg-forbidden')
+        .withMessage(Message.FORBIDDEN)
 ];
 
 export const usersUpdateSchema: ValidationChain[] = [
     param('id')
         .trim()
         .notEmpty()
-        .withMessage('support-arg-required'),
+        .withMessage(Message.REQUIRED),
     body('email')
         .trim()
         .notEmpty()
-        .withMessage('support-arg-required')
+        .withMessage(Message.REQUIRED)
         .bail()
         .custom(async(val: string) => {
             CustomValidator.validateEmail(val);
@@ -80,7 +81,7 @@ export const usersUpdateSchema: ValidationChain[] = [
     body('status')
         .trim()
         .notEmpty()
-        .withMessage('support-arg-required')
+        .withMessage(Message.REQUIRED)
         .bail()
         .custom((val: string) => CustomValidator.validateEnum(val, UserStatus, 'userStatus')),
     body('flag')
@@ -89,5 +90,5 @@ export const usersUpdateSchema: ValidationChain[] = [
         .optional({values: 'null'}),
     body('last_modified')
         .isEmpty()
-        .withMessage('support-arg-forbidden')
+        .withMessage(Message.FORBIDDEN)
 ];
