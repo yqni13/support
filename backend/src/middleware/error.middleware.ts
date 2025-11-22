@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { secrets } from '../utils/secrets.utils';
 import { InternalServerException } from '../utils/exceptions/common.exception';
+import { EnvMode } from "../utils/enums/env-mode.enum";
 
 export function errorMiddleware(err: any, req: Request, res: Response, next: NextFunction) {
     if((err.status === 500 || !err.message) && !err.isOperational) {
@@ -9,7 +10,7 @@ export function errorMiddleware(err: any, req: Request, res: Response, next: Nex
 
     let { message, code, error, status, data, stack } = err;
 
-    if(secrets.ENV_MODE === 'development') {
+    if(secrets.ENV_MODE.trim() === EnvMode.DEV) {
         console.log(`[Exception] ${error}, [Code] ${code}`);
         console.log(`[Error] ${message}`);
         console.log(`[Stack] ${stack}`);

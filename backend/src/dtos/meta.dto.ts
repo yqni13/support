@@ -1,15 +1,17 @@
+import { EnvMode } from "../utils/enums/env-mode.enum"
 import { MaintenanceMode } from "../utils/enums/maintenance-mode.enum"
 
 export interface MetaUpdateDTO {
     app: string,
     author: string,
     build_on: string,
-    environment: string,
+    environment: EnvMode,
     app_version: string,
     db_version: string,
     docker_image: string,
     docker_version: string,
     jenkins_version: string,
+    last_modified?: string
 }
 
 export interface MetaResponseDTO {
@@ -17,7 +19,7 @@ export interface MetaResponseDTO {
     app: string,
     author: string,
     build_on: string,
-    environment: string,
+    environment: EnvMode,
     app_version: string,
     db_version: string,
     docker_image: string,
@@ -29,7 +31,8 @@ export interface MetaResponseDTO {
 }
 
 export interface MaintenanceUpdateDTO {
-    maintenance_mode: MaintenanceMode
+    maintenance_mode: MaintenanceMode,
+    last_modified?: string
 }
 
 export interface MaintenanceResponseDTO {

@@ -30,7 +30,6 @@ jobs:
           --health-retries 5
 
     env:
-      TZ: Europe/Vienna
       NODE_ENV: ${{ secrets.NODE_ENV }}
       SECRET_ADMIN_API: ${{ secrets.SECRET_ADMIN_API }}
       SECRET_EMAIL_RECEIVER: ${{ secrets.SECRET_EMAIL_RECEIVER }}
@@ -56,9 +55,6 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-
-      - name: Set timezone
-        run: sudo timedatectl set-timezone Europe/Vienna
 
       - name: Setup NodeJS
         uses: actions/setup-node@v4
