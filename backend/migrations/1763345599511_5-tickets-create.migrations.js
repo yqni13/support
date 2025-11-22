@@ -30,8 +30,8 @@ async function up(pgm) {
             type: 'varchar(30)',
             notNull: true
         },
-        message_hash: {
-            type: 'text',
+        message: {
+            type: 'varchar(1000)',
             notNull: true
         },
         resource_paths: {

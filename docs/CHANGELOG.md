@@ -4,10 +4,38 @@
 
 <br>
 
+### $\textsf{\color{skyblue}2025/11/21}$
+
+$\textsf{[v0.8.2\ =>\ {\textbf{\color{brown}v0.8.5}]}}$ app
+- $\textsf{\color{orange}Patch:}$ Refactored timestamp mapping from different model functions to two generic type handling helper functions.
+- $\textsf{\color{orange}Patch:}$ Updated validations and added tests for params-located arguments (checked only body-located arguments before).
+- $\textsf{\color{teal}Addition:}$ Added validation on create method of entity 'Clients' to check if name already exists in database (unique constraint).
+
+<br>
+
+### $\textsf{\color{skyblue}2025/11/20}$
+
+$\textsf{[v0.8.1\ =>\ v0.8.2]}$ app<br>
+$\textsf{[v1.3.0\ =>\ {\textbf{\color{brown}v1.3.1}]}}$ database<br>
+$\textsf{[v1.0.2\ =>\ {\textbf{\color{brown}v1.0.3}]}}$ docker
+- $\textsf{\color{orange}Patch:}$ Updated timestamp handling without timezone in backend (db saves with timezone and only converts in Frontend).
+- $\textsf{\color{orange}Patch:}$ Added migration to change type for timestamps of table 'users' and 'tickets'.
+- $\textsf{\color{green}Change:}$ Removed timezone setting from docker due to UTC-Update.
+
+<br>
+
+### $\textsf{\color{skyblue}2025/11/18}$
+
+$\textsf{[v0.7.6\ =>\ v0.8.1]}$ app
+- $\textsf{\color{green}Change:}$ Added 'issued' state to ticket status enum (default).
+- $\textsf{\color{teal}Addition:}$ Added routes + basic logic to handle 'Users' data.
+
+<br>
+
 ### $\textsf{\color{skyblue}2025/11/17}$
 
-$\textsf{[v0.7.4\ =>\ {\textbf{\color{brown}v0.7.6}]}}$ app<br>
-$\textsf{[v1.2.0\ =>\ {\textbf{\color{brown}v1.3.0}]}}$ database
+$\textsf{[v0.7.4\ =>\ v0.7.6]}$ app<br>
+$\textsf{[v1.2.0\ =>\ v1.3.0]}$ database
 - $\textsf{\color{teal}Addition:}$ Added customized email validation.
 - $\textsf{\color{teal}Addition:}$ Added enum to handle ticket status.
 - $\textsf{\color{teal}Addition:}$ Added insert command to testcontainers ('tickets' table).
@@ -35,7 +63,7 @@ $\textsf{[v0.7.2\ =>\ v0.7.3]}$ app
 ### $\textsf{\color{skyblue}2025/11/11}$
 
 $\textsf{[v0.7.1\ =>\ v0.7.2]}$ app<br>
-$\textsf{[v1.0.1\ =>\ {\textbf{\color{brown}v1.0.2}]}}$ docker<br>
+$\textsf{[v1.0.1\ =>\ v1.0.2]}$ docker<br>
 - $\textsf{\color{teal}Addition:}$ Added script to run tests on GitHub PR's (feat* => DEV, DEV => STAG, STAG => PROD).
 - $\textsf{\color{orange}Patch:}$ Updated docker-compose with additional env var (set timezone to fix difference between local system and docker container).
 

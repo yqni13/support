@@ -18,7 +18,7 @@ export function maintain() {
             next();
         } catch(err: any) {
             // TODO(yqni13): logging
-            if((secrets.ENV_MODE).trim() === EnvMode.DEV || (secrets.ENV_MODE).trim() === EnvMode.TEST) {
+            if(secrets.ENV_MODE.trim() === EnvMode.DEV || secrets.ENV_MODE.trim() === EnvMode.TEST) {
                 console.log("MAINTENANCE ERROR ON API CALL (Maintenance Middleware): ", err.message);
             }
             err.status = 598;

@@ -5,7 +5,12 @@ export interface ClientsCreateDTO {
 }
 
 export interface ClientsStatusUpdateDTO {
-    status: ApiKeyStatus
+    status: ApiKeyStatus,
+    last_modified?: string
+}
+
+export interface ClientsLastUseUpdateDTO {
+    last_use: string
 }
 
 export interface ClientsExistResponseDTO {
