@@ -11,7 +11,7 @@ import { MaintenanceUpdateDTO, MetaUpdateDTO } from '../../../src/dtos/meta.dto'
 import { CommonExceptionMessage } from '../../../src/utils/enums/common-exception-messages.enum';
 import { EnvMode } from '../../../src/utils/enums/env-mode.enum';
 
-jest.mock('../../../src/middleware/auth.middleware', () => ({
+jest.mock('../../../src/middleware/auth.admin.middleware', () => ({
     authAdmin: jest.fn(() =>  (req: Request, res: Response, next: NextFunction) => next())
 }));
 

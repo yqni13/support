@@ -4,17 +4,21 @@ import request from 'supertest';
 import app from '../../../src/app';
 import { DBTestSetup } from "../db-container.setup";
 import { runMigrations } from '../../db-migrations.setup';
-import { TicketsCreateDTO, TicketsFilterDTO, TicketsResponseDTO, TicketsUpdateDTO } from "../../../src/dtos/tickets.dto";
+import { TicketsCreateRequestDTO, TicketsFilterDTO, TicketsResponseDTO, TicketsUpdateDTO } from "../../../src/dtos/tickets.dto";
 import { TicketStatus } from "../../../src/utils/enums/ticket-status.enum";
 import { Flag } from "../../../src/utils/enums/flag.enum";
 import { Tickets } from "../../../src/repositories/interfaces/tickets.entity.interface";
 import { CommonExceptionMessage } from "../../../src/utils/enums/common-exception-messages.enum";
 import { ErrorStatusCodes } from "../../../src/utils/errorStatusCodes.utils";
 
-
-jest.mock('../../../src/middleware/auth.middleware', () => ({
-    authAdmin: jest.fn(() =>  (req: Request, res: Response, next: NextFunction) => next()),
-    authClient: jest.fn(() =>  (req: Request, res: Response, next: NextFunction) => next())
+jest.mock('../../../src/middleware/auth.admin.middleware', () => ({
+    authAdmin: jest.fn(() => (req: Request, res: Response, next: NextFunction) => next())
+}));
+jest.mock('../../../src/middleware/auth.client.middleware', () => ({
+    authClient: jest.fn(() => (req: Request, res: Response, next: NextFunction) => next())
+}));
+jest.mock('../../../src/middleware/auth.user.middleware', () => ({
+    authUser: jest.fn(() => (req: Request, res: Response, next: NextFunction) => next())
 }));
 jest.mock('../../../src/middleware/maintenance.middleware', () => ({
     maintain: jest.fn(() =>  (req: Request, res: Response, next: NextFunction) => next())
@@ -159,12 +163,9 @@ describe('Integration test (repository specific), priority: Clients', () => {
 
         test('Repository process fn create, result: "SUCCESS"', async () => {
             const mockParam_id = 'ae9550fc-16fd-4e9a-8ab5-d6ab55b84cb4';
-            const mockParam_dto: Partial<Tickets> = {
-                client_id: mockClientsId,
-                user_id: mockUsersId,
-                status: TicketStatus.ISSUED,
+            const mockParam_dto: TicketsCreateRequestDTO = {
+                user_email: 'TESTCLIENT',
                 message: 'new-test-message',
-                flag: null
             };
 
             // TODO(yqni13): mock img-handling on implementation (SUPPORT-38)
@@ -174,6 +175,9 @@ describe('Integration test (repository specific), priority: Clients', () => {
             const testResult = structuredClone(mockParam_dto);
             Object.assign(testResult, {
                 ticket_id: mockParam_id,
+                client_id: mockClientsId,
+                user_id: mockUsersId,
+                status: TicketStatus.ISSUED,
                 last_modified: mockTimestamp,
                 created_on: mockTimestamp
             });
@@ -326,7 +330,10 @@ describe('Integration test (repository specific), priority: Clients', () => {
 
                 // Testing on forbidden value because these properties are assigned automatically in model.
                 test.each(testedArgs)('Arguments: <%s>, validator: isEmpty by defined value', async (invalidArg) => {
-                    let mockParam_dto: TicketsCreateDTO = { message: 'test-message' };
+                    let mockParam_dto: TicketsCreateRequestDTO = {
+                        user_email: 'user@test.com',
+                        message: 'test-message'
+                    };
                     Object.assign(mockParam_dto, structuredClone(mockData[invalidArg]));
 
                     const testError = {
@@ -360,7 +367,8 @@ describe('Integration test (repository specific), priority: Clients', () => {
                 })
 
                 test('Arguments: <message>, validator: isLength by max > 1000 chars', async () => {
-                    let mockParam_dto: TicketsCreateDTO = {
+                    let mockParam_dto: TicketsCreateRequestDTO = {
+                        user_email: 'user@test.com',
                         message: `
                         This-message-contains-more-than-1000-characters-throwing-<support-invalid-max#message!1000>
                         This-message-contains-more-than-1000-characters-throwing-<support-invalid-max#message!1000>

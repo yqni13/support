@@ -2,14 +2,17 @@ import { SingleOrArray } from "../utils/custom-types.utils";
 import { Flag } from "../utils/enums/flag.enum";
 import { TicketStatus } from "../utils/enums/ticket-status.enum";
 
-export interface TicketsCreateDTO {
-    client_id?: string,
-    user_id?: string,
-    status?: TicketStatus,
+export interface TicketsCreateRequestDTO {
+    user_email: string,
     message: string,
     resource_paths?: string[],
-    flag?: Flag | null,
-    last_modified?: string,
+}
+
+export interface TicketsCreateDTO {
+    client_id: string,
+    user_id: string,
+    message: string,
+    resource_paths?: string[],
 }
 
 export interface TicketsUpdateDTO {

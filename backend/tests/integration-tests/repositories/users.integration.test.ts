@@ -11,7 +11,7 @@ import { UserStatus } from "../../../src/utils/enums/user-status.enum";
 import { Flag } from "../../../src/utils/enums/flag.enum";
 import { CommonExceptionMessage } from "../../../src/utils/enums/common-exception-messages.enum";
 
-jest.mock('../../../src/middleware/auth.middleware', () => ({
+jest.mock('../../../src/middleware/auth.admin.middleware', () => ({
     authAdmin: jest.fn(() =>  (req: Request, res: Response, next: NextFunction) => next())
 }));
 

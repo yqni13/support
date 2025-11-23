@@ -11,7 +11,7 @@ import clientsModel from "../../../src/models/clients.model";
 import { Clients } from "../../../src/repositories/interfaces/clients.entity.interface";
 import { CommonExceptionMessage } from "../../../src/utils/enums/common-exception-messages.enum";
 
-jest.mock('../../../src/middleware/auth.middleware', () => ({
+jest.mock('../../../src/middleware/auth.admin.middleware', () => ({
     authAdmin: jest.fn(() =>  (req: Request, res: Response, next: NextFunction) => next())
 }));
 jest.mock('../../../src/middleware/maintenance.middleware', () => ({
