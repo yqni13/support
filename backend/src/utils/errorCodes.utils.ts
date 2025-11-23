@@ -20,5 +20,8 @@ export const ErrorCodes: any = {
     MalformedApiKeyException: 18,
     MissingApiKeyException: 19,
     InvalidApiKeyException: 20,
-    ExceedMaxEndpointException: 21
+    ExceedMaxEndpointException: 21,
+    MissingEmailException: 22,
+    InvalidUsersException: 23,
+    DBQueryErrorException: 24,
 };

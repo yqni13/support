@@ -48,6 +48,12 @@ export class TokenMissingException extends AuthException {
     }
 }
 
+export class MissingEmailException extends AuthException {
+    constructor(message: string = 'support-email-required', data?: unknown){
+        super(ErrorCodes.MissingEmailException, message, data);
+    }
+}
+
 export class InvalidCredentialsException extends AuthException {
     constructor(message: string, data?: unknown){
         super(ErrorCodes.InvalidCredentialsException, message, data);
@@ -62,24 +68,30 @@ export class InvalidTokenException extends AuthException {
 
 export class MissingApiKeyException extends AuthException {
     constructor(message: string = 'support-missing-apikey', data?: unknown) {
-        super(ErrorCodes.MissingApiKeyException, message, data)
+        super(ErrorCodes.MissingApiKeyException, message, data);
     }
 }
 
 export class InvalidApiKeyException extends AuthException {
     constructor(message: string = 'support-invalid-apikey', data?: unknown) {
-        super(ErrorCodes.InvalidApiKeyException, message, data, ErrorStatusCodes.InvalidApiKeyException)
+        super(ErrorCodes.InvalidApiKeyException, message, data, ErrorStatusCodes.InvalidApiKeyException);
     }
 }
 
 export class MalformedApiKeyException extends AuthException {
     constructor(message: string = 'support-malformed-apikey', data?: unknown) {
-        super(ErrorCodes.MalformedApiKeyException, message, data)
+        super(ErrorCodes.MalformedApiKeyException, message, data);
     }
 }
 
 export class AuthSecretNotFoundException extends AuthException {
     constructor(message: string, data?: unknown) {
         super(ErrorCodes.AuthSecretNotFoundException, message, data, ErrorStatusCodes.AuthSecretNotFoundException);
+    }
+}
+
+export class InvalidUsersException extends AuthException {
+    constructor(data?: unknown) {
+        super(ErrorCodes.InvalidUsersException, 'support-invalid-users', data);
     }
 }
