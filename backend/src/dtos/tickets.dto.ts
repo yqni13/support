@@ -33,6 +33,18 @@ export interface TicketsFilterDTO {
 export interface TicketsResponseDTO {
     ticket_id: string,
     client_id: string,
+    user_id: string,
+    status: TicketStatus,
+    message: string,
+    resource_paths?: string[],
+    flag: Flag | null,
+    last_modified: string,
+    created_on: string
+}
+
+export interface TicketsResponseExtendedDTO {
+    ticket_id: string,
+    client_id: string,
     client_name: string,
     user_id: string,
     user_email: string,

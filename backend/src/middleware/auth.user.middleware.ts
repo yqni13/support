@@ -14,7 +14,7 @@ import { EnvMode } from "../utils/enums/env-mode.enum";
 export function authUser() {
     return async function(req: Request, res: Response, next: NextFunction) {
         try {
-            const email = req.body.email;
+            const email = req.body.user_email;
             if(!email) {
                 throw new MissingEmailException();
             }

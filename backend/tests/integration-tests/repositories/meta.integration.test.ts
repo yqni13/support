@@ -3,7 +3,6 @@ import { NextFunction, Request, Response } from "express";
 import { DBTestSetup } from "../db-container.setup";
 import { runMigrations } from '../../db-migrations.setup';
 import request from 'supertest';
-import app from '../../../src/app';
 import * as Utils from '../../../src/utils/common.utils';
 import { ErrorStatusCodes } from '../../../src/utils/errorStatusCodes.utils';
 import { MaintenanceMode } from '../../../src/utils/enums/maintenance-mode.enum';
@@ -15,7 +14,10 @@ jest.mock('../../../src/middleware/auth.admin.middleware', () => ({
     authAdmin: jest.fn(() =>  (req: Request, res: Response, next: NextFunction) => next())
 }));
 
+import app from '../../../src/app';
+
 jest.setTimeout(60000);
+const mockTimestamp = '2025-01-01T14:00:01.000Z';
 
 describe('Integration test (repository specific), priority: Meta', () => {
 
@@ -23,14 +25,12 @@ describe('Integration test (repository specific), priority: Meta', () => {
 
         let dbTestSetup: DBTestSetup;
         let apiUrl: string;
-        let mockTimestamp: string;
         let mockResult: Meta;
         beforeAll(async () => {
             dbTestSetup = new DBTestSetup();
             await dbTestSetup.init();
             await runMigrations();
             apiUrl = '/api/v1/meta';
-            mockTimestamp = '2025-01-01T14:00:01.000Z';
             mockResult = {
                 id: 1,
                 app: 'support',
@@ -214,7 +214,6 @@ describe('Integration test (repository specific), priority: Meta', () => {
     describe('Testing invalid fn calls', () => {
 
         const apiUrl = '/api/v1/meta';
-        const mockTimestamp = '2025-01-01T14:00:01.000Z';
 
         describe('All routes, priority: express-validators, location: <params>', () => {
 

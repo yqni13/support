@@ -72,7 +72,7 @@ describe('Database tests table <users>, priority: findById', () => {
             const mockErrorMsg = "DB ERROR ON SELECT QUERY, (Users TEST Repository, findById)";
             const mockResult = null;
             jest.spyOn(Utils, "logRepoError").mockReturnValue();
-            const _ = MockUtils.mapMockDbClient(mockResult, mockErrorMsg);
+            const _ = MockUtils.mapMockDbClient(mockResult, false, mockErrorMsg);
             const testFn = await usersRepository.findById(mockParam_id);
 
             expect(testFn).toEqual<IRepoError>({
@@ -129,7 +129,7 @@ describe('Database tests table <users>, priority: findByEmail', () => {
             const mockErrorMsg = "DB ERROR ON SELECT QUERY, (Users TEST Repository, findByEmail)";
             const mockResult = null;
             jest.spyOn(Utils, "logRepoError").mockReturnValue();
-            const _ = MockUtils.mapMockDbClient(mockResult, mockErrorMsg);
+            const _ = MockUtils.mapMockDbClient(mockResult, false, mockErrorMsg);
 
             await expect(() => usersRepository.findByEmail(mockParam_email))
                 .rejects.toThrow(expectExceptionResult);
@@ -150,7 +150,7 @@ describe('Database tests table <users>, priority: findAll', () => {
 
             const mockErrorMsg = undefined;
             const mockExpectArray = true;
-            const mockClient = MockUtils.mapMockDbClient(mockResult, mockErrorMsg, mockExpectArray);
+            const mockClient = MockUtils.mapMockDbClient(mockResult, false, mockErrorMsg, mockExpectArray);
             const sql = `SELECT * FROM users ORDER BY user_id ASC FETCH FIRST 100 ROWS ONLY;`;
             const testFn = await usersRepository.findAll();
 
@@ -166,7 +166,7 @@ describe('Database tests table <users>, priority: findAll', () => {
             const mockErrorMsg = "DB ERROR ON SELECT QUERY, (Users TEST Repository, findAll)";
             const mockResult = null;
             jest.spyOn(Utils, "logRepoError").mockReturnValue();
-            const _ = MockUtils.mapMockDbClient(mockResult, mockErrorMsg);
+            const _ = MockUtils.mapMockDbClient(mockResult, false, mockErrorMsg);
             const testFn = await usersRepository.findAll();
 
             expect(testFn).toEqual<IRepoError>({
@@ -194,7 +194,7 @@ describe('Database tests table <users>, priority: findByFilter', () => {
 
             const mockErrorMsg = undefined;
             const mockExpectArray = true;
-            const mockClient = MockUtils.mapMockDbClient(mockResult, mockErrorMsg, mockExpectArray);
+            const mockClient = MockUtils.mapMockDbClient(mockResult, false, mockErrorMsg, mockExpectArray);
             const testFn = await usersRepository.findByFilter(mockParam_dto);
 
             expect(testFn).toEqual(mockResult);
@@ -212,7 +212,7 @@ describe('Database tests table <users>, priority: findByFilter', () => {
 
             const mockErrorMsg = undefined;
             const mockExpectArray = true;
-            const mockClient = MockUtils.mapMockDbClient(mockResult, mockErrorMsg, mockExpectArray);
+            const mockClient = MockUtils.mapMockDbClient(mockResult, false, mockErrorMsg, mockExpectArray);
             const testFn = await usersRepository.findByFilter(mockParam_dto);
 
             expect(testFn).toEqual(mockResult);
@@ -231,7 +231,7 @@ describe('Database tests table <users>, priority: findByFilter', () => {
             const mockErrorMsg = "DB ERROR ON SELECT QUERY, (Users TEST Repository, findByFilter)";
             const mockResult = [null];
             jest.spyOn(Utils, "logRepoError").mockReturnValue();
-            const _ = MockUtils.mapMockDbClient(mockResult, mockErrorMsg);
+            const _ = MockUtils.mapMockDbClient(mockResult, false, mockErrorMsg);
             const testFn = await usersRepository.findByFilter(mockParam_dto);
 
             expect(testFn).toEqual<IRepoError>({
@@ -289,7 +289,7 @@ describe('Database tests table <users>, priority: create', () => {
             const mockErrorMsg = "DB ERROR ON INSERT QUERY, (Users TEST Repository, create)";
             const mockResult = null;
             jest.spyOn(Utils, "logRepoError").mockReturnValue();
-            const _ = MockUtils.mapMockDbClient(mockResult, mockErrorMsg);
+            const _ = MockUtils.mapMockDbClient(mockResult, false, mockErrorMsg);
 
             await expect(() => usersRepository.create(mockParam_entity))
                 .rejects.toThrow(expectExceptionResult);
@@ -373,7 +373,7 @@ describe('Database tests table <users>, priority: udpate', () => {
             const mockErrorMsg = "DB ERROR ON UPDATE QUERY, (Users TEST Repository, update)";
             const mockResult = null;
             jest.spyOn(Utils, "logRepoError").mockReturnValue();
-            const _ = MockUtils.mapMockDbClient(mockResult, mockErrorMsg);
+            const _ = MockUtils.mapMockDbClient(mockResult, false, mockErrorMsg);
             const testFn = await usersRepository.update(mockParam_id, mockParam_data);
 
             expect(testFn).toEqual<IRepoError>({
@@ -385,7 +385,7 @@ describe('Database tests table <users>, priority: udpate', () => {
     })
 })
 
-describe('Database tests table <users>, priority: _mapFindByFilterValues', () => {
+describe('Database tests table <users>, priority: _mapFilteredUsersQueryValues', () => {
 
     describe('Testing valid fn calls', () => {
 
@@ -394,7 +394,7 @@ describe('Database tests table <users>, priority: _mapFindByFilterValues', () =>
                 email: ['user@test.com', 'new-user@test.com'],
                 status: UserStatus.ACTIVE
             }
-            const testFn = usersRepository._mapFindByFilterValues(mockParam_dto);
+            const testFn = usersRepository._mapFilteredUsersQueryValues(mockParam_dto);
             const expectResult = {
                 sql: "SELECT * FROM users WHERE (email = $1 OR email = $2) AND status = $3;",
                 values: ['user@test.com', 'new-user@test.com', 'active']

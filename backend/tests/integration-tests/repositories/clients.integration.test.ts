@@ -1,15 +1,20 @@
 import { NextFunction, Request, Response } from "express";
+import {
+    ClientsCreateResponseDTO,
+    ClientsStatusResponseDTO,
+    ClientsCreateDTO,
+    ClientsStatusUpdateDTO
+} from "../../../src/dtos/clients.dto";
 import * as Utils from '../../../src/utils/common.utils';
 import request from 'supertest';
-import app from '../../../src/app';
 import { ErrorStatusCodes } from '../../../src/utils/errorStatusCodes.utils';
 import { ApiKeyStatus } from "../../../src/utils/enums/api-key-status.enum";
 import { DBTestSetup } from "../db-container.setup";
 import { runMigrations } from '../../db-migrations.setup';
-import { ClientsCreateDTO, ClientsCreateResponseDTO, ClientsStatusResponseDTO, ClientsStatusUpdateDTO } from "../../../src/dtos/clients.dto";
 import clientsModel from "../../../src/models/clients.model";
 import { Clients } from "../../../src/repositories/interfaces/clients.entity.interface";
 import { CommonExceptionMessage } from "../../../src/utils/enums/common-exception-messages.enum";
+import { default as mockId } from "../../mock-data/id.mock-data.json";
 
 jest.mock('../../../src/middleware/auth.admin.middleware', () => ({
     authAdmin: jest.fn(() =>  (req: Request, res: Response, next: NextFunction) => next())
@@ -18,13 +23,15 @@ jest.mock('../../../src/middleware/maintenance.middleware', () => ({
     maintain: jest.fn(() =>  (req: Request, res: Response, next: NextFunction) => next())
 }));
 
+import app from '../../../src/app';
+
 jest.setTimeout(60000);
+const mockTimestamp = '2025-01-01T14:00:02.000Z';
 
 describe('Integration test (repository specific), priority: Clients', () => {
 
     let dbTestSetup: DBTestSetup;
     let apiUrl: string;
-    const mockTimestamp = '2025-01-01T14:00:02.000Z';
     const mockVar_apiKey = clientsModel._generateApiKeyObj();
     beforeAll(async () => {
         dbTestSetup = new DBTestSetup();
@@ -47,7 +54,7 @@ describe('Integration test (repository specific), priority: Clients', () => {
         test('Repository process fn findStatusByName, result: "SUCCESS"', async () => {
             const testParam_name = 'TESTCLIENT';
             const testResult: ClientsStatusResponseDTO = {
-                client_id: '9e024539-32e8-4317-8007-84a3956e6b57',
+                client_id: mockId.clients.valid[0],
                 name: testParam_name,
                 status: ApiKeyStatus.ACTIVE,
                 last_use: mockTimestamp,
@@ -76,7 +83,7 @@ describe('Integration test (repository specific), priority: Clients', () => {
         })
 
         test('Repository process fn create, result: "SUCCESS"', async () => {
-            const testParam_client_id = Utils.generateUUID();
+            const testParam_client_id = mockId.clients.new[0];
             const testParam_dto = { name: 'testclient_test_create' };
 
             jest.spyOn(Utils, 'generateUUID').mockReturnValue(testParam_client_id);
@@ -103,7 +110,7 @@ describe('Integration test (repository specific), priority: Clients', () => {
         })
 
         test('Repository process fn updateStatus, result: "SUCCESS"', async () => {
-            const testParam_id = '9e024539-32e8-4317-8007-84a3956e6b57';
+            const testParam_id = mockId.clients.valid[0];
             const testParam_data: Partial<Clients> = {
                 status: ApiKeyStatus.DISABLED
             };

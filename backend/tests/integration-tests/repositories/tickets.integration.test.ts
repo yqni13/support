@@ -1,61 +1,77 @@
 import { NextFunction, Request, Response } from "express";
+import {
+    TicketsCreateRequestDTO,
+    TicketsFilterDTO,
+    TicketsResponseDTO,
+    TicketsResponseExtendedDTO,
+    TicketsUpdateDTO
+} from "../../../src/dtos/tickets.dto";
 import * as Utils from '../../../src/utils/common.utils';
 import request from 'supertest';
-import app from '../../../src/app';
 import { DBTestSetup } from "../db-container.setup";
 import { runMigrations } from '../../db-migrations.setup';
-import { TicketsCreateRequestDTO, TicketsFilterDTO, TicketsResponseDTO, TicketsUpdateDTO } from "../../../src/dtos/tickets.dto";
 import { TicketStatus } from "../../../src/utils/enums/ticket-status.enum";
 import { Flag } from "../../../src/utils/enums/flag.enum";
 import { Tickets } from "../../../src/repositories/interfaces/tickets.entity.interface";
 import { CommonExceptionMessage } from "../../../src/utils/enums/common-exception-messages.enum";
 import { ErrorStatusCodes } from "../../../src/utils/errorStatusCodes.utils";
+import { default as mockId } from "../../mock-data/id.mock-data.json";
+
+const mockClientsId = mockId.clients.valid[0];
+const mockUsersId = mockId.users.valid[0];
+const mockTimestamp = '2025-01-01T14:00:04.000Z';
 
 jest.mock('../../../src/middleware/auth.admin.middleware', () => ({
     authAdmin: jest.fn(() => (req: Request, res: Response, next: NextFunction) => next())
 }));
 jest.mock('../../../src/middleware/auth.client.middleware', () => ({
-    authClient: jest.fn(() => (req: Request, res: Response, next: NextFunction) => next())
+    authClient: jest.fn(() => (req: Request, res: Response, next: NextFunction) => {
+        (req as any).apiClients = { client_id: mockClientsId };
+        next();
+    })
 }));
 jest.mock('../../../src/middleware/auth.user.middleware', () => ({
-    authUser: jest.fn(() => (req: Request, res: Response, next: NextFunction) => next())
+    authUser: jest.fn(() => (req: Request, res: Response, next: NextFunction) => {
+        (req as any).apiUsers = { user_id: mockUsersId };
+        next();
+    })
 }));
 jest.mock('../../../src/middleware/maintenance.middleware', () => ({
     maintain: jest.fn(() =>  (req: Request, res: Response, next: NextFunction) => next())
 }));
 
+import app from '../../../src/app';
+
 jest.setTimeout(60000);
 
-describe('Integration test (repository specific), priority: Clients', () => {
-
-    let dbTestSetup: DBTestSetup;
-    let apiUrl: string;
-    const mockTimestamp = '2025-01-01T14:00:04.000Z';
-    const mockClientsId = '9e024539-32e8-4317-8007-84a3956e6b57';
-    const mockClientsName = 'TESTCLIENT';
-    const mockUsersId = '87e4d6e3-d678-4de0-8806-e89135cbd38c';
-    const mockUsersEmail = 'max.mustermann@yqni13.com';
-    beforeAll(async () => {
-        dbTestSetup = new DBTestSetup();
-        await dbTestSetup.init();
-        await runMigrations();
-        apiUrl = '/api/v1/tickets';
-    });
-
-    beforeEach(async () => {
-        // Clean tables before each test to fill test data individually.
-        await dbTestSetup.clearTables();
-    });
-
-    afterAll(async () => {
-        await dbTestSetup.shutdown();
-    });
+describe('Integration test (repository specific), priority: Tickets', () => {
 
     describe('Testing valid fn calls', () => {
 
+        let dbTestSetup: DBTestSetup;
+        let apiUrl: string;
+        const mockClientsName = 'TESTCLIENT';
+        const mockUsersEmail = 'max.mustermann@yqni13.com';
+        const mockNewParam_ticket_id = mockId.tickets.new[0];
+        beforeAll(async () => {
+            dbTestSetup = new DBTestSetup();
+            await dbTestSetup.init();
+            await runMigrations();
+            apiUrl = '/api/v1/tickets';
+        });
+
+        beforeEach(async () => {
+            // Clean tables before each test to fill test data individually.
+            await dbTestSetup.clearTables();
+        });
+
+        afterAll(async () => {
+            await dbTestSetup.shutdown();
+        });
+
         test('Repository process fn findById, result: "SUCCESS"', async () => {
-            const testParam_id = 'ae9550fc-16fd-4e9a-8ab5-d6ab55b84cb4';
-            const testResult: TicketsResponseDTO = {
+            const testParam_id = mockId.tickets.valid[0];
+            const testResult: TicketsResponseExtendedDTO = {
                 ticket_id: testParam_id,
                 client_id: mockClientsId,
                 client_name: mockClientsName,
@@ -77,13 +93,11 @@ describe('Integration test (repository specific), priority: Clients', () => {
         })
 
         test('Repository process fn findAll, result: "SUCCESS"', async () => {
-            const testParam_id = 'ae9550fc-16fd-4e9a-8ab5-d6ab55b84cb4';
+            const testParam_id = mockId.tickets.valid[0];
             const testResult: TicketsResponseDTO[] = [{
                 ticket_id: testParam_id,
                 client_id: mockClientsId,
-                client_name: mockClientsName,
                 user_id: mockUsersId,
-                user_email: mockUsersEmail,
                 status: TicketStatus.ISSUED,
                 message: 'test-message',
                 flag: null,
@@ -101,7 +115,7 @@ describe('Integration test (repository specific), priority: Clients', () => {
 
         test('Repository process fn findByFilter, params: <client_id> result: []', async () => {
             const testParam_dto: TicketsFilterDTO = {
-                client_id: 'non-existing_clients_test_id'
+                client_id: mockId.tickets.invalid[0]
             };
             // No entry exists in db with client_id value from dto.
             const testResult: TicketsResponseDTO[] = [];
@@ -117,15 +131,13 @@ describe('Integration test (repository specific), priority: Clients', () => {
 
         test('Repository process fn findByFilter, params: <user_id[], status> result: "SUCCESS"', async () => {
             const testParam_dto: TicketsFilterDTO = {
-                user_id: [mockUsersId, 'non-existing_clients_test_id'],
+                user_id: [mockUsersId, mockId.tickets.invalid[0]],
                 status: TicketStatus.ISSUED
             };
             const testResult: TicketsResponseDTO[] = [{
-                ticket_id: 'ae9550fc-16fd-4e9a-8ab5-d6ab55b84cb4',
+                ticket_id: mockId.tickets.valid[0],
                 client_id: mockClientsId,
-                client_name: mockClientsName,
                 user_id: mockUsersId,
-                user_email: mockUsersEmail,
                 status: TicketStatus.ISSUED,
                 message: 'test-message',
                 flag: null,
@@ -162,25 +174,25 @@ describe('Integration test (repository specific), priority: Clients', () => {
         })
 
         test('Repository process fn create, result: "SUCCESS"', async () => {
-            const mockParam_id = 'ae9550fc-16fd-4e9a-8ab5-d6ab55b84cb4';
             const mockParam_dto: TicketsCreateRequestDTO = {
                 user_email: 'TESTCLIENT',
                 message: 'new-test-message',
             };
 
             // TODO(yqni13): mock img-handling on implementation (SUPPORT-38)
-            jest.spyOn(Utils, "generateUUID").mockReturnValue(mockParam_id);
+            jest.spyOn(Utils, "generateUUID").mockReturnValue(mockNewParam_ticket_id);
             jest.spyOn(Utils, "getTimestampUTC").mockReturnValue(mockTimestamp);
 
-            const testResult = structuredClone(mockParam_dto);
-            Object.assign(testResult, {
-                ticket_id: mockParam_id,
+            const testResult: TicketsResponseDTO = {
+                ticket_id: mockNewParam_ticket_id,
                 client_id: mockClientsId,
                 user_id: mockUsersId,
                 status: TicketStatus.ISSUED,
+                message: mockParam_dto.message,
+                flag: null,
                 last_modified: mockTimestamp,
                 created_on: mockTimestamp
-            });
+            }
 
             await dbTestSetup.addTestData();
             const testResponse = await request(app)
@@ -192,7 +204,7 @@ describe('Integration test (repository specific), priority: Clients', () => {
         })
 
         test('Repository process fn update, result: "SUCCESS"', async () => {
-            const testParam_id = 'ae9550fc-16fd-4e9a-8ab5-d6ab55b84cb4';
+            const testParam_id = mockId.tickets.valid[0];
             const testParam_dto: Partial<Tickets> = {
                 status: TicketStatus.ACTIVE,
                 message: 'updated-test-message',
@@ -219,7 +231,7 @@ describe('Integration test (repository specific), priority: Clients', () => {
         })
 
         test('Repository process fn delete, result: "SUCCESS"', async () => {
-            const testParam_id = 'ae9550fc-16fd-4e9a-8ab5-d6ab55b84cb4';
+            const testParam_id = mockId.tickets.valid[0];
             const testResult = true;
 
             await dbTestSetup.addTestData();
@@ -227,13 +239,41 @@ describe('Integration test (repository specific), priority: Clients', () => {
                 .delete(`${apiUrl}/delete/${testParam_id}`);
 
             expect(testResponse.statusCode).toBe(200);
-            expect(testResponse.body).toMatchObject(testResult);
+            expect(testResponse.body).toBe(testResult);
+        })
+
+        test('Repository process fn delete, result: "NOT-FOUND-ENTRY"', async () => {
+            const testParam_id = mockId.tickets.invalid[0];
+            const testResult = false;
+
+            await dbTestSetup.addTestData();
+            const testResponse = await request(app)
+                .delete(`${apiUrl}/delete/${testParam_id}`);
+
+            expect(testResponse.statusCode).toBe(200);
+            expect(testResponse.body).toBe(testResult);
         })
     })
 
     describe('Testing invalid fn calls', () => {
 
-        const apiUrl = '/api/v1/tickets';
+        let dbTestSetup: DBTestSetup;
+        let apiUrl: string;
+        beforeAll(async () => {
+            dbTestSetup = new DBTestSetup();
+            await dbTestSetup.init();
+            await runMigrations();
+            apiUrl = '/api/v1/tickets';
+        });
+
+        beforeEach(async () => {
+            // Clean tables before each test to fill test data individually.
+            await dbTestSetup.clearTables();
+        });
+
+        afterAll(async () => {
+            await dbTestSetup.shutdown();
+        });
 
         describe('All routes, priority: express-validators, location <params>', () => {
 
@@ -305,42 +345,15 @@ describe('Integration test (repository specific), priority: Clients', () => {
 
         describe('All routes, priority: express-validators, location <body>', () => {
 
-            let mockError: any;
-            beforeEach(() => {
-                mockError = {
-                    type: 'field',
-                    value: '',
-                    msg: CommonExceptionMessage.REQUIRED,
-                    path: '',
-                    location: 'body'
-                };
-            });
-
             describe('Route: POST/create', () => {
 
-                const mockData: Partial<Tickets> = {
-                    client_id: 'forbidden_clients_test_id',
-                    user_id: 'forbidden_users_test_id',
-                    status: TicketStatus.ISSUED,
-                    flag: null,
-                    last_modified: mockTimestamp
-                }
-
-                const testedArgs = Object.keys(mockData) as (keyof typeof mockData)[];
-
-                // Testing on forbidden value because these properties are assigned automatically in model.
-                test.each(testedArgs)('Arguments: <%s>, validator: isEmpty by defined value', async (invalidArg) => {
-                    let mockParam_dto: TicketsCreateRequestDTO = {
-                        user_email: 'user@test.com',
-                        message: 'test-message'
-                    };
-                    Object.assign(mockParam_dto, structuredClone(mockData[invalidArg]));
-
-                    const testError = {
+                test('Arguments: <message>, validator: notEmpty by undefined', async () => {
+                    let mockParam_dto = undefined;
+                    const mockError = {
                         type: 'field',
-                        value: mockData[invalidArg],
-                        msg: CommonExceptionMessage.FORBIDDEN,
-                        path: invalidArg,
+                        value: '',
+                        msg: CommonExceptionMessage.REQUIRED,
+                        path: 'message',
                         location: 'body'
                     };
 
@@ -349,39 +362,12 @@ describe('Integration test (repository specific), priority: Clients', () => {
                         .send(mockParam_dto);
 
                     expect(mockResponse.statusCode).toBe(ErrorStatusCodes.InvalidPropertiesException);
-                    expect(mockResponse.body.headers.data).toContainEqual(testError);
-                })
-
-                test('Arguments: <message>, validator: notEmpty by undefined', async () => {
-                    let mockParam_dto = undefined;
-
-                    const testError = structuredClone(mockError);
-                    testError['path'] = 'message';
-
-                    const mockResponse = await request(app)
-                        .post(`${apiUrl}/create`)
-                        .send(mockParam_dto);
-
-                    expect(mockResponse.statusCode).toBe(ErrorStatusCodes.InvalidPropertiesException);
-                    expect(mockResponse.body.headers.data).toContainEqual(testError);
+                    expect(mockResponse.body.headers.data).toContainEqual(mockError);
                 })
 
                 test('Arguments: <message>, validator: isLength by max > 1000 chars', async () => {
-                    let mockParam_dto: TicketsCreateRequestDTO = {
-                        user_email: 'user@test.com',
-                        message: `
-                        This-message-contains-more-than-1000-characters-throwing-<support-invalid-max#message!1000>
-                        This-message-contains-more-than-1000-characters-throwing-<support-invalid-max#message!1000>
-                        This-message-contains-more-than-1000-characters-throwing-<support-invalid-max#message!1000>
-                        This-message-contains-more-than-1000-characters-throwing-<support-invalid-max#message!1000>
-                        This-message-contains-more-than-1000-characters-throwing-<support-invalid-max#message!1000>
-                        This-message-contains-more-than-1000-characters-throwing-<support-invalid-max#message!1000>
-                        This-message-contains-more-than-1000-characters-throwing-<support-invalid-max#message!1000>
-                        This-message-contains-more-than-1000-characters-throwing-<support-invalid-max#message!1000>
-                        This-message-contains-more-than-1000-characters-throwing-<support-invalid-max#message!1000>
-                        This-message-contains-more-than-1000-characters-throwing-<support-invalid-max#message!1000>
-                        This-message-contains-more-than-1000-characters-throwing-<support-invalid-max#message!1000>+
-                        `
+                    let mockParam_dto = {
+                        message: `This-message-contains-more-than-1000-characters-throwing-<support-invalid-max#message!1000>This-message-contains-more-than-1000-characters-throwing-<support-invalid-max#message!1000>This-message-contains-more-than-1000-characters-throwing-<support-invalid-max#message!1000>This-message-contains-more-than-1000-characters-throwing-<support-invalid-max#message!1000>This-message-contains-more-than-1000-characters-throwing-<support-invalid-max#message!1000>This-message-contains-more-than-1000-characters-throwing-<support-invalid-max#message!1000>This-message-contains-more-than-1000-characters-throwing-<support-invalid-max#message!1000>This-message-contains-more-than-1000-characters-throwing-<support-invalid-max#message!1000>This-message-contains-more-than-1000-characters-throwing-<support-invalid-max#message!1000>This-message-contains-more-than-1000-characters-throwing-<support-invalid-max#message!1000>This-message-contains-more-than-1000-characters-throwing-<support-invalid-max#message!1000>`,
                     };
 
                     const testError = {
@@ -399,50 +385,36 @@ describe('Integration test (repository specific), priority: Clients', () => {
                     expect(mockResponse.statusCode).toBe(ErrorStatusCodes.InvalidPropertiesException);
                     expect(mockResponse.body.headers.data).toContainEqual(testError);
                 })
-            })
 
-            describe('Route: PUT/update/:id', () => {
+                test('Arguments: <resource_paths>, validator: isEmpty by defined value', async () => {
+                    const mockParam_dto = {
+                        message: 'test-message',
+                        resource_paths: ['test/path/img_0.webp']
+                    };
 
-                const mockData: Partial<Tickets> = {
-                    status: TicketStatus.PAUSED,
-                    message: 'loop-test-message',
-                    flag: Flag.ERROR
-                }
-
-                const testedArgs = Object.keys(mockData) as (keyof typeof mockData)[];
-
-                test.each(testedArgs)('Arguments: <%s>, validator: notEmpty by undefined', async (invalidArg) => {
-                    const mockParam_id = 'ae9550fc-16fd-4e9a-8ab5-d6ab55b84cb4';
-                    let mockParam_dto = structuredClone(mockData);
-                    delete mockParam_dto[invalidArg];
-
-                    const testError = structuredClone(mockError);
-                    testError['path'] = invalidArg;
+                    const testError = {
+                        type: 'field',
+                        value: mockParam_dto.resource_paths[0],
+                        msg: CommonExceptionMessage.FORBIDDEN,
+                        path: 'resource_paths',
+                        location: 'body'
+                    };
 
                     const mockResponse = await request(app)
-                        .put(`${apiUrl}/update/${mockParam_id}`)
+                        .post(`${apiUrl}/create`)
                         .send(mockParam_dto);
 
                     expect(mockResponse.statusCode).toBe(ErrorStatusCodes.InvalidPropertiesException);
                     expect(mockResponse.body.headers.data).toContainEqual(testError);
                 })
+            })
+
+            describe('Route: PUT/update/:id', () => {
 
                 test('Arguments: <message>, validator: isLength by max > 1000 chars', async () => {
                     let mockParam_dto: TicketsUpdateDTO = {
                         status: TicketStatus.ACTIVE,
-                        message: `
-                        This-message-contains-more-than-1000-characters-throwing-<support-invalid-max#message!1000>
-                        This-message-contains-more-than-1000-characters-throwing-<support-invalid-max#message!1000>
-                        This-message-contains-more-than-1000-characters-throwing-<support-invalid-max#message!1000>
-                        This-message-contains-more-than-1000-characters-throwing-<support-invalid-max#message!1000>
-                        This-message-contains-more-than-1000-characters-throwing-<support-invalid-max#message!1000>
-                        This-message-contains-more-than-1000-characters-throwing-<support-invalid-max#message!1000>
-                        This-message-contains-more-than-1000-characters-throwing-<support-invalid-max#message!1000>
-                        This-message-contains-more-than-1000-characters-throwing-<support-invalid-max#message!1000>
-                        This-message-contains-more-than-1000-characters-throwing-<support-invalid-max#message!1000>
-                        This-message-contains-more-than-1000-characters-throwing-<support-invalid-max#message!1000>
-                        This-message-contains-more-than-1000-characters-throwing-<support-invalid-max#message!1000>+
-                        `,
+                        message: `This-message-contains-more-than-1000-characters-throwing-<support-invalid-max#message!1000>This-message-contains-more-than-1000-characters-throwing-<support-invalid-max#message!1000>This-message-contains-more-than-1000-characters-throwing-<support-invalid-max#message!1000>This-message-contains-more-than-1000-characters-throwing-<support-invalid-max#message!1000>This-message-contains-more-than-1000-characters-throwing-<support-invalid-max#message!1000>This-message-contains-more-than-1000-characters-throwing-<support-invalid-max#message!1000>This-message-contains-more-than-1000-characters-throwing-<support-invalid-max#message!1000>This-message-contains-more-than-1000-characters-throwing-<support-invalid-max#message!1000>This-message-contains-more-than-1000-characters-throwing-<support-invalid-max#message!1000>This-message-contains-more-than-1000-characters-throwing-<support-invalid-max#message!1000>This-message-contains-more-than-1000-characters-throwing-<support-invalid-max#message!1000>`,
                         flag: null
                     };
 
@@ -463,12 +435,17 @@ describe('Integration test (repository specific), priority: Clients', () => {
                 })
 
                 test('Arguments: <last_modified>, validator: isEmpty by defined value', async () => {
-                    const mockParam_id = 'ae9550fc-16fd-4e9a-8ab5-d6ab55b84cb4';
-                    const mockParam_dto = { last_modified: mockTimestamp };
+                    const mockParam_id = mockId.tickets.valid[0];
+                    const mockParam_dto: TicketsUpdateDTO = {
+                        status: TicketStatus.ACTIVE,
+                        message: 'modified-test-message',
+                        flag: null,
+                        last_modified: mockTimestamp
+                    };
 
                     const testError = {
                         type: 'field',
-                        value: mockParam_dto,
+                        value: mockParam_dto.last_modified,
                         msg: CommonExceptionMessage.FORBIDDEN,
                         path: 'last_modified',
                         location: 'body'
