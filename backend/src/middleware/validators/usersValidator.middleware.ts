@@ -12,6 +12,13 @@ export const usersFindByIdSchema: ValidationChain[] = [
         .withMessage(Message.REQUIRED)
 ];
 
+export const usersFindByEmailSchema: ValidationChain[] = [
+    param('email')
+        .trim()
+        .notEmpty()
+        .withMessage(Message.REQUIRED)
+];
+
 export const usersFindByFilterSchema: ValidationChain[] = [
     body('email')
         .custom((content: SingleOrArray<string>) => {
@@ -28,13 +35,13 @@ export const usersFindByFilterSchema: ValidationChain[] = [
         })
         .optional(),
     body('flag')
-        .custom((content: undefined | null | SingleOrArray<UserStatus>) => {
+        .custom((content: undefined | null | SingleOrArray<Flag>) => {
             // Manual check for undefined/null necessary because null is valid value.
             if(content === null || content === undefined) {
                 return true;
             }
             content = Array.isArray(content) ? content : [content];
-            content.forEach((status) => CustomValidator.validateEnum(status, Flag, 'flag'))
+            content.forEach((flag) => CustomValidator.validateEnum(flag, Flag, 'flag'))
             return true;
         })
 ];
@@ -49,12 +56,14 @@ export const usersCreateSchema: ValidationChain[] = [
             CustomValidator.validateEmail(val);
             await CustomValidator.validateEmailUniqueness(val);
         }),
+    // TODO(yqni13): status should NOT be an option for CREATE => model job to assign value
     body('status')
         .trim()
         .notEmpty()
         .withMessage(Message.REQUIRED)
         .bail()
         .custom((val: string) => CustomValidator.validateEnum(val, UserStatus, 'userStatus')),
+    // TODO(yqni13): flag should NOT be an option for CREATE => model job to assign value
     body('flag')
         .trim()
         .custom((val: string) => CustomValidator.validateEnum(val, Flag, 'flag'))
@@ -83,10 +92,10 @@ export const usersUpdateSchema: ValidationChain[] = [
         .notEmpty()
         .withMessage(Message.REQUIRED)
         .bail()
-        .custom((val: string) => CustomValidator.validateEnum(val, UserStatus, 'userStatus')),
+        .custom((status: string) => CustomValidator.validateEnum(status, UserStatus, 'userStatus')),
     body('flag')
         .trim()
-        .custom((val: string) => CustomValidator.validateEnum(val, Flag, 'flag'))
+        .custom((flag: string) => CustomValidator.validateEnum(flag, Flag, 'flag'))
         .optional({values: 'null'}),
     body('last_modified')
         .isEmpty()

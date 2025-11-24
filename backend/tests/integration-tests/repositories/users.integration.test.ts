@@ -61,6 +61,25 @@ describe('Integration test (repository specific), priority: Users', () => {
             expect(testResponse.body).toMatchObject(testResult);
         })
 
+        test('Repository process fn findByEmail, result: "SUCCESS"', async () => {
+            const testParam_email = 'max.mustermann@yqni13.com';
+            const testResult: UsersResponseDTO = {
+                user_id: mockId.users.valid[0],
+                email: testParam_email,
+                status: UserStatus.ACTIVE,
+                flag: null,
+                last_modified: mockTimestamp,
+                created_on: mockTimestamp
+            };
+
+            await dbTestSetup.addTestData();
+            const testResponse = await request(app)
+                .get(`${apiUrl}/by-email/${testParam_email}`);
+
+            expect(testResponse.statusCode).toBe(200);
+            expect(testResponse.body).toMatchObject(testResult);
+        })
+
         test('Repository process fn findAll, result: "SUCCESS"', async () => {
             const testParam_id = mockId.users.valid[0];
             const testResult: Users[] = [{

@@ -16,6 +16,17 @@ class UsersController {
         }
     }
 
+    async getUserByEmail(req: Request, res: Response, next: NextFunction) {
+        try {
+            checkValidation(req);
+            const email = req.params.email;
+            const response: UsersResponseDTO | IRepoError | null = await usersService.findByEmail(email);
+            res.send(response);
+        } catch(err: any) {
+            next(err);
+        }
+    }
+
     async getAllUsers(req: Request, res: Response, next: NextFunction) {
         try {
             const response: UsersResponseDTO[] | IRepoError | null = await usersService.findAll();

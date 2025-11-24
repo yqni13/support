@@ -11,9 +11,18 @@ class UsersService {
     constructor() {
         this.timeMapTargets = ['last_modified', 'created_on'];
     }
+
     async findById(id: string): Promise<UsersResponseDTO | IRepoError | null> {
         let result = await usersRepository.findById(id);
         result = !result || Utils.isIRepoError(result)
+            ? result
+            : (Utils.mapObjTimestamps(result as UsersResponseDTO, this.timeMapTargets)) as UsersResponseDTO;
+        return result;
+    }
+
+    async findByEmail(email: string): Promise<UsersResponseDTO | null> {
+        let result = await usersRepository.findByEmail(email);
+        result = !result
             ? result
             : (Utils.mapObjTimestamps(result as UsersResponseDTO, this.timeMapTargets)) as UsersResponseDTO;
         return result;
@@ -27,7 +36,7 @@ class UsersService {
         return result;
     }
 
-    async findByFilter(dto: UsersFilterDTO): Promise<UsersResponseDTO[] | IRepoError | null> {
+    async findByFilter(dto: UsersFilterDTO): Promise<UsersResponseDTO[] | IRepoError | []> {
         let result = await usersRepository.findByFilter(dto);
         result = Utils.isIRepoError(result)
             ? result
@@ -35,10 +44,10 @@ class UsersService {
         return result;
     }
 
-    async create(dto: UsersCreateUpdateDTO): Promise<UsersResponseDTO | IRepoError> {
+    async create(dto: UsersCreateUpdateDTO): Promise<UsersResponseDTO> {
         const user: Users = usersModel.generateUser(dto);
         let result = await usersRepository.create(user);
-        result = !result || Utils.isIRepoError(result)
+        result = !result
             ? result
             : (Utils.mapObjTimestamps(result as UsersResponseDTO, this.timeMapTargets)) as UsersResponseDTO;
         return result;
