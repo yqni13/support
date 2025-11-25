@@ -4,7 +4,7 @@ import request from 'supertest';
 import { ErrorStatusCodes } from '../../../src/utils/errorStatusCodes.utils';
 import { DBTestSetup } from "../db-container.setup";
 import { runMigrations } from '../../db-migrations.setup';
-import { UsersCreateUpdateDTO, UsersFilterDTO, UsersResponseDTO } from "../../../src/dtos/users.dto";
+import { UsersUpdateDTO, UsersFilterDTO, UsersResponseDTO, UsersCreateDTO } from "../../../src/dtos/users.dto";
 import { Users } from "../../../src/repositories/interfaces/users.entity.interface";
 import { UserStatus } from "../../../src/utils/enums/user-status.enum";
 import { Flag } from "../../../src/utils/enums/flag.enum";
@@ -168,21 +168,21 @@ describe('Integration test (repository specific), priority: Users', () => {
 
         test('Repository process fn create, result: "SUCCESS"', async () => {
             const testParam_id = mockId.users.new[0];
-            const testParam_dto: Partial<Users> = {
-                email: 'new-user@test.com',
-                status: UserStatus.ACTIVE,
-                flag: null
+            const testParam_dto: UsersCreateDTO = {
+                email: 'new-user@test.com'
             };
 
             jest.spyOn(Utils, "generateUUID").mockReturnValue(testParam_id);
             jest.spyOn(Utils, "getTimestampUTC").mockReturnValue(testTimestamp);
 
-            const testResult = structuredClone(testParam_dto);
-            Object.assign(testResult, {
+            const testResult: UsersResponseDTO = {
+                ...structuredClone(testParam_dto),
                 user_id: testParam_id,
+                status: UserStatus.ACTIVE,
+                flag: null,
                 last_modified: testTimestamp,
                 created_on: testTimestamp
-            });
+            };
 
             await dbTestSetup.addTestData();
             const testResponse = await request(app)
@@ -250,7 +250,7 @@ describe('Integration test (repository specific), priority: Users', () => {
 
                 test('Params: <id>, validator: isUUID() by invalid id', async () => {
                     const testParam_id = 'invalid-id';
-                    const testParam_dto: UsersCreateUpdateDTO = {
+                    const testParam_dto: UsersUpdateDTO = {
                         email: 'new-user@test.com',
                         status: UserStatus.ACTIVE,
                         flag: null
@@ -288,23 +288,14 @@ describe('Integration test (repository specific), priority: Users', () => {
 
             describe('Route: POST/create', () => {
 
-                const testData: Partial<Users> = {
-                    email: 'new-user@test.com',
-                    status: UserStatus.ACTIVE
-                };
-
-                const testedParams = Object.keys(testData) as (keyof typeof testData)[];
-
-                test.each(testedParams)('Params: <%s>, validator: notEmpty() by undefined', async (invalidParam) => {
-                    let mockParam_dto = structuredClone(testData);
-                    delete mockParam_dto[invalidParam];
-
+                test('Params: <email>, validator: notEmpty() by undefined', async () => {
+                    const testParam_dto = {};
                     const testError = structuredClone(mockError);
-                    testError['path'] = invalidParam;
+                    testError['path'] = 'email';
 
                     const testResponse = await request(app)
                         .post(`${apiUrl}/create`)
-                        .send(mockParam_dto);
+                        .send(testParam_dto);
 
                     expect(testResponse.statusCode).toBe(ErrorStatusCodes.InvalidPropertiesException);
                     expect(testResponse.body.headers.data).toContainEqual(testError);
@@ -340,10 +331,8 @@ describe('Integration test (repository specific), priority: Users', () => {
             describe('Route: POST/create, priority: validateEmailUniqueness', () => {
                 
                 test('Params: <email> by existing "max.mustermann@yqni13.com" in db', async () => {
-                    const testParam_dto: Partial<Users> = {
-                        email: 'max.mustermann@yqni13.com',
-                        status: UserStatus.ACTIVE,
-                        flag: null
+                    const testParam_dto: UsersCreateDTO = {
+                        email: 'max.mustermann@yqni13.com'
                     };
 
                     const testError = [{
