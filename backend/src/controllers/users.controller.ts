@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { UsersCreateUpdateDTO, UsersFilterDTO, UsersResponseDTO } from "../dtos/users.dto";
+import { UsersUpdateDTO, UsersFilterDTO, UsersResponseDTO, UsersCreateDTO } from "../dtos/users.dto";
 import { checkValidation } from "../middleware/validation.middleware";
 import { IRepoError } from "../repositories/interfaces/error.repository.interface";
 import usersService from "../services/users.service";
@@ -50,7 +50,7 @@ class UsersController {
     async postUser(req: Request, res: Response, next: NextFunction) {
         try {
             checkValidation(req);
-            const dto: UsersCreateUpdateDTO = req.body;
+            const dto: UsersCreateDTO = req.body;
             const response: UsersResponseDTO = await usersService.createUser(dto);
             res.send(response);
         } catch(err: any) {
@@ -62,7 +62,7 @@ class UsersController {
         try {
             checkValidation(req);
             const id: string = req.params.id;
-            const dto: UsersCreateUpdateDTO = req.body;
+            const dto: UsersUpdateDTO = req.body;
             const response: UsersResponseDTO | IRepoError | null = await usersService.updateUser(id, dto);
             res.send(response);
         } catch(err: any) {

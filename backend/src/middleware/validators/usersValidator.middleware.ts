@@ -57,18 +57,6 @@ export const postUserSchema: ValidationChain[] = [
             CustomValidator.validateEmail(val);
             await CustomValidator.validateEmailUniqueness(val);
         }),
-    // TODO(yqni13): remove at SUPPORT-39
-    body('status')
-        .trim()
-        .notEmpty()
-        .withMessage(Message.REQUIRED)
-        .bail()
-        .custom((val: string) => CustomValidator.validateEnum(val, UserStatus, 'userStatus')),
-    // TODO(yqni13): remove at SUPPORT-39
-    body('flag')
-        .trim()
-        .custom((val: string) => CustomValidator.validateEnum(val, Flag, 'flag'))
-        .optional({values: 'null'}),
     body('last_modified')
         .isEmpty()
         .withMessage(Message.FORBIDDEN)

@@ -4,9 +4,16 @@
 
 <br>
 
+### $\textsf{\color{skyblue}2025/11/25}$
+
+$\textsf{[v0.9.1\ =>\ {\textbf{\color{brown}v0.9.2}]}}$ app
+- $\textsf{\color{orange}Patch:}$ Refactored process of registering new user by assigning default values in business layer (model).
+
+<br>
+
 ### $\textsf{\color{skyblue}2025/11/24}$
 
-$\textsf{[v0.8.5\ =>\ {\textbf{\color{brown}v0.9.1}]}}$ app
+$\textsf{[v0.8.5\ =>\ v0.9.1]}$ app
 - $\textsf{\color{orange}Patch:}$ Updated tests, mock-data handling and added findByEmail to 'users' repository methods. 
 - $\textsf{\color{teal}Addition:}$ Added routes + basic logic to handle 'Tickets' data.
 

@@ -1,4 +1,4 @@
-import { UsersCreateUpdateDTO, UsersFilterDTO, UsersResponseDTO } from "../dtos/users.dto";
+import { UsersUpdateDTO, UsersFilterDTO, UsersResponseDTO, UsersCreateDTO } from "../dtos/users.dto";
 import { IRepoError } from "../repositories/interfaces/error.repository.interface";
 import usersRepository from "../repositories/users.repository";
 import * as Utils from "../utils/common.utils";
@@ -42,13 +42,13 @@ class UsersService {
         return result;
     }
 
-    async createUser(dto: UsersCreateUpdateDTO): Promise<UsersResponseDTO> {
+    async createUser(dto: UsersCreateDTO): Promise<UsersResponseDTO> {
         const user: Users = usersModel.generateUser(dto);
         const result = await usersRepository.create(user);
         return Utils.mapObjTimestamps(result, this.timeMapTargets)
     }
 
-    async updateUser(id: string, dto: UsersCreateUpdateDTO): Promise<UsersResponseDTO | IRepoError | null> {
+    async updateUser(id: string, dto: UsersUpdateDTO): Promise<UsersResponseDTO | IRepoError | null> {
         dto.last_modified = Utils.getTimestampUTC();
         let result = await usersRepository.update(id, dto);
         result = !result || Utils.isIRepoError(result)

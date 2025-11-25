@@ -5,7 +5,7 @@ import { Users } from "../../../src/repositories/interfaces/users.entity.interfa
 import { UserStatus } from "../../../src/utils/enums/user-status.enum";
 import usersRepository from "../../../src/repositories/users.repository";
 import { IRepoError } from "../../../src/repositories/interfaces/error.repository.interface";
-import { UsersFilterDTO } from "../../../src/dtos/users.dto";
+import { UsersFilterDTO, UsersUpdateDTO } from "../../../src/dtos/users.dto";
 import { DBQueryErrorException } from "../../../src/utils/exceptions/db.exception";
 
 jest.mock("../../../src/configs/db", () => {
@@ -250,7 +250,7 @@ describe('Database tests table <users>, priority: create', () => {
 
         test('Return data for created entry, params: <name> = "testclient"', async () => {
             const sql = `INSERT`;
-            const mockParam_entity = {
+            const mockParam_entity: Users = {
                 user_id: '92f22e89-237b-4775-b170-1df288acad54',
                 email: 'new-user@test.com',
                 status: UserStatus.ACTIVE,
@@ -303,11 +303,11 @@ describe('Database tests table <users>, priority: udpate', () => {
     describe('Testing valid fn calls', () => {
 
         let sql: string;
-        let mockParam_data: Partial<Users>;
+        let mockParam_dto: UsersUpdateDTO;
         let mockValues: any[];
         beforeEach(() => {
             sql = `UPDATE users`; // Keep it simple if it isn't essential.
-            mockParam_data = {
+            mockParam_dto = {
                 email: 'user@test.com',
                 status: UserStatus.BLACKLISTED,
                 flag: null,
@@ -318,7 +318,7 @@ describe('Database tests table <users>, priority: udpate', () => {
 
         test('Return data of changed entry by valid id', async () => {
             const mockParam_id = structuredClone(mockData.user_id);
-            Object.values(mockParam_data).forEach((val) => {
+            Object.values(mockParam_dto).forEach((val) => {
                 mockValues.push(val);
             });
             mockValues.push(mockParam_id);
@@ -326,7 +326,7 @@ describe('Database tests table <users>, priority: udpate', () => {
             mockResult['status'] = UserStatus.BLACKLISTED;
 
             const mockClient = MockUtils.mapMockDbClient(mockResult);
-            const testFn = await usersRepository.update(mockParam_id, mockParam_data);
+            const testFn = await usersRepository.update(mockParam_id, mockParam_dto);
 
             expect(testFn).toEqual(mockResult);
             expect(DBConnection.getInstance).toHaveBeenCalled();
@@ -338,7 +338,7 @@ describe('Database tests table <users>, priority: udpate', () => {
 
         test('Return null for non-existing entry by invalid id', async () => {
             const mockParam_id = 'invalid_users_test_id';
-            Object.values(mockParam_data).forEach((val) => {
+            Object.values(mockParam_dto).forEach((val) => {
                 mockValues.push(val);
             });
             mockValues.push(mockParam_id);
@@ -346,7 +346,7 @@ describe('Database tests table <users>, priority: udpate', () => {
             const mockResult = null;
 
             const mockClient = MockUtils.mapMockDbClient(mockResult);
-            const testFn = await usersRepository.update(mockParam_id, mockParam_data);
+            const testFn = await usersRepository.update(mockParam_id, mockParam_dto);
 
             expect(testFn).toEqual(mockResult);
             expect(DBConnection.getInstance).toHaveBeenCalled();
@@ -359,9 +359,9 @@ describe('Database tests table <users>, priority: udpate', () => {
 
     describe('Testing invalid fn calls', () => {
 
-        let mockParam_data: Partial<Users>;
+        let mockParam_dto: UsersUpdateDTO;
         beforeEach(() => {
-            mockParam_data = {
+            mockParam_dto = {
                 email: 'user@test.com',
                 status: UserStatus.BLACKLISTED,
                 flag: null,
@@ -375,7 +375,7 @@ describe('Database tests table <users>, priority: udpate', () => {
             const mockResult = null;
             jest.spyOn(Utils, "logRepoError").mockReturnValue();
             const _ = MockUtils.mapMockDbClient(mockResult, mockBoolean, mockErrorMsg);
-            const testFn = await usersRepository.update(mockParam_id, mockParam_data);
+            const testFn = await usersRepository.update(mockParam_id, mockParam_dto);
 
             expect(testFn).toEqual<IRepoError>({
                 method: 'support_users_update',
