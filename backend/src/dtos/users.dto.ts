@@ -4,7 +4,6 @@ import { SingleOrArray } from "../utils/custom-types.utils";
 
 export interface UsersCreateDTO {
     email: string,
-    last_modified?: string
 }
 
 export interface UsersUpdateDTO {

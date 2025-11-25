@@ -3,7 +3,7 @@ import { InvalidUsersException } from "../utils/exceptions/auth.exception";
 import { validateEmail } from "../utils/customValidator.utils";
 import { Users } from "../repositories/interfaces/users.entity.interface";
 import usersService from "../services/users.service";
-import { UsersUpdateDTO } from "../dtos/users.dto";
+import { UsersCreateDTO } from "../dtos/users.dto";
 import { UserStatus } from "../utils/enums/user-status.enum";
 import { secrets } from "../utils/secrets.utils";
 import { EnvMode } from "../utils/enums/env-mode.enum";
@@ -32,10 +32,8 @@ export function authUser() {
             validateEmail(email);
             let user: Users | null = await usersService.getUserByEmail(email);
             if(!user) {
-                const dto: UsersUpdateDTO = {
-                    email: email,
-                    status: UserStatus.ACTIVE,
-                    flag: null
+                const dto: UsersCreateDTO = {
+                    email: email
                 }
                 const newUser: Users = await usersService.createUser(dto);
                 req.apiUsers = newUser;

@@ -56,10 +56,7 @@ export const postUserSchema: ValidationChain[] = [
         .custom(async(val: string) => {
             CustomValidator.validateEmail(val);
             await CustomValidator.validateEmailUniqueness(val);
-        }),
-    body('last_modified')
-        .isEmpty()
-        .withMessage(Message.FORBIDDEN)
+        })
 ];
 
 export const patchUserSchema: ValidationChain[] = [
