@@ -34,15 +34,6 @@ export function selectPrivateKey(source: MailSource): string {
     }
 }
 
-export function isIRepoError(obj: any): boolean {
-    // Check if obj is an array instead (result with multiple data like from findAll) or null.
-    if(!obj || obj.length) {
-        return false;
-    }
-    const properties = Object.getOwnPropertyNames(obj);
-    return properties.includes('method') && properties.includes('error');
-}
-
 export function logRepoError(logMsg: string, err: any) {
     // TODO(yqni13): logging
     if(secrets.ENV_MODE.trim() === EnvMode.DEV || secrets.ENV_MODE.trim() === EnvMode.TEST) {
@@ -54,12 +45,12 @@ export function mapObjTimestamps<T>(data: T, timeMapTargets: string[]): T {
     timeMapTargets.forEach((key: string) => {
         (data as any)[key] = getTimestampUTC(new Date((data as any)[key]));
     })
-    return data;
+    return data as T;
 }
 
 export function mapArrayTimestamps<T>(data: T[], timeMapTargets: string[]): T[] {
     data.forEach((obj: T) => {
         obj = mapObjTimestamps(obj, timeMapTargets);
     })
-    return data;
+    return data as T[];
 }
