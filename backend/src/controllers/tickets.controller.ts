@@ -10,38 +10,38 @@ import {
 import ticketsService from "../services/tickets.service";
 
 class TicketsController {
-    async getById(req: Request, res: Response, next: NextFunction) {
+    async getTicket(req: Request, res: Response, next: NextFunction) {
         try {
             checkValidation(req);
             const id = req.params.id;
-            const response: TicketsResponseExtendedDTO | null = await ticketsService.findById(id);
+            const response: TicketsResponseExtendedDTO | null = await ticketsService.getTicketById(id);
             res.send(response);
         } catch(err: any) {
             next(err);
         }
     }
 
-    async getAll(req: Request, res: Response, next: NextFunction) {
+    async getAllTickets(req: Request, res: Response, next: NextFunction) {
         try {
-            const response: TicketsResponseDTO[] | null = await ticketsService.findAll();
+            const response: TicketsResponseDTO[] | null = await ticketsService.getAllTickets();
             res.send(response);
         } catch(err: any) {
             next(err);
         }
     }
 
-    async getByFilter(req: Request, res: Response, next: NextFunction) {
+    async postTicketsSearch(req: Request, res: Response, next: NextFunction) {
         try {
             checkValidation(req);
             const dto: TicketsFilterDTO = req.body;
-            const response: TicketsResponseDTO[] | null = await ticketsService.findByFilter(dto);
+            const response: TicketsResponseDTO[] | null = await ticketsService.searchTicketsByFilter(dto);
             res.send(response);
         } catch(err: any) {
             next(err);
         }
     }
 
-    async create(req: Request, res: Response, next: NextFunction) {
+    async postTicket(req: Request, res: Response, next: NextFunction) {
         try {
             checkValidation(req);
             const dto: TicketsCreateDTO = {
@@ -49,30 +49,30 @@ class TicketsController {
                 client_id: req.apiClients.client_id,
                 user_id: req.apiUsers.user_id
             };
-            const response: TicketsResponseDTO = await ticketsService.create(dto);
+            const response: TicketsResponseDTO = await ticketsService.createTicket(dto);
             res.send(response);
         } catch(err: any) {
             next(err);
         }
     }
 
-    async update(req: Request, res: Response, next: NextFunction) {
+    async patchTicket(req: Request, res: Response, next: NextFunction) {
         try {
             checkValidation(req);
             const id: string = req.params.id;
             const dto: TicketsUpdateDTO = req.body;
-            const response: TicketsResponseDTO | null = await ticketsService.update(id, dto);
+            const response: TicketsResponseDTO | null = await ticketsService.updateTicket(id, dto);
             res.send(response);
         } catch(err: any) {
             next(err);
         }
     }
 
-    async delete(req: Request, res: Response, next: NextFunction) {
+    async deleteTicket(req: Request, res: Response, next: NextFunction) {
         try {
             checkValidation(req);
             const id = req.params.id;
-            const response: boolean = await ticketsService.delete(id);
+            const response: boolean = await ticketsService.deleteTicket(id);
             res.send(response);
         } catch(err: any) {
             next(err);

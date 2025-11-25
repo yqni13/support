@@ -22,14 +22,14 @@ export function authClient() {
 
             validateApiKey(key);
 
-            let clientData = await clientsService.findByActiveKey(key);
+            let clientData = await clientsService.getClientByActiveKey(key);
             if(!clientData) {
                 throw new InvalidApiKeyException()
             }
 
             clientData = clientData as Clients;
             req.apiClients = clientData;
-            await clientsService.updateLastUse(clientData.client_id)
+            await clientsService.updateClientLastUse(clientData.client_id)
 
             next();
         } catch(err: any) {

@@ -23,7 +23,7 @@ class ClientsService {
     /**
      * @description Usage for apikey authentication in auth.middleware.ts.
      */
-    async findByActiveKey(key: string): Promise<ClientsExistResponseDTO | IRepoError | null> {
+    async getClientByActiveKey(key: string): Promise<ClientsExistResponseDTO | IRepoError | null> {
         const hash = Utils.mapKeyToHash(key);
         let result = await clientsRepository.findByActiveKey(hash);
         result = !result || Utils.isIRepoError(result)
@@ -32,7 +32,7 @@ class ClientsService {
         return result;
     }
 
-    async findStatusByName(name: string): Promise<ClientsStatusResponseDTO | IRepoError | null> {
+    async getClientStatusByName(name: string): Promise<ClientsStatusResponseDTO | IRepoError | null> {
         let result = await clientsRepository.findStatusByName(name);
         if(Utils.isEmptyObj(result)) {
             return result;
@@ -55,7 +55,7 @@ class ClientsService {
         }
     }
 
-    async updateStatus(id: string, dto: ClientsStatusUpdateDTO): Promise<ClientsStatusResponseDTO | IRepoError | null> {
+    async updateClientStatus(id: string, dto: ClientsStatusUpdateDTO): Promise<ClientsStatusResponseDTO | IRepoError | null> {
         dto.last_modified = Utils.getTimestampUTC();
         let result = await clientsRepository.updateStatus(id, dto);
         if(!result) {
@@ -67,7 +67,7 @@ class ClientsService {
         }
     }
 
-    async updateLastUse(id: string): Promise<ClientsLastUseResponseDTO | IRepoError | null> {
+    async updateClientLastUse(id: string): Promise<ClientsLastUseResponseDTO | IRepoError | null> {
         const dto: ClientsLastUseUpdateDTO = { last_use: Utils.getTimestampUTC() };
         let result = await clientsRepository.updateLastUse(id, dto);
         if(!result) {

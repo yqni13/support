@@ -5,21 +5,22 @@ import { Flag } from '../../utils/enums/flag.enum';
 import { SingleOrArray } from '../../utils/custom-types.utils';
 import { CommonExceptionMessage as Message } from '../../utils/enums/common-exception-messages.enum';
 
-export const usersFindByIdSchema: ValidationChain[] = [
+export const getUserByIdSchema: ValidationChain[] = [
     param('id')
-        .trim()
-        .notEmpty()
-        .withMessage(Message.REQUIRED)
+        .custom((content: string) => CustomValidator.validatePathParam(content))
+        .bail()
+        .isUUID(4)
+        .withMessage('support-invalid-entry#user_id')
 ];
 
-export const usersFindByEmailSchema: ValidationChain[] = [
+export const getUserByEmailSchema: ValidationChain[] = [
     param('email')
-        .trim()
-        .notEmpty()
-        .withMessage(Message.REQUIRED)
+        .custom((content: string) => CustomValidator.validatePathParam(content))
+        .bail()
+        .custom((content: string) => CustomValidator.validateEmail(content))
 ];
 
-export const usersFindByFilterSchema: ValidationChain[] = [
+export const postUsersSearchSchema: ValidationChain[] = [
     body('email')
         .custom((content: SingleOrArray<string>) => {
             content = Array.isArray(content) ? content : [content];
@@ -46,7 +47,7 @@ export const usersFindByFilterSchema: ValidationChain[] = [
         })
 ];
 
-export const usersCreateSchema: ValidationChain[] = [
+export const postUserSchema: ValidationChain[] = [
     body('email')
         .trim()
         .notEmpty()
@@ -56,14 +57,14 @@ export const usersCreateSchema: ValidationChain[] = [
             CustomValidator.validateEmail(val);
             await CustomValidator.validateEmailUniqueness(val);
         }),
-    // TODO(yqni13): status should NOT be an option for CREATE => model job to assign value
+    // TODO(yqni13): remove at SUPPORT-39
     body('status')
         .trim()
         .notEmpty()
         .withMessage(Message.REQUIRED)
         .bail()
         .custom((val: string) => CustomValidator.validateEnum(val, UserStatus, 'userStatus')),
-    // TODO(yqni13): flag should NOT be an option for CREATE => model job to assign value
+    // TODO(yqni13): remove at SUPPORT-39
     body('flag')
         .trim()
         .custom((val: string) => CustomValidator.validateEnum(val, Flag, 'flag'))
@@ -73,11 +74,12 @@ export const usersCreateSchema: ValidationChain[] = [
         .withMessage(Message.FORBIDDEN)
 ];
 
-export const usersUpdateSchema: ValidationChain[] = [
+export const patchUserSchema: ValidationChain[] = [
     param('id')
-        .trim()
-        .notEmpty()
-        .withMessage(Message.REQUIRED),
+        .custom((content: string) => CustomValidator.validatePathParam(content))
+        .bail()
+        .isUUID(4)
+        .withMessage('support-invalid-entry#user_id'),
     body('email')
         .trim()
         .notEmpty()

@@ -19,9 +19,9 @@ class TicketsModel {
         };
     }
 
-    mapTicketDto(dto: TicketsUpdateDTO): TicketsUpdateDTO {
+    mapTicketUpdateDto(dto: TicketsUpdateDTO): TicketsUpdateDTO {
         const timestamp = Utils.getTimestampUTC();
-        // TODO(yqni13): add img-handling (SUPPORT-38)
+        // TODO(yqni13): add img-handling at SUPPORT-4
         return {
             ...dto,
             last_modified: timestamp

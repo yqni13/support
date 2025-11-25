@@ -32,6 +32,7 @@ const mockData: Meta = {
     last_modified: mockTimestamp,
     created_on: mockTimestamp
 };
+const mockBoolean = false;
 
 describe('Database tests table <meta>, priority: findById', () => {
 
@@ -78,7 +79,7 @@ describe('Database tests table <meta>, priority: findById', () => {
             const mockErrorMsg = "DB ERROR ON SELECT QUERY, (Meta TEST Repository, findById)";
             const mockResult = null;
             jest.spyOn(Utils, "logRepoError").mockReturnValue();
-            const _ = MockUtils.mapMockDbClient(mockResult, false, mockErrorMsg);
+            const _ = MockUtils.mapMockDbClient(mockResult, mockBoolean, mockErrorMsg);
             const testFn = await metaRepository.findById(mockParam_id);
 
             expect(testFn).toEqual<IRepoError>({
@@ -135,7 +136,7 @@ describe('Database tests table <meta>, priority: findByName', () => {
             const mockErrorMsg = "DB ERROR ON SELECT QUERY, (Meta TEST Repository, findByName)";
             const mockResult = null;
             jest.spyOn(Utils, "logRepoError").mockReturnValue();
-            const _ = MockUtils.mapMockDbClient(mockResult, false, mockErrorMsg);
+            const _ = MockUtils.mapMockDbClient(mockResult, mockBoolean, mockErrorMsg);
             const testFn = await metaRepository.findByName(mockParam_name);
 
             expect(testFn).toEqual<IRepoError>({
@@ -160,7 +161,7 @@ describe('Database tests table <meta>, priority: findAll', () => {
 
             const mockErrorMsg = undefined;
             const mockExpectArray = true;
-            const mockClient = MockUtils.mapMockDbClient(mockResult, false, mockErrorMsg, mockExpectArray);
+            const mockClient = MockUtils.mapMockDbClient(mockResult, mockBoolean, mockErrorMsg, mockExpectArray);
             const sql = `SELECT * FROM meta ORDER BY id ASC;`;
             const testFn = await metaRepository.findAll();
 
@@ -176,7 +177,7 @@ describe('Database tests table <meta>, priority: findAll', () => {
             const mockErrorMsg = "DB ERROR ON SELECT QUERY, (Meta TEST Repository, findAll)";
             const mockResult = null;
             jest.spyOn(Utils, "logRepoError").mockReturnValue();
-            const _ = MockUtils.mapMockDbClient(mockResult, false, mockErrorMsg);
+            const _ = MockUtils.mapMockDbClient(mockResult, mockBoolean, mockErrorMsg);
             const testFn = await metaRepository.findAll();
 
             expect(testFn).toEqual<IRepoError>({
@@ -235,7 +236,7 @@ describe('Database tests table <meta>, priority: findMaintenance', () => {
             const mockErrorMsg = "DB ERROR ON SELECT QUERY, (Meta TEST Repository, findMaintenance)";
             const mockResult = null;
             jest.spyOn(Utils, "logRepoError").mockReturnValue();
-            const _ = MockUtils.mapMockDbClient(mockResult, false, mockErrorMsg);
+            const _ = MockUtils.mapMockDbClient(mockResult, mockBoolean, mockErrorMsg);
             const testFn = await metaRepository.findMaintenance(mockParam_name);
 
             expect(testFn).toEqual<IRepoError>({
@@ -325,7 +326,7 @@ describe('Database tests table <meta>, priority: udpate', () => {
             const mockErrorMsg = "DB ERROR ON UPDATE QUERY, (Meta TEST Repository, update)";
             const mockResult = null;
             jest.spyOn(Utils, "logRepoError").mockReturnValue();
-            const _ = MockUtils.mapMockDbClient(mockResult, false, mockErrorMsg);
+            const _ = MockUtils.mapMockDbClient(mockResult, mockBoolean, mockErrorMsg);
             const testFn = await metaRepository.update(mockParam_id, mockParam_dto);
 
             expect(testFn).toEqual<IRepoError>({
@@ -412,7 +413,7 @@ describe('Database tests table <meta>, priority: updateMaintenance', () => {
             const mockErrorMsg = "DB ERROR ON UPDATEMAINTENANCE QUERY, (Meta TEST Repository, updateMaintenance)";
             const mockResult = null;
             jest.spyOn(Utils, "logRepoError").mockReturnValue();
-            const _ = MockUtils.mapMockDbClient(mockResult, false, mockErrorMsg);
+            const _ = MockUtils.mapMockDbClient(mockResult, mockBoolean, mockErrorMsg);
             const testFn = await metaRepository.updateMaintenance(mockParam_name, mockParam_dto);
 
             expect(testFn).toEqual<IRepoError>({

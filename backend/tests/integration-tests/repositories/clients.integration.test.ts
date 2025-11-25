@@ -26,13 +26,13 @@ jest.mock('../../../src/middleware/maintenance.middleware', () => ({
 import app from '../../../src/app';
 
 jest.setTimeout(60000);
-const mockTimestamp = '2025-01-01T14:00:02.000Z';
+const testTimestamp = '2025-01-01T14:00:02.000Z';
 
 describe('Integration test (repository specific), priority: Clients', () => {
 
     let dbTestSetup: DBTestSetup;
     let apiUrl: string;
-    const mockVar_apiKey = clientsModel._generateApiKeyObj();
+    const testVar_apiKey = clientsModel._generateApiKeyObj();
     beforeAll(async () => {
         dbTestSetup = new DBTestSetup();
         await dbTestSetup.init();
@@ -57,9 +57,9 @@ describe('Integration test (repository specific), priority: Clients', () => {
                 client_id: mockId.clients.valid[0],
                 name: testParam_name,
                 status: ApiKeyStatus.ACTIVE,
-                last_use: mockTimestamp,
-                last_modified: mockTimestamp,
-                created_on: mockTimestamp
+                last_use: testTimestamp,
+                last_modified: testTimestamp,
+                created_on: testTimestamp
             };
 
             await dbTestSetup.addTestData();
@@ -87,17 +87,17 @@ describe('Integration test (repository specific), priority: Clients', () => {
             const testParam_dto = { name: 'testclient_test_create' };
 
             jest.spyOn(Utils, 'generateUUID').mockReturnValue(testParam_client_id);
-            jest.spyOn(clientsModel, '_generateApiKeyObj').mockReturnValue(mockVar_apiKey);
-            jest.spyOn(Utils, "getTimestampUTC").mockReturnValue(mockTimestamp);
+            jest.spyOn(clientsModel, '_generateApiKeyObj').mockReturnValue(testVar_apiKey);
+            jest.spyOn(Utils, "getTimestampUTC").mockReturnValue(testTimestamp);
 
             const testResult: ClientsCreateResponseDTO = {
                 client_id: testParam_client_id,
                 name: testParam_dto.name,
-                api_key: mockVar_apiKey.keyRaw,
+                api_key: testVar_apiKey.keyRaw,
                 status: ApiKeyStatus.ACTIVE,
-                last_use: mockTimestamp,
-                last_modified: mockTimestamp,
-                created_on: mockTimestamp
+                last_use: testTimestamp,
+                last_modified: testTimestamp,
+                created_on: testTimestamp
             };
 
             await dbTestSetup.addTestData();
@@ -115,15 +115,15 @@ describe('Integration test (repository specific), priority: Clients', () => {
                 status: ApiKeyStatus.DISABLED
             };
 
-            jest.spyOn(Utils, "getTimestampUTC").mockReturnValue(mockTimestamp);
+            jest.spyOn(Utils, "getTimestampUTC").mockReturnValue(testTimestamp);
 
             const testResult: ClientsStatusResponseDTO = {
                 client_id: testParam_id,
                 name: 'TESTCLIENT',
                 status: ApiKeyStatus.DISABLED,
-                last_use: mockTimestamp,
-                last_modified: mockTimestamp,
-                created_on: mockTimestamp
+                last_use: testTimestamp,
+                last_modified: testTimestamp,
+                created_on: testTimestamp
             };
 
             await dbTestSetup.addTestData();
@@ -142,51 +142,27 @@ describe('Integration test (repository specific), priority: Clients', () => {
 
         describe('All routes, priority: express-validators, location: <params>', () => {
 
-            let mockError: any;
-            beforeEach(() => {
-                mockError = {
-                    type: 'field',
-                    value: '',
-                    msg: CommonExceptionMessage.REQUIRED,
-                    path: '',
-                    location: 'params'
-                };
-            });
-
-            describe('Route: GET/status/:name', () => {
-
-                test('Params: <name>, validator: notEmpty by undefined', async () => {
-                    // To test undefined, we need empty string but still match ':name' as part of route:
-                    // Simulate by URL-encoded SPACE + trim() => ''
-                    const mockParam_name = '%20';
-                    const testError = structuredClone(mockError);
-                    testError['path'] = 'name';
-
-                    const mockResponse = await request(app)
-                        .get(`${apiUrl}/status/${mockParam_name}`);
-
-                    expect(mockResponse.statusCode).toBe(ErrorStatusCodes.InvalidPropertiesException);
-                    expect(mockResponse.body.headers.data).toEqual([testError]);
-                })
-            })
-
             describe('Route: PUT/status/:id', () => {
 
-                test('Params: <id>, validator: notEmpty by undefined', async () => {
-                    const mockParam_id = '%20';
-                    const mockParam_dto: ClientsStatusUpdateDTO = {
+                test('Params: <id>, validator: isUUID() by invalid id', async () => {
+                    const testParam_id = 'invalid-id';
+                    const testParam_dto: ClientsStatusUpdateDTO = {
                         status: ApiKeyStatus.EXPIRED
                     };
+                    const testError = {
+                        type: 'field',
+                        value: testParam_id,
+                        msg: 'support-invalid-entry#client_id',
+                        path: 'id',
+                        location: 'params'
+                    }
 
-                    const testError = structuredClone(mockError);
-                    testError['path'] = 'id';
+                    const testResponse = await request(app)
+                        .put(`${apiUrl}/status/${testParam_id}`)
+                        .send(testParam_dto);
 
-                    const mockResponse = await request(app)
-                        .put(`${apiUrl}/status/${mockParam_id}`)
-                        .send(mockParam_dto);
-
-                    expect(mockResponse.statusCode).toBe(ErrorStatusCodes.InvalidPropertiesException);
-                    expect(mockResponse.body.headers.data).toEqual([testError]);
+                    expect(testResponse.statusCode).toBe(ErrorStatusCodes.InvalidPropertiesException);
+                    expect(testResponse.body.headers.data).toEqual([testError]);
                 })
             })
         })
@@ -206,43 +182,43 @@ describe('Integration test (repository specific), priority: Clients', () => {
 
             describe('Route: PUT/status/:id', () => {
 
-                test('Params: <status>, validator: notEmpty by undefined', async () => {
-                    const mockParam_id = 'test_id';
-                    const mockParam_dto = undefined;
+                test('Params: <status>, validator: notEmpty() by undefined', async () => {
+                    const testParam_id = 'test_id';
+                    const testParam_dto = undefined;
                     const testError = structuredClone(mockError);
                     testError['path'] = 'status';
 
-                    const mockResponse = await request(app)
-                        .put(`${apiUrl}/status/${mockParam_id}`)
-                        .send(mockParam_dto);
+                    const testResponse = await request(app)
+                        .put(`${apiUrl}/status/${testParam_id}`)
+                        .send(testParam_dto);
 
-                    expect(mockResponse.statusCode).toBe(ErrorStatusCodes.InvalidPropertiesException);
-                    expect(mockResponse.body.headers.data).toContainEqual(testError);
+                    expect(testResponse.statusCode).toBe(ErrorStatusCodes.InvalidPropertiesException);
+                    expect(testResponse.body.headers.data).toContainEqual(testError);
                 })
             })
 
             describe('Route: POST/create, priority: validateClientUniqueness', () => {
 
                 test('Params: <name> by existing "TESTCLIENT" in db', async () => {
-                    const mockParam_dto: ClientsCreateDTO = {
+                    const testParam_dto: ClientsCreateDTO = {
                         name: 'TESTCLIENT'
                     };
 
                     const testError = [{
                         type: 'field',
-                        value: mockParam_dto.name,
+                        value: testParam_dto.name,
                         msg: 'support-nonunique-client',
                         path: 'name',
                         location: 'body'
                     }];
 
                     await dbTestSetup.addTestData();
-                    const mockResponse = await request(app)
+                    const testResponse = await request(app)
                         .post(`${apiUrl}/create`)
-                        .send(mockParam_dto);
+                        .send(testParam_dto);
 
-                    expect(mockResponse.statusCode).toBe(ErrorStatusCodes.InvalidPropertiesException);
-                    expect(mockResponse.body.headers.data).toStrictEqual(testError);
+                    expect(testResponse.statusCode).toBe(ErrorStatusCodes.InvalidPropertiesException);
+                    expect(testResponse.body.headers.data).toStrictEqual(testError);
                 })
             })
         })

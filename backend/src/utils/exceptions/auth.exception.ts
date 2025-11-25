@@ -48,12 +48,6 @@ export class TokenMissingException extends AuthException {
     }
 }
 
-export class MissingEmailException extends AuthException {
-    constructor(message: string = 'support-email-required', data?: unknown){
-        super(ErrorCodes.MissingEmailException, message, data);
-    }
-}
-
 export class InvalidCredentialsException extends AuthException {
     constructor(message: string, data?: unknown){
         super(ErrorCodes.InvalidCredentialsException, message, data);

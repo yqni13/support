@@ -25,11 +25,11 @@ class TicketsRepository
         const filterColumn = 'ticket_id';
         const sql = `SELECT
         ${this.table}.*,
-        clientsTable.name AS client_name,
-        usersTable.email AS user_email
+        clients.name AS client_name,
+        users.email AS user_email
         FROM ${this.table}
-        LEFT JOIN clients clientsTable ON ${this.table}.client_id = clientsTable.client_id
-        LEFT JOIN users usersTable ON ${this.table}.user_id = usersTable.user_id
+        LEFT JOIN clients ON ${this.table}.client_id = clients.client_id
+        LEFT JOIN users ON ${this.table}.user_id = users.user_id
         WHERE ${filterColumn} = $1;`;
         const value = [id];
         const db = DBConnection.getInstance();
@@ -119,7 +119,7 @@ class TicketsRepository
             await db.close(client);
             return result.rows[0] ?? null;
         } catch(err: any) {
-            const logMsg = "DB ERROR ON INSERT (Tickets Repository, update): ";
+            const logMsg = "DB ERROR ON UPDATE (Tickets Repository, update): ";
             logRepoError(logMsg, err);
             await db.close(client);
             throw new DBQueryErrorException('support-dberror-tickets-update', err);
@@ -134,7 +134,7 @@ class TicketsRepository
         let client: any;
         try {
             client = await db.connect();
-            const result = await client.query(sql, value); // returns { rows: [boolean] }
+            const result = await client.query(sql, value);
             await db.close(client);
             return result.rowCount > 0;
         } catch(err: any) {

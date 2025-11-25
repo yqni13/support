@@ -1,4 +1,4 @@
-import { TicketsCreateDTO } from "../../../src/dtos/tickets.dto";
+import { TicketsCreateDTO, TicketsUpdateDTO } from "../../../src/dtos/tickets.dto";
 import * as Utils from "../../../src/utils/common.utils";
 import { TicketStatus } from "../../../src/utils/enums/ticket-status.enum";
 import { Tickets } from "../../../src/repositories/interfaces/tickets.entity.interface";
@@ -31,6 +31,25 @@ describe('Model tests, class: <tickets>, priority: generateTicket', () => {
                 flag: null,
                 last_modified: mockTimestamp,
                 created_on: mockTimestamp
+            };
+
+            expect(testFn).toEqual(expectResult);
+        })
+
+        test('Map timestamp value to DTO, entity: <TicketsUpdateDTO>', () => {
+            const mockTimestamp = '2025-01-01T14:00:04.000Z';
+            const mockParam_dto: TicketsUpdateDTO = {
+                status: TicketStatus.PAUSED,
+                message: 'test-message',
+                flag: null
+            };
+
+            jest.spyOn(Utils, "getTimestampUTC").mockReturnValue(mockTimestamp);
+
+            const testFn = ticketsModel.mapTicketUpdateDto(mockParam_dto);
+            const expectResult: TicketsUpdateDTO = {
+                ...mockParam_dto,
+                last_modified: mockTimestamp
             };
 
             expect(testFn).toEqual(expectResult);

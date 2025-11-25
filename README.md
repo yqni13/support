@@ -71,11 +71,16 @@ or simply save as script command in `package.json` to run `npm test`:
 }
 ```
 To automatically check tests before merging feature/development branch further up, a `GitHub Action` is set up, see [main.yml](.github/workflows/main.yml).<br>
-Preventing an unwanted merge with unfinished/failed test run, the project is set up to disable merging until all tests have passed (see Figure 1).
+Preventing an unwanted merge with unfinished/failed test run, the project is set up to disable merging until all tests have passed (see Figure 1 to Figure 2).
 
 <div align="center">
-    <img src="assets/img/github-action-jest.jpg" alt="&nbsp;GitHub processing tests">
-    Figure 1, v0.9.1
+    <img src="assets/img/github-action-jest-processing.png" alt="&nbsp;GitHub processing tests">
+    Figure 1 - processing tests, v0.9.1
+</div>
+<br>
+<div align="center">
+    <img src="assets/img/github-action-jest-passed.png" alt="&nbsp;GitHub tests passed">
+    Figure 2 - passing tests, v0.9.1
 </div>
 
 <br>

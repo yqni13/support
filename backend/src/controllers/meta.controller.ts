@@ -27,21 +27,21 @@ class MetaController {
         }
     }
 
-    async getAllData(req: Request, res: Response, next: NextFunction) {
+    async getAllMeta(req: Request, res: Response, next: NextFunction) {
         try {
-            const response: MetaResponseDTO[] | IRepoError | null = await metaService.getAllData();
+            const response: MetaResponseDTO[] | IRepoError | null = await metaService.getAllMeta();
             res.send(response);
         } catch(err: any) {
             next(err);
         }
     }
 
-    async updateMetaData(req: Request, res: Response, next: NextFunction) {
+    async patchMeta(req: Request, res: Response, next: NextFunction) {
         try {
             checkValidation(req);
             const id: number = +(req.params.id);
             const dto: MetaUpdateDTO = req.body;
-            const response: MetaResponseDTO | IRepoError | null = await metaService.updateMetaData(id, dto);
+            const response: MetaResponseDTO | IRepoError | null = await metaService.updateMeta(id, dto);
             res.send(response);
         } catch(err: any) {
             next(err);
@@ -59,12 +59,12 @@ class MetaController {
         }
     }
 
-    async setMaintenanceMode(req: Request, res: Response, next: NextFunction) {
+    async patchMaintenanceMode(req: Request, res: Response, next: NextFunction) {
         try {
             checkValidation(req);
             const name: string = req.params.name;
             const dto: MaintenanceUpdateDTO = req.body;
-            const response: MaintenanceResponseDTO | IRepoError | null = await metaService.setMaintenanceMode(name, dto);
+            const response: MaintenanceResponseDTO | IRepoError | null = await metaService.updateMaintenanceMode(name, dto);
             res.send(response);
         } catch(err: any) {
             next(err);

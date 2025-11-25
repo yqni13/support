@@ -5,22 +5,30 @@ import { TicketStatus } from '../../utils/enums/ticket-status.enum';
 import { SingleOrArray } from '../../utils/custom-types.utils';
 import { CommonExceptionMessage as Message } from '../../utils/enums/common-exception-messages.enum';
 
-export const ticketsFindByIdSchema: ValidationChain[] = [
+export const getTicketSchema: ValidationChain[] = [
     param('id')
-        .trim()
-        .notEmpty()
-        .withMessage(Message.REQUIRED)
+        .custom((content: string) => CustomValidator.validatePathParam(content))
+        .bail()
+        .isUUID(4)
+        .withMessage('support-invalid-entry#ticket_id')
 ];
 
-export const ticketsFindByFilterSchema: ValidationChain[] = [
+export const postTicketsSearchSchema: ValidationChain[] = [
+    // How to validate content with express-validator methods as possible array:
+    // #1 Convert content via customSanitizer
+    // #2 Validate every value in array sperately by calling body with postfix '.*'
     body('client_id')
-        .not().isInt()
-        .withMessage('support-invalid-id')
+        .customSanitizer(content => Array.isArray(content) ? content : [content])
         .optional(),
+    body('client_id.*')
+        .isUUID(4)
+        .withMessage('support-invalid-entry#client_id'),
     body('user_id')
-        .not().isInt()
-        .withMessage('support-invalid-id')
+        .customSanitizer(content => Array.isArray(content) ? content : [content])
         .optional(),
+    body('user_id.*')
+        .isUUID(4)
+        .withMessage('support-invalid-entry#user_id'),
     body('status')
         .custom((content: SingleOrArray<TicketStatus>) => {
             content = Array.isArray(content) ? content : [content];
@@ -40,12 +48,13 @@ export const ticketsFindByFilterSchema: ValidationChain[] = [
         })
 ];
 
-export const ticketsCreateSchema: ValidationChain[] = [
+export const postTicketSchema: ValidationChain[] = [
     // Body('user_email') validated in combination with authentication process (authUser).
     body('message')
         .trim()
         .notEmpty()
         .withMessage(Message.REQUIRED)
+        .bail()
         .isLength({max: 1000})
         .withMessage('support-invalid-max#message!1000'),
     body('resource_paths')
@@ -53,11 +62,12 @@ export const ticketsCreateSchema: ValidationChain[] = [
         .withMessage(Message.FORBIDDEN)
 ];
 
-export const ticketsUpdateSchema: ValidationChain[] = [
+export const patchTicketSchema: ValidationChain[] = [
     param('id')
-        .trim()
-        .notEmpty()
-        .withMessage(Message.REQUIRED),
+        .custom((content: string) => CustomValidator.validatePathParam(content))
+        .bail()
+        .isUUID(4)
+        .withMessage('support-invalid-entry#ticket_id'),
     body('status')
         .trim()
         .notEmpty()
@@ -68,6 +78,7 @@ export const ticketsUpdateSchema: ValidationChain[] = [
         .trim()
         .notEmpty()
         .withMessage(Message.REQUIRED)
+        .bail()
         .isLength({max: 1000})
         .withMessage('support-invalid-max#message!1000'),
     body('resource_paths')
@@ -82,9 +93,10 @@ export const ticketsUpdateSchema: ValidationChain[] = [
         .withMessage(Message.FORBIDDEN)
 ];
 
-export const ticketsDeleteSchema: ValidationChain[] = [
+export const deleteTicketSchema: ValidationChain[] = [
     param('id')
-        .trim()
-        .notEmpty()
-        .withMessage(Message.REQUIRED)
+        .custom((content: string) => CustomValidator.validatePathParam(content))
+        .bail()
+        .isUUID(4)
+        .withMessage('support-invalid-entry#ticket_id')
 ];
