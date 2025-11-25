@@ -60,7 +60,7 @@ Basic description: `<base>.<subsuffix?>.<suffix>.<ending>` [specific always sing
 |-------------------------------|---------------------|-------------------------------|
 | Basic mocks fn/results        | `mock`              | mockResult, mockAPI           |
 | Mock specific params          | `mockParam_`        | mockParam_language            |
-| DB mock specific actions      | `mockDB_`           | mockDB_init                   |
+| Testcontainer data testing    | `test`              | testParam_, testResult        |
 | Basic data to test from json  | `MockData_`         | MockData_places               |
 | Integration-Tests             | --                  | workflow/express-validation   |
 | Unit-Tests                    | --                  | models, custom validation     |

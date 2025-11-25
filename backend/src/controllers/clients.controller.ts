@@ -5,18 +5,18 @@ import { IRepoError } from "../repositories/interfaces/error.repository.interfac
 import clientsService from "../services/clients.service";
 
 class ClientsController {
-    async getStatus(req: Request, res: Response, next: NextFunction) {
+    async getClientStatus(req: Request, res: Response, next: NextFunction) {
         try {
             checkValidation(req);
             const name = req.params.name;
-            const response: ClientsStatusResponseDTO | IRepoError | null = await clientsService.findStatusByName(name);
+            const response: ClientsStatusResponseDTO | IRepoError | null = await clientsService.getClientStatusByName(name);
             res.send(response);
         } catch(err: any) {
             next(err);
         }
     }
 
-    async createClient(req: Request, res: Response, next: NextFunction) {
+    async postClient(req: Request, res: Response, next: NextFunction) {
         try {
             checkValidation(req);
             const dto: ClientsCreateDTO = req.body;
@@ -27,12 +27,12 @@ class ClientsController {
         }
     }
 
-    async setStatus(req: Request, res: Response, next: NextFunction) {
+    async patchClientStatus(req: Request, res: Response, next: NextFunction) {
         try {
             checkValidation(req);
             const id: string = req.params.id;
             const dto: ClientsStatusUpdateDTO = req.body;
-            const response: ClientsStatusResponseDTO | IRepoError | null = await clientsService.updateStatus(id, dto);
+            const response: ClientsStatusResponseDTO | IRepoError | null = await clientsService.updateClientStatus(id, dto);
             res.send(response);
         } catch(err: any) {
             next(err);

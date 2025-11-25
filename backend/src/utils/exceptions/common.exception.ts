@@ -25,19 +25,19 @@ export class CommonException extends Error {
 }
 
 export class InternalServerException extends CommonException {
-    constructor(message: string, data?: unknown) {
+    constructor(message: string = 'support-internal-error', data?: unknown) {
         super(ErrorCodes.InternalServerException, message, data);
     }
 }
 
 export class RequestExceedMaxException extends CommonException {
-    constructor(message: string = 'server-max-email', data?: unknown) {
+    constructor(message: string = 'support-max-email', data?: unknown) {
         super(ErrorCodes.RequestExceedMaxException, message, data);
     }
 }
 
 export class InvalidSourceException extends CommonException {
-    constructor(message: string = 'server-invalid-source', data?: unknown) {
+    constructor(message: string = 'support-invalid-source', data?: unknown) {
         super(ErrorCodes.InvalidSourceException, message, data);
     }
 }

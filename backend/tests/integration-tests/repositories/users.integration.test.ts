@@ -1,7 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import * as Utils from '../../../src/utils/common.utils';
 import request from 'supertest';
-import app from '../../../src/app';
 import { ErrorStatusCodes } from '../../../src/utils/errorStatusCodes.utils';
 import { DBTestSetup } from "../db-container.setup";
 import { runMigrations } from '../../db-migrations.setup';
@@ -9,13 +8,20 @@ import { UsersCreateUpdateDTO, UsersFilterDTO, UsersResponseDTO } from "../../..
 import { Users } from "../../../src/repositories/interfaces/users.entity.interface";
 import { UserStatus } from "../../../src/utils/enums/user-status.enum";
 import { Flag } from "../../../src/utils/enums/flag.enum";
+import { default as mockId } from "../../mock-data/id.mock-data.json";
 import { CommonExceptionMessage } from "../../../src/utils/enums/common-exception-messages.enum";
 
-jest.mock('../../../src/middleware/auth.middleware', () => ({
+jest.mock('../../../src/middleware/auth.admin.middleware', () => ({
     authAdmin: jest.fn(() =>  (req: Request, res: Response, next: NextFunction) => next())
 }));
+jest.mock('../../../src/middleware/maintenance.middleware', () => ({
+    maintain: jest.fn(() =>  (req: Request, res: Response, next: NextFunction) => next())
+}));
+
+import app from '../../../src/app';
 
 jest.setTimeout(60000);
+const testTimestamp = '2025-01-01T14:00:03.000Z';
 
 describe('Integration test (repository specific), priority: Users', () => {
 
@@ -29,7 +35,6 @@ describe('Integration test (repository specific), priority: Users', () => {
     });
 
     beforeEach(async () => {
-        // Clean tables before each test to fill test data individually.
         await dbTestSetup.clearTables();
     });
 
@@ -40,15 +45,14 @@ describe('Integration test (repository specific), priority: Users', () => {
     describe('Testing valid fn calls', () => {
 
         test('Repository process fn findById, result: "SUCCESS"', async () => {
-            const testParam_id = '87e4d6e3-d678-4de0-8806-e89135cbd38c';
-            const mockTimeStamp = '2025-01-01T14:00:03.000Z';
+            const testParam_id = mockId.users.valid[0];
             const testResult: UsersResponseDTO = {
                 user_id: testParam_id,
                 email: 'max.mustermann@yqni13.com',
                 status: UserStatus.ACTIVE,
                 flag: null,
-                last_modified: mockTimeStamp,
-                created_on: mockTimeStamp
+                last_modified: testTimestamp,
+                created_on: testTimestamp
             };
 
             await dbTestSetup.addTestData();
@@ -59,16 +63,34 @@ describe('Integration test (repository specific), priority: Users', () => {
             expect(testResponse.body).toMatchObject(testResult);
         })
 
+        test('Repository process fn findByEmail, result: "SUCCESS"', async () => {
+            const testParam_email = 'max.mustermann@yqni13.com';
+            const testResult: UsersResponseDTO = {
+                user_id: mockId.users.valid[0],
+                email: testParam_email,
+                status: UserStatus.ACTIVE,
+                flag: null,
+                last_modified: testTimestamp,
+                created_on: testTimestamp
+            };
+
+            await dbTestSetup.addTestData();
+            const testResponse = await request(app)
+                .get(`${apiUrl}/by-email/${testParam_email}`);
+
+            expect(testResponse.statusCode).toBe(200);
+            expect(testResponse.body).toMatchObject(testResult);
+        })
+
         test('Repository process fn findAll, result: "SUCCESS"', async () => {
-            const testParam_id = '87e4d6e3-d678-4de0-8806-e89135cbd38c';
-            const mockTimeStamp = '2025-01-01T14:00:03.000Z';
+            const testParam_id = mockId.users.valid[0];
             const testResult: Users[] = [{
                 user_id: testParam_id,
                 email: 'max.mustermann@yqni13.com',
                 status: UserStatus.ACTIVE,
                 flag: null,
-                last_modified: mockTimeStamp,
-                created_on: mockTimeStamp
+                last_modified: testTimestamp,
+                created_on: testTimestamp
             }];
 
             await dbTestSetup.addTestData();
@@ -100,17 +122,16 @@ describe('Integration test (repository specific), priority: Users', () => {
                 email: ['max.mustermann@yqni13.com', 'user@test.com'],
                 status: UserStatus.ACTIVE
             };
-            const mockTimeStamp = '2025-01-01T14:00:03.000Z';
             const testResult: UsersResponseDTO[] = [{
-                user_id: '87e4d6e3-d678-4de0-8806-e89135cbd38c',
+                user_id: mockId.users.valid[0],
                 email: 'max.mustermann@yqni13.com',
                 status: UserStatus.ACTIVE,
                 flag: null,
-                last_modified: mockTimeStamp,
-                created_on: mockTimeStamp
+                last_modified: testTimestamp,
+                created_on: testTimestamp
             }];
 
-            jest.spyOn(Utils, "getTimestampUTC").mockReturnValue(mockTimeStamp);
+            jest.spyOn(Utils, "getTimestampUTC").mockReturnValue(testTimestamp);
 
             await dbTestSetup.addTestData();
             const testResponse = await request(app)
@@ -125,17 +146,16 @@ describe('Integration test (repository specific), priority: Users', () => {
             const testParam_dto: UsersFilterDTO = {
                 flag: null
             };
-            const mockTimeStamp = '2025-01-01T14:00:03.000Z';
             const testResult: UsersResponseDTO[] = [{
-                user_id: '87e4d6e3-d678-4de0-8806-e89135cbd38c',
+                user_id: mockId.users.valid[0],
                 email: 'max.mustermann@yqni13.com',
                 status: UserStatus.ACTIVE,
                 flag: null,
-                last_modified: mockTimeStamp,
-                created_on: mockTimeStamp
+                last_modified: testTimestamp,
+                created_on: testTimestamp
             }];
 
-            jest.spyOn(Utils, "getTimestampUTC").mockReturnValue(mockTimeStamp);
+            jest.spyOn(Utils, "getTimestampUTC").mockReturnValue(testTimestamp);
 
             await dbTestSetup.addTestData();
             const testResponse = await request(app)
@@ -147,50 +167,47 @@ describe('Integration test (repository specific), priority: Users', () => {
         })
 
         test('Repository process fn create, result: "SUCCESS"', async () => {
-            const mockParam_id = '92f22e89-237b-4775-b170-1df288acad54';
-            const mockTimeStamp = '2025-02-04T14:00:03.000Z';
-            const mockParam_dto: Partial<Users> = {
+            const testParam_id = mockId.users.new[0];
+            const testParam_dto: Partial<Users> = {
                 email: 'new-user@test.com',
                 status: UserStatus.ACTIVE,
                 flag: null
             };
 
-            jest.spyOn(Utils, "generateUUID").mockReturnValue(mockParam_id);
-            jest.spyOn(Utils, "getTimestampUTC").mockReturnValue(mockTimeStamp);
+            jest.spyOn(Utils, "generateUUID").mockReturnValue(testParam_id);
+            jest.spyOn(Utils, "getTimestampUTC").mockReturnValue(testTimestamp);
 
-            const testResult = structuredClone(mockParam_dto);
+            const testResult = structuredClone(testParam_dto);
             Object.assign(testResult, {
-                user_id: mockParam_id,
-                last_modified: mockTimeStamp,
-                created_on: mockTimeStamp
+                user_id: testParam_id,
+                last_modified: testTimestamp,
+                created_on: testTimestamp
             });
 
             await dbTestSetup.addTestData();
             const testResponse = await request(app)
                 .post(`${apiUrl}/create`)
-                .send(mockParam_dto);
+                .send(testParam_dto);
 
             expect(testResponse.statusCode).toBe(200);
             expect(testResponse.body).toMatchObject(testResult)
         })
 
         test('Repository process fn update, result: "SUCCESS"', async () => {
-            const testParam_id = '87e4d6e3-d678-4de0-8806-e89135cbd38c';
-            const mockTimeStamp = '2025-01-01T14:00:03.000Z';
+            const testParam_id = mockId.users.valid[0];
             const testParam_dto: Partial<Users> = {
                 email: 'user@test.com',
                 status: UserStatus.ACTIVE,
                 flag: Flag.WARNING
             };
 
-            // Mock Utils generated timeStamp for easy comparison.
-            jest.spyOn(Utils, "getTimestampUTC").mockReturnValue(mockTimeStamp);
+            jest.spyOn(Utils, "getTimestampUTC").mockReturnValue(testTimestamp);
 
             const testResult = structuredClone(testParam_dto);
             Object.assign(testResult, {
                 user_id: testParam_id,
-                last_modified: mockTimeStamp,
-                created_on: mockTimeStamp
+                last_modified: testTimestamp,
+                created_on: testTimestamp
             });
 
             await dbTestSetup.addTestData();
@@ -209,53 +226,49 @@ describe('Integration test (repository specific), priority: Users', () => {
 
         describe('All routes, priority: express-validators, location: <params>', () => {
 
-            let mockError: any;
-            beforeEach(() => {
-                mockError = {
-                    type: 'field',
-                    value: '',
-                    msg: CommonExceptionMessage.REQUIRED,
-                    path: '',
-                    location: 'params'
-                };
-            });
-
             describe('Route: GET/by-id/:id', () => {
 
-                test('Params: <id>, validator: notEmpty by undefined', async () => {
-                    // To test undefined, we need empty string but still match ':id' as part of route:
-                    // Simulate by URL-encoded SPACE + trim() => ''
-                    const mockParam_id = '%20';
-                    const testError = structuredClone(mockError);
-                    testError['path'] = 'id';
+                test('Params: <id>, validator: isUUID() by invalid id', async () => {
+                    const testParam_id = 'invalid-id';
+                    const testError = {
+                        type: 'field',
+                        value: testParam_id,
+                        msg: 'support-invalid-entry#user_id',
+                        path: 'id',
+                        location: 'params'
+                    }
 
-                    const mockResponse = await request(app)
-                        .get(`${apiUrl}/by-id/${mockParam_id}`);
+                    const testResponse = await request(app)
+                        .get(`${apiUrl}/by-id/${testParam_id}`);
 
-                    expect(mockResponse.statusCode).toBe(ErrorStatusCodes.InvalidPropertiesException);
-                    expect(mockResponse.body.headers.data).toEqual([testError]);
+                    expect(testResponse.statusCode).toBe(ErrorStatusCodes.InvalidPropertiesException);
+                    expect(testResponse.body.headers.data).toEqual([testError]);
                 })
             })
 
             describe('Route: PUT/update/:id', () => {
 
-                test('Params: <id>, validator: notEmpty by undefined', async () => {
-                    const mockParam_id = '%20';
-                    const mockParam_dto: UsersCreateUpdateDTO = {
+                test('Params: <id>, validator: isUUID() by invalid id', async () => {
+                    const testParam_id = 'invalid-id';
+                    const testParam_dto: UsersCreateUpdateDTO = {
                         email: 'new-user@test.com',
                         status: UserStatus.ACTIVE,
                         flag: null
                     };
-    
-                    const testError = structuredClone(mockError);
-                    testError['path'] = 'id';
-    
-                    const mockResponse = await request(app)
-                        .put(`${apiUrl}/update/${mockParam_id}`)
-                        .send(mockParam_dto);
-    
-                    expect(mockResponse.statusCode).toBe(ErrorStatusCodes.InvalidPropertiesException);
-                    expect(mockResponse.body.headers.data).toEqual([testError]);
+                    const testError = {
+                        type: 'field',
+                        value: testParam_id,
+                        msg: 'support-invalid-entry#user_id',
+                        path: 'id',
+                        location: 'params'
+                    }
+
+                    const testResponse = await request(app)
+                        .put(`${apiUrl}/update/${testParam_id}`)
+                        .send(testParam_dto);
+
+                    expect(testResponse.statusCode).toBe(ErrorStatusCodes.InvalidPropertiesException);
+                    expect(testResponse.body.headers.data).toEqual([testError]);
                 })
             })
         })
@@ -275,59 +288,59 @@ describe('Integration test (repository specific), priority: Users', () => {
 
             describe('Route: POST/create', () => {
 
-                const mockData: Partial<Users> = {
+                const testData: Partial<Users> = {
                     email: 'new-user@test.com',
                     status: UserStatus.ACTIVE
                 };
 
-                const testedParams = Object.keys(mockData) as (keyof typeof mockData)[];
+                const testedParams = Object.keys(testData) as (keyof typeof testData)[];
 
-                test.each(testedParams)('Params: <%s>, validator: notEmpty by undefined', async (invalidParam) => {
-                    let mockParam_dto = structuredClone(mockData);
+                test.each(testedParams)('Params: <%s>, validator: notEmpty() by undefined', async (invalidParam) => {
+                    let mockParam_dto = structuredClone(testData);
                     delete mockParam_dto[invalidParam];
 
                     const testError = structuredClone(mockError);
                     testError['path'] = invalidParam;
 
-                    const mockResponse = await request(app)
+                    const testResponse = await request(app)
                         .post(`${apiUrl}/create`)
                         .send(mockParam_dto);
 
-                    expect(mockResponse.statusCode).toBe(ErrorStatusCodes.InvalidPropertiesException);
-                    expect(mockResponse.body.headers.data).toContainEqual(testError);
+                    expect(testResponse.statusCode).toBe(ErrorStatusCodes.InvalidPropertiesException);
+                    expect(testResponse.body.headers.data).toContainEqual(testError);
                 })
             })
 
             describe('Route: PUT/update/:id', () => {
 
-                const mockData: Partial<Users> = {
+                const testData: Partial<Users> = {
                     email: 'updated-user@test.com',
                     status: UserStatus.BLACKLISTED
                 };
 
-                const testedParams = Object.keys(mockData) as (keyof typeof mockData)[];
+                const testedParams = Object.keys(testData) as (keyof typeof testData)[];
 
-                test.each(testedParams)('Params: <%s>, validator: notEmpty by undefined', async (invalidParam) => {
-                    const mockParam_id = '87e4d6e3-d678-4de0-8806-e89135cbd38c';
-                    let mockParam_dto = structuredClone(mockData);
+                test.each(testedParams)('Params: <%s>, validator: notEmpty() by undefined', async (invalidParam) => {
+                    const testParam_id = mockId.users.valid[0];
+                    let mockParam_dto = structuredClone(testData);
                     delete mockParam_dto[invalidParam];
 
                     const testError = structuredClone(mockError);
                     testError['path'] = invalidParam;
 
-                    const mockResponse = await request(app)
-                        .put(`${apiUrl}/update/${mockParam_id}`)
+                    const testResponse = await request(app)
+                        .put(`${apiUrl}/update/${testParam_id}`)
                         .send(mockParam_dto);
 
-                    expect(mockResponse.statusCode).toBe(ErrorStatusCodes.InvalidPropertiesException);
-                    expect(mockResponse.body.headers.data).toContainEqual(testError);
+                    expect(testResponse.statusCode).toBe(ErrorStatusCodes.InvalidPropertiesException);
+                    expect(testResponse.body.headers.data).toContainEqual(testError);
                 })
             })
 
             describe('Route: POST/create, priority: validateEmailUniqueness', () => {
                 
                 test('Params: <email> by existing "max.mustermann@yqni13.com" in db', async () => {
-                    const mockParam_dto: Partial<Users> = {
+                    const testParam_dto: Partial<Users> = {
                         email: 'max.mustermann@yqni13.com',
                         status: UserStatus.ACTIVE,
                         flag: null
@@ -335,19 +348,19 @@ describe('Integration test (repository specific), priority: Users', () => {
 
                     const testError = [{
                         type: 'field',
-                        value: mockParam_dto.email,
+                        value: testParam_dto.email,
                         msg: 'support-nonunique-email',
                         path: 'email',
                         location: 'body'
                     }];
 
                     await dbTestSetup.addTestData();
-                    const mockResponse = await request(app)
+                    const testResponse = await request(app)
                         .post(`${apiUrl}/create`)
-                        .send(mockParam_dto);
+                        .send(testParam_dto);
 
-                    expect(mockResponse.statusCode).toBe(ErrorStatusCodes.InvalidPropertiesException);
-                    expect(mockResponse.body.headers.data).toStrictEqual(testError);
+                    expect(testResponse.statusCode).toBe(ErrorStatusCodes.InvalidPropertiesException);
+                    expect(testResponse.body.headers.data).toStrictEqual(testError);
                 })
             })
         })

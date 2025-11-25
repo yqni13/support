@@ -1,5 +1,5 @@
 # yqni13 | support
-$\texttt{\color{teal}{v0.8.5}}$
+$\texttt{\color{teal}{v0.9.1}}$
 
 
 <br>
@@ -42,9 +42,46 @@ The development process is structured by the TDD (test driven development) princ
 ### $\textsf{\color{teal}Features}$
 
 <dl>
+    <dd>🪲 support/bug-ticket handling including client + user data</dd>
     <dd>:closed_lock_with_key: maintenance mode can en/disable application via single request</dd>
     <dd>:key: request verification by api-keys</dd>
 </dl>
+
+<br>
+
+## Testing
+
+### $\textsf{\color{teal}Jest}$
+
+Added `jest` testing framework to project providing unit tests and integration tests for the `backend`.<br>
+Install the packages `@jest/globals`, `@types/jest`, `supertest`, `@testcontainers/postgresql` and `testcontainers` additional to `jest`:
+```sh
+npm install jest @jest/globals @types/jest supertest @testcontainers/postgresql testcontainers --save-dev
+```
+190 tests exist currently for models, utils, validators and workflows (integration tests) - see [tests](./backend/tests).<br>
+Run tests on local device by including setup for dotenv/config to provide environment variables:
+```sh
+set NODE_ENV=test && jest --setupFiles dotenv/config
+```
+or simply save as script command in `package.json` to run `npm test`:
+```sh
+"scripts": {
+    "start:dev": "ts-node --files src/server.ts",
+    "test": "set NODE_ENV=test && jest --setupFiles dotenv/config"
+}
+```
+To automatically check tests before merging feature/development branch further up, a `GitHub Action` is set up, see [main.yml](.github/workflows/main.yml).<br>
+Preventing an unwanted merge with unfinished/failed test run, the project is set up to disable merging until all tests have passed (see Figure 1 to Figure 2).
+
+<div align="center">
+    <img src="assets/img/github-action-jest-processing.png" alt="&nbsp;GitHub processing tests">
+    Figure 1 - processing tests, v0.9.1
+</div>
+<br>
+<div align="center">
+    <img src="assets/img/github-action-jest-passed.png" alt="&nbsp;GitHub tests passed">
+    Figure 2 - passing tests, v0.9.1
+</div>
 
 <br>
 
@@ -53,10 +90,9 @@ The development process is structured by the TDD (test driven development) princ
 
 ### $\textsf{\color{forestgreen}last update:}$
 
-$\textsf{[v0.8.2\ =>\ {\textbf{\color{brown}v0.8.5}]}}$ app
-- $\textsf{\color{orange}Patch:}$ Refactored timestamp mapping from different model functions to two generic type handling helper functions.
-- $\textsf{\color{orange}Patch:}$ Updated validations and added tests for params-located arguments (checked only body-located arguments before).
-- $\textsf{\color{teal}Addition:}$ Added validation on create method of entity 'Clients' to check if name already exists in database (unique constraint).
+$\textsf{[v0.8.5\ =>\ {\textbf{\color{brown}v0.9.1}]}}$ app
+- $\textsf{\color{orange}Patch:}$ Updated tests, mock-data handling and added findByEmail to <users> repository methods. 
+- $\textsf{\color{teal}Addition:}$ Added routes + basic logic to handle 'Tickets' data.
 
 <br>
 

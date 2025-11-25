@@ -11,19 +11,19 @@ describe('Model tests, class: <users>, priority: generateUser', () => {
     describe('Testing valid fn calls', () => {
 
         test('Generate new user object, entity: <Users>', () => {
-            const testParam_id = 'valid_users_test_id';
+            const mockParam_id = 'valid_users_test_id';
             const mockParam_dto: UsersCreateUpdateDTO = {
                 email: 'valid.user@test.com',
                 status: UserStatus.ACTIVE,
                 flag: null
             };
 
-            jest.spyOn(Utils, "generateUUID").mockReturnValue(testParam_id);
+            jest.spyOn(Utils, "generateUUID").mockReturnValue(mockParam_id);
             jest.spyOn(Utils, "getTimestampUTC").mockReturnValue(mockTimestamp);
 
             const testFn = usersModel.generateUser(mockParam_dto);
             const expectResult: Users = {
-                user_id: testParam_id,
+                user_id: mockParam_id,
                 email: mockParam_dto.email,
                 status: mockParam_dto.status,
                 flag: mockParam_dto.flag,

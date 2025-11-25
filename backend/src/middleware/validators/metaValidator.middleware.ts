@@ -3,31 +3,25 @@ import * as CustomValidator from '../../utils/customValidator.utils';
 import { MaintenanceMode } from '../../utils/enums/maintenance-mode.enum';
 import { CommonExceptionMessage as Message } from '../../utils/enums/common-exception-messages.enum';
 
-export const metaFindByIdSchema: ValidationChain[] = [
+export const getMetaByIdSchema: ValidationChain[] = [
     param('id')
-        .trim()
-        .notEmpty()
-        .withMessage(Message.REQUIRED)
+        .custom((content: string) => CustomValidator.validatePathParam(content))
         .bail()
         .isInt()
-        .withMessage('support-invalid-id')
+        .withMessage('support-invalid-entry#meta_id')
 ];
 
-export const metaFindByNameSchema: ValidationChain[] = [
+export const getMetaByNameSchema: ValidationChain[] = [
     param('name')
-        .trim()
-        .notEmpty()
-        .withMessage(Message.REQUIRED)
+        .custom((content: string) => CustomValidator.validatePathParam(content))
 ];
 
-export const metaUpdateSchema: ValidationChain[] = [
+export const patchMetaSchema: ValidationChain[] = [
     param('id')
-        .trim()
-        .notEmpty()
-        .withMessage(Message.REQUIRED)
+        .custom((content: string) => CustomValidator.validatePathParam(content))
         .bail()
         .isInt()
-        .withMessage('support-invalid-id'),
+        .withMessage('support-invalid-entry#meta_id'),
     body('app')
         .trim()
         .notEmpty()
@@ -77,18 +71,14 @@ export const metaUpdateSchema: ValidationChain[] = [
         .withMessage(Message.FORBIDDEN)
 ];
 
-export const maintenanceFindSchema: ValidationChain[] = [
+export const getMaintenanceSchema: ValidationChain[] = [
     param('name')
-        .trim()
-        .notEmpty()
-        .withMessage(Message.REQUIRED)
+        .custom((content: string) => CustomValidator.validatePathParam(content))
 ];
 
-export const maintenanceUpdateSchema: ValidationChain[] = [
+export const patchMaintenanceSchema: ValidationChain[] = [
     param('name')
-        .trim()
-        .notEmpty()
-        .withMessage(Message.REQUIRED),
+        .custom((content: string) => CustomValidator.validatePathParam(content)),
     body('maintenance_mode')
         .trim()
         .notEmpty()

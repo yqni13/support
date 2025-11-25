@@ -5,6 +5,7 @@ import { IBaseRepository, ICreateRepository, IFindRepository } from "./interface
 import { Users } from "./interfaces/users.entity.interface";
 import { logRepoError } from "../utils/common.utils";
 import { UsersFilterDTO } from "../dtos/users.dto";
+import { DBQueryErrorException } from "../utils/exceptions/db.exception";
 
 class UsersRepository implements 
 IBaseRepository<Users>,
@@ -38,6 +39,25 @@ ICreateRepository<Users> {
         }
     }
 
+    async findByEmail(email: string): Promise<Users | null> {
+        const filterColumn = 'email';
+        const sql = `SELECT * FROM ${this.table} WHERE ${filterColumn} = $1;`;
+        const value = [email];
+        const db = DBConnection.getInstance();
+        let client: any;
+        try {
+            client = await db.connect();
+            const result: QueryResult<Users> = await client.query(sql, value);
+            await db.close(client);
+            return result.rows[0] ?? null;
+        } catch(err: any) {
+            const logMsg = "DB ERROR ON SELECT (Users Repository, findByEmail): ";
+            logRepoError(logMsg, err);
+            await db.close(client);
+            throw new DBQueryErrorException('support-dberror-users-findByEmail', err);
+        }
+    }
+
     async findAll(): Promise<Users[] | IRepoError | null> {
         const orderPrio = 'user_id';
         const sql: string = `SELECT * FROM ${this.table} ORDER BY ${orderPrio} ASC FETCH FIRST 100 ROWS ONLY;`;
@@ -59,8 +79,8 @@ ICreateRepository<Users> {
         }
     }
 
-    async findByFilter(dto: UsersFilterDTO): Promise<Users[] | IRepoError | null> {
-        const queryData = this._mapFindByFilterValues(dto);
+    async findByFilter(dto: UsersFilterDTO): Promise<Users[] | IRepoError | []> {
+        const queryData = this._mapFilteredUsersQueryValues(dto);
         const db = DBConnection.getInstance();
         let client: any;
         try {
@@ -79,7 +99,7 @@ ICreateRepository<Users> {
         }
     }
 
-    async create(entity: Users): Promise<Users | IRepoError> {
+    async create(entity: Users): Promise<Users> {
         const sql = `INSERT INTO ${this.table}
         (user_id, email, status, flag, last_modified, created_on)
         VALUES ($1, $2, $3, $4, $5, $6)
@@ -97,10 +117,7 @@ ICreateRepository<Users> {
             const logMsg = "DB ERROR ON INSERT (Users Repository, create): ";
             logRepoError(logMsg, err);
             await db.close(client);
-            return {
-                method: 'support_users_create',
-                error: err
-            }
+            throw new DBQueryErrorException('support-dberror-users-create', err);
         }
     }
 
@@ -130,7 +147,7 @@ ICreateRepository<Users> {
         }
     }
 
-    _mapFindByFilterValues(dto: UsersFilterDTO): { sql: string, values: any[] } {
+    _mapFilteredUsersQueryValues(dto: UsersFilterDTO): { sql: string, values: any[] } {
         const values: any[] = [];
         const argGroups: string[] = [];
 

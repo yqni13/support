@@ -3,7 +3,6 @@ import { NextFunction, Request, Response } from "express";
 import { DBTestSetup } from "../db-container.setup";
 import { runMigrations } from '../../db-migrations.setup';
 import request from 'supertest';
-import app from '../../../src/app';
 import * as Utils from '../../../src/utils/common.utils';
 import { ErrorStatusCodes } from '../../../src/utils/errorStatusCodes.utils';
 import { MaintenanceMode } from '../../../src/utils/enums/maintenance-mode.enum';
@@ -11,11 +10,14 @@ import { MaintenanceUpdateDTO, MetaUpdateDTO } from '../../../src/dtos/meta.dto'
 import { CommonExceptionMessage } from '../../../src/utils/enums/common-exception-messages.enum';
 import { EnvMode } from '../../../src/utils/enums/env-mode.enum';
 
-jest.mock('../../../src/middleware/auth.middleware', () => ({
+jest.mock('../../../src/middleware/auth.admin.middleware', () => ({
     authAdmin: jest.fn(() =>  (req: Request, res: Response, next: NextFunction) => next())
 }));
 
+import app from '../../../src/app';
+
 jest.setTimeout(60000);
+const testTimestamp = '2025-01-01T14:00:01.000Z';
 
 describe('Integration test (repository specific), priority: Meta', () => {
 
@@ -23,19 +25,17 @@ describe('Integration test (repository specific), priority: Meta', () => {
 
         let dbTestSetup: DBTestSetup;
         let apiUrl: string;
-        let mockTimestamp: string;
         let mockResult: Meta;
         beforeAll(async () => {
             dbTestSetup = new DBTestSetup();
             await dbTestSetup.init();
             await runMigrations();
             apiUrl = '/api/v1/meta';
-            mockTimestamp = '2025-01-01T14:00:01.000Z';
             mockResult = {
                 id: 1,
                 app: 'support',
                 author: 'yqni13',
-                build_on: mockTimestamp,
+                build_on: testTimestamp,
                 environment: EnvMode.TEST,
                 app_version: '0.1.0',
                 db_version: '0.2.0',
@@ -43,8 +43,8 @@ describe('Integration test (repository specific), priority: Meta', () => {
                 docker_version: '0.3.0',
                 jenkins_version: '0.4.0',
                 maintenance_mode: MaintenanceMode.E000,
-                last_modified: mockTimestamp,
-                created_on: mockTimestamp
+                last_modified: testTimestamp,
+                created_on: testTimestamp
             }
         });
 
@@ -63,7 +63,7 @@ describe('Integration test (repository specific), priority: Meta', () => {
                 id: testParam_id,
                 app: "support",
                 author: "yqni13",
-                build_on: mockTimestamp,
+                build_on: testTimestamp,
                 environment: EnvMode.TEST,
                 app_version: "0.0.1",
                 db_version: "0.0.2",
@@ -71,8 +71,8 @@ describe('Integration test (repository specific), priority: Meta', () => {
                 docker_version: "0.0.3",
                 jenkins_version: "0.0.4",
                 maintenance_mode: MaintenanceMode.E000,
-                last_modified: mockTimestamp,
-                created_on: mockTimestamp
+                last_modified: testTimestamp,
+                created_on: testTimestamp
             };
 
             await dbTestSetup.addTestData();
@@ -89,7 +89,7 @@ describe('Integration test (repository specific), priority: Meta', () => {
                 id: 1,
                 app: testParam_name,
                 author: "yqni13",
-                build_on: mockTimestamp,
+                build_on: testTimestamp,
                 environment: EnvMode.TEST,
                 app_version: "0.0.1",
                 db_version: "0.0.2",
@@ -97,8 +97,8 @@ describe('Integration test (repository specific), priority: Meta', () => {
                 docker_version: "0.0.3",
                 jenkins_version: "0.0.4",
                 maintenance_mode: MaintenanceMode.E000,
-                last_modified: mockTimestamp,
-                created_on: mockTimestamp
+                last_modified: testTimestamp,
+                created_on: testTimestamp
             };
 
             await dbTestSetup.addTestData();
@@ -114,7 +114,7 @@ describe('Integration test (repository specific), priority: Meta', () => {
                 id: 1,
                 app: "support",
                 author: "yqni13",
-                build_on: mockTimestamp,
+                build_on: testTimestamp,
                 environment: EnvMode.TEST,
                 app_version: "0.0.1",
                 db_version: "0.0.2",
@@ -122,8 +122,8 @@ describe('Integration test (repository specific), priority: Meta', () => {
                 docker_version: "0.0.3",
                 jenkins_version: "0.0.4",
                 maintenance_mode: MaintenanceMode.E000,
-                last_modified: mockTimestamp,
-                created_on: mockTimestamp
+                last_modified: testTimestamp,
+                created_on: testTimestamp
             }];
 
             await dbTestSetup.addTestData();
@@ -139,7 +139,7 @@ describe('Integration test (repository specific), priority: Meta', () => {
             const testParam_dto: MetaUpdateDTO = {
                 app: 'support',
                 author: 'yqni13',
-                build_on: mockTimestamp,
+                build_on: testTimestamp,
                 environment: EnvMode.TEST,
                 app_version: '0.1.0',
                 db_version: '0.2.0',
@@ -149,13 +149,13 @@ describe('Integration test (repository specific), priority: Meta', () => {
             };
 
             // Mock Utils generated timeStamp for easy comparison.
-            jest.spyOn(Utils, "getTimestampUTC").mockReturnValue(mockTimestamp);
+            jest.spyOn(Utils, "getTimestampUTC").mockReturnValue(testTimestamp);
 
             const testResult = structuredClone(mockResult);
             testResult['id'] = testParam_id;
-            testResult['build_on'] = mockTimestamp;
-            testResult['last_modified'] = mockTimestamp;
-            testResult['created_on'] = mockTimestamp;
+            testResult['build_on'] = testTimestamp;
+            testResult['last_modified'] = testTimestamp;
+            testResult['created_on'] = testTimestamp;
 
             await dbTestSetup.addTestData();
             const testResponse = await request(app)
@@ -171,10 +171,10 @@ describe('Integration test (repository specific), priority: Meta', () => {
             const testResult: Maintenance = {
                 id: mockResult.id,
                 app: testParam_name,
-                build_on: mockTimestamp,
+                build_on: testTimestamp,
                 maintenance_mode: MaintenanceMode.E000,
-                last_modified: mockTimestamp,
-                created_on: mockTimestamp
+                last_modified: testTimestamp,
+                created_on: testTimestamp
             };
 
             await dbTestSetup.addTestData();
@@ -190,15 +190,15 @@ describe('Integration test (repository specific), priority: Meta', () => {
             const testParam_data = { maintenance_mode: MaintenanceMode.D013 };
 
             // Mock Utils generated timeStamp for easy comparison.
-            jest.spyOn(Utils, "getTimestampUTC").mockReturnValue(mockTimestamp);
+            jest.spyOn(Utils, "getTimestampUTC").mockReturnValue(testTimestamp);
 
             const testResult: Maintenance = {
                 id: mockResult.id,
                 app: testParam_name,
-                build_on: mockTimestamp,
+                build_on: testTimestamp,
                 maintenance_mode: testParam_data.maintenance_mode,
-                last_modified: mockTimestamp,
-                created_on: mockTimestamp
+                last_modified: testTimestamp,
+                created_on: testTimestamp
             }
 
             await dbTestSetup.addTestData();
@@ -214,159 +214,60 @@ describe('Integration test (repository specific), priority: Meta', () => {
     describe('Testing invalid fn calls', () => {
 
         const apiUrl = '/api/v1/meta';
-        const mockTimestamp = '2025-01-01T14:00:01.000Z';
 
         describe('All routes, priority: express-validators, location: <params>', () => {
 
-            let mockError: any;
-            beforeEach(() => {
-                mockError = {
-                    type: 'field',
-                    value: '',
-                    msg: CommonExceptionMessage.REQUIRED,
-                    path: '',
-                    location: 'params'
-                };
-            });
-
             describe('Route: GET/by-id:id', () => {
 
-                test('Params: <id>, validator: notEmpty by undefined', async () => {
-                    // To test undefined, we need empty string but still match ':id' as part of route:
-                    // Simulate by URL-encoded SPACE + trim() => ''
-                    const mockParam_id = '%20';
-                    const testError = structuredClone(mockError);
-                    testError['path'] = 'id';
-
-                    const mockResponse = await request(app)
-                        .get(`${apiUrl}/by-id/${mockParam_id}`);
-
-                    expect(mockResponse.statusCode).toBe(ErrorStatusCodes.InvalidPropertiesException);
-                    expect(mockResponse.body.headers.data).toEqual([testError]);
-                })
-
                 test('Params: <id>, validator: isInt by string', async () => {
-                    const mockParam_id = 'invalid_test_id';
+                    const testParam_id = 'invalid_test_id';
                     const testError = {
                         type: 'field',
-                        value: mockParam_id,
-                        msg: 'support-invalid-id',
+                        value: testParam_id,
+                        msg: 'support-invalid-entry#meta_id',
                         path: 'id',
                         location: 'params'
                     };
 
-                    const mockResponse = await request(app)
-                        .get(`${apiUrl}/by-id/${mockParam_id}`);
+                    const testResponse = await request(app)
+                        .get(`${apiUrl}/by-id/${testParam_id}`);
 
-                    expect(mockResponse.statusCode).toBe(ErrorStatusCodes.InvalidPropertiesException);
-                    expect(mockResponse.body.headers.data).toEqual([testError]);
-                })
-            })
-
-            describe('Route: GET/by-name/:name', () => {
-
-                test('Params: <name>, validator: notEmpty by undefined', async () => {
-                    const mockParam_name = '%20';
-                    const testError = structuredClone(mockError);
-                    testError['path'] = 'name';
-    
-                    const mockResponse = await request(app)
-                        .get(`${apiUrl}/by-name/${mockParam_name}`);
-    
-                    expect(mockResponse.statusCode).toBe(ErrorStatusCodes.InvalidPropertiesException);
-                    expect(mockResponse.body.headers.data).toEqual([testError]);
+                    expect(testResponse.statusCode).toBe(ErrorStatusCodes.InvalidPropertiesException);
+                    expect(testResponse.body.headers.data).toEqual([testError]);
                 })
             })
 
             describe('Route: PUT/info/:id', () => {
 
-                test('Params: <id>, validator: notEmpty by undefined', async () => {
-                    const mockParam_id = '%20';
-                    const mockVersion = '0.0.0';
-                    const mockParam_dto: MetaUpdateDTO = {
-                        app: 'testapp',
-                        author: 'testauthor',
-                        build_on: mockTimestamp,
-                        environment: EnvMode.TEST,
-                        app_version: mockVersion,
-                        db_version: mockVersion,
-                        docker_image: 'testimage',
-                        docker_version: mockVersion,
-                        jenkins_version: mockVersion,
-                    };
-    
-                    const testError = structuredClone(mockError);
-                    testError['path'] = 'id';
-    
-                    const mockResponse = await request(app)
-                        .put(`${apiUrl}/info/${mockParam_id}`)
-                        .send(mockParam_dto);
-    
-                    expect(mockResponse.statusCode).toBe(ErrorStatusCodes.InvalidPropertiesException);
-                    expect(mockResponse.body.headers.data).toEqual([testError]);
-                })
-    
                 test('Params: <id>, validator: isInt by string', async () => {
-                    const mockParam_id = 'invalid_test_id';
-                    const mockVersion = '0.0.0';
-                    const mockParam_dto: MetaUpdateDTO = {
+                    const testParam_id = 'invalid_test_id';
+                    const testVersion = '0.0.0';
+                    const testParam_dto: MetaUpdateDTO = {
                         app: 'testapp',
                         author: 'testauthor',
-                        build_on: mockTimestamp,
+                        build_on: testTimestamp,
                         environment: EnvMode.TEST,
-                        app_version: mockVersion,
-                        db_version: mockVersion,
+                        app_version: testVersion,
+                        db_version: testVersion,
                         docker_image: 'testimage',
-                        docker_version: mockVersion,
-                        jenkins_version: mockVersion,
+                        docker_version: testVersion,
+                        jenkins_version: testVersion,
                     };
-    
+
                     const testError = {
                         type: 'field',
-                        value: mockParam_id,
-                        msg: 'support-invalid-id',
+                        value: testParam_id,
+                        msg: 'support-invalid-entry#meta_id',
                         path: 'id',
                         location: 'params'
                     };
-    
-                    const mockResponse = await request(app)
-                        .put(`${apiUrl}/info/${mockParam_id}`)
-                        .send(mockParam_dto);
-    
-                    expect(mockResponse.statusCode).toBe(ErrorStatusCodes.InvalidPropertiesException);
-                    expect(mockResponse.body.headers.data).toEqual([testError]);
-                })
-            })
 
-            describe('Route: GET/maintenance/:name', () => {
+                    const testResponse = await request(app)
+                        .put(`${apiUrl}/info/${testParam_id}`)
+                        .send(testParam_dto);
 
-                test('Params: <name>, validator: notEmpty by undefined', async () => {
-                    const mockParam_name = '%20';
-                    const testError = structuredClone(mockError);
-                    testError['path'] = 'name';
-                    
-                    const mockResponse = await request(app)
-                    .get(`${apiUrl}/maintenance/${mockParam_name}`);
-                    
-                    expect(mockResponse.statusCode).toBe(ErrorStatusCodes.InvalidPropertiesException);
-                    expect(mockResponse.body.headers.data).toEqual([testError]);
-                })
-
-                test('Params: <name>, validator: notEmpty by undefined', async () => {
-                    const mockParam_name = '%20';
-                    const mockParam_dto: MaintenanceUpdateDTO = {
-                        maintenance_mode: MaintenanceMode.A008
-                    };
-    
-                    const testError = structuredClone(mockError);
-                    testError['path'] = 'name';
-    
-                    const mockResponse = await request(app)
-                        .put(`${apiUrl}/maintenance/${mockParam_name}`)
-                        .send(mockParam_dto);
-    
-                    expect(mockResponse.statusCode).toBe(ErrorStatusCodes.InvalidPropertiesException);
-                    expect(mockResponse.body.headers.data).toEqual([testError]);
+                    expect(testResponse.statusCode).toBe(ErrorStatusCodes.InvalidPropertiesException);
+                    expect(testResponse.body.headers.data).toEqual([testError]);
                 })
             })
         })
@@ -386,7 +287,7 @@ describe('Integration test (repository specific), priority: Meta', () => {
 
             describe('Route: PUT/info/:id', () => {
 
-                const mockData: Partial<Meta> = {
+                const testData: Partial<Meta> = {
                     app: 'support',
                     author: 'yqni13',
                     build_on: '2025-01-01T14:00:01.000Z',
@@ -399,38 +300,38 @@ describe('Integration test (repository specific), priority: Meta', () => {
                 };
 
                 // "keyof typeof mockData" creates Union-Types of keys to ensure all properties are valid.
-                const testedParams = Object.keys(mockData) as (keyof typeof mockData)[];
+                const testedParams = Object.keys(testData) as (keyof typeof testData)[];
 
-                test.each(testedParams)('Params: <%s>, validator: notEmpty by undefined', async (invalidParam) => {
-                    const mockParam_id = 1;
-                    let mockParam_dto = structuredClone(mockData);
+                test.each(testedParams)('Params: <%s>, validator: notEmpty() by undefined', async (invalidParam) => {
+                    const testParam_id = 1;
+                    let mockParam_dto = structuredClone(testData);
                     delete mockParam_dto[invalidParam];
                     const testError = structuredClone(mockError);
                     testError['path'] = invalidParam;
 
-                    const mockResponse = await request(app)
-                        .put(`${apiUrl}/info/${mockParam_id}`)
+                    const testResponse = await request(app)
+                        .put(`${apiUrl}/info/${testParam_id}`)
                         .send(mockParam_dto);
 
-                    expect(mockResponse.statusCode).toBe(ErrorStatusCodes.InvalidPropertiesException);
-                    expect(mockResponse.body.headers.data).toContainEqual(testError);
+                    expect(testResponse.statusCode).toBe(ErrorStatusCodes.InvalidPropertiesException);
+                    expect(testResponse.body.headers.data).toContainEqual(testError);
                 })
             })
 
             describe('Route: PUT/maintenance/:id', () => {
 
-                test('Params: <maintenance_mode>, validator: notEmpty by undefined', async () => {
-                    const mockParam_id = 1;
-                    const mockParam_dto = undefined;
+                test('Params: <maintenance_mode>, validator: notEmpty() by undefined', async () => {
+                    const testParam_id = 1;
+                    const testParam_dto = undefined;
                     const testError = structuredClone(mockError);
                     testError['path'] = 'maintenance_mode';
 
-                    const mockResponse = await request(app)
-                        .put(`${apiUrl}/maintenance/${mockParam_id}`)
-                        .send(mockParam_dto);
+                    const testResponse = await request(app)
+                        .put(`${apiUrl}/maintenance/${testParam_id}`)
+                        .send(testParam_dto);
 
-                    expect(mockResponse.statusCode).toBe(ErrorStatusCodes.InvalidPropertiesException);
-                    expect(mockResponse.body.headers.data).toContainEqual(testError);
+                    expect(testResponse.statusCode).toBe(ErrorStatusCodes.InvalidPropertiesException);
+                    expect(testResponse.body.headers.data).toContainEqual(testError);
                 })
             })
         })

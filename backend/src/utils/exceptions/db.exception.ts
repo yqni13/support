@@ -35,3 +35,9 @@ export class DBEmptyException extends DBException {
         super(ErrorCodes.DBEmptyException, 'Database is empty', data, ErrorStatusCodes.DBEmptyException);
     }
 }
+
+export class DBQueryErrorException extends DBException {
+    constructor(message: string = 'support-database-error', data?: unknown) {
+        super(ErrorCodes.DBQueryErrorException, message, data);
+    }
+}

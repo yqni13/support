@@ -5,11 +5,22 @@ import { IRepoError } from "../repositories/interfaces/error.repository.interfac
 import usersService from "../services/users.service";
 
 class UsersController {
-    async getUser(req: Request, res: Response, next: NextFunction) {
+    async getUserById(req: Request, res: Response, next: NextFunction) {
         try {
             checkValidation(req);
             const id = req.params.id;
-            const response: UsersResponseDTO | IRepoError | null = await usersService.findById(id);
+            const response: UsersResponseDTO | IRepoError | null = await usersService.getUserById(id);
+            res.send(response);
+        } catch(err: any) {
+            next(err);
+        }
+    }
+
+    async getUserByEmail(req: Request, res: Response, next: NextFunction) {
+        try {
+            checkValidation(req);
+            const email = req.params.email;
+            const response: UsersResponseDTO | null = await usersService.getUserByEmail(email);
             res.send(response);
         } catch(err: any) {
             next(err);
@@ -18,41 +29,41 @@ class UsersController {
 
     async getAllUsers(req: Request, res: Response, next: NextFunction) {
         try {
-            const response: UsersResponseDTO[] | IRepoError | null = await usersService.findAll();
+            const response: UsersResponseDTO[] | IRepoError | null = await usersService.getAllUsers();
             res.send(response);
         } catch(err: any) {
             next(err);
         }
     }
 
-    async searchByFilter(req: Request, res: Response, next: NextFunction) {
+    async postUsersSearch(req: Request, res: Response, next: NextFunction) {
         try {
             checkValidation(req);
             const dto: UsersFilterDTO = req.body;
-            const response: UsersResponseDTO[] | IRepoError | null = await usersService.findByFilter(dto);
+            const response: UsersResponseDTO[] | IRepoError | null = await usersService.searchUsersByFilter(dto);
             res.send(response);
         } catch(err: any) {
             next(err);
         }
     }
 
-    async createUser(req: Request, res: Response, next: NextFunction) {
+    async postUser(req: Request, res: Response, next: NextFunction) {
         try {
             checkValidation(req);
             const dto: UsersCreateUpdateDTO = req.body;
-            const response: UsersResponseDTO | IRepoError = await usersService.create(dto);
+            const response: UsersResponseDTO = await usersService.createUser(dto);
             res.send(response);
         } catch(err: any) {
             next(err);
         }
     }
 
-    async updateUser(req: Request, res: Response, next: NextFunction) {
+    async patchUser(req: Request, res: Response, next: NextFunction) {
         try {
             checkValidation(req);
             const id: string = req.params.id;
             const dto: UsersCreateUpdateDTO = req.body;
-            const response: UsersResponseDTO | IRepoError | null = await usersService.update(id, dto);
+            const response: UsersResponseDTO | IRepoError | null = await usersService.updateUser(id, dto);
             res.send(response);
         } catch(err: any) {
             next(err);
