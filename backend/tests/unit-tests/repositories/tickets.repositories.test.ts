@@ -283,7 +283,7 @@ describe('Database tests table <tickets>, priority: udpate', () => {
         })
 
         test('Return null for non-existing entry by invalid id', async () => {
-            const mockParam_id = 'invalid_users_test_id';
+            const mockParam_id = 'invalid_tickets_test_id';
             Object.values(mockParam_dto).forEach((val) => {
                 mockValues.push(val);
             });
@@ -305,7 +305,7 @@ describe('Database tests table <tickets>, priority: udpate', () => {
     describe('Testing invalid fn calls', () => {
 
         test('Throw DBQueryErrorException by catch-block', async () => {
-            const mockParam_id = 'invalid_users_test_id';
+            const mockParam_id = 'invalid_tickets_test_id';
             const mockErrorMsg = "DB ERROR ON UPDATE QUERY, (Tickets TEST Repository, update)";
             const mockResult = null;
             jest.spyOn(Utils, "logRepoError").mockReturnValue();
@@ -359,7 +359,7 @@ describe('Database tests table <tickets>, priority: delete', () => {
     describe('Testing invalid fn calls', () => {
 
         test('Throw DBQueryErrorException by catch-block', async () => {
-            const mockParam_id = 'tickets_test_id';
+            const mockParam_id = 'error_tickets_test_id';
             const mockErrorMsg = "DB ERROR ON DELETE QUERY, (Tickets TEST Repository, delete)";
             const mockResult = null;
             jest.spyOn(Utils, "logRepoError").mockReturnValue();

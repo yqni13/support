@@ -7,13 +7,11 @@ import { TicketsFilterDTO, TicketsResponseExtendedDTO } from "../dtos/tickets.dt
 import { DBQueryErrorException } from "../utils/exceptions/db.exception";
 
 
-class TicketsRepository 
-// TODO(yqni13): enable after implementing SUPPORT-37
-// implements
-// IBaseRepository,
-// IFindRepository,
-// ICreateRepository
-// IDeleteRepository 
+class TicketsRepository implements 
+IBaseRepository<Tickets>,
+IFindRepository<Tickets>,
+ICreateRepository<Tickets>,
+IDeleteRepository 
 {
     private table: string;
 

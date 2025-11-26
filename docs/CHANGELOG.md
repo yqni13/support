@@ -4,9 +4,16 @@
 
 <br>
 
+### $\textsf{\color{skyblue}2025/11/26}$
+
+$\textsf{[v0.9.2\ =>\ {\textbf{\color{brown}v0.9.3}]}}$ app
+- $\textsf{\color{orange}Patch:}$ Refactored error handling and return values for entities 'clients', 'users' and 'meta'.
+
+<br>
+
 ### $\textsf{\color{skyblue}2025/11/25}$
 
-$\textsf{[v0.9.1\ =>\ {\textbf{\color{brown}v0.9.2}]}}$ app
+$\textsf{[v0.9.1\ =>\ v0.9.2]}$ app
 - $\textsf{\color{orange}Patch:}$ Refactored process of registering new user by assigning default values in business layer (model).
 
 <br>

@@ -1,4 +1,3 @@
-import { IRepoError } from "./interfaces/error.repository.interface";
 import { DBConnection } from "../configs/db";
 import { QueryResult } from "pg";
 import { IBaseRepository, ICreateRepository, IFindRepository } from "./interfaces/base.repository.interface";
@@ -17,7 +16,7 @@ ICreateRepository<Users> {
         this.table = 'users';
     }
 
-    async findById(id: string): Promise<Users | IRepoError | null> {
+    async findById(id: string): Promise<Users | null> {
         const filterColumn = 'user_id';
         const sql = `SELECT * FROM ${this.table} WHERE ${filterColumn} = $1;`;
         const value = [id];
@@ -32,10 +31,7 @@ ICreateRepository<Users> {
             const logMsg = "DB ERROR ON SELECT (Users Repository, findById): ";
             logRepoError(logMsg, err);
             await db.close(client);
-            return {
-                method: 'support_users_findById',
-                error: err
-            }
+            throw new DBQueryErrorException('support-dberror-users-findById', err);
         }
     }
 
@@ -58,7 +54,7 @@ ICreateRepository<Users> {
         }
     }
 
-    async findAll(): Promise<Users[] | IRepoError | null> {
+    async findAll(): Promise<Users[] | null> {
         const orderPrio = 'user_id';
         const sql: string = `SELECT * FROM ${this.table} ORDER BY ${orderPrio} ASC FETCH FIRST 100 ROWS ONLY;`;
         const db = DBConnection.getInstance();
@@ -67,19 +63,16 @@ ICreateRepository<Users> {
             client = await db.connect();
             const result: QueryResult<Users> = await client.query(sql);
             await db.close(client);
-            return result.rows ?? [];
+            return result.rows ?? null;
         } catch(err: any) {
             const logMsg = "DB ERROR ON SELECT (Users Repository, findAll): ";
             logRepoError(logMsg, err);
             await db.close(client);
-            return {
-                method: 'support_users_findAll',
-                error: err
-            }
+            throw new DBQueryErrorException('support-dberror-users-findAll', err);
         }
     }
 
-    async findByFilter(dto: UsersFilterDTO): Promise<Users[] | IRepoError | []> {
+    async findByFilter(dto: UsersFilterDTO): Promise<Users[] | null> {
         const queryData = this._mapFilteredUsersQueryValues(dto);
         const db = DBConnection.getInstance();
         let client: any;
@@ -87,15 +80,12 @@ ICreateRepository<Users> {
             client = await db.connect();
             const result: QueryResult<Users> = await client.query(queryData.sql, queryData.values);
             await db.close(client);
-            return result.rows ?? [];
+            return result.rows ?? null;
         } catch(err: any) {
             const logMsg = "DB ERROR ON SELECT (Users Repository, findByFilter): ";
             logRepoError(logMsg, err);
             await db.close(client);
-            return {
-                method: 'support_users_findByFilter',
-                error: err
-            }
+            throw new DBQueryErrorException('support-dberror-users-findByFilter', err);
         }
     }
 
@@ -121,7 +111,7 @@ ICreateRepository<Users> {
         }
     }
 
-    async update(id: string, dto: Partial<Users>): Promise<Users | IRepoError | null> {
+    async update(id: string, dto: Partial<Users>): Promise<Users | null> {
         const filterColumn = 'user_id';
         const sql = `UPDATE ${this.table}
         SET email = $1, status = $2, flag = $3, last_modified = $4
@@ -140,10 +130,7 @@ ICreateRepository<Users> {
             const logMsg = "DB ERROR ON UPDATE (Users Repository, update): ";
             logRepoError(logMsg, err);
             await db.close(client);
-            return {
-                method: 'support_users_update',
-                error: err
-            }
+            throw new DBQueryErrorException('support-dberror-users-update', err);
         }
     }
 

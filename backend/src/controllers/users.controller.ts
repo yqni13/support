@@ -1,7 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { UsersUpdateDTO, UsersFilterDTO, UsersResponseDTO, UsersCreateDTO } from "../dtos/users.dto";
 import { checkValidation } from "../middleware/validation.middleware";
-import { IRepoError } from "../repositories/interfaces/error.repository.interface";
 import usersService from "../services/users.service";
 
 class UsersController {
@@ -9,7 +8,7 @@ class UsersController {
         try {
             checkValidation(req);
             const id = req.params.id;
-            const response: UsersResponseDTO | IRepoError | null = await usersService.getUserById(id);
+            const response: UsersResponseDTO | null = await usersService.getUserById(id);
             res.send(response);
         } catch(err: any) {
             next(err);
@@ -29,7 +28,7 @@ class UsersController {
 
     async getAllUsers(req: Request, res: Response, next: NextFunction) {
         try {
-            const response: UsersResponseDTO[] | IRepoError | null = await usersService.getAllUsers();
+            const response: UsersResponseDTO[] | null = await usersService.getAllUsers();
             res.send(response);
         } catch(err: any) {
             next(err);
@@ -40,7 +39,7 @@ class UsersController {
         try {
             checkValidation(req);
             const dto: UsersFilterDTO = req.body;
-            const response: UsersResponseDTO[] | IRepoError | null = await usersService.searchUsersByFilter(dto);
+            const response: UsersResponseDTO[] | null = await usersService.searchUsersByFilter(dto);
             res.send(response);
         } catch(err: any) {
             next(err);
@@ -63,7 +62,7 @@ class UsersController {
             checkValidation(req);
             const id: string = req.params.id;
             const dto: UsersUpdateDTO = req.body;
-            const response: UsersResponseDTO | IRepoError | null = await usersService.updateUser(id, dto);
+            const response: UsersResponseDTO | null = await usersService.updateUser(id, dto);
             res.send(response);
         } catch(err: any) {
             next(err);

@@ -56,17 +56,17 @@ Basic description: `<base>.<subsuffix?>.<suffix>.<ending>` [specific always sing
 
 ## Testing
 
-| Description                   | Prefix              | Example                       |
-|-------------------------------|---------------------|-------------------------------|
-| Basic mocks fn/results        | `mock`              | mockResult, mockAPI           |
-| Mock specific params          | `mockParam_`        | mockParam_language            |
-| Testcontainer data testing    | `test`              | testParam_, testResult        |
-| Basic data to test from json  | `MockData_`         | MockData_places               |
-| Integration-Tests             | --                  | workflow/express-validation   |
-| Unit-Tests                    | --                  | models, custom validation     |
-| Description: parameters       | `Params: \<name\>`  | <origin>, <subject>           |
-| Description: triggered result | `by [name]`         | notEmpty by undefined         | 
-
+| Description                   | Prefix                          | Example                       |
+|-------------------------------|---------------------------------|-------------------------------|
+| Basic mocks fn/results        | `mock`                          | mockResult, mockAPI           |
+| Mock specific params          | `mockParam_`                    | mockParam_language            |
+| Mock specific values          | `[cause]_[entity]_test_[value]` | invalid_clients_test_id       |
+| Testcontainer data testing    | `test`                          | testParam_, testResult        |
+| Basic data to test from json  | `MockData_`                     | MockData_places               |
+| Integration-Tests             | --                              | workflow/express-validation   |
+| Unit-Tests                    | --                              | models, custom validation     |
+| Description: parameters       | `Params: \<name\>`              | <origin>, <subject>           |
+| Description: triggered result | `by [name]`                     | notEmpty by undefined         | 
 <br>
 
 ## Git administration

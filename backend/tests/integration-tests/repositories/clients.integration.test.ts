@@ -24,6 +24,7 @@ jest.mock('../../../src/middleware/maintenance.middleware', () => ({
 }));
 
 import app from '../../../src/app';
+import { secrets } from "../../../src/utils/secrets.utils";
 
 jest.setTimeout(60000);
 const testTimestamp = '2025-01-01T14:00:02.000Z';
@@ -32,7 +33,7 @@ describe('Integration test (repository specific), priority: Clients', () => {
 
     let dbTestSetup: DBTestSetup;
     let apiUrl: string;
-    const testVar_apiKey = clientsModel._generateApiKeyObj();
+    const testVar_apiKey = { keyRaw: secrets.TEST_APIKEY_RAW, keyHash: secrets.TEST_APIKEY_HASH };
     beforeAll(async () => {
         dbTestSetup = new DBTestSetup();
         await dbTestSetup.init();

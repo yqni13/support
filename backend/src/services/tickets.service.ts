@@ -18,33 +18,29 @@ class TicketsService {
 
     async getTicketById(id: string): Promise<TicketsResponseExtendedDTO | null> {
         let result = await ticketsRepository.findById(id);
-        result = !result ? null : Utils.mapObjTimestamps(result, this.timeMapTargets);
-        return result;
+        return !result ? null : Utils.mapObjTimestamps<TicketsResponseExtendedDTO>(result, this.timeMapTargets);
     }
 
     async getAllTickets(): Promise<TicketsResponseDTO[] | null> {
         let result = await ticketsRepository.findAll();
-        result = !result ? null : Utils.mapArrayTimestamps(result, this.timeMapTargets);
-        return result;
+        return !result ? null : Utils.mapArrayTimestamps<TicketsResponseDTO>(result, this.timeMapTargets);
     }
 
     async searchTicketsByFilter(dto: TicketsFilterDTO): Promise<TicketsResponseDTO[] | null> {
         let result = await ticketsRepository.findByFilter(dto);
-        result = !result ? null : Utils.mapArrayTimestamps(result, this.timeMapTargets);
-        return result;
+        return !result ? null : Utils.mapArrayTimestamps<TicketsResponseDTO>(result, this.timeMapTargets);
     }
 
     async createTicket(dto: TicketsCreateDTO): Promise<TicketsResponseDTO> {
         const ticket = ticketsModel.generateTicket(dto);
         const result = await ticketsRepository.create(ticket);
-        return Utils.mapObjTimestamps(result, this.timeMapTargets); 
+        return Utils.mapObjTimestamps<TicketsResponseDTO>(result, this.timeMapTargets); 
     }
 
     async updateTicket(id: string, dto: TicketsUpdateDTO): Promise<TicketsResponseDTO | null> {
         dto = ticketsModel.mapTicketUpdateDto(dto);
         let result = await ticketsRepository.update(id, dto);
-        result = !result ? null : Utils.mapObjTimestamps(result, this.timeMapTargets);
-        return result;
+        return !result ? null : Utils.mapObjTimestamps<TicketsResponseDTO>(result, this.timeMapTargets);
     }
 
     async deleteTicket(id: string): Promise<boolean> {

@@ -4,7 +4,6 @@ import * as MockUtils from "../../common.test-utils";
 import { Users } from "../../../src/repositories/interfaces/users.entity.interface";
 import { UserStatus } from "../../../src/utils/enums/user-status.enum";
 import usersRepository from "../../../src/repositories/users.repository";
-import { IRepoError } from "../../../src/repositories/interfaces/error.repository.interface";
 import { UsersFilterDTO, UsersUpdateDTO } from "../../../src/dtos/users.dto";
 import { DBQueryErrorException } from "../../../src/utils/exceptions/db.exception";
 
@@ -16,14 +15,14 @@ jest.mock("../../../src/configs/db", () => {
     }
 });
 
-const mockVar_timestamp = '2025-01-03T14:00:03.000Z';
+const mockTimestamp = '2025-01-03T14:00:03.000Z';
 const mockData: Users = {
     user_id: 'valid_users_test_id',
     email: 'user@test.com',
     status: UserStatus.ACTIVE,
     flag: null,
-    last_modified: mockVar_timestamp,
-    created_on: mockVar_timestamp
+    last_modified: mockTimestamp,
+    created_on: mockTimestamp
 };
 const expectExceptionResult = DBQueryErrorException;
 const mockBoolean = false;
@@ -39,7 +38,7 @@ describe('Database tests table <users>, priority: findById', () => {
 
         test('Return data for existing entry, params: valid <id>', async () => {
             const mockResult: Users = structuredClone(mockData);
-            const mockParam_id = mockResult.user_id;
+            const mockParam_id = 'valid_users_test_id';
             const mockClient = MockUtils.mapMockDbClient(mockResult);
             const testFn = await usersRepository.findById(mockParam_id);
 
@@ -52,7 +51,7 @@ describe('Database tests table <users>, priority: findById', () => {
         })
 
         test('Return null for non-existing entry, params: non-existing <id>', async () => {
-            const mockParam_id = 'invalid_users_test_id';
+            const mockParam_id = 'non-existing_users_test_id';
             const mockResult = null;
             const mockClient = MockUtils.mapMockDbClient(mockResult);
             const testFn = await usersRepository.findById(mockParam_id);
@@ -67,20 +66,16 @@ describe('Database tests table <users>, priority: findById', () => {
     })
 
     describe('Testing invalid fn calls', () => {
-    
-        test('Return IRepoError by catch-block', async () => {
-            const mockParam_id = structuredClone(mockData.user_id);
+
+        test('Throw DBQueryErrorException by catch-block', async () => {
+            const mockParam_id = 'error_users_test_id';
             const mockErrorMsg = "DB ERROR ON SELECT QUERY, (Users TEST Repository, findById)";
             const mockResult = null;
             jest.spyOn(Utils, "logRepoError").mockReturnValue();
             const _ = MockUtils.mapMockDbClient(mockResult, mockBoolean, mockErrorMsg);
-            const testFn = await usersRepository.findById(mockParam_id);
 
-            expect(testFn).toEqual<IRepoError>({
-                method: 'support_users_findById',
-                error: expect.any(Error)
-            });
-            expect((testFn as IRepoError).error.message).toBe(mockErrorMsg);
+            await expect(() => usersRepository.findById(mockParam_id))
+                .rejects.toThrow(expectExceptionResult);
         })
     })
 })
@@ -108,8 +103,8 @@ describe('Database tests table <users>, priority: findByEmail', () => {
             );
         })
 
-        test('Return null for non-existing entry, params: non-existing <id>', async () => {
-            const mockParam_email = 'invalid-user@test.com';
+        test('Return null for non-existing entry, params: non-existing <email>', async () => {
+            const mockParam_email = 'non-existing-user@test.com';
             const mockResult = null;
             const mockClient = MockUtils.mapMockDbClient(mockResult);
             const testFn = await usersRepository.findByEmail(mockParam_email);
@@ -146,7 +141,7 @@ describe('Database tests table <users>, priority: findAll', () => {
             const mockData_entry0 = structuredClone(mockData);
             const mockData_entry1 = structuredClone(mockData_entry0);
             mockData_entry1['user_id'] = 'another_valid_users_test_id';
-            mockData_entry1['email'] = 'user2@test.com';
+            mockData_entry1['email'] = 'user1@test.com';
             const mockResult: Users[] = [mockData_entry0, mockData_entry1];
 
             const mockErrorMsg = undefined;
@@ -163,18 +158,14 @@ describe('Database tests table <users>, priority: findAll', () => {
 
     describe('Testing invalid fn calls', () => {
 
-        test('Return IRepoError by catch-block', async () => {
+        test('Throw DBQueryErrorException by catch-block', async () => {
             const mockErrorMsg = "DB ERROR ON SELECT QUERY, (Users TEST Repository, findAll)";
             const mockResult = null;
             jest.spyOn(Utils, "logRepoError").mockReturnValue();
             const _ = MockUtils.mapMockDbClient(mockResult, mockBoolean, mockErrorMsg);
-            const testFn = await usersRepository.findAll();
 
-            expect(testFn).toEqual<IRepoError>({
-                method: 'support_users_findAll',
-                error: expect.any(Error)
-            });
-            expect((testFn as IRepoError).error.message).toBe(mockErrorMsg);
+            await expect(() => usersRepository.findAll())
+                .rejects.toThrow(expectExceptionResult);
         })
     })
 })
@@ -189,9 +180,9 @@ describe('Database tests table <users>, priority: findByFilter', () => {
         });
 
         test('Return data for existing entry, params: valid <email>', async () => {
-            const mockResult: Users[] = [structuredClone(mockData)];
             const mockParam_dto = { email: structuredClone(mockData.email) };
             const mockValues = [mockParam_dto.email];
+            const mockResult: Users[] = [structuredClone(mockData)];
 
             const mockErrorMsg = undefined;
             const mockExpectArray = true;
@@ -207,9 +198,9 @@ describe('Database tests table <users>, priority: findByFilter', () => {
         })
 
         test('Return null for non-existing entry, params: non-existing <email>', async () => {
-            const mockResult = [null];
-            const mockParam_dto = { email: ['no-found-user1@test.com', 'no-found-user2@test.com'] };
+            const mockParam_dto = { email: ['non-existing-user0@test.com', 'non-existing-user1@test.com'] };
             const mockValues = mockParam_dto.email;
+            const mockResult = null;
 
             const mockErrorMsg = undefined;
             const mockExpectArray = true;
@@ -226,38 +217,39 @@ describe('Database tests table <users>, priority: findByFilter', () => {
     })
 
     describe('Testing invalid fn calls', () => {
-    
-        test('Return IRepoError by catch-block', async () => {
-            const mockParam_dto = { email: 'invalid-user@test.com', status: UserStatus.ACTIVE };
+
+        test('Throw DBQueryErrorException by catch-block', async () => {
+            const mockParam_dto = { email: 'error-user@test.com', status: UserStatus.ACTIVE };
             const mockErrorMsg = "DB ERROR ON SELECT QUERY, (Users TEST Repository, findByFilter)";
-            const mockResult = [null];
+            const mockResult = null;
             jest.spyOn(Utils, "logRepoError").mockReturnValue();
             const _ = MockUtils.mapMockDbClient(mockResult, mockBoolean, mockErrorMsg);
-            const testFn = await usersRepository.findByFilter(mockParam_dto);
 
-            expect(testFn).toEqual<IRepoError>({
-                method: 'support_users_findByFilter',
-                error: expect.any(Error)
-            });
-            expect((testFn as IRepoError).error.message).toBe(mockErrorMsg);
+            await expect(() => usersRepository.findByFilter(mockParam_dto))
+                .rejects.toThrow(expectExceptionResult);
         })
     })
 })
 
 describe('Database tests table <users>, priority: create', () => {
 
+    let sql: string;
+    let mockParam_entity: Users;
+    beforeEach(() => {
+        sql = 'INSERT';
+        mockParam_entity = {
+            user_id: 'valid_users_test_id',
+            email: 'new-user@test.com',
+            status: UserStatus.ACTIVE,
+            flag: null,
+            last_modified: mockTimestamp,
+            created_on: mockTimestamp
+        }
+    })
+
     describe('Testing valid fn calls', () => {
 
         test('Return data for created entry, params: <name> = "testclient"', async () => {
-            const sql = `INSERT`;
-            const mockParam_entity: Users = {
-                user_id: '92f22e89-237b-4775-b170-1df288acad54',
-                email: 'new-user@test.com',
-                status: UserStatus.ACTIVE,
-                flag: null,
-                last_modified: mockVar_timestamp,
-                created_on: mockVar_timestamp
-            }
             let mockValues: any[] = [];
             Object.values(mockParam_entity).forEach((value) => {
                 mockValues.push(value);
@@ -279,14 +271,6 @@ describe('Database tests table <users>, priority: create', () => {
     describe('Testing invalid fn calls', () => {
 
         test('Throw DBQueryErrorException by catch-block', async () => {
-            const mockParam_entity: Users = {
-                user_id: '92f22e89-237b-4775-b170-1df288acad54',
-                email: 'new-user@test.com',
-                status: UserStatus.ACTIVE,
-                flag: null,
-                last_modified: mockVar_timestamp,
-                created_on: mockVar_timestamp
-            }
             const mockErrorMsg = "DB ERROR ON INSERT QUERY, (Users TEST Repository, create)";
             const mockResult = null;
             jest.spyOn(Utils, "logRepoError").mockReturnValue();
@@ -300,24 +284,24 @@ describe('Database tests table <users>, priority: create', () => {
 
 describe('Database tests table <users>, priority: udpate', () => {
 
+    let sql: string;
+    let mockParam_dto: UsersUpdateDTO;
+    let mockValues: any[];
+    beforeEach(() => {
+        sql = `UPDATE`;
+        mockParam_dto = {
+            email: 'user@test.com',
+            status: UserStatus.BLACKLISTED,
+            flag: null,
+            last_modified: mockTimestamp
+        };
+        mockValues = [];
+    });
+
     describe('Testing valid fn calls', () => {
 
-        let sql: string;
-        let mockParam_dto: UsersUpdateDTO;
-        let mockValues: any[];
-        beforeEach(() => {
-            sql = `UPDATE users`; // Keep it simple if it isn't essential.
-            mockParam_dto = {
-                email: 'user@test.com',
-                status: UserStatus.BLACKLISTED,
-                flag: null,
-                last_modified: structuredClone(mockData.last_modified)
-            };
-            mockValues = [];
-        });
-
         test('Return data of changed entry by valid id', async () => {
-            const mockParam_id = structuredClone(mockData.user_id);
+            const mockParam_id = 'valid_users_test_id';
             Object.values(mockParam_dto).forEach((val) => {
                 mockValues.push(val);
             });
@@ -336,8 +320,8 @@ describe('Database tests table <users>, priority: udpate', () => {
             );
         })
 
-        test('Return null for non-existing entry by invalid id', async () => {
-            const mockParam_id = 'invalid_users_test_id';
+        test('Return null for no entries by non-existing id', async () => {
+            const mockParam_id = 'non-existing_users_test_id';
             Object.values(mockParam_dto).forEach((val) => {
                 mockValues.push(val);
             });
@@ -359,29 +343,15 @@ describe('Database tests table <users>, priority: udpate', () => {
 
     describe('Testing invalid fn calls', () => {
 
-        let mockParam_dto: UsersUpdateDTO;
-        beforeEach(() => {
-            mockParam_dto = {
-                email: 'user@test.com',
-                status: UserStatus.BLACKLISTED,
-                flag: null,
-                last_modified: structuredClone(mockData.last_modified)
-            };
-        });
-
-        test('Return IRepoError by catch-block', async () => {
-            const mockParam_id = structuredClone(mockData.user_id);
-            const mockErrorMsg = "DB ERROR ON UPDATE QUERY, (Users TEST Repository, update)";
+        test('Throw DBQueryErrorException by catch-block', async () => {
+            const mockParam_id = 'error_users_test_id';
+            const mockErrorMsg = "DB ERROR ON SELECT QUERY, (Users TEST Repository, update)";
             const mockResult = null;
             jest.spyOn(Utils, "logRepoError").mockReturnValue();
             const _ = MockUtils.mapMockDbClient(mockResult, mockBoolean, mockErrorMsg);
-            const testFn = await usersRepository.update(mockParam_id, mockParam_dto);
 
-            expect(testFn).toEqual<IRepoError>({
-                method: 'support_users_update',
-                error: expect.any(Error)
-            });
-            expect((testFn as IRepoError).error.message).toBe(mockErrorMsg);
+            await expect(() => usersRepository.update(mockParam_id, mockParam_dto))
+                .rejects.toThrow(expectExceptionResult);
         })
     })
 })
