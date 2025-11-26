@@ -3,7 +3,6 @@ import clientsRepository from "../repositories/clients.repository";
 import { Users } from "../repositories/interfaces/users.entity.interface";
 import usersRepository from "../repositories/users.repository";
 import { MalformedApiKeyException } from "./exceptions/auth.exception";
-import * as Utils from "./common.utils";
 import { CommonExceptionMessage } from "./enums/common-exception-messages.enum";
 
 export function validateVersionStructure(version: string, numOfDelimiter: number): boolean {

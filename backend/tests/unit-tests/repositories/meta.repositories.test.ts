@@ -97,8 +97,8 @@ describe('Database tests table <meta>, priority: findByName', () => {
             sql = `SELECT`; // Keep it simple to avoid problems with white-spaces (readability).
         });
 
-        test('Return data for existing entry, params: <key> = "support"', async () => {
-            const mockParam_name = 'support';
+        test('Return data for existing entry, params: <key> = "valid_meta_test_name"', async () => {
+            const mockParam_name = 'valid_meta_test_name';
             const mockResult: Meta = structuredClone(mockData);
             const mockClient = MockUtils.mapMockDbClient(mockResult);
             const testFn = await metaRepository.findByName(mockParam_name);
@@ -111,8 +111,8 @@ describe('Database tests table <meta>, priority: findByName', () => {
             );
         });
 
-        test('Return null for non-existing entry, params: <key> = "testapp"', async () => {
-            const mockParam_name = 'testapp';
+        test('Return null for non-existing entry, params: <key> = "non-existing_meta_test_name"', async () => {
+            const mockParam_name = 'non-existing_meta_test_name';
             const mockResult = null;
             const mockClient = MockUtils.mapMockDbClient(mockResult);
             const testFn = await metaRepository.findByName(mockParam_name);
@@ -129,7 +129,7 @@ describe('Database tests table <meta>, priority: findByName', () => {
     describe('Testing invalid fn calls', () => {
 
         test('Throw DBQueryErrorException by catch-block', async () => {
-            const mockParam_name = 'error_test_name';
+            const mockParam_name = 'error_meta_test_name';
             const mockErrorMsg = "DB ERROR ON SELECT QUERY, (Meta TEST Repository, findByName)";
             const mockResult = null;
             jest.spyOn(Utils, "logRepoError").mockReturnValue();
@@ -149,7 +149,7 @@ describe('Database tests table <meta>, priority: findAll', () => {
             const mockData_entry0 = structuredClone(mockData);
             const mockData_entry1 = structuredClone(mockData_entry0);
             mockData_entry1['id'] = 2;
-            mockData_entry1['app'] = 'testapp';
+            mockData_entry1['app'] = 'valid_meta_test_name';
             const mockResult: Meta[] = [mockData_entry0, mockData_entry1];
 
             const mockErrorMsg = undefined;
@@ -187,9 +187,9 @@ describe('Database tests table <meta>, priority: findMaintenance', () => {
             sql = `SELECT id, app, build_on, maintenance_mode, last_modified, created_on FROM meta WHERE app = $1;`;
         });
 
-        test('Return data for existing entry, params: <name> = "support"', async () => {
+        test('Return data for existing entry, params: <name> = "valid_meta_test_name"', async () => {
             const mockParam_id = 1;
-            const mockParam_name = 'support';
+            const mockParam_name = 'valid_meta_test_name';
             const mockResult: Maintenance = {
                 id: mockParam_id,
                 app: mockParam_name,
@@ -206,8 +206,8 @@ describe('Database tests table <meta>, priority: findMaintenance', () => {
             expect(mockClient.query).toHaveBeenCalledWith(sql, [mockParam_name]);
         });
 
-        test('Return null for non-existing entry, params: <name> = "testapp"', async () => {
-            const mockParam_name = 'testapp';
+        test('Return null for non-existing entry, params: <name> = "non-existing_meta_test_name"', async () => {
+            const mockParam_name = 'non-existing_meta_test_name';
             const mockResult = null;
             const mockClient = MockUtils.mapMockDbClient(mockResult);
             const testFn = await metaRepository.findMaintenance(mockParam_name);
@@ -221,7 +221,7 @@ describe('Database tests table <meta>, priority: findMaintenance', () => {
     describe('Testing invalid fn calls', () => {
 
         test('Throw DBQueryErrorException by catch-block', async () => {
-            const mockParam_name = 'error_test_name';
+            const mockParam_name = 'error_meta_test_name';
             const mockErrorMsg = "DB ERROR ON SELECT QUERY, (Meta TEST Repository, findMaintenance)";
             const mockResult = null;
             jest.spyOn(Utils, "logRepoError").mockReturnValue();
@@ -324,7 +324,7 @@ describe('Database tests table <meta>, priority: updateMaintenance', () => {
     describe('Testing valid fn calls', () => {
 
         test('Return data of changed entry by valid name', async () => {
-            const mockParam_name = 'support';
+            const mockParam_name = 'valid_meta_test_name';
             mockValues = [mockParam_dto.maintenance_mode, mockParam_dto.last_modified, mockParam_name];
             const mockResult: Maintenance = {
                 id: mockData.id,
@@ -350,7 +350,7 @@ describe('Database tests table <meta>, priority: updateMaintenance', () => {
         })
 
         test('Return null for non-existing entry by invalid name', async () => {
-            const mockParam_name = 'invalid_test_name';
+            const mockParam_name = 'invalid_meta_test_name';
             mockValues = [mockParam_dto.maintenance_mode, mockParam_dto.last_modified, mockParam_name];
             const mockResult = null;
 
@@ -370,7 +370,7 @@ describe('Database tests table <meta>, priority: updateMaintenance', () => {
     describe('Testing invalid fn calls', () => {
 
         test('Throw DBQueryErrorException by catch-block', async () => {
-            const mockParam_name = 'error_test_name';
+            const mockParam_name = 'error_meta_test_name';
             const mockErrorMsg = "DB ERROR ON UPDATE QUERY, (Meta TEST Repository, updateMaintenance)";
             const mockResult = null;
             jest.spyOn(Utils, "logRepoError").mockReturnValue();

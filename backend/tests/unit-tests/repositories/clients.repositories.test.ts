@@ -22,7 +22,7 @@ const mockVar_keyHash = secrets.TEST_APIKEY_HASH;
 const mockTimestamp = '2025-01-01T14:00:02.000Z';
 const mockData: Clients = {
     client_id: mockVar_id,
-    name: 'testclient',
+    name: 'valid_clients_test_name',
     api_key_hash: mockVar_keyHash,
     status: ApiKeyStatus.ACTIVE,
     last_use: mockTimestamp,
@@ -56,7 +56,7 @@ describe('Database tests table <clients>, priority: findByActiveKey', () => {
         })
 
         test('Return null for non-existing entry, params: <apikey>', async () => {
-            const mockParam_hash = 'test_hash_value';
+            const mockParam_hash = 'non-existing_clients_test_apikey_hash';
             const mockResult = null;
             const mockClient = MockUtils.mapMockDbClient(mockResult);
             const testFn = await clientsRepository.findByActiveKey(mockParam_hash);
@@ -95,9 +95,9 @@ describe('Database tests table <clients>, priority: findStatusByName', () => {
         });
 
         test('Return data for existing entry, params: <name>', async () => {
-            const mockParam_name = 'existing_clients_test_client';
+            const mockParam_name = 'existing_clients_test_name';
             const mockResult: ClientsStatusResponseDTO = {
-                client_id: 'test_id',
+                client_id: 'valid_clients_test_id',
                 name: mockParam_name,
                 status: ApiKeyStatus.ACTIVE,
                 last_use: mockTimestamp,
@@ -117,7 +117,7 @@ describe('Database tests table <clients>, priority: findStatusByName', () => {
         })
 
         test('Return empty obj for non-existing entry, params: <name>', async () => {
-            const mockParam_name = 'non-existing_clients_test_client';
+            const mockParam_name = 'non-existing_clients_test_name';
             const mockResult = {};
             const mockClient = MockUtils.mapMockDbClient(mockResult);
             const testFn = await clientsRepository.findStatusByName(mockParam_name);
@@ -134,7 +134,7 @@ describe('Database tests table <clients>, priority: findStatusByName', () => {
     describe('Testing invalid fn calls', () => {
 
         test('Throw DBQueryErrorException by catch-block', async () => {
-            const mockParam_name = 'error_clients_test_client';
+            const mockParam_name = 'error_clients_test_name';
             const mockErrorMsg = "DB ERROR ON SELECT QUERY, (Clients TEST Repository, findStatusByName)";
             const mockResult = null;
             jest.spyOn(Utils, "logRepoError").mockReturnValue();
@@ -156,7 +156,7 @@ describe('Database tests table <clients>, priority: create', () => {
         mockVar_apiKey = clientsModel._generateApiKeyObj();
         mockParam_entity = {
             client_id: mockVar_id,
-            name: 'TESTCLIENT',
+            name: 'valid_clients_test_name',
             api_key_hash: mockVar_apiKey.keyHash,
             status: ApiKeyStatus.ACTIVE,
             last_use: mockTimestamp,
@@ -167,7 +167,7 @@ describe('Database tests table <clients>, priority: create', () => {
 
     describe('Testing valid fn calls', () => {
 
-        test('Return data for created entry, params: <name> = "testclient"', async () => {
+        test('Return data for created entry, params: <name> = "valid_clients_test_name"', async () => {
             const mockValues: string[] = [];
             Object.values(mockParam_entity).forEach((value) => {
                 mockValues.push(value);
@@ -207,7 +207,7 @@ describe('Database tests table <clients>, priority: updateStatus', () => {
     let mockParam_dto: ClientsStatusUpdateDTO;
     beforeEach(() => {
         sql = `UPDATE`;
-        mockParam_name = 'test_client';
+        mockParam_name = 'valid_clients_test_name';
         mockParam_dto = { status: ApiKeyStatus.DISABLED, last_modified: mockTimestamp };
     });
 
@@ -237,7 +237,7 @@ describe('Database tests table <clients>, priority: updateStatus', () => {
         })
 
         test('Return null for non-existing entry by invalid id', async () => {
-            const mockParam_id = 'invalid_clients_test_id';
+            const mockParam_id = 'non-existing_clients_test_id';
             const mockValues = [mockParam_dto.status, mockTimestamp, mockParam_id];
 
             const mockResult = null;
@@ -275,7 +275,7 @@ describe('Database tests table <clients>, priority: updateLastUse', () => {
     let mockParam_dto: ClientsLastUseUpdateDTO;
     beforeEach(() => {
         sql = `UPDATE`;
-        mockParam_name = 'test_client';
+        mockParam_name = 'valid_clients_test_name';
         mockParam_dto = { last_use: mockTimestamp };
     });
 
@@ -306,7 +306,7 @@ describe('Database tests table <clients>, priority: updateLastUse', () => {
         })
 
         test('Return null for non-existing entry by invalid id', async () => {
-            const mockParam_id = 'invalid_clients_test_id';
+            const mockParam_id = 'non-existing_clients_test_id';
             const mockValues = [mockTimestamp, mockParam_id];
 
             const mockResult = null;

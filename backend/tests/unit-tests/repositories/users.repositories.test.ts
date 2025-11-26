@@ -51,7 +51,7 @@ describe('Database tests table <users>, priority: findById', () => {
         })
 
         test('Return null for non-existing entry, params: non-existing <id>', async () => {
-            const mockParam_id = 'invalid_users_test_id';
+            const mockParam_id = 'non-existing_users_test_id';
             const mockResult = null;
             const mockClient = MockUtils.mapMockDbClient(mockResult);
             const testFn = await usersRepository.findById(mockParam_id);
@@ -103,8 +103,8 @@ describe('Database tests table <users>, priority: findByEmail', () => {
             );
         })
 
-        test('Return null for non-existing entry, params: non-existing <id>', async () => {
-            const mockParam_email = 'invalid-user@test.com';
+        test('Return null for non-existing entry, params: non-existing <email>', async () => {
+            const mockParam_email = 'non-existing-user@test.com';
             const mockResult = null;
             const mockClient = MockUtils.mapMockDbClient(mockResult);
             const testFn = await usersRepository.findByEmail(mockParam_email);
@@ -141,7 +141,7 @@ describe('Database tests table <users>, priority: findAll', () => {
             const mockData_entry0 = structuredClone(mockData);
             const mockData_entry1 = structuredClone(mockData_entry0);
             mockData_entry1['user_id'] = 'another_valid_users_test_id';
-            mockData_entry1['email'] = 'user2@test.com';
+            mockData_entry1['email'] = 'user1@test.com';
             const mockResult: Users[] = [mockData_entry0, mockData_entry1];
 
             const mockErrorMsg = undefined;
@@ -198,7 +198,7 @@ describe('Database tests table <users>, priority: findByFilter', () => {
         })
 
         test('Return null for non-existing entry, params: non-existing <email>', async () => {
-            const mockParam_dto = { email: ['no-found-user1@test.com', 'no-found-user2@test.com'] };
+            const mockParam_dto = { email: ['non-existing-user0@test.com', 'non-existing-user1@test.com'] };
             const mockValues = mockParam_dto.email;
             const mockResult = null;
 
@@ -320,8 +320,8 @@ describe('Database tests table <users>, priority: udpate', () => {
             );
         })
 
-        test('Return null for non-existing entry by invalid id', async () => {
-            const mockParam_id = 'invalid_users_test_id';
+        test('Return null for no entries by non-existing id', async () => {
+            const mockParam_id = 'non-existing_users_test_id';
             Object.values(mockParam_dto).forEach((val) => {
                 mockValues.push(val);
             });
