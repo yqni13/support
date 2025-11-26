@@ -3,10 +3,10 @@ import metaRepository from "../../../src/repositories/meta.repository";
 import { Maintenance, Meta } from "../../../src/repositories/interfaces/meta.entity.interface";
 import * as Utils from "../../../src/utils/common.utils";
 import * as MockUtils from "../../common.test-utils";
-import { IRepoError } from "../../../src/repositories/interfaces/error.repository.interface";
 import { MaintenanceMode } from "../../../src/utils/enums/maintenance-mode.enum";
 import { MaintenanceUpdateDTO } from "../../../src/dtos/meta.dto";
 import { EnvMode } from "../../../src/utils/enums/env-mode.enum";
+import { DBQueryErrorException } from "../../../src/utils/exceptions/db.exception";
 
 jest.mock("../../../src/configs/db", () => {
     return {
@@ -32,6 +32,7 @@ const mockData: Meta = {
     last_modified: mockTimestamp,
     created_on: mockTimestamp
 };
+const expectExceptionResult = DBQueryErrorException;
 const mockBoolean = false;
 
 describe('Database tests table <meta>, priority: findById', () => {
@@ -74,19 +75,15 @@ describe('Database tests table <meta>, priority: findById', () => {
 
     describe('Testing invalid fn calls', () => {
 
-        test('Return IRepoError by catch-block', async () => {
-            const mockParam_id = 1;
+        test('Throw DBQueryErrorException by catch-block', async () => {
+            const mockParam_id = mockData.id;
             const mockErrorMsg = "DB ERROR ON SELECT QUERY, (Meta TEST Repository, findById)";
             const mockResult = null;
             jest.spyOn(Utils, "logRepoError").mockReturnValue();
             const _ = MockUtils.mapMockDbClient(mockResult, mockBoolean, mockErrorMsg);
-            const testFn = await metaRepository.findById(mockParam_id);
 
-            expect(testFn).toEqual<IRepoError>({
-                method: 'support_meta_findById',
-                error: expect.any(Error)
-            });
-            expect((testFn as IRepoError).error.message).toBe(mockErrorMsg);
+            await expect(() => metaRepository.findById(mockParam_id))
+                .rejects.toThrow(expectExceptionResult);
         })
     })
 })
@@ -131,19 +128,15 @@ describe('Database tests table <meta>, priority: findByName', () => {
 
     describe('Testing invalid fn calls', () => {
 
-        test('Return IRepoError by catch-block', async () => {
-            const mockParam_name = 'support';
+        test('Throw DBQueryErrorException by catch-block', async () => {
+            const mockParam_name = 'error_test_name';
             const mockErrorMsg = "DB ERROR ON SELECT QUERY, (Meta TEST Repository, findByName)";
             const mockResult = null;
             jest.spyOn(Utils, "logRepoError").mockReturnValue();
             const _ = MockUtils.mapMockDbClient(mockResult, mockBoolean, mockErrorMsg);
-            const testFn = await metaRepository.findByName(mockParam_name);
 
-            expect(testFn).toEqual<IRepoError>({
-                method: 'support_meta_findByName',
-                error: expect.any(Error)
-            });
-            expect((testFn as IRepoError).error.message).toBe(mockErrorMsg);
+            await expect(() => metaRepository.findByName(mockParam_name))
+                .rejects.toThrow(expectExceptionResult);
         })
     })
 })
@@ -173,18 +166,14 @@ describe('Database tests table <meta>, priority: findAll', () => {
 
     describe('Testing invalid fn calls', () => {
 
-        test('Return IRepoError by catch-block', async () => {
+        test('Throw DBQueryErrorException by catch-block', async () => {
             const mockErrorMsg = "DB ERROR ON SELECT QUERY, (Meta TEST Repository, findAll)";
             const mockResult = null;
             jest.spyOn(Utils, "logRepoError").mockReturnValue();
             const _ = MockUtils.mapMockDbClient(mockResult, mockBoolean, mockErrorMsg);
-            const testFn = await metaRepository.findAll();
 
-            expect(testFn).toEqual<IRepoError>({
-                method: 'support_meta_findAll',
-                error: expect.any(Error)
-            });
-            expect((testFn as IRepoError).error.message).toBe(mockErrorMsg);
+            await expect(() => metaRepository.findAll())
+                .rejects.toThrow(expectExceptionResult);
         })
     })
 })
@@ -231,50 +220,42 @@ describe('Database tests table <meta>, priority: findMaintenance', () => {
 
     describe('Testing invalid fn calls', () => {
 
-        test('Return IRepoError by catch-block', async () => {
-            const mockParam_name = 'support';
+        test('Throw DBQueryErrorException by catch-block', async () => {
+            const mockParam_name = 'error_test_name';
             const mockErrorMsg = "DB ERROR ON SELECT QUERY, (Meta TEST Repository, findMaintenance)";
             const mockResult = null;
             jest.spyOn(Utils, "logRepoError").mockReturnValue();
             const _ = MockUtils.mapMockDbClient(mockResult, mockBoolean, mockErrorMsg);
-            const testFn = await metaRepository.findMaintenance(mockParam_name);
 
-            expect(testFn).toEqual<IRepoError>({
-                method: 'support_meta_findMaintenance',
-                error: expect.any(Error)
-            });
-            expect((testFn as IRepoError).error.message).toBe(mockErrorMsg);
+            await expect(() => metaRepository.findMaintenance(mockParam_name))
+                .rejects.toThrow(expectExceptionResult);
         })
     })
 })
 
 describe('Database tests table <meta>, priority: udpate', () => {
 
-    describe('Testing valid fn calls', () => {
+    let sql: string;
+    let mockParam_dto: Partial<Meta>;
+    beforeEach(() => {
+        sql = `UPDATE`;
+        mockParam_dto = structuredClone(mockData);
+        delete mockParam_dto['id'];
+        delete mockParam_dto['maintenance_mode'];
+        delete mockParam_dto['created_on'];
+    });
 
-        let sql: string;
-        let mockParam_dto: Partial<Meta>;
-        let mockValues: any[];
-        beforeEach(() => {
-            sql = `UPDATE meta`; // Keep it simple if it isn't essential.
-            mockParam_dto = structuredClone(mockData);
-            delete mockParam_dto['id'];
-            delete mockParam_dto['maintenance_mode'];
-            delete mockParam_dto['last_modified'];
-            delete mockParam_dto['created_on'];
-            mockValues = [];
-        });
+    describe('Testing valid fn calls', () => {
 
         test('Return data of changed entry by valid id', async () => {
             const mockParam_id = 1;
+            let mockValues: any[] = [];
             Object.values(mockParam_dto).forEach((val) => {
                 mockValues.push(val);
             });
-            mockValues.push(mockTimestamp);
             mockValues.push(mockParam_id);
             const mockResult: Meta = structuredClone(mockData);
 
-            // Mock Utils generated timeStamp for easy comparison.
             jest.spyOn(Utils, "getTimestampUTC").mockReturnValue(mockTimestamp);
 
             const mockClient = MockUtils.mapMockDbClient(mockResult);
@@ -290,10 +271,10 @@ describe('Database tests table <meta>, priority: udpate', () => {
 
         test('Return null for non-existing entry by invalid id', async () => {
             const mockParam_id = 1000;
+            let mockValues: any[] = [];
             Object.values(mockParam_dto).forEach((val) => {
                 mockValues.push(val);
             });
-            mockValues.push(mockTimestamp);
             mockValues.push(mockParam_id);
 
             const mockResult = null;
@@ -313,48 +294,37 @@ describe('Database tests table <meta>, priority: udpate', () => {
 
     describe('Testing invalid fn calls', () => {
 
-        let mockParam_dto: Partial<Meta>;
-        beforeEach(() => {
-            mockParam_dto = structuredClone(mockData);
-            delete mockParam_dto['id'];
-            delete mockParam_dto['last_modified'];
-            delete mockParam_dto['created_on'];
-        });
-
-        test('Return IRepoError by catch-block', async () => {
+        test('Throw DBQueryErrorException by catch-block', async () => {
             const mockParam_id = 1;
             const mockErrorMsg = "DB ERROR ON UPDATE QUERY, (Meta TEST Repository, update)";
             const mockResult = null;
             jest.spyOn(Utils, "logRepoError").mockReturnValue();
             const _ = MockUtils.mapMockDbClient(mockResult, mockBoolean, mockErrorMsg);
-            const testFn = await metaRepository.update(mockParam_id, mockParam_dto);
 
-            expect(testFn).toEqual<IRepoError>({
-                method: 'support_meta_update',
-                error: expect.any(Error)
-            });
-            expect((testFn as IRepoError).error.message).toBe(mockErrorMsg);
+            await expect(() => metaRepository.update(mockParam_id, mockParam_dto))
+                .rejects.toThrow(expectExceptionResult);
         })
     })
 })
 
 describe('Database tests table <meta>, priority: updateMaintenance', () => {
+    
+    let sql: string;
+    let mockValues: any[];
+    let mockParam_dto: MaintenanceUpdateDTO;
+    beforeEach(() => {
+        sql = `UPDATE`;
+        mockParam_dto = {
+            maintenance_mode: MaintenanceMode.D013,
+            last_modified: mockTimestamp
+        };
+        mockValues = [];
+    });
 
     describe('Testing valid fn calls', () => {
 
-        let sql: string;
-        let mockValues: any[];
-        beforeEach(() => {
-            sql = `UPDATE meta`; // Keep it simple to avoid problems with white-spaces (readability).
-            mockValues = [];
-        });
-
         test('Return data of changed entry by valid name', async () => {
             const mockParam_name = 'support';
-            const mockParam_dto: MaintenanceUpdateDTO = {
-                maintenance_mode: MaintenanceMode.D013,
-                last_modified: mockTimestamp
-            };
             mockValues = [mockParam_dto.maintenance_mode, mockParam_dto.last_modified, mockParam_name];
             const mockResult: Maintenance = {
                 id: mockData.id,
@@ -380,11 +350,7 @@ describe('Database tests table <meta>, priority: updateMaintenance', () => {
         })
 
         test('Return null for non-existing entry by invalid name', async () => {
-            const mockParam_name = 'testapp';
-            const mockParam_dto: MaintenanceUpdateDTO = {
-                maintenance_mode: MaintenanceMode.D013,
-                last_modified: mockTimestamp
-            };
+            const mockParam_name = 'invalid_test_name';
             mockValues = [mockParam_dto.maintenance_mode, mockParam_dto.last_modified, mockParam_name];
             const mockResult = null;
 
@@ -403,24 +369,15 @@ describe('Database tests table <meta>, priority: updateMaintenance', () => {
 
     describe('Testing invalid fn calls', () => {
 
-        let mockParam_dto: { [key: string]: string }
-        beforeEach(() => {
-            mockParam_dto = { maintenance_mode: MaintenanceMode.D013 };
-        });
-
-        test('Return IRepoError by catch-block', async () => {
-            const mockParam_name = 'support';
-            const mockErrorMsg = "DB ERROR ON UPDATEMAINTENANCE QUERY, (Meta TEST Repository, updateMaintenance)";
+        test('Throw DBQueryErrorException by catch-block', async () => {
+            const mockParam_name = 'error_test_name';
+            const mockErrorMsg = "DB ERROR ON UPDATE QUERY, (Meta TEST Repository, updateMaintenance)";
             const mockResult = null;
             jest.spyOn(Utils, "logRepoError").mockReturnValue();
             const _ = MockUtils.mapMockDbClient(mockResult, mockBoolean, mockErrorMsg);
-            const testFn = await metaRepository.updateMaintenance(mockParam_name, mockParam_dto);
 
-            expect(testFn).toEqual<IRepoError>({
-                method: 'support_meta_updateMaintenance',
-                error: expect.any(Error)
-            });
-            expect((testFn as IRepoError).error.message).toBe(mockErrorMsg);
+            await expect(() => metaRepository.updateMaintenance(mockParam_name, mockParam_dto))
+                .rejects.toThrow(expectExceptionResult);
         })
     })
 })

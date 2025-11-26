@@ -1,9 +1,9 @@
 import { QueryResult } from "pg";
 import { DBConnection } from "../configs/db";
 import { IBaseRepository, IFindRepository } from "./interfaces/base.repository.interface";
-import { IRepoError } from "./interfaces/error.repository.interface";
 import { Maintenance, Meta } from "./interfaces/meta.entity.interface";
 import * as Utils from '../utils/common.utils';
+import { DBQueryErrorException } from "../utils/exceptions/db.exception";
 
 class MetaRepository implements IBaseRepository<Meta>, IFindRepository<Meta> {
 
@@ -13,7 +13,7 @@ class MetaRepository implements IBaseRepository<Meta>, IFindRepository<Meta> {
         this.table = 'meta';
     }
 
-    async findById(id: number): Promise<Meta | IRepoError | null> {
+    async findById(id: number): Promise<Meta | null> {
         const filterColumn = 'id';
         const sql = `SELECT 
         id, app, author, build_on, environment, app_version, db_version, docker_image, docker_version, jenkins_version, maintenance_mode, last_modified, created_on 
@@ -33,14 +33,11 @@ class MetaRepository implements IBaseRepository<Meta>, IFindRepository<Meta> {
             const logMsg = "DB ERROR ON SELECT (Meta Repository, findById): ";
             Utils.logRepoError(logMsg, err);
             await db.close(client);
-            return {
-                method: 'support_meta_findById',
-                error: err
-            }
+            throw new DBQueryErrorException('support-dberror-meta-findById', err);
         }
     }
 
-    async findByName(name: string): Promise<Meta | IRepoError | null> {
+    async findByName(name: string): Promise<Meta | null> {
         const filterColumn = 'app';
         const sql = `SELECT 
         id, app, author, build_on, environment, app_version, db_version, docker_image, docker_version, jenkins_version, maintenance_mode, last_modified, created_on 
@@ -60,14 +57,11 @@ class MetaRepository implements IBaseRepository<Meta>, IFindRepository<Meta> {
             const logMsg = "DB ERROR ON SELECT (Meta Repository, findByName): ";
             Utils.logRepoError(logMsg, err);
             await db.close(client);
-            return {
-                method: 'support_meta_findByName',
-                error: err
-            }
+            throw new DBQueryErrorException('support-dberror-meta-findByName', err);
         }
     }
 
-    async findAll(): Promise<Meta[] | IRepoError | null> {
+    async findAll(): Promise<Meta[] | null> {
         const orderPrio = 'id';
         const sql: string = `SELECT * FROM ${this.table} ORDER BY ${orderPrio} ASC;`;
         const db = DBConnection.getInstance();
@@ -81,14 +75,11 @@ class MetaRepository implements IBaseRepository<Meta>, IFindRepository<Meta> {
             const logMsg = "DB ERROR ON SELECT (Meta Repository, findAll): ";
             Utils.logRepoError(logMsg, err);
             await db.close(client);
-            return {
-                method: 'support_meta_findAll',
-                error: err
-            }
+            throw new DBQueryErrorException('support-dberror-meta-findAll', err);
         }
     }
 
-    async findMaintenance(name: string): Promise<Maintenance | IRepoError | null> {
+    async findMaintenance(name: string): Promise<Maintenance | null> {
         const filterColumn = 'app';
         const sql = `SELECT id, app, build_on, maintenance_mode, last_modified, created_on FROM ${this.table} WHERE ${filterColumn} = $1;`;
         const value = [name];
@@ -104,14 +95,11 @@ class MetaRepository implements IBaseRepository<Meta>, IFindRepository<Meta> {
             const logMsg = "DB ERROR ON SELECT (Meta Repository, findMaintenance): ";
             Utils.logRepoError(logMsg, err);
             await db.close(client);
-            return {
-                method: 'support_meta_findMaintenance',
-                error: err
-            }
+            throw new DBQueryErrorException('support-dberror-meta-findMaintenance', err);
         }
     }
 
-    async update(id: number, dto: Partial<Meta>): Promise<Meta | IRepoError | null> {
+    async update(id: number, dto: Partial<Meta>): Promise<Meta | null> {
         const filterColumn = 'id';
         const sql = `UPDATE ${this.table}
         SET app = $1, author = $2, build_on = $3, environment = $4, app_version = $5, db_version = $6,
@@ -132,14 +120,11 @@ class MetaRepository implements IBaseRepository<Meta>, IFindRepository<Meta> {
             const logMsg = "DB ERROR ON UPDATE (Meta Repository, update): ";
             Utils.logRepoError(logMsg, err);
             await db.close(client);
-            return {
-                method: 'support_meta_update',
-                error: err
-            }
+            throw new DBQueryErrorException('support-dberror-meta-update', err);
         }
     }
 
-    async updateMaintenance(name: string, dto: Partial<Meta>): Promise<Maintenance | IRepoError | null> {
+    async updateMaintenance(name: string, dto: Partial<Meta>): Promise<Maintenance | null> {
         const filterColumn = 'app';
         const sql = `UPDATE ${this.table}
         SET maintenance_mode = $1, last_modified = $2
@@ -155,13 +140,10 @@ class MetaRepository implements IBaseRepository<Meta>, IFindRepository<Meta> {
             await db.close(client);
             return result.rows[0] ?? null;
         } catch(err: any) {
-            const logMsg = "DB ERROR ON UPDATEMAINTENANCE (Meta Repository, updateMaintenance): ";
+            const logMsg = "DB ERROR ON UPDATE (Meta Repository, updateMaintenance): ";
             Utils.logRepoError(logMsg, err);
             await db.close(client);
-            return {
-                method: 'support_meta_updateMaintenance',
-                error: err
-            }
+            throw new DBQueryErrorException('support-dberror-meta-updateMaintenance', err);
         }
     }
 }

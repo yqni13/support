@@ -7,7 +7,6 @@ import {
     ClientsStatusResponseDTO,
     ClientsStatusUpdateDTO
 } from "../dtos/clients.dto";
-import { IRepoError } from "../repositories/interfaces/error.repository.interface";
 import clientsModel from '../models/clients.model';
 import * as Utils from '../utils/common.utils';
 import clientsRepository from '../repositories/clients.repository';
@@ -23,60 +22,33 @@ class ClientsService {
     /**
      * @description Usage for apikey authentication in auth.middleware.ts.
      */
-    async getClientByActiveKey(key: string): Promise<ClientsExistResponseDTO | IRepoError | null> {
+    async getClientByActiveKey(key: string): Promise<ClientsExistResponseDTO | null> {
         const hash = Utils.mapKeyToHash(key);
         let result = await clientsRepository.findByActiveKey(hash);
-        result = !result || Utils.isIRepoError(result)
-            ? null
-            : (Utils.mapObjTimestamps(result as ClientsExistResponseDTO, this.timeMapTargets)) as ClientsExistResponseDTO;
-        return result;
+        return !result ? null : Utils.mapObjTimestamps<ClientsExistResponseDTO>(result, this.timeMapTargets);
     }
 
-    async getClientStatusByName(name: string): Promise<ClientsStatusResponseDTO | IRepoError | null> {
+    async getClientStatusByName(name: string): Promise<ClientsStatusResponseDTO | null> {
         let result = await clientsRepository.findStatusByName(name);
-        if(Utils.isEmptyObj(result)) {
-            return result;
-        } else if(Utils.isIRepoError(result)) {
-            return result as IRepoError;
-        } else {
-            return clientsModel.mapToStatusResponseDTO(result as Clients);
-        }
+        return !result ? null : clientsModel.mapToStatusResponseDTO(result as Clients);
     }
 
-    async createClient(dto: ClientsCreateDTO): Promise<ClientsCreateResponseDTO | IRepoError | null> {
+    async createClient(dto: ClientsCreateDTO): Promise<ClientsCreateResponseDTO> {
         const clientsCreateObj = clientsModel.generateClientsCreateObj(dto);
         let result = await clientsRepository.create(clientsCreateObj.client);
-        if(!result) {
-            return result;
-        } else if(Utils.isIRepoError(result)) {
-            return result as IRepoError;
-        } else {
-            return clientsModel.mapToCreateResponseDTO(result as Clients, clientsCreateObj.keyRaw);
-        }
+        return clientsModel.mapToCreateResponseDTO(result as Clients, clientsCreateObj.keyRaw);
     }
 
-    async updateClientStatus(id: string, dto: ClientsStatusUpdateDTO): Promise<ClientsStatusResponseDTO | IRepoError | null> {
+    async updateClientStatus(id: string, dto: ClientsStatusUpdateDTO): Promise<ClientsStatusResponseDTO | null> {
         dto.last_modified = Utils.getTimestampUTC();
         let result = await clientsRepository.updateStatus(id, dto);
-        if(!result) {
-            return result;
-        } else if(Utils.isIRepoError(result)) {
-            return result as IRepoError;
-        } else {
-            return clientsModel.mapToStatusResponseDTO(result as Clients);
-        }
+        return !result ? null : clientsModel.mapToStatusResponseDTO(result as Clients);
     }
 
-    async updateClientLastUse(id: string): Promise<ClientsLastUseResponseDTO | IRepoError | null> {
+    async updateClientLastUse(id: string): Promise<ClientsLastUseResponseDTO | null> {
         const dto: ClientsLastUseUpdateDTO = { last_use: Utils.getTimestampUTC() };
         let result = await clientsRepository.updateLastUse(id, dto);
-        if(!result) {
-            return result;
-        } else if(Utils.isIRepoError(result)) {
-            return result as IRepoError;
-        } else {
-            return clientsModel.mapToLastUseResponseDTO(result as Clients);
-        }
+        return !result ? null : clientsModel.mapToLastUseResponseDTO(result as Clients);
     }
 }
 
