@@ -48,8 +48,8 @@ export function authUser() {
         } catch(err: any) {
             err.status = 403;
             logError(
-                "AUTH ERROR ON VERIFICATION (Auth-User Middleware)",
-                "support_middleware_authUser",
+                "AUTH MIDDLEWARE ERROR ON VERIFICATION",
+                "SUPPORT_middleware_authUser",
                 err
             );
             next(err);

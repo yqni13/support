@@ -27,19 +27,19 @@ export class DBException extends Error {
 }
 
 export class DBConnectionException extends DBException {
-    constructor(data?: unknown) {
-        super(ErrorCodes.DBConnectionException, 'Database not connected', data, ErrorStatusCodes.DBConnectionException);
+    constructor(message: string = 'support-dbconnection-error', data?: unknown) {
+        super(ErrorCodes.DBConnectionException, message, data, ErrorStatusCodes.DBConnectionException);
     }
 }
 
 export class DBEmptyException extends DBException {
     constructor(data?: unknown) {
-        super(ErrorCodes.DBEmptyException, 'Database is empty', data, ErrorStatusCodes.DBEmptyException);
+        super(ErrorCodes.DBEmptyException, 'support-dbempty-error', data, ErrorStatusCodes.DBEmptyException);
     }
 }
 
 export class DBQueryErrorException extends DBException {
-    constructor(message: string = 'support-database-error', data?: unknown) {
-        super(ErrorCodes.DBQueryErrorException, message, data);
+    constructor(data?: unknown) {
+        super(ErrorCodes.DBQueryErrorException, 'support-dbquery-error', data);
     }
 }

@@ -76,7 +76,7 @@ describe('Database tests table <tickets>, priority: findById', () => {
     
         test('Throw DBQueryErrorException by catch-block', async () => {
             const mockParam_id = structuredClone(mockData.ticket_id);
-            const mockErrorMsg = "DB ERROR ON SELECT QUERY, (Tickets TEST Repository, findById)";
+            const mockErrorMsg = "DB ERROR ON SELECT QUERY";
             const mockResult = null;
             jest.spyOn(Utils, "logError").mockReturnValue();
             const _ = MockUtils.mapMockDbClient(mockResult, mockBoolean, mockErrorMsg);
@@ -122,7 +122,7 @@ describe('Database tests table <tickets>, priority: findAll', () => {
     describe('Testing invalid fn calls', () => {
 
         test('Throw DBQueryErrorException by catch-block', async () => {
-            const mockErrorMsg = "DB ERROR ON SELECT QUERY, (Tickets TEST Repository, findAll)";
+            const mockErrorMsg = "DB ERROR ON SELECT QUERY";
             const mockResult = null;
             jest.spyOn(Utils, "logError").mockReturnValue();
             const _ = MockUtils.mapMockDbClient(mockResult, mockBoolean, mockErrorMsg);
@@ -182,7 +182,7 @@ describe('Database tests table <tickets>, priority: findByFilter', () => {
     describe('Testing invalid fn calls', () => {
     
         test('Throw DBQueryErrorException by catch-block', async () => {
-            const mockErrorMsg = "DB ERROR ON SELECT QUERY, (Tickets TEST Repository, findByFilter)";
+            const mockErrorMsg = "DB ERROR ON SELECT QUERY";
             const mockResult = null;
             const mockParam_dto = {};
             jest.spyOn(Utils, "logError").mockReturnValue();
@@ -232,7 +232,7 @@ describe('Database tests table <tickets>, priority: create', () => {
     describe('Testing invalid fn calls', () => {
 
         test('Throw DBQueryErrorException by catch-block', async () => {
-            const mockErrorMsg = "DB ERROR ON INSERT QUERY, (Tickets TEST Repository, create)";
+            const mockErrorMsg = "DB ERROR ON INSERT QUERY";
             const mockResult = null;
             jest.spyOn(Utils, "logError").mockReturnValue();
             const _ = MockUtils.mapMockDbClient(mockResult, mockBoolean, mockErrorMsg);
@@ -306,7 +306,7 @@ describe('Database tests table <tickets>, priority: udpate', () => {
 
         test('Throw DBQueryErrorException by catch-block', async () => {
             const mockParam_id = 'invalid_tickets_test_id';
-            const mockErrorMsg = "DB ERROR ON UPDATE QUERY, (Tickets TEST Repository, update)";
+            const mockErrorMsg = "DB ERROR ON UPDATE QUERY";
             const mockResult = null;
             jest.spyOn(Utils, "logError").mockReturnValue();
             const _ = MockUtils.mapMockDbClient(mockResult, mockBoolean, mockErrorMsg);
@@ -360,7 +360,7 @@ describe('Database tests table <tickets>, priority: delete', () => {
 
         test('Throw DBQueryErrorException by catch-block', async () => {
             const mockParam_id = 'error_tickets_test_id';
-            const mockErrorMsg = "DB ERROR ON DELETE QUERY, (Tickets TEST Repository, delete)";
+            const mockErrorMsg = "DB ERROR ON DELETE QUERY";
             const mockResult = null;
             jest.spyOn(Utils, "logError").mockReturnValue();
             const _ = MockUtils.mapMockDbClient(mockResult, mockBoolean, mockErrorMsg);

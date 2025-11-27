@@ -16,16 +16,16 @@ export class Logger {
             endpoint: `https://${secrets.BETTERSTACK_HOST}`
         });
 
-        const transport: any[] = [];
+        const transports: any[] = [];
         if(secrets.ENV_MODE.trim() === EnvMode.DEV || secrets.ENV_MODE.trim() === EnvMode.TEST) {
-            transport.push(
+            transports.push(
                 new winston.transports.Console({
                     level: 'info',
                     format: winston.format.prettyPrint()
                 })
             );
         } else {
-            transport.push(new LogtailTransport(logtail));
+            transports.push(new LogtailTransport(logtail));
         }
 
         this.logger = winston.createLogger({
@@ -34,7 +34,7 @@ export class Logger {
                 winston.format.timestamp(),
                 winston.format.json()
             ),
-            transports: transport
+            transports: transports
         });
 
         return this.logger;

@@ -27,8 +27,8 @@ export function authAdmin() {
         } catch(err: any) {
             err.status = 401;
             logError(
-                "AUTH ERROR ON VERIFICATION (Auth-Admin Middleware)",
-                "support_middleware_authAdmin",
+                "AUTH MIDDLEWARE ERROR ON VERIFICATION",
+                "SUPPORT_middleware_authAdmin",
                 err
             );
             next(err);

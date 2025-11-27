@@ -64,7 +64,7 @@ export class DBConnection {
             error.code = !error.code ? ErrorStatusCodes.DBConnectionException : error.code;
             logError(
                 "DB ERROR CONNECTION INIT",
-                "support_dbconnection_init",
+                "SUPPORT_DBConnection_init",
                 error
             );
             if(error.code === ErrorStatusCodes.DBEmptyException) {
@@ -87,10 +87,10 @@ export class DBConnection {
         } catch(error: any) {
             logError(
                 "DB ERROR CONNECTION CONNECT",
-                "support_dbconnection_connect",
+                "SUPPORT_DBConnection_connect",
                 error
             );
-            throw new DBConnectionException('server-535-auth#database');
+            throw new DBConnectionException(error);
         }
     }
 
@@ -100,10 +100,10 @@ export class DBConnection {
         } catch(error: any) {
             logError(
                 "DB ERROR CONNECTION CLOSE",
-                "support_dbconnection_close",
+                "SUPPORT_DBConnection_close",
                 error
             );
-            throw new DBConnectionException('server-535-auth#database');
+            throw new DBConnectionException(error);
         }
     }
 

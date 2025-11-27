@@ -9,7 +9,7 @@ class ClientsRepository {
     private table: string;
 
     constructor() {
-        this.table = 'clients';
+        this.table = "clients";
     }
 
     async findByActiveKey(hash: string): Promise<Clients | null> {
@@ -23,11 +23,11 @@ class ClientsRepository {
             await db.close(client);
             return result.rows[0] ?? null;
         } catch(err: any) {
-            const message = "DB ERROR ON SELECT (Clients Repository, findByActiveKey)";
-            const method = 'support-dberror-clients-findById';
+            const message = "DB ERROR ON SELECT QUERY";
+            const method = "SUPPORT_ClientsRepository_findByActiveKey";
             logError(message, method, err);
             await db.close(client);
-            throw new DBQueryErrorException(method, err);
+            throw new DBQueryErrorException(err);
         }
     }
 
@@ -42,11 +42,11 @@ class ClientsRepository {
             await db.close(client);
             return result.rows[0] ?? null;
         } catch(err: any) {
-            const message = "DB ERROR ON SELECT (Clients Repository, findStatusByName)";
-            const method = 'support-dberror-clients-findStatusByName';
+            const message = "DB ERROR ON SELECT QUERY";
+            const method = "SUPPORT_ClientsRepository_findStatusByName";
             logError(message, method, err);
             await db.close(client);
-            throw new DBQueryErrorException(method, err);
+            throw new DBQueryErrorException(err);
         }
     }
 
@@ -65,16 +65,16 @@ class ClientsRepository {
             await db.close(client);
             return result.rows[0];
         } catch(err: any) {
-            const message = "DB ERROR ON SELECT (Clients Repository, create)";
-            const method = 'support-dberror-clients-create';
+            const message = "DB ERROR ON INSERT QUERY";
+            const method = "SUPPORT_ClientsRepository_create";
             logError(message, method, err);
             await db.close(client);
-            throw new DBQueryErrorException(method, err);
+            throw new DBQueryErrorException(err);
         }
     }
 
     async updateStatus(id: string, dto: Partial<Clients>): Promise<Clients | null> {
-        const filterColumn = 'client_id';
+        const filterColumn = "client_id";
         const sql = `UPDATE ${this.table}
         SET status = $1, last_modified = $2
         WHERE ${filterColumn} = $3
@@ -89,16 +89,16 @@ class ClientsRepository {
             await db.close(client);
             return result.rows[0] ?? null;
         } catch(err: any) {
-            const message = "DB ERROR ON SELECT (Clients Repository, updateStatus)";
-            const method = 'support-dberror-clients-updateStatus';
+            const message = "DB ERROR ON UPDATE QUERY";
+            const method = "SUPPORT_ClientsRepository_updateStatus";
             logError(message, method, err);
             await db.close(client);
-            throw new DBQueryErrorException(method, err);
+            throw new DBQueryErrorException(err);
         }
     }
 
     async updateLastUse(id: string, dto: Partial<Clients>): Promise<Clients | null> {
-        const filterColumn = 'client_id';
+        const filterColumn = "client_id";
         const sql = `UPDATE ${this.table}
         SET last_use = $1
         WHERE ${filterColumn} = $2
@@ -113,11 +113,11 @@ class ClientsRepository {
             await db.close(client);
             return result.rows[0] ?? null;
         } catch(err: any) {
-            const message = "DB ERROR ON SELECT (Clients Repository, updateLastUse)";
-            const method = 'support-dberror-clients-upateLastUse';
+            const message = "DB ERROR ON UPDATE QUERY";
+            const method = "SUPPORT_ClientsRepository_updateLastStatus";
             logError(message, method, err);
             await db.close(client);
-            throw new DBQueryErrorException(method, err);
+            throw new DBQueryErrorException(err);
         }
     }
 }

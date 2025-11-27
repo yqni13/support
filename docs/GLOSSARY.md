@@ -79,11 +79,12 @@ Basic description: `<base>.<subsuffix?>.<suffix>.<ending>` [specific always sing
 
 ## 🈺 Other
 
-| Classification            | Structure                   | Example                   |
-|---------------------------|-----------------------------|---------------------------|
-| Enum (template access)    | `[EnumName]Enum`            | BaseRouteEnum = BaseRoute |
-| Environment variables     | `SECRET_[description]`      | SECRET_API_KEY            |
-| Logger context (method)   |  support_[Class]_[Method]`  | support_DBConnect_Init    |
+| Classification            | Structure                          | Example                   |
+|---------------------------|------------------------------------|---------------------------|
+| Enum (template access)    | `[EnumName]Enum`                   | BaseRouteEnum = BaseRoute |
+| Environment variables     | `SECRET_[description]`             | SECRET_API_KEY            |
+| Logger context (message)  | Error origin + operation           | DB ERROR ON SELECT QUERY  |
+| Logger context (method)   | `SUPPORT_[Class/Service]_[method]` | SUPPORT_DBConnect_init    |
 
 <br>
 
@@ -93,4 +94,3 @@ Basic description: `<base>.<subsuffix?>.<suffix>.<ending>` [specific always sing
 |------------------------|-----------------------------|------------------------------|
 | S_ID                   | Service Identification      | 'artdv', 'tava'              |
 | Desc                   | Description                 | --                           |
-

@@ -23,8 +23,8 @@ export function observe() {
         } catch(err: any) {
             err.status = 429;
             logError(
-                "OBSERVATION ERROR ON API CALL (Observation Middleware)",
-                "support_middleware_observe",
+                "OBSERVATION MIDDLEWARE ERROR ON API CALL",
+                "SUPPORT_middleware_observe",
                 err
             );
             next(err);

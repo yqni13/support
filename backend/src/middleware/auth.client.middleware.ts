@@ -34,8 +34,8 @@ export function authClient() {
         } catch(err: any) {
             err.status = 401;
             logError(
-                "AUTH ERROR ON VERIFICATION (Auth-Client Middleware)",
-                "support_middleware_authClient",
+                "AUTH MIDDLEWARE ERROR ON VERIFICATION",
+                "SUPPORT_middleware_authClient",
                 err
             );
             next(err);
