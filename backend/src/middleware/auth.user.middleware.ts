@@ -5,10 +5,9 @@ import { Users } from "../repositories/interfaces/users.entity.interface";
 import usersService from "../services/users.service";
 import { UsersCreateDTO } from "../dtos/users.dto";
 import { UserStatus } from "../utils/enums/user-status.enum";
-import { secrets } from "../utils/secrets.utils";
-import { EnvMode } from "../utils/enums/env-mode.enum";
 import { CommonExceptionMessage } from "../utils/enums/common-exception-messages.enum";
 import { InvalidPropertiesException } from "../utils/exceptions/validation.exception";
+import { logError } from "../utils/common.utils";
 
 /**
  * @description Status validation of existing user or create new user by email address.
@@ -47,11 +46,12 @@ export function authUser() {
             req.apiUsers = user;
             next();
         } catch(err: any) {
-            // TODO(yqni13): logging
-            if(secrets.ENV_MODE.trim() === EnvMode.DEV || secrets.ENV_MODE.trim() === EnvMode.TEST) {
-                console.log('AUTH ERROR ON VERIFICATION (Auth-User Middleware): ', err.message);
-            }
             err.status = 403;
+            logError(
+                "AUTH ERROR ON VERIFICATION (Auth-User Middleware)",
+                "support_middleware_authUser",
+                err
+            );
             next(err);
         }
     }

@@ -5,6 +5,7 @@ import {
 import { Request, Response, NextFunction } from "express";
 import { secrets } from "../utils/secrets.utils";
 import { EnvMode } from "../utils/enums/env-mode.enum";
+import { logError } from "../utils/common.utils";
 
 /**
  * @description Authentication for admin only access by validating admin-key.
@@ -24,11 +25,12 @@ export function authAdmin() {
             }
             next();
         } catch(err: any) {
-            // TODO(yqni13): logging
-            if(secrets.ENV_MODE.trim() === EnvMode.DEV || secrets.ENV_MODE.trim() === EnvMode.TEST) {
-                console.log('AUTH ERROR ON VERIFICATION (Auth-Admin Middleware): ', err.message);
-            }
             err.status = 401;
+            logError(
+                "AUTH ERROR ON VERIFICATION (Auth-Admin Middleware)",
+                "support_middleware_authAdmin",
+                err
+            );
             next(err);
         }
     }

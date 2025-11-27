@@ -1,5 +1,5 @@
 # yqni13 | support
-$\texttt{\color{teal}{v0.9.3}}$
+$\texttt{\color{teal}{v0.9.4}}$
 
 
 <br>
@@ -32,7 +32,7 @@ $\texttt{\color{teal}{v0.9.3}}$
 ## How to
 
 ### Build & Deploy
-The project will be hosted by <a href="https://render.com/">Render</a> in a Docker container and a PostgreSQL database by Neon.<br>
+This application server will be hosted by <a href="https://render.com/">Render</a> in a Docker container and a PostgreSQL database by Neon.<br>
 The development process is structured by the TDD (test driven development) principle.
 
 <br>
@@ -46,6 +46,17 @@ The development process is structured by the TDD (test driven development) princ
     <dd>:closed_lock_with_key: maintenance mode can en/disable application via single request</dd>
     <dd>:key: request verification by api-keys</dd>
 </dl>
+
+<br>
+
+### $\textsf{\color{teal}Logging}$
+
+To monitor errors the logging framework `Winston` is used in combination with Logtail from `Betterstack` as a Singleton: [config](./backend/src/logger/config.logger.ts)
+<br>While working within local (DEV) or test environment, error messages are logged into the consoles. For the deployed environments (STAG/PROD) the logging is set to send logtails to Betterstack (longer storage time than app-hosting service). For easy access and monitoring of error messages, the Betterstack UI client dashboard comes in handy (see Figure 1). 
+<div align="center">
+    <img src="assets/img/betterstack_logging.png" alt="&nbsp;Betterstack logging dashboard">
+    Figure 1 - Betterstack logging dashboard, v0.9.4
+</div>
 
 <br>
 
@@ -71,16 +82,16 @@ or simply save as script command in `package.json` to run `npm test`:
 }
 ```
 To automatically check tests before merging feature/development branch further up, a `GitHub Action` is set up, see [main.yml](.github/workflows/main.yml).<br>
-Preventing an unwanted merge with unfinished/failed test run, the project is set up to disable merging until all tests have passed (see Figure 1 to Figure 2).
+Preventing an unwanted merge with unfinished/failed test run, the project is set up to disable merging until all tests have passed (see Figure 2 to Figure 3).
 
 <div align="center">
     <img src="assets/img/github-action-jest-processing.png" alt="&nbsp;GitHub processing tests">
-    Figure 1 - processing tests, v0.9.1
+    Figure 2 - processing tests, v0.9.1
 </div>
 <br>
 <div align="center">
     <img src="assets/img/github-action-jest-passed.png" alt="&nbsp;GitHub tests passed">
-    Figure 2 - passing tests, v0.9.1
+    Figure 3 - passing tests, v0.9.1
 </div>
 
 <br>
@@ -90,8 +101,8 @@ Preventing an unwanted merge with unfinished/failed test run, the project is set
 
 ### $\textsf{\color{forestgreen}last update:}$
 
-$\textsf{[v0.9.2\ =>\ {\textbf{\color{brown}v0.9.3}]}}$ app
-- $\textsf{\color{orange}Patch:}$ Refactored error handling and return values for entities 'clients', 'users' and 'meta'.
+$\textsf{[v0.9.3\ =>\ {\textbf{\color{brown}v0.9.4}]}}$ app
+- $\textsf{\color{orange}Patch:}$ Refactored and integrated logger on necessary hotspots (catch-blocks).
 
 <br>
 

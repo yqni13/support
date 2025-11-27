@@ -2,7 +2,7 @@ import { QueryResult } from "pg";
 import { DBConnection } from "../configs/db";
 import { IBaseRepository, IFindRepository } from "./interfaces/base.repository.interface";
 import { Maintenance, Meta } from "./interfaces/meta.entity.interface";
-import * as Utils from '../utils/common.utils';
+import { logError } from '../utils/common.utils';
 import { DBQueryErrorException } from "../utils/exceptions/db.exception";
 
 class MetaRepository implements IBaseRepository<Meta>, IFindRepository<Meta> {
@@ -30,10 +30,11 @@ class MetaRepository implements IBaseRepository<Meta>, IFindRepository<Meta> {
             await db.close(client);
             return result.rows[0] ?? null;
         } catch(err: any) {
-            const logMsg = "DB ERROR ON SELECT (Meta Repository, findById): ";
-            Utils.logRepoError(logMsg, err);
+            const message = "DB ERROR ON SELECT (Meta Repository, findById)";
+            const method = 'support-dberror-meta-findById';
+            logError(message, method, err);
             await db.close(client);
-            throw new DBQueryErrorException('support-dberror-meta-findById', err);
+            throw new DBQueryErrorException(method, err);
         }
     }
 
@@ -54,10 +55,11 @@ class MetaRepository implements IBaseRepository<Meta>, IFindRepository<Meta> {
             await db.close(client);
             return result.rows[0] ?? null;
         } catch(err: any) {
-            const logMsg = "DB ERROR ON SELECT (Meta Repository, findByName): ";
-            Utils.logRepoError(logMsg, err);
+            const message = "DB ERROR ON SELECT (Meta Repository, findByName)";
+            const method = 'support-dberror-meta-findByName';
+            logError(message, method, err);
             await db.close(client);
-            throw new DBQueryErrorException('support-dberror-meta-findByName', err);
+            throw new DBQueryErrorException(method, err);
         }
     }
 
@@ -72,10 +74,11 @@ class MetaRepository implements IBaseRepository<Meta>, IFindRepository<Meta> {
             await db.close(client);
             return result.rows ?? null;
         } catch(err: any) {
-            const logMsg = "DB ERROR ON SELECT (Meta Repository, findAll): ";
-            Utils.logRepoError(logMsg, err);
+            const message = "DB ERROR ON SELECT (Meta Repository, findAll)";
+            const method = 'support-dberror-meta-findAll';
+            logError(message, method, err);
             await db.close(client);
-            throw new DBQueryErrorException('support-dberror-meta-findAll', err);
+            throw new DBQueryErrorException(method, err);
         }
     }
 
@@ -92,10 +95,11 @@ class MetaRepository implements IBaseRepository<Meta>, IFindRepository<Meta> {
             await db.close(client);
             return result.rows[0] ?? null;
         } catch(err: any) {
-            const logMsg = "DB ERROR ON SELECT (Meta Repository, findMaintenance): ";
-            Utils.logRepoError(logMsg, err);
+            const message = "DB ERROR ON SELECT (Meta Repository, findMaintenance)";
+            const method = 'support-dberror-meta-findMaintenance';
+            logError(message, method, err);
             await db.close(client);
-            throw new DBQueryErrorException('support-dberror-meta-findMaintenance', err);
+            throw new DBQueryErrorException(method, err);
         }
     }
 
@@ -117,10 +121,11 @@ class MetaRepository implements IBaseRepository<Meta>, IFindRepository<Meta> {
             await db.close(client);
             return result.rows[0] ?? null;
         } catch(err: any) {
-            const logMsg = "DB ERROR ON UPDATE (Meta Repository, update): ";
-            Utils.logRepoError(logMsg, err);
+            const message = "DB ERROR ON UPDATE (Meta Repository, update)";
+            const method = 'support-dberror-meta-update';
+            logError(message, method, err);
             await db.close(client);
-            throw new DBQueryErrorException('support-dberror-meta-update', err);
+            throw new DBQueryErrorException(method, err);
         }
     }
 
@@ -140,10 +145,11 @@ class MetaRepository implements IBaseRepository<Meta>, IFindRepository<Meta> {
             await db.close(client);
             return result.rows[0] ?? null;
         } catch(err: any) {
-            const logMsg = "DB ERROR ON UPDATE (Meta Repository, updateMaintenance): ";
-            Utils.logRepoError(logMsg, err);
+            const message = "DB ERROR ON UPDATE (Meta Repository, updateMaintenance)";
+            const method = 'support-dberror-meta-updateMaintenance';
+            logError(message, method, err);
             await db.close(client);
-            throw new DBQueryErrorException('support-dberror-meta-updateMaintenance', err);
+            throw new DBQueryErrorException(method, err);
         }
     }
 }

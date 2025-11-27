@@ -1,7 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { secrets } from "../utils/secrets.utils";
-import { EnvMode } from "../utils/enums/env-mode.enum";
-import { ExceedMaxEndpointException } from "../utils/exceptions/api.exception";
+import { logError } from "../utils/common.utils";
 
 export function observe() {
     return async function (req: Request, res: Response, next: NextFunction) {
@@ -23,11 +21,12 @@ export function observe() {
             // await metaService.setMaintenanceMode(MaintenanceMode.D013)
             next();
         } catch(err: any) {
-            // TODO(yqni13): logging
-            if(secrets.ENV_MODE.trim() === EnvMode.DEV || secrets.ENV_MODE.trim() === EnvMode.TEST) {
-                console.log("OBSERVATION ERROR ON API CALL (Observation Middleware): ", err.message);
-            }
             err.status = 429;
+            logError(
+                "OBSERVATION ERROR ON API CALL (Observation Middleware)",
+                "support_middleware_observe",
+                err
+            );
             next(err);
         }
     }

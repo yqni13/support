@@ -2,7 +2,7 @@ import { Clients } from "./interfaces/clients.entity.interface";
 import { DBConnection } from "../configs/db";
 import { QueryResult } from "pg";
 import { ApiKeyStatus } from "../utils/enums/api-key-status.enum";
-import { logRepoError } from "../utils/common.utils";
+import { logError } from "../utils/common.utils";
 import { DBQueryErrorException } from "../utils/exceptions/db.exception";
 
 class ClientsRepository {
@@ -23,10 +23,11 @@ class ClientsRepository {
             await db.close(client);
             return result.rows[0] ?? null;
         } catch(err: any) {
-            const logMsg = "DB ERROR ON SELECT (Clients Repository, findByActiveKey): ";
-            logRepoError(logMsg, err);
+            const message = "DB ERROR ON SELECT (Clients Repository, findByActiveKey)";
+            const method = 'support-dberror-clients-findById';
+            logError(message, method, err);
             await db.close(client);
-            throw new DBQueryErrorException('support-dberror-clients-findById', err);
+            throw new DBQueryErrorException(method, err);
         }
     }
 
@@ -41,10 +42,11 @@ class ClientsRepository {
             await db.close(client);
             return result.rows[0] ?? null;
         } catch(err: any) {
-            const logMsg = "DB ERROR ON SELECT (Clients Repository, findStatusByName): ";
-            logRepoError(logMsg, err);
+            const message = "DB ERROR ON SELECT (Clients Repository, findStatusByName)";
+            const method = 'support-dberror-clients-findStatusByName';
+            logError(message, method, err);
             await db.close(client);
-            throw new DBQueryErrorException('support-dberror-clients-findStatusByName', err);
+            throw new DBQueryErrorException(method, err);
         }
     }
 
@@ -63,10 +65,11 @@ class ClientsRepository {
             await db.close(client);
             return result.rows[0];
         } catch(err: any) {
-            const logMsg = "DB ERROR ON SELECT (Clients Repository, create): ";
-            logRepoError(logMsg, err);
+            const message = "DB ERROR ON SELECT (Clients Repository, create)";
+            const method = 'support-dberror-clients-create';
+            logError(message, method, err);
             await db.close(client);
-            throw new DBQueryErrorException('support-dberror-clients-create', err);
+            throw new DBQueryErrorException(method, err);
         }
     }
 
@@ -86,10 +89,11 @@ class ClientsRepository {
             await db.close(client);
             return result.rows[0] ?? null;
         } catch(err: any) {
-            const logMsg = "DB ERROR ON SELECT (Clients Repository, updateStatus): ";
-            logRepoError(logMsg, err);
+            const message = "DB ERROR ON SELECT (Clients Repository, updateStatus)";
+            const method = 'support-dberror-clients-updateStatus';
+            logError(message, method, err);
             await db.close(client);
-            throw new DBQueryErrorException('support-dberror-clients-updateStatus', err);
+            throw new DBQueryErrorException(method, err);
         }
     }
 
@@ -109,10 +113,11 @@ class ClientsRepository {
             await db.close(client);
             return result.rows[0] ?? null;
         } catch(err: any) {
-            const logMsg = "DB ERROR ON SELECT (Clients Repository, updateLastUse): ";
-            logRepoError(logMsg, err);
+            const message = "DB ERROR ON SELECT (Clients Repository, updateLastUse)";
+            const method = 'support-dberror-clients-upateLastUse';
+            logError(message, method, err);
             await db.close(client);
-            throw new DBQueryErrorException('support-dberror-clients-upateLastUse', err);
+            throw new DBQueryErrorException(method, err);
         }
     }
 }

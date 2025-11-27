@@ -3,7 +3,9 @@ import { MailSource } from './enums/mail-source.enum';
 import { secrets } from './secrets.utils';
 import { v4 as uuid_v4 } from 'uuid';
 import crypto from 'crypto';
-import { EnvMode } from './enums/env-mode.enum';
+import { Logger } from '../logger/config.logger';
+
+const logger = Logger.getLogger();
 
 export function generateUUID(): string {
     return uuid_v4();
@@ -34,11 +36,12 @@ export function selectPrivateKey(source: MailSource): string {
     }
 }
 
-export function logRepoError(logMsg: string, err: any) {
-    // TODO(yqni13): logging
-    if(secrets.ENV_MODE.trim() === EnvMode.DEV || secrets.ENV_MODE.trim() === EnvMode.TEST) {
-        console.log(logMsg, err);
-    }
+export function logError(message: string, method: string, err: any) {
+    logger.error(message, {
+        error: err.code,
+        stack: err.stack,
+        context: { method: method }
+    });
 }
 
 export function mapObjTimestamps<T>(data: T, timeMapTargets: string[]): T {

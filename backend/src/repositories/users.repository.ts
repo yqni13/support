@@ -2,7 +2,7 @@ import { DBConnection } from "../configs/db";
 import { QueryResult } from "pg";
 import { IBaseRepository, ICreateRepository, IFindRepository } from "./interfaces/base.repository.interface";
 import { Users } from "./interfaces/users.entity.interface";
-import { logRepoError } from "../utils/common.utils";
+import { logError } from "../utils/common.utils";
 import { UsersFilterDTO } from "../dtos/users.dto";
 import { DBQueryErrorException } from "../utils/exceptions/db.exception";
 
@@ -28,10 +28,11 @@ ICreateRepository<Users> {
             await db.close(client);
             return result.rows[0] ?? null;
         } catch(err: any) {
-            const logMsg = "DB ERROR ON SELECT (Users Repository, findById): ";
-            logRepoError(logMsg, err);
+            const message = "DB ERROR ON SELECT (Users Repository, findById)";
+            const method = 'support-dberror-users-findById';
+            logError(message, method, err);
             await db.close(client);
-            throw new DBQueryErrorException('support-dberror-users-findById', err);
+            throw new DBQueryErrorException(method, err);
         }
     }
 
@@ -47,10 +48,11 @@ ICreateRepository<Users> {
             await db.close(client);
             return result.rows[0] ?? null;
         } catch(err: any) {
-            const logMsg = "DB ERROR ON SELECT (Users Repository, findByEmail): ";
-            logRepoError(logMsg, err);
+            const message = "DB ERROR ON SELECT (Users Repository, findByEmail)";
+            const method = 'support-dberror-users-findByEmail';
+            logError(message, method, err);
             await db.close(client);
-            throw new DBQueryErrorException('support-dberror-users-findByEmail', err);
+            throw new DBQueryErrorException(method, err);
         }
     }
 
@@ -65,10 +67,11 @@ ICreateRepository<Users> {
             await db.close(client);
             return result.rows ?? null;
         } catch(err: any) {
-            const logMsg = "DB ERROR ON SELECT (Users Repository, findAll): ";
-            logRepoError(logMsg, err);
+            const message = "DB ERROR ON SELECT (Users Repository, findAll)";
+            const method = 'support-dberror-users-findAll';
+            logError(message, method, err);
             await db.close(client);
-            throw new DBQueryErrorException('support-dberror-users-findAll', err);
+            throw new DBQueryErrorException(method, err);
         }
     }
 
@@ -82,10 +85,11 @@ ICreateRepository<Users> {
             await db.close(client);
             return result.rows ?? null;
         } catch(err: any) {
-            const logMsg = "DB ERROR ON SELECT (Users Repository, findByFilter): ";
-            logRepoError(logMsg, err);
+            const message = "DB ERROR ON SELECT (Users Repository, findByFilter)";
+            const method = 'support-dberror-users-findByFilter';
+            logError(message, method, err);
             await db.close(client);
-            throw new DBQueryErrorException('support-dberror-users-findByFilter', err);
+            throw new DBQueryErrorException(method, err);
         }
     }
 
@@ -104,10 +108,11 @@ ICreateRepository<Users> {
             await db.close(client);
             return result.rows[0];
         } catch(err: any) {
-            const logMsg = "DB ERROR ON INSERT (Users Repository, create): ";
-            logRepoError(logMsg, err);
+            const message = "DB ERROR ON INSERT (Users Repository, create)";
+            const method = 'support-dberror-users-create';
+            logError(message, method, err);
             await db.close(client);
-            throw new DBQueryErrorException('support-dberror-users-create', err);
+            throw new DBQueryErrorException(method, err);
         }
     }
 
@@ -127,10 +132,11 @@ ICreateRepository<Users> {
             await db.close(client);
             return result.rows[0] ?? null;
         } catch(err: any) {
-            const logMsg = "DB ERROR ON UPDATE (Users Repository, update): ";
-            logRepoError(logMsg, err);
+            const message = "DB ERROR ON UPDATE (Users Repository, update)";
+            const method = 'support-dberror-users-update';
+            logError(message, method, err);
             await db.close(client);
-            throw new DBQueryErrorException('support-dberror-users-update', err);
+            throw new DBQueryErrorException(method, err);
         }
     }
 

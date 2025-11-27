@@ -1,10 +1,11 @@
 import { DBConnection } from "../configs/db";
 import { QueryResult } from "pg";
-import { logRepoError } from "../utils/common.utils";
 import { Tickets } from "./interfaces/tickets.entity.interface";
 import { IBaseRepository, ICreateRepository, IDeleteRepository, IFindRepository } from "./interfaces/base.repository.interface";
 import { TicketsFilterDTO, TicketsResponseExtendedDTO } from "../dtos/tickets.dto";
 import { DBQueryErrorException } from "../utils/exceptions/db.exception";
+import { Logger } from "../logger/config.logger";
+import { logError } from "../utils/common.utils";
 
 
 class TicketsRepository implements 
@@ -38,10 +39,11 @@ IDeleteRepository
             await db.close(client);
             return result.rows[0] ?? null;
         } catch(err: any) {
-            const logMsg = "DB ERROR ON INSERT (Tickets Repository, findById): ";
-            logRepoError(logMsg, err);
+            const message = "DB ERROR ON SELECT (Tickets Repository, findById)";
+            const method = 'support-dberror-tickets-findById';
+            logError(message, method, err);
             await db.close(client);
-            throw new DBQueryErrorException('support-dberror-tickets-findById', err);
+            throw new DBQueryErrorException(method, err);
         }
     }
 
@@ -56,10 +58,11 @@ IDeleteRepository
             await db.close(client);
             return result.rows ?? null;
         } catch(err: any) {
-            const logMsg = "DB ERROR ON SELECT (Tickets Repository, findAll): ";
-            logRepoError(logMsg, err);
+            const message = "DB ERROR ON SELECT (Tickets Repository, findAll)";
+            const method = 'support-dberror-tickets-findAll';
+            logError(message, method, err);
             await db.close(client);
-            throw new DBQueryErrorException('support-dberror-tickets-findAll', err);
+            throw new DBQueryErrorException(method, err);
         }
     }
 
@@ -73,10 +76,11 @@ IDeleteRepository
             await db.close(client);
             return result.rows ?? null;
         } catch(err: any) {
-            const logMsg = "DB ERROR ON SELECT (Tickets Repository, findByFilter): ";
-            logRepoError(logMsg, err);
+            const message = "DB ERROR ON SELECT (Tickets Repository, findByFilter)";
+            const method = 'support-dberror-tickets-findByFilter';
+            logError(message, method, err);
             await db.close(client);
-            throw new DBQueryErrorException('support-dberror-tickets-findByFilter', err);
+            throw new DBQueryErrorException(method, err);
         }
     }
 
@@ -94,10 +98,11 @@ IDeleteRepository
             await db.close(client);
             return result.rows[0];
         } catch(err: any) {
-            const logMsg = "DB ERROR ON INSERT (Tickets Repository, create): ";
-            logRepoError(logMsg, err);
+            const message = "DB ERROR ON INSERT (Tickets Repository, create)";
+            const method = 'support-dberror-tickets-create';
+            logError(message, method, err);
             await db.close(client);
-            throw new DBQueryErrorException('support-dberror-tickets-create', err);
+            throw new DBQueryErrorException(method, err);
         }
     }
 
@@ -117,10 +122,11 @@ IDeleteRepository
             await db.close(client);
             return result.rows[0] ?? null;
         } catch(err: any) {
-            const logMsg = "DB ERROR ON UPDATE (Tickets Repository, update): ";
-            logRepoError(logMsg, err);
+            const message = "DB ERROR ON UPDATE (Tickets Repository, update)";
+            const method = 'support-dberror-tickets-update';
+            logError(message, method, err);
             await db.close(client);
-            throw new DBQueryErrorException('support-dberror-tickets-update', err);
+            throw new DBQueryErrorException(method, err);
         }
     }
 
@@ -136,10 +142,11 @@ IDeleteRepository
             await db.close(client);
             return result.rowCount > 0;
         } catch(err: any) {
-            const logMsg = "DB ERROR ON DELETE (Tickets Repository, delete): ";
-            logRepoError(logMsg, err);
+            const message = "DB ERROR ON DELETE (Tickets Repository, delete)";
+            const method = 'support-dberror-tickets-delete';
+            logError(message, method, err);
             await db.close(client);
-            throw new DBQueryErrorException('support-dberror-tickets-delete', err);
+            throw new DBQueryErrorException(method, err);
         }
     }
 

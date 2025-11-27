@@ -3,6 +3,7 @@ import { secrets } from '../utils/secrets.utils';
 import { DBConnectionException, DBEmptyException } from '../utils/exceptions/db.exception';
 import { ErrorStatusCodes } from '../utils/errorStatusCodes.utils';
 import { EnvMode } from '../utils/enums/env-mode.enum';
+import { logError } from '../utils/common.utils';
 
 export class DBConnection {
     private static instance: DBConnection;
@@ -55,14 +56,19 @@ export class DBConnection {
         try {
             const results = await client.query(`SELECT * FROM meta;`);
             if(!results || results.rowCount === 0) {
-                const error: any = new Error();
+                const error: any = new Error('DB ERROR CONNECTION NO DATA');
                 error.code = ErrorStatusCodes.DBEmptyException;
                 throw error;
             }
         } catch(error: any) {
-            // TODO(yqni13): logging
+            error.code = !error.code ? ErrorStatusCodes.DBConnectionException : error.code;
+            logError(
+                "DB ERROR CONNECTION INIT",
+                "support_dbconnection_init",
+                error
+            );
             if(error.code === ErrorStatusCodes.DBEmptyException) {
-                throw new DBEmptyException();
+                throw new DBEmptyException(error);
             } else {
                 throw new DBConnectionException(error);
             }
@@ -79,13 +85,11 @@ export class DBConnection {
             const client = await this.#pool.connect();
             return client;
         } catch(error: any) {
-            // Get ENV_MODE without white-spaces or comparison will fail.
-            const envMode = (process.env.NODE_ENV?.trim() as EnvMode);
-            if(envMode === EnvMode.TEST || envMode === EnvMode.DEV) {
-                console.log("DBConnection, fn: connect() ERROR: ", error);
-            } else {
-                // TODO(yqni13): logging
-            }
+            logError(
+                "DB ERROR CONNECTION CONNECT",
+                "support_dbconnection_connect",
+                error
+            );
             throw new DBConnectionException('server-535-auth#database');
         }
     }
@@ -94,13 +98,11 @@ export class DBConnection {
         try {
             client.release(true);
         } catch(error: any) {
-            // Get ENV_MODE without white-spaces or comparison will fail.
-            const envMode = (process.env.ENV_MODE?.trim() as EnvMode);
-            if(envMode === EnvMode.TEST || envMode === EnvMode.DEV) {
-                console.log("DBConnection, fn: close() ERROR: ", error);
-            } else {
-                // TODO(yqni13): logging
-            }
+            logError(
+                "DB ERROR CONNECTION CLOSE",
+                "support_dbconnection_close",
+                error
+            );
             throw new DBConnectionException('server-535-auth#database');
         }
     }

@@ -76,7 +76,7 @@ describe('Database tests table <clients>, priority: findByActiveKey', () => {
             const mockParam_hash = 'error_test_hash_value';
             const mockErrorMsg = "DB ERROR ON SELECT QUERY, (Clients TEST Repository, findByActiveKey)";
             const mockResult = null;
-            jest.spyOn(Utils, "logRepoError").mockReturnValue();
+            jest.spyOn(Utils, "logError").mockReturnValue();
             const _ = MockUtils.mapMockDbClient(mockResult, mockBoolean, mockErrorMsg);
 
             await expect(() => clientsRepository.findByActiveKey(mockParam_hash))
@@ -137,7 +137,7 @@ describe('Database tests table <clients>, priority: findStatusByName', () => {
             const mockParam_name = 'error_clients_test_name';
             const mockErrorMsg = "DB ERROR ON SELECT QUERY, (Clients TEST Repository, findStatusByName)";
             const mockResult = null;
-            jest.spyOn(Utils, "logRepoError").mockReturnValue();
+            jest.spyOn(Utils, "logError").mockReturnValue();
             const _ = MockUtils.mapMockDbClient(mockResult, mockBoolean, mockErrorMsg);
 
             await expect(() => clientsRepository.findByActiveKey(mockParam_name))
@@ -191,7 +191,7 @@ describe('Database tests table <clients>, priority: create', () => {
         test('Throw DBQueryErrorException by catch-block', async () => {
             const mockErrorMsg = "DB ERROR ON INSERT QUERY, (Clients TEST Repository, create)";
             const mockResult = null;
-            jest.spyOn(Utils, "logRepoError").mockReturnValue();
+            jest.spyOn(Utils, "logError").mockReturnValue();
             const _ = MockUtils.mapMockDbClient(mockResult, mockBoolean, mockErrorMsg);
 
             await expect(() => clientsRepository.create(mockParam_entity))
@@ -259,7 +259,7 @@ describe('Database tests table <clients>, priority: updateStatus', () => {
             const mockParam_id = 'error_clients_test_id';
             const mockErrorMsg = "DB ERROR ON UPDATE QUERY, (Clients TEST Repository, updateStatus)";
             const mockResult = null;
-            jest.spyOn(Utils, "logRepoError").mockReturnValue();
+            jest.spyOn(Utils, "logError").mockReturnValue();
             const _ = MockUtils.mapMockDbClient(mockResult, mockBoolean, mockErrorMsg);
 
             await expect(() => clientsRepository.updateStatus(mockParam_id, mockParam_dto))
@@ -328,7 +328,7 @@ describe('Database tests table <clients>, priority: updateLastUse', () => {
             const mockParam_id = 'error_clients_test_id';
             const mockErrorMsg = "DB ERROR ON UPDATE QUERY, (Clients TEST Repository, updateLastUse)";
             const mockResult = null;
-            jest.spyOn(Utils, "logRepoError").mockReturnValue();
+            jest.spyOn(Utils, "logError").mockReturnValue();
             const _ = MockUtils.mapMockDbClient(mockResult, mockBoolean, mockErrorMsg);
 
             await expect(() => clientsRepository.updateLastUse(mockParam_id, mockParam_dto))
