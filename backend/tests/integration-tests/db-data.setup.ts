@@ -3,6 +3,7 @@ import { MaintenanceMode } from "../../src/utils/enums/maintenance-mode.enum";
 import { TicketStatus } from "../../src/utils/enums/ticket-status.enum";
 import { UserStatus } from "../../src/utils/enums/user-status.enum";
 import { secrets } from "../../src/utils/secrets.utils";
+import { default as mockId } from "../mock-data/id.mock-data.json";
 
 export class DBTestData {
     private static instance: DBTestData;
@@ -46,7 +47,7 @@ export class DBTestData {
         (client_id, name, api_key_hash, status, last_use, last_modified, created_on)
         VALUES ($1, $2, $3, $4, $5, $6, $7);
         `;
-        const values = ['9e024539-32e8-4317-8007-84a3956e6b57', 'TESTCLIENT', secrets.TEST_APIKEY_HASH, ApiKeyStatus.ACTIVE, '2025-01-01T14:00:02.000Z', '2025-01-01T14:00:02.000Z', '2025-01-01T14:00:02.000Z'];
+        const values = [mockId.clients.valid[0], 'TESTCLIENT', secrets.TEST_APIKEY_HASH, ApiKeyStatus.ACTIVE, '2025-01-01T14:00:02.000Z', '2025-01-01T14:00:02.000Z', '2025-01-01T14:00:02.000Z'];
         return { sql: sql, values: values };
     }
 
@@ -55,7 +56,7 @@ export class DBTestData {
         (user_id, email, status, flag, last_modified, created_on)
         VALUES ($1, $2, $3, $4, $5, $6);
         `;
-        const values = ['87e4d6e3-d678-4de0-8806-e89135cbd38c', 'max.mustermann@yqni13.com', UserStatus.ACTIVE, null, '2025-01-01T14:00:03.000Z', '2025-01-01T14:00:03.000Z'];
+        const values = [mockId.users.valid[0], 'max.mustermann@yqni13.com', UserStatus.ACTIVE, null, '2025-01-01T14:00:03.000Z', '2025-01-01T14:00:03.000Z'];
         return { sql: sql, values: values };
     }
 
@@ -64,7 +65,7 @@ export class DBTestData {
         (ticket_id, client_id, user_id, status, message, resource_paths, flag, last_modified, created_on)
         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9);
         `;
-        const values = ['ae9550fc-16fd-4e9a-8ab5-d6ab55b84cb4', '9e024539-32e8-4317-8007-84a3956e6b57', '87e4d6e3-d678-4de0-8806-e89135cbd38c', TicketStatus.ISSUED, 'test-message', ['test/path/num0', 'test/path/num1'], null, '2025-01-01T14:00:04.000Z', '2025-01-01T14:00:04.000Z'];
+        const values = [mockId.tickets.valid[0], mockId.clients.valid[0], mockId.users.valid[0], TicketStatus.ISSUED, 'test-message', ['test/path/num0', 'test/path/num1'], null, '2025-01-01T14:00:04.000Z', '2025-01-01T14:00:04.000Z'];
         return { sql: sql, values: values };
     }
 }

@@ -3,7 +3,9 @@ import { MailSource } from './enums/mail-source.enum';
 import { secrets } from './secrets.utils';
 import { v4 as uuid_v4 } from 'uuid';
 import crypto from 'crypto';
-import { EnvMode } from './enums/env-mode.enum';
+import { Logger } from '../logger/config.logger';
+
+const logger = Logger.getLogger();
 
 export function generateUUID(): string {
     return uuid_v4();
@@ -34,32 +36,24 @@ export function selectPrivateKey(source: MailSource): string {
     }
 }
 
-export function isIRepoError(obj: any): boolean {
-    // Check if obj is an array instead (result with multiple data like from findAll) or null.
-    if(!obj || obj.length) {
-        return false;
-    }
-    const properties = Object.getOwnPropertyNames(obj);
-    return properties.includes('method') && properties.includes('error');
-}
-
-export function logRepoError(logMsg: string, err: any) {
-    // TODO(yqni13): logging
-    if(secrets.ENV_MODE.trim() === EnvMode.DEV || secrets.ENV_MODE.trim() === EnvMode.TEST) {
-        console.log(logMsg, err);
-    }
+export function logError(message: string, method: string, err: any) {
+    logger.error(message, {
+        error: err.code,
+        stack: err.stack,
+        context: { method: method }
+    });
 }
 
 export function mapObjTimestamps<T>(data: T, timeMapTargets: string[]): T {
     timeMapTargets.forEach((key: string) => {
         (data as any)[key] = getTimestampUTC(new Date((data as any)[key]));
     })
-    return data;
+    return data as T;
 }
 
 export function mapArrayTimestamps<T>(data: T[], timeMapTargets: string[]): T[] {
     data.forEach((obj: T) => {
         obj = mapObjTimestamps(obj, timeMapTargets);
     })
-    return data;
+    return data as T[];
 }

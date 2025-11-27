@@ -5,9 +5,16 @@ type MockClient = {
     query: jest.Mock
 }
 
-export function mapMockDbClient(mockResult: any, mockErrorMsg?: string, expectArray: boolean = false): MockClient {
+export function mapMockDbClient(mockResult: any, mockBoolean: boolean = false, mockErrorMsg?: string, expectArray: boolean = false): MockClient {
     let mockClient: MockClient;
-    if(!mockErrorMsg) {
+    if(mockBoolean) { 
+        mockClient = {
+            query: jest.fn().mockResolvedValueOnce({
+                rowCount: 0 ? false : true
+            } as any)
+        };
+    }
+    else if(!mockErrorMsg) {
         mockClient = {
             query: jest.fn().mockResolvedValueOnce({
                 rows: expectArray ? mockResult : [mockResult]

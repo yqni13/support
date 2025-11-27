@@ -1,11 +1,12 @@
 import { DBConnection } from "../../../src/configs/db";
 import * as Utils from "../../../src/utils/common.utils";
 import * as MockUtils from "../../common.test-utils";
-import { Users } from "../../../src/repositories/interfaces/users.entity.interface";
-import { UserStatus } from "../../../src/utils/enums/user-status.enum";
-import usersRepository from "../../../src/repositories/users.repository";
-import { UsersFilterDTO, UsersUpdateDTO } from "../../../src/dtos/users.dto";
+import { Tickets } from "../../../src/repositories/interfaces/tickets.entity.interface";
 import { DBQueryErrorException } from "../../../src/utils/exceptions/db.exception";
+import { TicketStatus } from "../../../src/utils/enums/ticket-status.enum";
+import ticketsRepository from "../../../src/repositories/tickets.repository";
+import { TicketsFilterDTO, TicketsResponseDTO, TicketsResponseExtendedDTO, TicketsUpdateDTO } from "../../../src/dtos/tickets.dto";
+import { Flag } from "../../../src/utils/enums/flag.enum";
 
 jest.mock("../../../src/configs/db", () => {
     return {
@@ -15,11 +16,13 @@ jest.mock("../../../src/configs/db", () => {
     }
 });
 
-const mockTimestamp = '2025-01-03T14:00:03.000Z';
-const mockData: Users = {
+const mockTimestamp = '2025-01-01T14:00:04.000Z';
+const mockData: Tickets = {
+    ticket_id: 'valid_tickets_test_id',
+    client_id: 'valid_clients_test_id',
     user_id: 'valid_users_test_id',
-    email: 'user@test.com',
-    status: UserStatus.ACTIVE,
+    status: TicketStatus.ISSUED,
+    message: 'test-message',
     flag: null,
     last_modified: mockTimestamp,
     created_on: mockTimestamp
@@ -27,7 +30,7 @@ const mockData: Users = {
 const expectExceptionResult = DBQueryErrorException;
 const mockBoolean = false;
 
-describe('Database tests table <users>, priority: findById', () => {
+describe('Database tests table <tickets>, priority: findById', () => {
 
     describe('Testing valid fn calls', () => {
 
@@ -37,10 +40,14 @@ describe('Database tests table <users>, priority: findById', () => {
         });
 
         test('Return data for existing entry, params: valid <id>', async () => {
-            const mockResult: Users = structuredClone(mockData);
-            const mockParam_id = 'valid_users_test_id';
+            const mockResult: TicketsResponseExtendedDTO = {
+                ...structuredClone(mockData),
+                client_name: 'TESTCLIENT',
+                user_email: 'user@test.com'
+            };
+            const mockParam_id = mockResult.ticket_id;
             const mockClient = MockUtils.mapMockDbClient(mockResult);
-            const testFn = await usersRepository.findById(mockParam_id);
+            const testFn = await ticketsRepository.findById(mockParam_id);
 
             expect(testFn).toEqual(mockResult);
             expect(DBConnection.getInstance).toHaveBeenCalled();
@@ -51,10 +58,10 @@ describe('Database tests table <users>, priority: findById', () => {
         })
 
         test('Return null for non-existing entry, params: non-existing <id>', async () => {
-            const mockParam_id = 'non-existing_users_test_id';
+            const mockParam_id = 'invalid_tickets_test_id';
             const mockResult = null;
             const mockClient = MockUtils.mapMockDbClient(mockResult);
-            const testFn = await usersRepository.findById(mockParam_id);
+            const testFn = await ticketsRepository.findById(mockParam_id);
 
             expect(testFn).toEqual(mockResult);
             expect(DBConnection.getInstance).toHaveBeenCalled();
@@ -66,21 +73,67 @@ describe('Database tests table <users>, priority: findById', () => {
     })
 
     describe('Testing invalid fn calls', () => {
-
+    
         test('Throw DBQueryErrorException by catch-block', async () => {
-            const mockParam_id = 'error_users_test_id';
+            const mockParam_id = structuredClone(mockData.ticket_id);
             const mockErrorMsg = "DB ERROR ON SELECT QUERY";
             const mockResult = null;
             jest.spyOn(Utils, "logError").mockReturnValue();
             const _ = MockUtils.mapMockDbClient(mockResult, mockBoolean, mockErrorMsg);
 
-            await expect(() => usersRepository.findById(mockParam_id))
+            await expect(() => ticketsRepository.findById(mockParam_id))
                 .rejects.toThrow(expectExceptionResult);
         })
     })
 })
 
-describe('Database tests table <users>, priority: findByEmail', () => {
+describe('Database tests table <tickets>, priority: findAll', () => {
+
+    describe('Testing valid fn calls', () => {
+
+        test('Return data for multiple existing entries', async () => {
+            const mockData_entry0: TicketsResponseDTO = structuredClone(mockData);
+            const mockData_entry1: TicketsResponseDTO = {
+                ticket_id: 'another_valid_tickets_test_id',
+                client_id: 'another_valid_clients_test_id',
+                user_id: 'another_valid_users_test_id',
+                status: TicketStatus.ACTIVE,
+                message: 'another-test-message',
+                flag: null,
+                last_modified: mockTimestamp,
+                created_on: mockTimestamp
+            };
+            const mockResult: Tickets[] = [mockData_entry0, mockData_entry1];
+
+            const mockErrorMsg = undefined;
+            const mockExpectArray = true;
+            const mockClient = MockUtils.mapMockDbClient(mockResult, mockBoolean, mockErrorMsg, mockExpectArray);
+            const sql = `SELECT`;
+            const testFn = await ticketsRepository.findAll();
+
+            expect(testFn).toEqual(mockResult);
+            expect(DBConnection.getInstance).toHaveBeenCalled();
+            expect(mockClient.query).toHaveBeenCalledWith(
+                expect.stringContaining(sql)
+            );
+        });
+    })
+
+    describe('Testing invalid fn calls', () => {
+
+        test('Throw DBQueryErrorException by catch-block', async () => {
+            const mockErrorMsg = "DB ERROR ON SELECT QUERY";
+            const mockResult = null;
+            jest.spyOn(Utils, "logError").mockReturnValue();
+            const _ = MockUtils.mapMockDbClient(mockResult, mockBoolean, mockErrorMsg);
+
+            await expect(() => ticketsRepository.findAll())
+                .rejects.toThrow(expectExceptionResult);
+        })
+    })
+})
+
+describe('Database tests table <tickets>, priority: findByFilter', () => {
 
     describe('Testing valid fn calls', () => {
 
@@ -89,31 +142,39 @@ describe('Database tests table <users>, priority: findByEmail', () => {
             sql = `SELECT`;
         });
 
-        test('Return data for existing entry, params: valid <email>', async () => {
-            const mockResult: Users = structuredClone(mockData);
-            const mockParam_email = mockResult.email;
-            const mockClient = MockUtils.mapMockDbClient(mockResult);
-            const testFn = await usersRepository.findByEmail(mockParam_email);
+        test('Return data for existing entry, params: valid <user_id>', async () => {
+            const mockResult: TicketsResponseDTO[] = [structuredClone(mockData)];
+            const mockParam_dto: TicketsFilterDTO = { user_id: structuredClone(mockData.user_id) };
+            const mockValues = [mockParam_dto.user_id];
+
+            const mockErrorMsg = undefined;
+            const mockExpectArray = true;
+            const mockClient = MockUtils.mapMockDbClient(mockResult, mockBoolean, mockErrorMsg, mockExpectArray);
+            const testFn = await ticketsRepository.findByFilter(mockParam_dto);
 
             expect(testFn).toEqual(mockResult);
             expect(DBConnection.getInstance).toHaveBeenCalled();
             expect(mockClient.query).toHaveBeenCalledWith(
                 expect.stringContaining(sql),
-                expect.arrayContaining([mockParam_email])
+                expect.arrayContaining(mockValues)
             );
         })
 
-        test('Return null for non-existing entry, params: non-existing <email>', async () => {
-            const mockParam_email = 'non-existing-user@test.com';
+        test('Return null for non-existing entry, params: non-existing <user_id>', async () => {
             const mockResult = null;
-            const mockClient = MockUtils.mapMockDbClient(mockResult);
-            const testFn = await usersRepository.findByEmail(mockParam_email);
+            const mockParam_dto = { user_id: ['non-existing_users_test_id_0', 'non-existing_users_test_id_1'] };
+            const mockValues = mockParam_dto.user_id;
+
+            const mockErrorMsg = undefined;
+            const mockExpectArray = true;
+            const mockClient = MockUtils.mapMockDbClient(mockResult, mockBoolean, mockErrorMsg, mockExpectArray);
+            const testFn = await ticketsRepository.findByFilter(mockParam_dto);
 
             expect(testFn).toEqual(mockResult);
             expect(DBConnection.getInstance).toHaveBeenCalled();
             expect(mockClient.query).toHaveBeenCalledWith(
                 expect.stringContaining(sql),
-                expect.arrayContaining([mockParam_email])
+                expect.arrayContaining(mockValues)
             );
         })
     })
@@ -121,143 +182,43 @@ describe('Database tests table <users>, priority: findByEmail', () => {
     describe('Testing invalid fn calls', () => {
     
         test('Throw DBQueryErrorException by catch-block', async () => {
-            const mockParam_email = structuredClone(mockData.email);
             const mockErrorMsg = "DB ERROR ON SELECT QUERY";
             const mockResult = null;
+            const mockParam_dto = {};
             jest.spyOn(Utils, "logError").mockReturnValue();
             const _ = MockUtils.mapMockDbClient(mockResult, mockBoolean, mockErrorMsg);
 
-            await expect(() => usersRepository.findByEmail(mockParam_email))
+            await expect(() => ticketsRepository.findByFilter(mockParam_dto))
                 .rejects.toThrow(expectExceptionResult);
         })
     })
 })
 
-describe('Database tests table <users>, priority: findAll', () => {
+describe('Database tests table <tickets>, priority: create', () => {
+
+    const mockParam_entity: Tickets = {
+        ticket_id: 'new-valid_tickets_test_id',
+        client_id: 'valid_clients_test_id',
+        user_id: 'new-valid_users_test_id',
+        status: TicketStatus.ISSUED,
+        message: 'new-test-message',
+        flag: null,
+        last_modified: mockTimestamp,
+        created_on: mockTimestamp
+    }
 
     describe('Testing valid fn calls', () => {
 
-        test('Return data for multiple existing entries', async () => {
-            const mockData_entry0 = structuredClone(mockData);
-            const mockData_entry1 = structuredClone(mockData_entry0);
-            mockData_entry1['user_id'] = 'another_valid_users_test_id';
-            mockData_entry1['email'] = 'user1@test.com';
-            const mockResult: Users[] = [mockData_entry0, mockData_entry1];
-
-            const mockErrorMsg = undefined;
-            const mockExpectArray = true;
-            const mockClient = MockUtils.mapMockDbClient(mockResult, mockBoolean, mockErrorMsg, mockExpectArray);
-            const sql = `SELECT * FROM users ORDER BY user_id ASC FETCH FIRST 100 ROWS ONLY;`;
-            const testFn = await usersRepository.findAll();
-
-            expect(testFn).toEqual(mockResult);
-            expect(DBConnection.getInstance).toHaveBeenCalled();
-            expect(mockClient.query).toHaveBeenCalledWith(sql);
-        });
-    })
-
-    describe('Testing invalid fn calls', () => {
-
-        test('Throw DBQueryErrorException by catch-block', async () => {
-            const mockErrorMsg = "DB ERROR ON SELECT QUERY";
-            const mockResult = null;
-            jest.spyOn(Utils, "logError").mockReturnValue();
-            const _ = MockUtils.mapMockDbClient(mockResult, mockBoolean, mockErrorMsg);
-
-            await expect(() => usersRepository.findAll())
-                .rejects.toThrow(expectExceptionResult);
-        })
-    })
-})
-
-describe('Database tests table <users>, priority: findByFilter', () => {
-
-    describe('Testing valid fn calls', () => {
-
-        let sql: string;
-        beforeEach(() => {
-            sql = `SELECT`;
-        });
-
-        test('Return data for existing entry, params: valid <email>', async () => {
-            const mockParam_dto = { email: structuredClone(mockData.email) };
-            const mockValues = [mockParam_dto.email];
-            const mockResult: Users[] = [structuredClone(mockData)];
-
-            const mockErrorMsg = undefined;
-            const mockExpectArray = true;
-            const mockClient = MockUtils.mapMockDbClient(mockResult, mockBoolean, mockErrorMsg, mockExpectArray);
-            const testFn = await usersRepository.findByFilter(mockParam_dto);
-
-            expect(testFn).toEqual(mockResult);
-            expect(DBConnection.getInstance).toHaveBeenCalled();
-            expect(mockClient.query).toHaveBeenCalledWith(
-                expect.stringContaining(sql),
-                expect.arrayContaining(mockValues)
-            );
-        })
-
-        test('Return null for non-existing entry, params: non-existing <email>', async () => {
-            const mockParam_dto = { email: ['non-existing-user0@test.com', 'non-existing-user1@test.com'] };
-            const mockValues = mockParam_dto.email;
-            const mockResult = null;
-
-            const mockErrorMsg = undefined;
-            const mockExpectArray = true;
-            const mockClient = MockUtils.mapMockDbClient(mockResult, mockBoolean, mockErrorMsg, mockExpectArray);
-            const testFn = await usersRepository.findByFilter(mockParam_dto);
-
-            expect(testFn).toEqual(mockResult);
-            expect(DBConnection.getInstance).toHaveBeenCalled();
-            expect(mockClient.query).toHaveBeenCalledWith(
-                expect.stringContaining(sql),
-                expect.arrayContaining(mockValues)
-            );
-        })
-    })
-
-    describe('Testing invalid fn calls', () => {
-
-        test('Throw DBQueryErrorException by catch-block', async () => {
-            const mockParam_dto = { email: 'error-user@test.com', status: UserStatus.ACTIVE };
-            const mockErrorMsg = "DB ERROR ON SELECT QUERY";
-            const mockResult = null;
-            jest.spyOn(Utils, "logError").mockReturnValue();
-            const _ = MockUtils.mapMockDbClient(mockResult, mockBoolean, mockErrorMsg);
-
-            await expect(() => usersRepository.findByFilter(mockParam_dto))
-                .rejects.toThrow(expectExceptionResult);
-        })
-    })
-})
-
-describe('Database tests table <users>, priority: create', () => {
-
-    let sql: string;
-    let mockParam_entity: Users;
-    beforeEach(() => {
-        sql = 'INSERT';
-        mockParam_entity = {
-            user_id: 'valid_users_test_id',
-            email: 'new-user@test.com',
-            status: UserStatus.ACTIVE,
-            flag: null,
-            last_modified: mockTimestamp,
-            created_on: mockTimestamp
-        }
-    })
-
-    describe('Testing valid fn calls', () => {
-
-        test('Return data for created entry, params: <name> = "testclient"', async () => {
+        test('Return data for created entry, params: <message> = "new-test-message"', async () => {
+            const sql = `INSERT`;
             let mockValues: any[] = [];
             Object.values(mockParam_entity).forEach((value) => {
                 mockValues.push(value);
             });
 
-            const mockResult: Users = structuredClone(mockParam_entity);
+            const mockResult: Tickets = structuredClone(mockParam_entity);
             const mockClient = MockUtils.mapMockDbClient(mockResult);
-            const testFn = await usersRepository.create(mockParam_entity);
+            const testFn = await ticketsRepository.create(mockParam_entity);
 
             expect(testFn).toEqual(mockResult);
             expect(DBConnection.getInstance).toHaveBeenCalled();
@@ -276,22 +237,22 @@ describe('Database tests table <users>, priority: create', () => {
             jest.spyOn(Utils, "logError").mockReturnValue();
             const _ = MockUtils.mapMockDbClient(mockResult, mockBoolean, mockErrorMsg);
 
-            await expect(() => usersRepository.create(mockParam_entity))
+            await expect(() => ticketsRepository.create(mockParam_entity))
                 .rejects.toThrow(expectExceptionResult);
         })
     })
 })
 
-describe('Database tests table <users>, priority: udpate', () => {
+describe('Database tests table <tickets>, priority: udpate', () => {
 
     let sql: string;
-    let mockParam_dto: UsersUpdateDTO;
+    let mockParam_dto: TicketsUpdateDTO;
     let mockValues: any[];
     beforeEach(() => {
         sql = `UPDATE`;
         mockParam_dto = {
-            email: 'user@test.com',
-            status: UserStatus.BLACKLISTED,
+            status: TicketStatus.ACTIVE,
+            message: 'updated-test-message',
             flag: null,
             last_modified: mockTimestamp
         };
@@ -301,16 +262,17 @@ describe('Database tests table <users>, priority: udpate', () => {
     describe('Testing valid fn calls', () => {
 
         test('Return data of changed entry by valid id', async () => {
-            const mockParam_id = 'valid_users_test_id';
+            const mockParam_id = structuredClone(mockData.user_id);
             Object.values(mockParam_dto).forEach((val) => {
                 mockValues.push(val);
             });
             mockValues.push(mockParam_id);
-            const mockResult: Users = structuredClone(mockData);
-            mockResult['status'] = UserStatus.BLACKLISTED;
+
+            const mockResult: Tickets = structuredClone(mockData);
+            mockResult['status'] = TicketStatus.ACTIVE;
 
             const mockClient = MockUtils.mapMockDbClient(mockResult);
-            const testFn = await usersRepository.update(mockParam_id, mockParam_dto);
+            const testFn = await ticketsRepository.update(mockParam_id, mockParam_dto);
 
             expect(testFn).toEqual(mockResult);
             expect(DBConnection.getInstance).toHaveBeenCalled();
@@ -320,17 +282,16 @@ describe('Database tests table <users>, priority: udpate', () => {
             );
         })
 
-        test('Return null for no entries by non-existing id', async () => {
-            const mockParam_id = 'non-existing_users_test_id';
+        test('Return null for non-existing entry by invalid id', async () => {
+            const mockParam_id = 'invalid_tickets_test_id';
             Object.values(mockParam_dto).forEach((val) => {
                 mockValues.push(val);
             });
             mockValues.push(mockParam_id);
 
             const mockResult = null;
-
             const mockClient = MockUtils.mapMockDbClient(mockResult);
-            const testFn = await usersRepository.update(mockParam_id, mockParam_dto);
+            const testFn = await ticketsRepository.update(mockParam_id, mockParam_dto);
 
             expect(testFn).toEqual(mockResult);
             expect(DBConnection.getInstance).toHaveBeenCalled();
@@ -344,35 +305,88 @@ describe('Database tests table <users>, priority: udpate', () => {
     describe('Testing invalid fn calls', () => {
 
         test('Throw DBQueryErrorException by catch-block', async () => {
-            const mockParam_id = 'error_users_test_id';
+            const mockParam_id = 'invalid_tickets_test_id';
             const mockErrorMsg = "DB ERROR ON UPDATE QUERY";
             const mockResult = null;
             jest.spyOn(Utils, "logError").mockReturnValue();
             const _ = MockUtils.mapMockDbClient(mockResult, mockBoolean, mockErrorMsg);
 
-            await expect(() => usersRepository.update(mockParam_id, mockParam_dto))
+            await expect(() => ticketsRepository.update(mockParam_id, mockParam_dto))
                 .rejects.toThrow(expectExceptionResult);
         })
     })
 })
 
-describe('Database tests table <users>, priority: _mapFilteredUsersQueryValues', () => {
+describe('Database tests table <tickets>, priority: delete', () => {
+
+    let sql: string;
+    beforeEach(() => {
+        sql = `DELETE`;
+    });
 
     describe('Testing valid fn calls', () => {
 
-        test('Map sql string and values array, params: UsersFilterDTO', () => {
-            const mockParam_dto: UsersFilterDTO = {
-                email: ['user@test.com', 'new-user@test.com'],
-                status: UserStatus.ACTIVE
-            }
-            const testFn = usersRepository._mapFilteredUsersQueryValues(mockParam_dto);
-            const expectResult = {
-                sql: "SELECT * FROM users WHERE (email = $1 OR email = $2) AND status = $3;",
-                values: ['user@test.com', 'new-user@test.com', 'active']
+        test('Return true for deleted entry by valid id', async () => {
+            const mockParam_id = structuredClone(mockData.ticket_id);
+            const mockBoolean = true
+            const mockResult = true;
+            const mockClient = MockUtils.mapMockDbClient(mockResult, mockBoolean);
+            const testFn = await ticketsRepository.delete(mockParam_id);
+
+            expect(testFn).toEqual(mockResult);
+            expect(DBConnection.getInstance).toHaveBeenCalled();
+            expect(mockClient.query).toHaveBeenCalledWith(
+                expect.stringContaining(sql),
+                expect.arrayContaining([mockParam_id])
+            );
+        })
+
+        test('Return false for non-existing entry by invalid id', async () => {
+            const mockParam_id = 'invalid_tickets_test_id';
+            const mockResult = false;
+            const mockClient = MockUtils.mapMockDbClient(mockResult);
+            const testFn = await ticketsRepository.delete(mockParam_id);
+
+            expect(testFn).toEqual(mockResult);
+            expect(DBConnection.getInstance).toHaveBeenCalled();
+            expect(mockClient.query).toHaveBeenCalledWith(
+                expect.stringContaining(sql),
+                expect.arrayContaining([mockParam_id])
+            );
+        })
+    })
+
+    describe('Testing invalid fn calls', () => {
+
+        test('Throw DBQueryErrorException by catch-block', async () => {
+            const mockParam_id = 'error_tickets_test_id';
+            const mockErrorMsg = "DB ERROR ON DELETE QUERY";
+            const mockResult = null;
+            jest.spyOn(Utils, "logError").mockReturnValue();
+            const _ = MockUtils.mapMockDbClient(mockResult, mockBoolean, mockErrorMsg);
+
+            await expect(() => ticketsRepository.delete(mockParam_id))
+                .rejects.toThrow(expectExceptionResult);
+        })
+    })
+})
+
+describe('Database tests table <tickets>, priority: _mapFilteredTicketsQueryValues', () => {
+
+    describe('Testing valid fn calls', () => {
+
+        test('Map sql string and values array, params: TicketsFilterDTO', () => {
+            const mockParam_dto: TicketsFilterDTO = {
+                status: TicketStatus.ACTIVE,
+                flag: [Flag.ERROR, Flag.WARNING]
+            };
+            const testFn = ticketsRepository._mapFilteredTicketsQueryValues(mockParam_dto);
+            const mockResult = {
+                sql: 'SELECT * FROM tickets WHERE status = $1 AND (flag = $2 OR flag = $3);',
+                values: [TicketStatus.ACTIVE, Flag.ERROR, Flag.WARNING]
             };
 
-            expect(testFn.sql).toContain(expectResult.sql);
-            expect(testFn.values).toStrictEqual(expectResult.values);
+            expect(testFn).toMatchObject(mockResult);
         })
     })
 })

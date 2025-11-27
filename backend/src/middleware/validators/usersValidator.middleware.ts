@@ -5,14 +5,22 @@ import { Flag } from '../../utils/enums/flag.enum';
 import { SingleOrArray } from '../../utils/custom-types.utils';
 import { CommonExceptionMessage as Message } from '../../utils/enums/common-exception-messages.enum';
 
-export const usersFindByIdSchema: ValidationChain[] = [
+export const getUserByIdSchema: ValidationChain[] = [
     param('id')
-        .trim()
-        .notEmpty()
-        .withMessage(Message.REQUIRED)
+        .custom((content: string) => CustomValidator.validatePathParam(content))
+        .bail()
+        .isUUID(4)
+        .withMessage('support-invalid-entry#user_id')
 ];
 
-export const usersFindByFilterSchema: ValidationChain[] = [
+export const getUserByEmailSchema: ValidationChain[] = [
+    param('email')
+        .custom((content: string) => CustomValidator.validatePathParam(content))
+        .bail()
+        .custom((content: string) => CustomValidator.validateEmail(content))
+];
+
+export const postUsersSearchSchema: ValidationChain[] = [
     body('email')
         .custom((content: SingleOrArray<string>) => {
             content = Array.isArray(content) ? content : [content];
@@ -28,18 +36,18 @@ export const usersFindByFilterSchema: ValidationChain[] = [
         })
         .optional(),
     body('flag')
-        .custom((content: undefined | null | SingleOrArray<UserStatus>) => {
+        .custom((content: undefined | null | SingleOrArray<Flag>) => {
             // Manual check for undefined/null necessary because null is valid value.
             if(content === null || content === undefined) {
                 return true;
             }
             content = Array.isArray(content) ? content : [content];
-            content.forEach((status) => CustomValidator.validateEnum(status, Flag, 'flag'))
+            content.forEach((flag) => CustomValidator.validateEnum(flag, Flag, 'flag'))
             return true;
         })
 ];
 
-export const usersCreateSchema: ValidationChain[] = [
+export const postUserSchema: ValidationChain[] = [
     body('email')
         .trim()
         .notEmpty()
@@ -48,27 +56,15 @@ export const usersCreateSchema: ValidationChain[] = [
         .custom(async(val: string) => {
             CustomValidator.validateEmail(val);
             await CustomValidator.validateEmailUniqueness(val);
-        }),
-    body('status')
-        .trim()
-        .notEmpty()
-        .withMessage(Message.REQUIRED)
-        .bail()
-        .custom((val: string) => CustomValidator.validateEnum(val, UserStatus, 'userStatus')),
-    body('flag')
-        .trim()
-        .custom((val: string) => CustomValidator.validateEnum(val, Flag, 'flag'))
-        .optional({values: 'null'}),
-    body('last_modified')
-        .isEmpty()
-        .withMessage(Message.FORBIDDEN)
+        })
 ];
 
-export const usersUpdateSchema: ValidationChain[] = [
+export const patchUserSchema: ValidationChain[] = [
     param('id')
-        .trim()
-        .notEmpty()
-        .withMessage(Message.REQUIRED),
+        .custom((content: string) => CustomValidator.validatePathParam(content))
+        .bail()
+        .isUUID(4)
+        .withMessage('support-invalid-entry#user_id'),
     body('email')
         .trim()
         .notEmpty()
@@ -83,10 +79,10 @@ export const usersUpdateSchema: ValidationChain[] = [
         .notEmpty()
         .withMessage(Message.REQUIRED)
         .bail()
-        .custom((val: string) => CustomValidator.validateEnum(val, UserStatus, 'userStatus')),
+        .custom((status: string) => CustomValidator.validateEnum(status, UserStatus, 'userStatus')),
     body('flag')
         .trim()
-        .custom((val: string) => CustomValidator.validateEnum(val, Flag, 'flag'))
+        .custom((flag: string) => CustomValidator.validateEnum(flag, Flag, 'flag'))
         .optional({values: 'null'}),
     body('last_modified')
         .isEmpty()

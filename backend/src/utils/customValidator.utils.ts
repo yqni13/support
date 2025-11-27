@@ -3,7 +3,7 @@ import clientsRepository from "../repositories/clients.repository";
 import { Users } from "../repositories/interfaces/users.entity.interface";
 import usersRepository from "../repositories/users.repository";
 import { MalformedApiKeyException } from "./exceptions/auth.exception";
-import * as Utils from "./common.utils";
+import { CommonExceptionMessage } from "./enums/common-exception-messages.enum";
 
 export function validateVersionStructure(version: string, numOfDelimiter: number): boolean {
     // 1. Check if version has all necessary delimiters.
@@ -136,9 +136,16 @@ export async function validateEmailUniqueness(email: string): Promise<boolean> {
 
 export async function validateClientUniqueness(name: string): Promise<boolean> {
     const result = await clientsRepository.findStatusByName(name); // Returns all necessary data - no need for new fn.
-    const isUnique = !Utils.isEmptyObj(result) || Utils.isIRepoError(result) ? false : true;
+    const isUnique = !result ? true : false;
     if(!isUnique) {
         throw new Error('support-nonunique-client');
+    }
+    return true;
+}
+
+export function validatePathParam(arg: string | null | undefined): boolean {
+    if(arg === null || arg === undefined || arg === ' ' || arg[0] === ':') {
+        throw new Error(CommonExceptionMessage.REQUIRED);
     }
     return true;
 }

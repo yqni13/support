@@ -1,4 +1,5 @@
 import { Clients } from "../repositories/interfaces/clients.entity.interface";
+import { Users } from "../repositories/interfaces/users.entity.interface";
 
 /**
  * Typescript has fixed interface for Express Request.
@@ -10,7 +11,8 @@ import { Clients } from "../repositories/interfaces/clients.entity.interface";
 declare global {
     namespace Express {
         export interface Request {
-            apiClients: Clients
+            apiClients: Clients,
+            apiUsers: Users
         }
     }
 }

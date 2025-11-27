@@ -7,6 +7,7 @@ export class CommonException extends Error {
     public error: string;
     public status: number;
     public data?: unknown;
+    public isOperational: boolean;
 
     constructor(
         code: number | string,
@@ -21,23 +22,24 @@ export class CommonException extends Error {
         this.error = this.constructor.name;
         this.status = status;
         this.data = data;
+        this.isOperational = true;
     }
 }
 
 export class InternalServerException extends CommonException {
-    constructor(message: string, data?: unknown) {
+    constructor(message: string = 'support-internal-error', data?: unknown) {
         super(ErrorCodes.InternalServerException, message, data);
     }
 }
 
 export class RequestExceedMaxException extends CommonException {
-    constructor(message: string = 'server-max-email', data?: unknown) {
+    constructor(message: string = 'support-max-email', data?: unknown) {
         super(ErrorCodes.RequestExceedMaxException, message, data);
     }
 }
 
 export class InvalidSourceException extends CommonException {
-    constructor(message: string = 'server-invalid-source', data?: unknown) {
+    constructor(message: string = 'support-invalid-source', data?: unknown) {
         super(ErrorCodes.InvalidSourceException, message, data);
     }
 }

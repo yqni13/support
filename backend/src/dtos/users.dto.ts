@@ -2,7 +2,11 @@ import { UserStatus } from "../utils/enums/user-status.enum";
 import { Flag } from "../utils/enums/flag.enum";
 import { SingleOrArray } from "../utils/custom-types.utils";
 
-export interface UsersCreateUpdateDTO {
+export interface UsersCreateDTO {
+    email: string,
+}
+
+export interface UsersUpdateDTO {
     email: string,
     status: UserStatus,
     flag: Flag | null,

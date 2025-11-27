@@ -2,14 +2,13 @@ import { NextFunction, Request, Response } from "express";
 import metaService from "../services/meta.service";
 import { checkValidation } from "../middleware/validation.middleware";
 import { MaintenanceResponseDTO, MaintenanceUpdateDTO, MetaResponseDTO, MetaUpdateDTO } from "../dtos/meta.dto";
-import { IRepoError } from "../repositories/interfaces/error.repository.interface";
 
 class MetaController {
     async getMetaById(req: Request, res: Response, next: NextFunction) {
         try {
             checkValidation(req);
             const id: number = +(req.params.id);
-            const response: MetaResponseDTO | IRepoError | null = await metaService.getMetaById(id);
+            const response: MetaResponseDTO | null = await metaService.getMetaById(id);
             res.send(response);
         } catch(err: any) {
             next(err);
@@ -20,28 +19,28 @@ class MetaController {
         try {
             checkValidation(req);
             const name: string = req.params.name;
-            const response: MetaResponseDTO | IRepoError | null = await metaService.getMetaByName(name);
+            const response: MetaResponseDTO | null = await metaService.getMetaByName(name);
             res.send(response);
         } catch(err: any) {
             next(err);
         }
     }
 
-    async getAllData(req: Request, res: Response, next: NextFunction) {
+    async getAllMeta(req: Request, res: Response, next: NextFunction) {
         try {
-            const response: MetaResponseDTO[] | IRepoError | null = await metaService.getAllData();
+            const response: MetaResponseDTO[] | null = await metaService.getAllMeta();
             res.send(response);
         } catch(err: any) {
             next(err);
         }
     }
 
-    async updateMetaData(req: Request, res: Response, next: NextFunction) {
+    async patchMeta(req: Request, res: Response, next: NextFunction) {
         try {
             checkValidation(req);
             const id: number = +(req.params.id);
             const dto: MetaUpdateDTO = req.body;
-            const response: MetaResponseDTO | IRepoError | null = await metaService.updateMetaData(id, dto);
+            const response: MetaResponseDTO | null = await metaService.updateMeta(id, dto);
             res.send(response);
         } catch(err: any) {
             next(err);
@@ -52,19 +51,19 @@ class MetaController {
         try {
             checkValidation(req);
             const name: string = req.params.name;
-            const response: MaintenanceResponseDTO | IRepoError | null = await metaService.getMaintenanceMode(name);
+            const response: MaintenanceResponseDTO | null = await metaService.getMaintenanceMode(name);
             res.send(response);
         } catch(err: any) {
             next(err);
         }
     }
 
-    async setMaintenanceMode(req: Request, res: Response, next: NextFunction) {
+    async patchMaintenanceMode(req: Request, res: Response, next: NextFunction) {
         try {
             checkValidation(req);
             const name: string = req.params.name;
             const dto: MaintenanceUpdateDTO = req.body;
-            const response: MaintenanceResponseDTO | IRepoError | null = await metaService.setMaintenanceMode(name, dto);
+            const response: MaintenanceResponseDTO | null = await metaService.updateMaintenanceMode(name, dto);
             res.send(response);
         } catch(err: any) {
             next(err);

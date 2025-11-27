@@ -1,18 +1,16 @@
-import { IRepoError } from "./error.repository.interface";
-
 export interface IBaseRepository<T> {
-    findById(id: string | number): Promise<T |  IRepoError | null>;
-    update(id: string | number, data: Partial<T>): Promise<T | IRepoError | null>;
+    findById(id: string | number): Promise<T | null>;
+    update(id: string | number, dto: Partial<T>): Promise<T | null>;
 }
 
 export interface IFindRepository<T> {
-    findAll(): Promise<T[] | IRepoError | null>;
+    findAll(): Promise<T[] | null>;
 }
 
 export interface ICreateRepository<T> {
-    create(entity: T): Promise<T | IRepoError>;
+    create(entity: T): Promise<T>;
 }
 
 export interface IDeleteRepository {
-    delete(id: string | number): Promise<boolean | IRepoError>;
+    delete(id: string | number): Promise<boolean>;
 }
