@@ -1,5 +1,9 @@
-import { MaintenanceResponseDTO, MaintenanceUpdateDTO, MetaResponseDTO, MetaUpdateDTO } from '../dtos/meta.dto';
-import { IRepoError } from '../repositories/interfaces/error.repository.interface';
+import {
+    MaintenanceResponseDTO,
+    MetaResponseDTO,
+    MetaUpdateDTO,
+    MaintenanceUpdateDTO
+} from '../dtos/meta.dto';
 import metaRepository from '../repositories/meta.repository';
 import * as Utils from "../utils/common.utils";
 
@@ -10,54 +14,36 @@ class MetaService {
         this.timeMapTargets = ['build_on', 'created_on', 'last_modified'];
     }
 
-    async getMetaById(id: number): Promise<MetaResponseDTO | IRepoError | null> {
+    async getMetaById(id: number): Promise<MetaResponseDTO | null> {
         let result = await metaRepository.findById(id);
-        result = !result || Utils.isIRepoError(result) 
-            ? result
-            : (Utils.mapObjTimestamps(result as MetaResponseDTO, this.timeMapTargets)) as MetaResponseDTO;
-        return result;
+        return !result ? null : Utils.mapObjTimestamps<MetaResponseDTO>(result, this.timeMapTargets);
     }
 
-    async getMetaByName(name: string): Promise<MetaResponseDTO | IRepoError | null> {
+    async getMetaByName(name: string): Promise<MetaResponseDTO | null> {
         let result = await metaRepository.findByName(name);
-        result = !result || Utils.isIRepoError(result)
-            ? result
-            : (Utils.mapObjTimestamps(result as MetaResponseDTO, this.timeMapTargets)) as MetaResponseDTO;
-        return result;
+        return !result ? null : Utils.mapObjTimestamps<MetaResponseDTO>(result, this.timeMapTargets);;
     }
 
-    async getAllData(): Promise<MetaResponseDTO[] | IRepoError | null> {
+    async getAllMeta(): Promise<MetaResponseDTO[] | null> {
         let result = await metaRepository.findAll();
-        result = !result || Utils.isIRepoError(result) 
-            ? result
-            : Utils.mapArrayTimestamps(result as MetaResponseDTO[], this.timeMapTargets);
-        return result;
+        return !result ? null : Utils.mapArrayTimestamps<MetaResponseDTO>(result, this.timeMapTargets);;
     }
 
-    async updateMetaData(id: number, dto: MetaUpdateDTO): Promise<MetaResponseDTO | IRepoError | null> {
+    async updateMeta(id: number, dto: MetaUpdateDTO): Promise<MetaResponseDTO | null> {
         dto.last_modified = Utils.getTimestampUTC();
         let result = await metaRepository.update(id, dto);
-        result = !result || Utils.isIRepoError(result)
-            ? result
-            : (Utils.mapObjTimestamps(result as MetaResponseDTO, this.timeMapTargets)) as MetaResponseDTO;
-        return result;
+        return !result ? null : Utils.mapObjTimestamps<MetaResponseDTO>(result, this.timeMapTargets);
     }
 
-    async getMaintenanceMode(name: string): Promise<MaintenanceResponseDTO | IRepoError | null> {
+    async getMaintenanceMode(name: string): Promise<MaintenanceResponseDTO | null> {
         let result = await metaRepository.findMaintenance(name);
-        result = !result || Utils.isIRepoError(result)
-            ? result
-            : (Utils.mapObjTimestamps(result as MaintenanceResponseDTO, this.timeMapTargets)) as MaintenanceResponseDTO;
-        return result;
+        return !result ? null : Utils.mapObjTimestamps<MaintenanceResponseDTO>(result, this.timeMapTargets);;
     }
 
-    async setMaintenanceMode(name: string, dto: MaintenanceUpdateDTO): Promise<MaintenanceResponseDTO | IRepoError | null> {
+    async updateMaintenanceMode(name: string, dto: MaintenanceUpdateDTO): Promise<MaintenanceResponseDTO | null> {
         dto.last_modified = Utils.getTimestampUTC();
         let result = await metaRepository.updateMaintenance(name, dto);
-        result = !result || Utils.isIRepoError(result)
-            ? result
-            : (Utils.mapObjTimestamps(result as MaintenanceResponseDTO, this.timeMapTargets)) as MaintenanceResponseDTO;
-        return result;
+        return !result ? null : Utils.mapObjTimestamps<MaintenanceResponseDTO>(result, this.timeMapTargets);;
     }
 }
 

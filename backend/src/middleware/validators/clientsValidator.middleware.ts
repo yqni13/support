@@ -3,14 +3,12 @@ import * as CustomValidator from "../../utils/customValidator.utils";
 import { ApiKeyStatus } from '../../utils/enums/api-key-status.enum';
 import { CommonExceptionMessage as Message } from '../../utils/enums/common-exception-messages.enum';
 
-export const clientsStatusFindSchema: ValidationChain[] = [
+export const getClientStatusSchema: ValidationChain[] = [
     param('name')
-        .trim()
-        .notEmpty()
-        .withMessage(Message.REQUIRED)
+        .custom((content: string) => CustomValidator.validatePathParam(content))
 ];
 
-export const clientsCreateSchema: ValidationChain[] = [
+export const postClientSchema: ValidationChain[] = [
     body('name')
         .trim()
         .notEmpty()
@@ -19,11 +17,12 @@ export const clientsCreateSchema: ValidationChain[] = [
         .custom(async(val: string) => await CustomValidator.validateClientUniqueness(val))
 ];
 
-export const clientsStatusUpdateSchema: ValidationChain[] = [
+export const patchClientStatusSchema: ValidationChain[] = [
     param('id')
-        .trim()
-        .notEmpty()
-        .withMessage(Message.REQUIRED),
+        .custom((content: string) => CustomValidator.validatePathParam(content))
+        .bail()
+        .isUUID(4)
+        .withMessage('support-invalid-entry#client_id'),
     body('status')
         .trim()
         .notEmpty()

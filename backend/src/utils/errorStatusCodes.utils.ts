@@ -9,5 +9,5 @@ export const ErrorStatusCodes: any = {
     InvalidPropertiesException: 400,
     MaintenanceException: 598,
     InvalidApiKeyException: 403,
-    ExceedMaxEndpointException: 429
+    ExceedMaxEndpointException: 429,
 };

@@ -4,9 +4,38 @@
 
 <br>
 
+### $\textsf{\color{skyblue}2025/11/27}$
+
+$\textsf{[v0.9.3\ =>\ {\textbf{\color{brown}v0.9.4}]}}$ app
+- $\textsf{\color{orange}Patch:}$ Refactored and integrated logger on necessary hotspots (catch-blocks).
+
+<br>
+
+### $\textsf{\color{skyblue}2025/11/26}$
+
+$\textsf{[v0.9.2\ =>\ v0.9.3]}$ app
+- $\textsf{\color{orange}Patch:}$ Refactored error handling and return values for entities 'clients', 'users' and 'meta'.
+
+<br>
+
+### $\textsf{\color{skyblue}2025/11/25}$
+
+$\textsf{[v0.9.1\ =>\ v0.9.2]}$ app
+- $\textsf{\color{orange}Patch:}$ Refactored process of registering new user by assigning default values in business layer (model).
+
+<br>
+
+### $\textsf{\color{skyblue}2025/11/24}$
+
+$\textsf{[v0.8.5\ =>\ v0.9.1]}$ app
+- $\textsf{\color{orange}Patch:}$ Updated tests, mock-data handling and added findByEmail to 'users' repository methods. 
+- $\textsf{\color{teal}Addition:}$ Added routes + basic logic to handle 'Tickets' data.
+
+<br>
+
 ### $\textsf{\color{skyblue}2025/11/21}$
 
-$\textsf{[v0.8.2\ =>\ {\textbf{\color{brown}v0.8.5}]}}$ app
+$\textsf{[v0.8.2\ =>\ v0.8.5]}$ app
 - $\textsf{\color{orange}Patch:}$ Refactored timestamp mapping from different model functions to two generic type handling helper functions.
 - $\textsf{\color{orange}Patch:}$ Updated validations and added tests for params-located arguments (checked only body-located arguments before).
 - $\textsf{\color{teal}Addition:}$ Added validation on create method of entity 'Clients' to check if name already exists in database (unique constraint).

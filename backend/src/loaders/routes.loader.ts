@@ -2,6 +2,7 @@ import { Application } from 'express';
 import clientsRouter from '../routes/clients.route';
 import mailingRouter from '../routes/mailing.route';
 import metaRouter from '../routes/meta.route';
+import ticketsRouter from '../routes/tickets.route'; 
 import usersRouter from '../routes/users.route';
 
 export class RoutesLoader {
@@ -9,6 +10,7 @@ export class RoutesLoader {
         app.use(`/api/${version}/clients`, clientsRouter);
         app.use(`/api/${version}/mailing`, mailingRouter); 
         app.use(`/api/${version}/meta`, metaRouter);
+        app.use(`/api/${version}/tickets`, ticketsRouter);
         app.use(`/api/${version}/users`, usersRouter);
     }
 }

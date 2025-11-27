@@ -56,17 +56,17 @@ Basic description: `<base>.<subsuffix?>.<suffix>.<ending>` [specific always sing
 
 ## Testing
 
-| Description                   | Prefix              | Example                       |
-|-------------------------------|---------------------|-------------------------------|
-| Basic mocks fn/results        | `mock`              | mockResult, mockAPI           |
-| Mock specific params          | `mockParam_`        | mockParam_language            |
-| DB mock specific actions      | `mockDB_`           | mockDB_init                   |
-| Basic data to test from json  | `MockData_`         | MockData_places               |
-| Integration-Tests             | --                  | workflow/express-validation   |
-| Unit-Tests                    | --                  | models, custom validation     |
-| Description: parameters       | `Params: \<name\>`  | <origin>, <subject>           |
-| Description: triggered result | `by [name]`         | notEmpty by undefined         | 
-
+| Description                   | Prefix                          | Example                       |
+|-------------------------------|---------------------------------|-------------------------------|
+| Basic mocks fn/results        | `mock`                          | mockResult, mockAPI           |
+| Mock specific params          | `mockParam_`                    | mockParam_language            |
+| Mock specific values          | `[cause]_[entity]_test_[value]` | invalid_clients_test_id       |
+| Testcontainer data testing    | `test`                          | testParam_, testResult        |
+| Basic data to test from json  | `MockData_`                     | MockData_places               |
+| Integration-Tests             | --                              | workflow/express-validation   |
+| Unit-Tests                    | --                              | models, custom validation     |
+| Description: parameters       | `Params: \<name\>`              | <origin>, <subject>           |
+| Description: triggered result | `by [name]`                     | notEmpty by undefined         | 
 <br>
 
 ## Git administration
@@ -79,11 +79,12 @@ Basic description: `<base>.<subsuffix?>.<suffix>.<ending>` [specific always sing
 
 ## 🈺 Other
 
-| Classification            | Structure                   | Example                   |
-|---------------------------|-----------------------------|---------------------------|
-| Enum (template access)    | `[EnumName]Enum`            | BaseRouteEnum = BaseRoute |
-| Environment variables     | `SECRET_[description]`      | SECRET_API_KEY            |
-| Logger context (method)   |  support_[Class]_[Method]`  | support_DBConnect_Init    |
+| Classification            | Structure                          | Example                   |
+|---------------------------|------------------------------------|---------------------------|
+| Enum (template access)    | `[EnumName]Enum`                   | BaseRouteEnum = BaseRoute |
+| Environment variables     | `SECRET_[description]`             | SECRET_API_KEY            |
+| Logger context (message)  | Error origin + operation           | DB ERROR ON SELECT QUERY  |
+| Logger context (method)   | `SUPPORT_[Class/Service]_[method]` | SUPPORT_DBConnect_init    |
 
 <br>
 
@@ -93,4 +94,3 @@ Basic description: `<base>.<subsuffix?>.<suffix>.<ending>` [specific always sing
 |------------------------|-----------------------------|------------------------------|
 | S_ID                   | Service Identification      | 'artdv', 'tava'              |
 | Desc                   | Description                 | --                           |
-

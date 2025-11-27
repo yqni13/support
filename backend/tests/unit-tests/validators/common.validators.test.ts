@@ -5,6 +5,7 @@ import { MailSource } from "../../../src/utils/enums/mail-source.enum";
 import { ApiKeyStatus } from "../../../src/utils/enums/api-key-status.enum";
 import { UserStatus } from "../../../src/utils/enums/user-status.enum";
 import { Flag } from "../../../src/utils/enums/flag.enum";
+import { CommonExceptionMessage } from "../../../src/utils/enums/common-exception-messages.enum";
 
 describe('CustomValidator tests, priority: no model specification', () => {
 
@@ -93,6 +94,14 @@ describe('CustomValidator tests, priority: no model specification', () => {
                 )).toBe(expectResult);
             })
         })
+
+        test('fn: validatePathParam, params <param> = "valid-test-id"', () => {
+            const mockParam_param = 'valid-test-id';
+            const testFn = CustomValidators.validatePathParam(mockParam_param);
+            const expectResult = true;
+
+            expect(testFn).toBe(expectResult);
+        })
     })
 
     describe('Testing invalid fn calls', () => {
@@ -124,6 +133,15 @@ describe('CustomValidator tests, priority: no model specification', () => {
                     mockParam_enumObj,
                     mockParam_enumName
                 );
+            }).toThrow(expectResult);
+        })
+
+        test.each([null, undefined, ' ', ':id'])('fn: validatePathParam, params <param> = null', (invalidArg) => {
+            const mockParam_arg = invalidArg;
+            const expectResult = CommonExceptionMessage.REQUIRED;
+
+            expect(() => {
+                CustomValidators.validatePathParam(mockParam_arg);
             }).toThrow(expectResult);
         })
     })
