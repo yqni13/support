@@ -77,9 +77,9 @@ describe('Database tests table <meta>, priority: findById', () => {
 
         test('Throw DBQueryErrorException by catch-block', async () => {
             const mockParam_id = mockData.id;
-            const mockErrorMsg = "DB ERROR ON SELECT QUERY, (Meta TEST Repository, findById)";
+            const mockErrorMsg = "DB ERROR ON SELECT QUERY";
             const mockResult = null;
-            jest.spyOn(Utils, "logRepoError").mockReturnValue();
+            jest.spyOn(Utils, "logError").mockReturnValue();
             const _ = MockUtils.mapMockDbClient(mockResult, mockBoolean, mockErrorMsg);
 
             await expect(() => metaRepository.findById(mockParam_id))
@@ -130,9 +130,9 @@ describe('Database tests table <meta>, priority: findByName', () => {
 
         test('Throw DBQueryErrorException by catch-block', async () => {
             const mockParam_name = 'error_meta_test_name';
-            const mockErrorMsg = "DB ERROR ON SELECT QUERY, (Meta TEST Repository, findByName)";
+            const mockErrorMsg = "DB ERROR ON SELECT QUERY";
             const mockResult = null;
-            jest.spyOn(Utils, "logRepoError").mockReturnValue();
+            jest.spyOn(Utils, "logError").mockReturnValue();
             const _ = MockUtils.mapMockDbClient(mockResult, mockBoolean, mockErrorMsg);
 
             await expect(() => metaRepository.findByName(mockParam_name))
@@ -167,9 +167,9 @@ describe('Database tests table <meta>, priority: findAll', () => {
     describe('Testing invalid fn calls', () => {
 
         test('Throw DBQueryErrorException by catch-block', async () => {
-            const mockErrorMsg = "DB ERROR ON SELECT QUERY, (Meta TEST Repository, findAll)";
+            const mockErrorMsg = "DB ERROR ON SELECT QUERY";
             const mockResult = null;
-            jest.spyOn(Utils, "logRepoError").mockReturnValue();
+            jest.spyOn(Utils, "logError").mockReturnValue();
             const _ = MockUtils.mapMockDbClient(mockResult, mockBoolean, mockErrorMsg);
 
             await expect(() => metaRepository.findAll())
@@ -222,9 +222,9 @@ describe('Database tests table <meta>, priority: findMaintenance', () => {
 
         test('Throw DBQueryErrorException by catch-block', async () => {
             const mockParam_name = 'error_meta_test_name';
-            const mockErrorMsg = "DB ERROR ON SELECT QUERY, (Meta TEST Repository, findMaintenance)";
+            const mockErrorMsg = "DB ERROR ON SELECT QUERY";
             const mockResult = null;
-            jest.spyOn(Utils, "logRepoError").mockReturnValue();
+            jest.spyOn(Utils, "logError").mockReturnValue();
             const _ = MockUtils.mapMockDbClient(mockResult, mockBoolean, mockErrorMsg);
 
             await expect(() => metaRepository.findMaintenance(mockParam_name))
@@ -296,9 +296,9 @@ describe('Database tests table <meta>, priority: udpate', () => {
 
         test('Throw DBQueryErrorException by catch-block', async () => {
             const mockParam_id = 1;
-            const mockErrorMsg = "DB ERROR ON UPDATE QUERY, (Meta TEST Repository, update)";
+            const mockErrorMsg = "DB ERROR ON UPDATE QUERY";
             const mockResult = null;
-            jest.spyOn(Utils, "logRepoError").mockReturnValue();
+            jest.spyOn(Utils, "logError").mockReturnValue();
             const _ = MockUtils.mapMockDbClient(mockResult, mockBoolean, mockErrorMsg);
 
             await expect(() => metaRepository.update(mockParam_id, mockParam_dto))
@@ -371,9 +371,9 @@ describe('Database tests table <meta>, priority: updateMaintenance', () => {
 
         test('Throw DBQueryErrorException by catch-block', async () => {
             const mockParam_name = 'error_meta_test_name';
-            const mockErrorMsg = "DB ERROR ON UPDATE QUERY, (Meta TEST Repository, updateMaintenance)";
+            const mockErrorMsg = "DB ERROR ON UPDATE QUERY";
             const mockResult = null;
-            jest.spyOn(Utils, "logRepoError").mockReturnValue();
+            jest.spyOn(Utils, "logError").mockReturnValue();
             const _ = MockUtils.mapMockDbClient(mockResult, mockBoolean, mockErrorMsg);
 
             await expect(() => metaRepository.updateMaintenance(mockParam_name, mockParam_dto))

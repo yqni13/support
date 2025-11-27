@@ -7,6 +7,7 @@ export class CommonException extends Error {
     public error: string;
     public status: number;
     public data?: unknown;
+    public isOperational: boolean;
 
     constructor(
         code: number | string,
@@ -21,6 +22,7 @@ export class CommonException extends Error {
         this.error = this.constructor.name;
         this.status = status;
         this.data = data;
+        this.isOperational = true;
     }
 }
 

@@ -3,8 +3,7 @@ import { InvalidApiKeyException, MissingApiKeyException } from "../utils/excepti
 import { validateApiKey } from "../utils/customValidator.utils";
 import clientsService from "../services/clients.service";
 import { Clients } from "../repositories/interfaces/clients.entity.interface";
-import { EnvMode } from "../utils/enums/env-mode.enum";
-import { secrets } from "../utils/secrets.utils";
+import { logError } from "../utils/common.utils";
 
 /**
  * @description Authentication of client request by checking on validity and status of api key.
@@ -33,11 +32,12 @@ export function authClient() {
 
             next();
         } catch(err: any) {
-            // TODO(yqni13): logging
-            if(secrets.ENV_MODE.trim() === EnvMode.DEV || secrets.ENV_MODE.trim() === EnvMode.TEST) {
-                console.log('AUTH ERROR ON VERIFICATION (Auth-Client Middleware): ', err.message);
-            }
             err.status = 401;
+            logError(
+                "AUTH MIDDLEWARE ERROR ON VERIFICATION",
+                "SUPPORT_middleware_authClient",
+                err
+            );
             next(err);
         }
     }

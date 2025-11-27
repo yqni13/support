@@ -1,10 +1,10 @@
 import { DBConnection } from "../configs/db";
 import { QueryResult } from "pg";
-import { logRepoError } from "../utils/common.utils";
 import { Tickets } from "./interfaces/tickets.entity.interface";
 import { IBaseRepository, ICreateRepository, IDeleteRepository, IFindRepository } from "./interfaces/base.repository.interface";
 import { TicketsFilterDTO, TicketsResponseExtendedDTO } from "../dtos/tickets.dto";
 import { DBQueryErrorException } from "../utils/exceptions/db.exception";
+import { logError } from "../utils/common.utils";
 
 
 class TicketsRepository implements 
@@ -16,11 +16,11 @@ IDeleteRepository
     private table: string;
 
     constructor() {
-        this.table = 'tickets';
+        this.table = "tickets";
     }
 
     async findById(id: string): Promise<TicketsResponseExtendedDTO | null> {
-        const filterColumn = 'ticket_id';
+        const filterColumn = "ticket_id";
         const sql = `SELECT
         ${this.table}.*,
         clients.name AS client_name,
@@ -38,15 +38,16 @@ IDeleteRepository
             await db.close(client);
             return result.rows[0] ?? null;
         } catch(err: any) {
-            const logMsg = "DB ERROR ON INSERT (Tickets Repository, findById): ";
-            logRepoError(logMsg, err);
+            const message = "DB ERROR ON SELECT QUERY";
+            const method = "SUPPORT_TicketsRepository_findById";
+            logError(message, method, err);
             await db.close(client);
-            throw new DBQueryErrorException('support-dberror-tickets-findById', err);
+            throw new DBQueryErrorException(err);
         }
     }
 
     async findAll(): Promise<Tickets[] | null> {
-        const orderPrio = 'ticket_id';
+        const orderPrio = "ticket_id";
         const sql = `SELECT * FROM ${this.table} ORDER BY ${orderPrio} ASC FETCH FIRST 100 ROWS ONLY;`;
         const db = DBConnection.getInstance();
         let client: any;
@@ -56,10 +57,11 @@ IDeleteRepository
             await db.close(client);
             return result.rows ?? null;
         } catch(err: any) {
-            const logMsg = "DB ERROR ON SELECT (Tickets Repository, findAll): ";
-            logRepoError(logMsg, err);
+            const message = "DB ERROR ON SELECT QUERY";
+            const method = "SUPPORT_TicketsRepository_findAll";
+            logError(message, method, err);
             await db.close(client);
-            throw new DBQueryErrorException('support-dberror-tickets-findAll', err);
+            throw new DBQueryErrorException(err);
         }
     }
 
@@ -73,10 +75,11 @@ IDeleteRepository
             await db.close(client);
             return result.rows ?? null;
         } catch(err: any) {
-            const logMsg = "DB ERROR ON SELECT (Tickets Repository, findByFilter): ";
-            logRepoError(logMsg, err);
+            const message = "DB ERROR ON SELECT QUERY";
+            const method = "SUPPORT_TicketsRepository_findByFilter";
+            logError(message, method, err);
             await db.close(client);
-            throw new DBQueryErrorException('support-dberror-tickets-findByFilter', err);
+            throw new DBQueryErrorException(err);
         }
     }
 
@@ -94,15 +97,16 @@ IDeleteRepository
             await db.close(client);
             return result.rows[0];
         } catch(err: any) {
-            const logMsg = "DB ERROR ON INSERT (Tickets Repository, create): ";
-            logRepoError(logMsg, err);
+            const message = "DB ERROR ON INSERT QUERY";
+            const method = "SUPPORT_TicketsRepository_create";
+            logError(message, method, err);
             await db.close(client);
-            throw new DBQueryErrorException('support-dberror-tickets-create', err);
+            throw new DBQueryErrorException(err);
         }
     }
 
     async update(id: string, dto: Partial<Tickets>): Promise<Tickets | null> {
-        const filterColumn = 'ticket_id';
+        const filterColumn = "ticket_id";
         const sql = `UPDATE ${this.table}
         SET status = $1, message = $2, resource_paths = $3, flag = $4, last_modified = $5
         WHERE ${filterColumn} = $6
@@ -117,15 +121,16 @@ IDeleteRepository
             await db.close(client);
             return result.rows[0] ?? null;
         } catch(err: any) {
-            const logMsg = "DB ERROR ON UPDATE (Tickets Repository, update): ";
-            logRepoError(logMsg, err);
+            const message = "DB ERROR ON UPDATE QUERY";
+            const method = "SUPPORT_TicketsRepository_update";
+            logError(message, method, err);
             await db.close(client);
-            throw new DBQueryErrorException('support-dberror-tickets-update', err);
+            throw new DBQueryErrorException(err);
         }
     }
 
     async delete(id: string): Promise<boolean> {
-        const filterColumn = 'ticket_id';
+        const filterColumn = "ticket_id";
         const sql = `DELETE FROM ${this.table} WHERE ${filterColumn} = $1;`;
         const value = [id];
         const db = DBConnection.getInstance();
@@ -136,10 +141,11 @@ IDeleteRepository
             await db.close(client);
             return result.rowCount > 0;
         } catch(err: any) {
-            const logMsg = "DB ERROR ON DELETE (Tickets Repository, delete): ";
-            logRepoError(logMsg, err);
+            const message = "DB ERROR ON DELETE QUERY";
+            const method = "SUPPORT_TicketsRepository_delete";
+            logError(message, method, err);
             await db.close(client);
-            throw new DBQueryErrorException('support-dberror-tickets-delete', err);
+            throw new DBQueryErrorException(err);
         }
     }
 
@@ -160,14 +166,14 @@ IDeleteRepository
             });
 
             if(conditions.length > 1) {
-                // Multiple 'OR' conditions need ( ) otherwise 'AND' binds with higher priority.
-                argGroups.push(`(${conditions.join(' OR ')})`);
+                // Multiple "OR" conditions need ( ) otherwise "AND" binds with higher priority.
+                argGroups.push(`(${conditions.join(" OR ")})`);
             } else {
                 argGroups.push(conditions[0]);
             }
         })
 
-        const sql = `SELECT * FROM ${this.table}${argGroups.length ? ' WHERE ' + argGroups.join(' AND ') : ''};`;
+        const sql = `SELECT * FROM ${this.table}${argGroups.length ? " WHERE " + argGroups.join(" AND ") : ""};`;
         return { sql: sql, values: values };
     }
 }

@@ -4,9 +4,16 @@
 
 <br>
 
+### $\textsf{\color{skyblue}2025/11/27}$
+
+$\textsf{[v0.9.3\ =>\ {\textbf{\color{brown}v0.9.4}]}}$ app
+- $\textsf{\color{orange}Patch:}$ Refactored and integrated logger on necessary hotspots (catch-blocks).
+
+<br>
+
 ### $\textsf{\color{skyblue}2025/11/26}$
 
-$\textsf{[v0.9.2\ =>\ {\textbf{\color{brown}v0.9.3}]}}$ app
+$\textsf{[v0.9.2\ =>\ v0.9.3]}$ app
 - $\textsf{\color{orange}Patch:}$ Refactored error handling and return values for entities 'clients', 'users' and 'meta'.
 
 <br>

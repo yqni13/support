@@ -2,7 +2,7 @@ import { QueryResult } from "pg";
 import { DBConnection } from "../configs/db";
 import { IBaseRepository, IFindRepository } from "./interfaces/base.repository.interface";
 import { Maintenance, Meta } from "./interfaces/meta.entity.interface";
-import * as Utils from '../utils/common.utils';
+import { logError } from "../utils/common.utils";
 import { DBQueryErrorException } from "../utils/exceptions/db.exception";
 
 class MetaRepository implements IBaseRepository<Meta>, IFindRepository<Meta> {
@@ -10,11 +10,11 @@ class MetaRepository implements IBaseRepository<Meta>, IFindRepository<Meta> {
     private table: string;
 
     constructor() {
-        this.table = 'meta';
+        this.table = "meta";
     }
 
     async findById(id: number): Promise<Meta | null> {
-        const filterColumn = 'id';
+        const filterColumn = "id";
         const sql = `SELECT 
         id, app, author, build_on, environment, app_version, db_version, docker_image, docker_version, jenkins_version, maintenance_mode, last_modified, created_on 
         FROM ${this.table} 
@@ -30,15 +30,16 @@ class MetaRepository implements IBaseRepository<Meta>, IFindRepository<Meta> {
             await db.close(client);
             return result.rows[0] ?? null;
         } catch(err: any) {
-            const logMsg = "DB ERROR ON SELECT (Meta Repository, findById): ";
-            Utils.logRepoError(logMsg, err);
+            const message = "DB ERROR ON SELECT QUERY";
+            const method = "SUPPORT_MetaRepository_findById";
+            logError(message, method, err);
             await db.close(client);
-            throw new DBQueryErrorException('support-dberror-meta-findById', err);
+            throw new DBQueryErrorException(err);
         }
     }
 
     async findByName(name: string): Promise<Meta | null> {
-        const filterColumn = 'app';
+        const filterColumn = "app";
         const sql = `SELECT 
         id, app, author, build_on, environment, app_version, db_version, docker_image, docker_version, jenkins_version, maintenance_mode, last_modified, created_on 
         FROM ${this.table} 
@@ -54,15 +55,16 @@ class MetaRepository implements IBaseRepository<Meta>, IFindRepository<Meta> {
             await db.close(client);
             return result.rows[0] ?? null;
         } catch(err: any) {
-            const logMsg = "DB ERROR ON SELECT (Meta Repository, findByName): ";
-            Utils.logRepoError(logMsg, err);
+            const message = "DB ERROR ON SELECT QUERY";
+            const method = "SUPPORT_MetaRepository_findByName";
+            logError(message, method, err);
             await db.close(client);
-            throw new DBQueryErrorException('support-dberror-meta-findByName', err);
+            throw new DBQueryErrorException(err);
         }
     }
 
     async findAll(): Promise<Meta[] | null> {
-        const orderPrio = 'id';
+        const orderPrio = "id";
         const sql: string = `SELECT * FROM ${this.table} ORDER BY ${orderPrio} ASC;`;
         const db = DBConnection.getInstance();
         let client: any;
@@ -72,15 +74,16 @@ class MetaRepository implements IBaseRepository<Meta>, IFindRepository<Meta> {
             await db.close(client);
             return result.rows ?? null;
         } catch(err: any) {
-            const logMsg = "DB ERROR ON SELECT (Meta Repository, findAll): ";
-            Utils.logRepoError(logMsg, err);
+            const message = "DB ERROR ON SELECT QUERY";
+            const method = "SUPPORT_MetaRepository_findAll";
+            logError(message, method, err);
             await db.close(client);
-            throw new DBQueryErrorException('support-dberror-meta-findAll', err);
+            throw new DBQueryErrorException(err);
         }
     }
 
     async findMaintenance(name: string): Promise<Maintenance | null> {
-        const filterColumn = 'app';
+        const filterColumn = "app";
         const sql = `SELECT id, app, build_on, maintenance_mode, last_modified, created_on FROM ${this.table} WHERE ${filterColumn} = $1;`;
         const value = [name];
 
@@ -92,15 +95,16 @@ class MetaRepository implements IBaseRepository<Meta>, IFindRepository<Meta> {
             await db.close(client);
             return result.rows[0] ?? null;
         } catch(err: any) {
-            const logMsg = "DB ERROR ON SELECT (Meta Repository, findMaintenance): ";
-            Utils.logRepoError(logMsg, err);
+            const message = "DB ERROR ON SELECT QUERY";
+            const method = "SUPPORT_MetaRepository_findMaintenance";
+            logError(message, method, err);
             await db.close(client);
-            throw new DBQueryErrorException('support-dberror-meta-findMaintenance', err);
+            throw new DBQueryErrorException(err);
         }
     }
 
     async update(id: number, dto: Partial<Meta>): Promise<Meta | null> {
-        const filterColumn = 'id';
+        const filterColumn = "id";
         const sql = `UPDATE ${this.table}
         SET app = $1, author = $2, build_on = $3, environment = $4, app_version = $5, db_version = $6,
         docker_image = $7, docker_version = $8, jenkins_version = $9, last_modified = $10
@@ -117,15 +121,16 @@ class MetaRepository implements IBaseRepository<Meta>, IFindRepository<Meta> {
             await db.close(client);
             return result.rows[0] ?? null;
         } catch(err: any) {
-            const logMsg = "DB ERROR ON UPDATE (Meta Repository, update): ";
-            Utils.logRepoError(logMsg, err);
+            const message = "DB ERROR ON UPDATE QUERY";
+            const method = "SUPPORT_MetaRepository_update";
+            logError(message, method, err);
             await db.close(client);
-            throw new DBQueryErrorException('support-dberror-meta-update', err);
+            throw new DBQueryErrorException(err);
         }
     }
 
     async updateMaintenance(name: string, dto: Partial<Meta>): Promise<Maintenance | null> {
-        const filterColumn = 'app';
+        const filterColumn = "app";
         const sql = `UPDATE ${this.table}
         SET maintenance_mode = $1, last_modified = $2
         WHERE ${filterColumn} = $3
@@ -140,10 +145,11 @@ class MetaRepository implements IBaseRepository<Meta>, IFindRepository<Meta> {
             await db.close(client);
             return result.rows[0] ?? null;
         } catch(err: any) {
-            const logMsg = "DB ERROR ON UPDATE (Meta Repository, updateMaintenance): ";
-            Utils.logRepoError(logMsg, err);
+            const message = "DB ERROR ON UPDATE QUERY";
+            const method = "SUPPORT_MetaRepository_updateMaintenance";
+            logError(message, method, err);
             await db.close(client);
-            throw new DBQueryErrorException('support-dberror-meta-updateMaintenance', err);
+            throw new DBQueryErrorException(err);
         }
     }
 }
