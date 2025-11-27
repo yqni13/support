@@ -12,7 +12,6 @@ import { DBTestSetup } from "../db-container.setup";
 import { runMigrations } from '../../db-migrations.setup';
 import { TicketStatus } from "../../../src/utils/enums/ticket-status.enum";
 import { Flag } from "../../../src/utils/enums/flag.enum";
-import { Tickets } from "../../../src/repositories/interfaces/tickets.entity.interface";
 import { CommonExceptionMessage } from "../../../src/utils/enums/common-exception-messages.enum";
 import { ErrorStatusCodes } from "../../../src/utils/errorStatusCodes.utils";
 import { default as mockId } from "../../mock-data/id.mock-data.json";

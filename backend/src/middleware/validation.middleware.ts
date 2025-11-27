@@ -4,6 +4,6 @@ import { InvalidPropertiesException } from '../utils/exceptions/validation.excep
 export function checkValidation(req: any) {
     const data: any = validationResult(req);
     if(!data.isEmpty()) {
-        throw new InvalidPropertiesException('Missing or invalid properties', { data: data.errors });
+        throw new InvalidPropertiesException('support-invalid-properties', { data: data.errors });
     }
 }
