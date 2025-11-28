@@ -353,5 +353,50 @@ describe('Integration test (repository specific), priority: Users', () => {
                 })
             })
         })
+
+        describe('All routes, priority: error middleware, location: <body>', () => {
+
+            let mockError: any;
+            beforeEach(() => {
+                mockError = {
+                    type: 'field',
+                    value: 'undefined',
+                    msg: 'support-payload-required',
+                    path: 'req.body',
+                    location: 'body'
+                };
+            })
+
+            describe('Route: POST/create', () => {
+
+                test('Params: <UsersCreateDTO>, validator: hasBodyPayload by undefined', async () =>{
+                    const testParam_dto = undefined;
+                    const testError = structuredClone(mockError);
+
+                    const testResponse = await request(app)
+                        .post(`${apiUrl}/create`)
+                        .send(testParam_dto);
+
+                    expect(testResponse.statusCode).toBe(ErrorStatusCodes.InvalidPropertiesException);
+                    expect(testResponse.body.headers.data).toContainEqual(testError);
+                })
+            })
+
+            describe('Route: PUT/update/:id', () => {
+
+                test('Params: <UsersUpdateDTO>, validator: hasBodyPayload by undefined', async () =>{
+                    const testParam_id = mockId.users.valid[0];
+                    const testParam_dto = undefined;
+                    const testError = structuredClone(mockError);
+
+                    const testResponse = await request(app)
+                        .put(`${apiUrl}/update/${testParam_id}`)
+                        .send(testParam_dto);
+
+                    expect(testResponse.statusCode).toBe(ErrorStatusCodes.InvalidPropertiesException);
+                    expect(testResponse.body.headers.data).toContainEqual(testError);
+                })
+            })
+        })
     })
 })

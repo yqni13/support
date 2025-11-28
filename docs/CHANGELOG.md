@@ -4,9 +4,17 @@
 
 <br>
 
+### $\textsf{\color{skyblue}2025/11/28}$
+
+$\textsf{[v0.9.4\ =>\ {\textbf{\color{brown}v0.9.6}]}}$ app
+- $\textsf{\color{teal}Addition:}$ Added '/meta/demo' route for demonstration and manual testing reasons.
+- $\textsf{\color{orange}Patch:}$ Refactored error- and validation-middleware to correctly validate empty and undefined payloads.
+
+<br>
+
 ### $\textsf{\color{skyblue}2025/11/27}$
 
-$\textsf{[v0.9.3\ =>\ {\textbf{\color{brown}v0.9.4}]}}$ app
+$\textsf{[v0.9.3\ =>\ v0.9.4]}$ app
 - $\textsf{\color{orange}Patch:}$ Refactored and integrated logger on necessary hotspots (catch-blocks).
 
 <br>

@@ -183,9 +183,9 @@ describe('Integration test (repository specific), priority: Clients', () => {
 
             describe('Route: PUT/status/:id', () => {
 
-                test('Params: <status>, validator: notEmpty() by undefined', async () => {
+                test('Params: <status>, validator: notEmpty() by empty object', async () => {
                     const testParam_id = 'test_id';
-                    const testParam_dto = undefined;
+                    const testParam_dto = {};
                     const testError = structuredClone(mockError);
                     testError['path'] = 'status';
 
@@ -220,6 +220,51 @@ describe('Integration test (repository specific), priority: Clients', () => {
 
                     expect(testResponse.statusCode).toBe(ErrorStatusCodes.InvalidPropertiesException);
                     expect(testResponse.body.headers.data).toStrictEqual(testError);
+                })
+            })
+        })
+
+        describe('All routes, priority: error middleware, location: <body>', () => {
+
+            let mockError: any;
+            beforeEach(() => {
+                mockError = {
+                    type: 'field',
+                    value: 'undefined',
+                    msg: 'support-payload-required',
+                    path: 'req.body',
+                    location: 'body'
+                };
+            })
+
+            describe('Route: POST/create/:id', () => {
+
+                test('Params: <ClientsCreateDTO>, validator: hasBodyPayload by undefined', async () =>{
+                    const testParam_dto = undefined;
+                    const testError = structuredClone(mockError);
+
+                    const testResponse = await request(app)
+                        .post(`${apiUrl}/create`)
+                        .send(testParam_dto);
+
+                    expect(testResponse.statusCode).toBe(ErrorStatusCodes.InvalidPropertiesException);
+                    expect(testResponse.body.headers.data).toContainEqual(testError);
+                })
+            })
+
+            describe('Route: PUT/status/:id', () => {
+
+                test('Params: <ClientsStatusUpdateDTO>, validator: hasBodyPayload by undefined', async () =>{
+                    const testParam_id = mockId.clients.valid[0];
+                    const testParam_dto = undefined;
+                    const testError = structuredClone(mockError);
+
+                    const testResponse = await request(app)
+                        .put(`${apiUrl}/status/${testParam_id}`)
+                        .send(testParam_dto);
+
+                    expect(testResponse.statusCode).toBe(ErrorStatusCodes.InvalidPropertiesException);
+                    expect(testResponse.body.headers.data).toContainEqual(testError);
                 })
             })
         })
