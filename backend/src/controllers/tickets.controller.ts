@@ -32,7 +32,7 @@ class TicketsController {
 
     async postTicketsSearch(req: Request, res: Response, next: NextFunction) {
         try {
-            checkValidation(req);
+            checkValidation(req); // Body can be undefined (see interface).
             const dto: TicketsFilterDTO = req.body;
             const response: TicketsResponseDTO[] | null = await ticketsService.searchTicketsByFilter(dto);
             res.send(response);
@@ -43,7 +43,7 @@ class TicketsController {
 
     async postTicket(req: Request, res: Response, next: NextFunction) {
         try {
-            checkValidation(req);
+            checkValidation(req, true);
             const dto: TicketsCreateDTO = {
                 ...req.body,
                 client_id: req.apiClients.client_id,
@@ -58,7 +58,7 @@ class TicketsController {
 
     async patchTicket(req: Request, res: Response, next: NextFunction) {
         try {
-            checkValidation(req);
+            checkValidation(req, true);
             const id: string = req.params.id;
             const dto: TicketsUpdateDTO = req.body;
             const response: TicketsResponseDTO | null = await ticketsService.updateTicket(id, dto);

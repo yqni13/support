@@ -1,3 +1,4 @@
+import { DemoModusDTO } from './../dtos/meta.dto';
 import { NextFunction, Request, Response } from "express";
 import metaService from "../services/meta.service";
 import { checkValidation } from "../middleware/validation.middleware";
@@ -37,7 +38,7 @@ class MetaController {
 
     async patchMeta(req: Request, res: Response, next: NextFunction) {
         try {
-            checkValidation(req);
+            checkValidation(req, true);
             const id: number = +(req.params.id);
             const dto: MetaUpdateDTO = req.body;
             const response: MetaResponseDTO | null = await metaService.updateMeta(id, dto);
@@ -60,10 +61,22 @@ class MetaController {
 
     async patchMaintenanceMode(req: Request, res: Response, next: NextFunction) {
         try {
-            checkValidation(req);
+            checkValidation(req, true);
             const name: string = req.params.name;
             const dto: MaintenanceUpdateDTO = req.body;
             const response: MaintenanceResponseDTO | null = await metaService.updateMaintenanceMode(name, dto);
+            res.send(response);
+        } catch(err: any) {
+            next(err);
+        }
+    }
+
+    // DEMO API CALL
+    async postDemo(req: Request, res: Response, next: NextFunction) {
+        try {
+            checkValidation(req, true);
+            const dto: DemoModusDTO = req.body;
+            const response: Record<string, string> = await metaService.searchDemoByPayload(dto);
             res.send(response);
         } catch(err: any) {
             next(err);

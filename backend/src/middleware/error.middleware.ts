@@ -10,7 +10,7 @@ export function errorMiddleware(err: any, req: Request, res: Response, next: Nex
 
     const errDataMessage = err.data?.message ? err.data?.message : undefined;
     let { message, error, status, data, stack } = err;
-    data = !data.message ? data?.data : { message: errDataMessage, ...err.data };
+    data = !data?.message ? data?.data : { message: errDataMessage, ...err.data };
 
     if(secrets.ENV_MODE.trim() === EnvMode.DEV) {
         console.log("----------------------------------------------------------")

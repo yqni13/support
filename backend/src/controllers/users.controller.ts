@@ -37,7 +37,7 @@ class UsersController {
 
     async postUsersSearch(req: Request, res: Response, next: NextFunction) {
         try {
-            checkValidation(req);
+            checkValidation(req); // Body can be undefined (see interface).
             const dto: UsersFilterDTO = req.body;
             const response: UsersResponseDTO[] | null = await usersService.searchUsersByFilter(dto);
             res.send(response);
@@ -48,7 +48,7 @@ class UsersController {
 
     async postUser(req: Request, res: Response, next: NextFunction) {
         try {
-            checkValidation(req);
+            checkValidation(req, true);
             const dto: UsersCreateDTO = req.body;
             const response: UsersResponseDTO = await usersService.createUser(dto);
             res.send(response);
@@ -59,7 +59,7 @@ class UsersController {
 
     async patchUser(req: Request, res: Response, next: NextFunction) {
         try {
-            checkValidation(req);
+            checkValidation(req, true);
             const id: string = req.params.id;
             const dto: UsersUpdateDTO = req.body;
             const response: UsersResponseDTO | null = await usersService.updateUser(id, dto);
