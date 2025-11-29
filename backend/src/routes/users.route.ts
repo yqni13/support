@@ -10,14 +10,55 @@ import {
     patchUserSchema as updateSchema
 } from '../middleware/validators/usersValidator.middleware';
 import { maintain } from '../middleware/maintenance.middleware';
+import { requirePayload } from '../middleware/require.middleware';
 
 const router = Router();
 
-router.get('/by-id/:id', authAdmin(), byIdSchema, factory(usersController.getUserById));
-router.get('/by-email/:email', authAdmin(), byEmailSchema, factory(usersController.getUserByEmail));
-router.get('/all', authAdmin(), factory(usersController.getAllUsers));
-router.post('/search', authAdmin(), searchSchema, factory(usersController.postUsersSearch));
-router.post('/create', maintain(), authAdmin(), createSchema, factory(usersController.postUser));
-router.put('/update/:id', maintain(), authAdmin(), updateSchema, factory(usersController.patchUser));
+// findById
+router.get(
+    '/by-id/:id',
+    authAdmin(),
+    byIdSchema,
+    factory(usersController.getUserById)
+);
+
+// findByEmail
+router.get(
+    '/by-email/:email',
+    authAdmin(),
+    byEmailSchema,
+    factory(usersController.getUserByEmail)
+);
+
+// findAll
+router.get(
+    '/all',
+    authAdmin(),
+    factory(usersController.getAllUsers)
+);
+
+// findByFilter
+router.post(
+    '/search',
+    authAdmin(),
+    searchSchema,
+    factory(usersController.postUsersSearch)
+);
+
+// create
+router.post(
+    '/create',
+    maintain(), authAdmin(), requirePayload(),
+    createSchema,
+    factory(usersController.postUser)
+);
+
+// update
+router.put(
+    '/update/:id',
+    maintain(), authAdmin(), requirePayload(),
+    updateSchema,
+    factory(usersController.patchUser)
+);
 
 export default router;

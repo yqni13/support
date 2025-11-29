@@ -152,6 +152,27 @@ class MetaRepository implements IBaseRepository<Meta>, IFindRepository<Meta> {
             throw new DBQueryErrorException(err);
         }
     }
+
+    // DEMO REPOSITORY CALL
+    async demoError(): Promise<any | null> {
+        const filterColumn = "id";
+        const sql = `SEL app_version FROM ${this.table} WHERE ${filterColumn} = $1;`; // Invalid query for demo.
+        const value = [999];
+        const db = DBConnection.getInstance();
+        let client: any;
+        try {
+            client = await db.connect();
+            const result: QueryResult<Meta> = await client.query(sql, value);
+            await db.close(client);
+            return result.rows[0] ?? null;
+        } catch(err: any) {
+            const message = "DB ERROR ON SELECT QUERY";
+            const method = "SUPPORT_MetaRepository_demoError";
+            logError(message, method, err);
+            await db.close(client);
+            throw new DBQueryErrorException(err);
+        }
+    }
 }
 
 export default new MetaRepository();

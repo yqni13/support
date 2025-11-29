@@ -13,14 +13,55 @@ import {
     deleteTicketSchema as deleteSchema
 
 } from '../middleware/validators/ticketsValidator.middleware';
+import { requirePayload } from '../middleware/require.middleware';
 
 const router = Router();
 
-router.get('/by-id/:id', authAdmin(), getSchema, factory(ticketsController.getTicket));
-router.get('/all', authAdmin(), factory(ticketsController.getAllTickets));
-router.post('/search', authAdmin(), searchSchema, factory(ticketsController.postTicketsSearch));
-router.post('/create', maintain(), authClient(), authUser(), postSchema, factory(ticketsController.postTicket));
-router.put('/update/:id', maintain(), authAdmin(), patchSchema, factory(ticketsController.patchTicket));
-router.delete('/delete/:id', maintain(), authAdmin(), deleteSchema, factory(ticketsController.deleteTicket));
+// findById
+router.get(
+    '/by-id/:id',
+    authAdmin(),
+    getSchema,
+    factory(ticketsController.getTicket)
+);
+
+// findAll
+router.get(
+    '/all',
+    authAdmin(),
+    factory(ticketsController.getAllTickets)
+);
+
+// findByFilter
+router.post(
+    '/search',
+    authAdmin(),
+    searchSchema,
+    factory(ticketsController.postTicketsSearch)
+);
+
+// create
+router.post(
+    '/create',
+    maintain(), authClient(), authUser(), requirePayload(),
+    postSchema,
+    factory(ticketsController.postTicket)
+);
+
+// update
+router.put(
+    '/update/:id',
+    maintain(), authAdmin(), requirePayload(),
+    patchSchema,
+    factory(ticketsController.patchTicket)
+);
+
+// delete
+router.delete(
+    '/delete/:id',
+    maintain(), authAdmin(),
+    deleteSchema,
+    factory(ticketsController.deleteTicket)
+);
 
 export default router;
