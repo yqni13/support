@@ -15,6 +15,7 @@ jest.mock('pg', () => {
 
 import { DBConnection } from '../../../src/configs/db';
 import * as pg from 'pg';
+import * as Utils from "../../../src/utils/common.utils";
 const { _mockClient, _mockConnect, _mockRelease } = pg as any;
 import { DBConnectionException, DBEmptyException } from '../../../src/utils/exceptions/db.exception';
 
@@ -76,11 +77,13 @@ describe('Database tests, priority: connection', () => {
         })
 
         test('Init connection to database, case: db loaded, HAS NO data rows', async () => {
+            jest.spyOn(Utils, 'logError').mockImplementation();
             mockClient_init.query.mockResolvedValue({rowCount: 0});
             await expect(mockDbInit.init()).rejects.toBeInstanceOf(DBEmptyException);
         })
 
         test('Init connection to database, case: db NOT loaded', async () => {
+            jest.spyOn(Utils, 'logError').mockImplementation();
             mockClient_init.query.mockRejectedValue(new Error('connection failed'));
             await expect(mockDbInit.init()).rejects.toBeInstanceOf(DBConnectionException);
         })

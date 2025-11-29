@@ -51,11 +51,3 @@ export class MaintenanceException extends CommonException {
         super(message, data, ErrorStatusCodes.MaintenanceException);
     }
 }
-
-// module.exports = {
-//     InternalServerException,
-//     RequestExceedMaxException,
-//     InvalidSourceException,
-//     UnexpectedException,
-//     MaintenanceException
-// };

@@ -38,7 +38,7 @@ class MetaController {
 
     async patchMeta(req: Request, res: Response, next: NextFunction) {
         try {
-            checkValidation(req, true);
+            checkValidation(req);
             const id: number = +(req.params.id);
             const dto: MetaUpdateDTO = req.body;
             const response: MetaResponseDTO | null = await metaService.updateMeta(id, dto);
@@ -61,7 +61,7 @@ class MetaController {
 
     async patchMaintenanceMode(req: Request, res: Response, next: NextFunction) {
         try {
-            checkValidation(req, true);
+            checkValidation(req);
             const name: string = req.params.name;
             const dto: MaintenanceUpdateDTO = req.body;
             const response: MaintenanceResponseDTO | null = await metaService.updateMaintenanceMode(name, dto);
@@ -74,7 +74,7 @@ class MetaController {
     // DEMO API CALL
     async postDemo(req: Request, res: Response, next: NextFunction) {
         try {
-            checkValidation(req, true);
+            checkValidation(req);
             const dto: DemoModusDTO = req.body;
             const response: Record<string, string> = await metaService.searchDemoByPayload(dto);
             res.send(response);

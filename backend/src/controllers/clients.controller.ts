@@ -22,7 +22,7 @@ class ClientsController {
 
     async postClient(req: Request, res: Response, next: NextFunction) {
         try {
-            checkValidation(req, true);
+            checkValidation(req);
             const dto: ClientsCreateDTO = req.body;
             const response: ClientsCreateResponseDTO = await clientsService.createClient(dto);
             res.send(response);
@@ -33,7 +33,7 @@ class ClientsController {
 
     async patchClientStatus(req: Request, res: Response, next: NextFunction) {
         try {
-            checkValidation(req, true);
+            checkValidation(req);
             const id: string = req.params.id;
             const dto: ClientsStatusUpdateDTO = req.body;
             const response: ClientsStatusResponseDTO | null = await clientsService.updateClientStatus(id, dto);

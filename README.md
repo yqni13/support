@@ -71,8 +71,7 @@ Testing of the application server can be done automatically via Jest tests (next
 ```
 See Figure 2 for the different use cases & responses (Postman, v11.73.5) - from left to right:
 <br>[PAYLOAD]: { "mode_enum": "success" } => retrieve current version number as request without fail
-<br>[PAYLOAD]: undefined (none) => retrieve exception for undefined body
-<br>[PAYLOAD]: empty => retrieve message as payload dto is allowed to be empty but needs value for success
+<br>[PAYLOAD]: undefined (none) or empty obj/array => retrieve exception for undefined body
 <br>[PAYLOAD]: { "mode_enum": "%§$" } => retrieve exception due to invalid value
 <br>[PAYLOAD]: { "mode_enum": "error" } => retrieve exception for intended failing db query (see data.message: SEL instead of SELECT)
 <div align="center">
@@ -87,7 +86,7 @@ Install the packages `@jest/globals`, `@types/jest`, `supertest`, `@testcontaine
 ```sh
 npm install jest @jest/globals @types/jest supertest @testcontainers/postgresql testcontainers --save-dev
 ```
-199 tests exist currently for models, utils, validators and workflows (integration tests) - see [tests](./backend/tests).<br>
+190+ tests exist currently for models, utils, validators and workflows (integration tests) - see [tests](./backend/tests).<br>
 Run tests on local device by including setup for dotenv/config to provide environment variables:
 ```sh
 set NODE_ENV=test && jest --setupFiles dotenv/config

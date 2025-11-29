@@ -1,19 +1,9 @@
 import { validationResult } from 'express-validator';
 import { InvalidPropertiesException } from '../utils/exceptions/validation.exception';
+import { Request } from 'express';
 
-export function checkValidation(req: any, hasBodyPayload: boolean = false) {
+export function checkValidation(req: Request) {
     const msg = 'support-invalid-properties';
-    if(hasBodyPayload && !req.body) {
-        throw new InvalidPropertiesException(msg, { data: [
-            {
-                type: 'field',
-                value: 'undefined',
-                msg: 'support-payload-required',
-                path: 'req.body',
-                location: 'body'
-            }
-        ]});
-    }
     const data: any = validationResult(req);
     if(!data.isEmpty()) {
         throw new InvalidPropertiesException(msg, { data: data.errors });

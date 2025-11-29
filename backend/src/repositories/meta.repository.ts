@@ -167,7 +167,7 @@ class MetaRepository implements IBaseRepository<Meta>, IFindRepository<Meta> {
             return result.rows[0] ?? null;
         } catch(err: any) {
             const message = "DB ERROR ON SELECT QUERY";
-            const method = "SUPPORT_MetaRepository_demo";
+            const method = "SUPPORT_MetaRepository_demoError";
             logError(message, method, err);
             await db.close(client);
             throw new DBQueryErrorException(err);

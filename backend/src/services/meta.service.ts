@@ -57,13 +57,9 @@ class MetaService {
                 result = { app_version: (result as MetaResponseDTO).app_version };
                 break;
             }
-            case(DemoMode.ERROR): {
-                await metaRepository.demoError(); // Expecting exception => no need to assign result.
-                break;
-            }
-            case(undefined): // Payload is an empty object / array.
+            case(DemoMode.ERROR): 
             default:
-                result = { message: 'no app info for an empty payload :)' };
+                await metaRepository.demoError(); // Expecting exception => no need to assign result.
         }
         return result;
     }

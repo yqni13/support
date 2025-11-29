@@ -1,15 +1,16 @@
-import { DBQueryErrorException } from './../../../src/utils/exceptions/db.exception';
 import { Maintenance, Meta } from './../../../src/repositories/interfaces/meta.entity.interface';
 import { NextFunction, Request, Response } from "express";
 import { DBTestSetup } from "../db-container.setup";
 import { runMigrations } from '../../db-migrations.setup';
 import request from 'supertest';
 import * as Utils from '../../../src/utils/common.utils';
+import * as MockUtils from "../../common.test-utils";
 import { ErrorStatusCodes } from '../../../src/utils/errorStatusCodes.utils';
 import { MaintenanceMode } from '../../../src/utils/enums/maintenance-mode.enum';
 import { MetaUpdateDTO } from '../../../src/dtos/meta.dto';
 import { CommonExceptionMessage } from '../../../src/utils/enums/common-exception-messages.enum';
 import { EnvMode } from '../../../src/utils/enums/env-mode.enum';
+import { DemoMode } from '../../../src/utils/enums/demo-mode.enum';
 
 jest.mock('../../../src/middleware/auth.admin.middleware', () => ({
     authAdmin: jest.fn(() =>  (req: Request, res: Response, next: NextFunction) => next())
@@ -19,39 +20,39 @@ jest.mock('../../../src/middleware/maintenance.middleware', () => ({
 }));
 
 import app from '../../../src/app';
-import { DemoMode } from '../../../src/utils/enums/demo-mode.enum';
 
 jest.setTimeout(60000);
 const testTimestamp = '2025-01-01T14:00:01.000Z';
 
 describe('Integration test (repository specific), priority: Meta', () => {
 
-    describe('Testing valid fn calls', () => {
+    let dbTestSetup: DBTestSetup;
+    let apiUrl: string;
+    let mockResult: Meta;
+    beforeAll(async () => {
+        dbTestSetup = new DBTestSetup();
+        await dbTestSetup.init();
+        MockUtils.disableConsoleMessages(); // Surpress multiple messages (migration progress etc). Disable to debug.
+        await runMigrations('meta.integration.test.ts');
+        apiUrl = '/api/v1/meta';
+        mockResult = {
+            id: 1,
+            app: 'support',
+            author: 'yqni13',
+            build_on: testTimestamp,
+            environment: EnvMode.TEST,
+            app_version: '0.1.0',
+            db_version: '0.2.0',
+            docker_image: 'no-image',
+            docker_version: '0.3.0',
+            jenkins_version: '0.4.0',
+            maintenance_mode: MaintenanceMode.E000,
+            last_modified: testTimestamp,
+            created_on: testTimestamp
+        }
+    });
 
-        let dbTestSetup: DBTestSetup;
-        let apiUrl: string;
-        let mockResult: Meta;
-        beforeAll(async () => {
-            dbTestSetup = new DBTestSetup();
-            await dbTestSetup.init();
-            await runMigrations();
-            apiUrl = '/api/v1/meta';
-            mockResult = {
-                id: 1,
-                app: 'support',
-                author: 'yqni13',
-                build_on: testTimestamp,
-                environment: EnvMode.TEST,
-                app_version: '0.1.0',
-                db_version: '0.2.0',
-                docker_image: 'no-image',
-                docker_version: '0.3.0',
-                jenkins_version: '0.4.0',
-                maintenance_mode: MaintenanceMode.E000,
-                last_modified: testTimestamp,
-                created_on: testTimestamp
-            }
-        });
+    describe('Testing valid fn calls', () => {
 
         beforeEach(async () => {
             // Clean tables before each test to fill test data individually.
@@ -235,6 +236,8 @@ describe('Integration test (repository specific), priority: Meta', () => {
                 const testParam_dto = { demo_mode: DemoMode.ERROR };
                 const testResultExceptionMessage = 'support-dbquery-error';
 
+                jest.spyOn(Utils, 'logError').mockImplementation();
+
                 await dbTestSetup.addTestData();
                 const testResponse = await request(app)
                     .post(`${apiUrl}/demo`)
@@ -243,25 +246,10 @@ describe('Integration test (repository specific), priority: Meta', () => {
                 expect(testResponse.statusCode).toBe(500);
                 expect(testResponse.body.headers.message).toBe(testResultExceptionMessage);
             })
-
-            test('Service process fn searchDemoByPayload, result: "Error"', async () =>{
-                const testParam_dto = {};
-                const testResult = 'no app info for an empty payload :)';
-
-                await dbTestSetup.addTestData();
-                const testResponse = await request(app)
-                    .post(`${apiUrl}/demo`)
-                    .send(testParam_dto);
-
-                expect(testResponse.statusCode).toBe(200);
-                expect(testResponse.body.message).toBe(testResult);
-            })
         })
     })
 
     describe('Testing invalid fn calls', () => {
-
-        const apiUrl = '/api/v1/meta';
 
         describe('All routes, priority: express-validators, location: <params>', () => {
 
@@ -365,33 +353,15 @@ describe('Integration test (repository specific), priority: Meta', () => {
                     expect(testResponse.body.headers.data).toContainEqual(testError);
                 })
             })
-
-            describe('Route: PUT/maintenance/:id', () => {
-
-                test('Params: <maintenance_mode>, validator: notEmpty() by empty object', async () => {
-                    const testParam_id = 1;
-                    const testParam_dto = {};
-                    const testError = structuredClone(mockError);
-                    testError['path'] = 'maintenance_mode';
-
-                    const testResponse = await request(app)
-                        .put(`${apiUrl}/maintenance/${testParam_id}`)
-                        .send(testParam_dto);
-
-                    expect(testResponse.statusCode).toBe(ErrorStatusCodes.InvalidPropertiesException);
-                    expect(testResponse.body.headers.data).toContainEqual(testError);
-                })
-            })
-
         })
 
-        describe('All routes, priority: error middleware, location: <body>', () => {
+        describe('All routes, priority: require middleware, location: <body>', () => {
 
             let mockError: any;
             beforeEach(() => {
                 mockError = {
                     type: 'field',
-                    value: 'undefined',
+                    value: '',
                     msg: 'support-payload-required',
                     path: 'req.body',
                     location: 'body'
@@ -400,48 +370,54 @@ describe('Integration test (repository specific), priority: Meta', () => {
 
             describe('Route: PUT/info/:id', () => {
 
-                test('Params: <MetaUpdateDTO>, validator: hasBodyPayload by undefined', async () =>{
+                test('Params: <MetaUpdateDTO>, validator: requirePayload by undefined', async () =>{
                     const testParam_id = 1;
                     const testParam_dto = undefined;
                     const testError = structuredClone(mockError);
+
+                    jest.spyOn(Utils, 'logError').mockImplementation();
 
                     const testResponse = await request(app)
                         .put(`${apiUrl}/info/${testParam_id}`)
                         .send(testParam_dto);
 
                     expect(testResponse.statusCode).toBe(ErrorStatusCodes.InvalidPropertiesException);
-                    expect(testResponse.body.headers.data).toContainEqual(testError);
+                    expect(testResponse.body.headers.data).toEqual([testError]);
                 })
             })
 
             describe('Route: PUT/maintenance/:name', () => {
 
-                test('Params: <MaintenanceUpdateDTO>, validator: hasBodyPayload by undefined', async () =>{
+                test('Params: <MaintenanceUpdateDTO>, validator: requirePayload by undefined', async () =>{
                     const testParam_name = 'valid_meta_test_name';
                     const testParam_dto = undefined;
                     const testError = structuredClone(mockError);
+
+                    jest.spyOn(Utils, 'logError').mockImplementation();
 
                     const testResponse = await request(app)
                         .put(`${apiUrl}/maintenance/${testParam_name}`)
                         .send(testParam_dto);
 
                     expect(testResponse.statusCode).toBe(ErrorStatusCodes.InvalidPropertiesException);
-                    expect(testResponse.body.headers.data).toContainEqual(testError);
+                    expect(testResponse.body.headers.data).toEqual([testError]);
                 })
             })
 
             describe('Route: POST/demo', () => {
 
-                test('Params: <MetaDemoDTO>, validator: hasBodyPayload by undefined', async () =>{
+                test('Params: <MetaDemoDTO>, validator: requirePayload by undefined', async () =>{
                     const testParam_dto = undefined;
                     const testError = structuredClone(mockError);
+
+                    jest.spyOn(Utils, 'logError').mockImplementation();
 
                     const testResponse = await request(app)
                         .post(`${apiUrl}/demo`)
                         .send(testParam_dto);
 
                     expect(testResponse.statusCode).toBe(ErrorStatusCodes.InvalidPropertiesException);
-                    expect(testResponse.body.headers.data).toContainEqual(testError);
+                    expect(testResponse.body.headers.data).toEqual([testError]);
                 })
             })
         })

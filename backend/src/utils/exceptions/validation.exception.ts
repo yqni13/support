@@ -2,7 +2,7 @@ export class ValidationException extends Error {
 
     public error: string;
     public status: number;
-    public data?: unknown;
+    public data?: any;
     public isOperational: boolean;
 
     constructor(

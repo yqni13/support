@@ -8,11 +8,32 @@ import {
     postClientSchema as createSchema,
     patchClientStatusSchema as updateStatusSchema
 } from './../middleware/validators/clientsValidator.middleware';
+import { requirePayload } from '../middleware/require.middleware';
 
 const router = Router();
 
-router.get('/status/:name', authAdmin(), getStatusSchema, factory(clientsController.getClientStatus));
-router.post('/create', maintain(), authAdmin(), createSchema, factory(clientsController.postClient));
-router.put('/status/:id', maintain(), authAdmin(), updateStatusSchema, factory(clientsController.patchClientStatus));
+// findStatusByName
+router.get(
+    '/status/:name',
+    authAdmin(),
+    getStatusSchema,
+    factory(clientsController.getClientStatus)
+);
+
+// create
+router.post(
+    '/create',
+    maintain(), authAdmin(), requirePayload(),
+    createSchema,
+    factory(clientsController.postClient)
+);
+
+// udpateStatus
+router.put(
+    '/status/:id',
+    maintain(), authAdmin(), requirePayload(),
+    updateStatusSchema,
+    factory(clientsController.patchClientStatus)
+);
 
 export default router;
