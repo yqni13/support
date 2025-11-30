@@ -2,6 +2,7 @@ import { body, param, ValidationChain } from 'express-validator';
 import * as CustomValidator from '../../utils/customValidator.utils';
 import { MaintenanceMode } from '../../utils/enums/maintenance-mode.enum';
 import { CommonExceptionMessage as Message } from '../../utils/enums/common-exception-messages.enum';
+import { DemoMode } from '../../utils/enums/demo-mode.enum';
 
 export const getMetaByIdSchema: ValidationChain[] = [
     param('id')
@@ -89,3 +90,10 @@ export const patchMaintenanceSchema: ValidationChain[] = [
         .isEmpty()
         .withMessage(Message.FORBIDDEN)
 ];
+
+export const postDemoSchema: ValidationChain[] = [
+    body('demo_mode')
+        .trim()
+        .custom((mode: DemoMode) => CustomValidator.validateEnum(mode, DemoMode, 'demoMode'))
+        .optional() // Accept {} as payload.
+]

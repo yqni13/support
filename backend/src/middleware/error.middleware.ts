@@ -8,20 +8,24 @@ export function errorMiddleware(err: any, req: Request, res: Response, next: Nex
         err = new InternalServerException('Internal Server Error');
     }
 
-    let { message, code, error, status, data, stack } = err;
+    const errDataMessage = err.data?.message ? err.data?.message : undefined;
+    let { message, error, status, data, stack } = err;
+    data = !data?.message ? data?.data : { message: errDataMessage, ...err.data };
 
     if(secrets.ENV_MODE.trim() === EnvMode.DEV) {
-        console.log(`[Exception] ${error}, [Code] ${code}`);
-        console.log(`[Error] ${message}`);
-        console.log(`[Stack] ${stack}`);
+        console.log("----------------------------------------------------------")
+        console.log(`[Exception]... ${error}`);
+        console.log(`[StatusCode].. ${status}`);
+        if(data?.message) { console.log(`[ErrorInfo]... ${data?.message}`); }
+        console.log(`[Stack]....... ${stack}`);
     }
 
     const headers = {
         success: "0",
         error,
-        code,
+        status,
         message,
-        ...(data) && data
+        data
     };
 
     res.status(status).send({ headers, body: {}});

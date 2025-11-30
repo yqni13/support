@@ -6,6 +6,7 @@ import {
     ClientsStatusUpdateDTO
 } from "../../../src/dtos/clients.dto";
 import * as Utils from '../../../src/utils/common.utils';
+import * as MockUtils from "../../common.test-utils";
 import request from 'supertest';
 import { ErrorStatusCodes } from '../../../src/utils/errorStatusCodes.utils';
 import { ApiKeyStatus } from "../../../src/utils/enums/api-key-status.enum";
@@ -15,6 +16,7 @@ import clientsModel from "../../../src/models/clients.model";
 import { Clients } from "../../../src/repositories/interfaces/clients.entity.interface";
 import { CommonExceptionMessage } from "../../../src/utils/enums/common-exception-messages.enum";
 import { default as mockId } from "../../mock-data/id.mock-data.json";
+import { secrets } from "../../../src/utils/secrets.utils";
 
 jest.mock('../../../src/middleware/auth.admin.middleware', () => ({
     authAdmin: jest.fn(() =>  (req: Request, res: Response, next: NextFunction) => next())
@@ -24,7 +26,6 @@ jest.mock('../../../src/middleware/maintenance.middleware', () => ({
 }));
 
 import app from '../../../src/app';
-import { secrets } from "../../../src/utils/secrets.utils";
 
 jest.setTimeout(60000);
 const testTimestamp = '2025-01-01T14:00:02.000Z';
@@ -37,7 +38,8 @@ describe('Integration test (repository specific), priority: Clients', () => {
     beforeAll(async () => {
         dbTestSetup = new DBTestSetup();
         await dbTestSetup.init();
-        await runMigrations();
+        MockUtils.disableConsoleMessages(); // Surpress multiple messages (migration progress etc). Disable to debug.
+        await runMigrations('clients.integration.test.ts');
         apiUrl = '/api/v1/clients';
     });
 
@@ -139,8 +141,6 @@ describe('Integration test (repository specific), priority: Clients', () => {
 
     describe('Testing invalid fn calls', () => {
 
-        const apiUrl = '/api/v1/clients';
-
         describe('All routes, priority: express-validators, location: <params>', () => {
 
             describe('Route: PUT/status/:id', () => {
@@ -181,23 +181,6 @@ describe('Integration test (repository specific), priority: Clients', () => {
                 };
             });
 
-            describe('Route: PUT/status/:id', () => {
-
-                test('Params: <status>, validator: notEmpty() by undefined', async () => {
-                    const testParam_id = 'test_id';
-                    const testParam_dto = undefined;
-                    const testError = structuredClone(mockError);
-                    testError['path'] = 'status';
-
-                    const testResponse = await request(app)
-                        .put(`${apiUrl}/status/${testParam_id}`)
-                        .send(testParam_dto);
-
-                    expect(testResponse.statusCode).toBe(ErrorStatusCodes.InvalidPropertiesException);
-                    expect(testResponse.body.headers.data).toContainEqual(testError);
-                })
-            })
-
             describe('Route: POST/create, priority: validateClientUniqueness', () => {
 
                 test('Params: <name> by existing "TESTCLIENT" in db', async () => {
@@ -220,6 +203,55 @@ describe('Integration test (repository specific), priority: Clients', () => {
 
                     expect(testResponse.statusCode).toBe(ErrorStatusCodes.InvalidPropertiesException);
                     expect(testResponse.body.headers.data).toStrictEqual(testError);
+                })
+            })
+        })
+
+        describe('All routes, priority: require middleware, location: <body>', () => {
+
+            let mockError: any;
+            beforeEach(() => {
+                mockError = {
+                    type: 'field',
+                    value: '',
+                    msg: 'support-payload-required',
+                    path: 'req.body',
+                    location: 'body'
+                };
+            })
+
+            describe('Route: POST/create/:id', () => {
+
+                test('Params: <ClientsCreateDTO>, validator: requirePayload by undefined', async () =>{
+                    const testParam_dto = undefined;
+                    const testError = structuredClone(mockError);
+
+                    jest.spyOn(Utils, 'logError').mockImplementation();
+
+                    const testResponse = await request(app)
+                        .post(`${apiUrl}/create`)
+                        .send(testParam_dto);
+
+                    expect(testResponse.statusCode).toBe(ErrorStatusCodes.InvalidPropertiesException);
+                    expect(testResponse.body.headers.data).toEqual([testError]);
+                })
+            })
+
+            describe('Route: PUT/status/:id', () => {
+
+                test('Params: <ClientsStatusUpdateDTO>, validator: requirePayload by undefined', async () =>{
+                    const testParam_id = mockId.clients.valid[0];
+                    const testParam_dto = undefined;
+                    const testError = structuredClone(mockError);
+
+                    jest.spyOn(Utils, 'logError').mockImplementation();
+
+                    const testResponse = await request(app)
+                        .put(`${apiUrl}/status/${testParam_id}`)
+                        .send(testParam_dto);
+
+                    expect(testResponse.statusCode).toBe(ErrorStatusCodes.InvalidPropertiesException);
+                    expect(testResponse.body.headers.data).toEqual([testError]);
                 })
             })
         })

@@ -1,24 +1,20 @@
-import { ErrorCodes } from "../errorCodes.utils";
 import { ErrorStatusCodes } from "../errorStatusCodes.utils";
 
 export class DBException extends Error {
 
-    public code: number | string;
     public error: string;
     public status: number;
-    public data?: unknown;
+    public data?: any;
     public isOperational: boolean;
 
     constructor(
-        code: number | string,
         message: string,
-        data?: unknown,
+        data?: any,
         status: number = 500
     ) {
         super(message);
         this.message = message;
         this.name = 'Database Error';
-        this.code = code;
         this.error = this.constructor.name;
         this.status = status;
         this.data = data;
@@ -27,19 +23,19 @@ export class DBException extends Error {
 }
 
 export class DBConnectionException extends DBException {
-    constructor(message: string = 'support-dbconnection-error', data?: unknown) {
-        super(ErrorCodes.DBConnectionException, message, data, ErrorStatusCodes.DBConnectionException);
+    constructor(message: string = 'support-dbconnection-error', data?: any) {
+        super(message, data, ErrorStatusCodes.DBConnectionException);
     }
 }
 
 export class DBEmptyException extends DBException {
-    constructor(data?: unknown) {
-        super(ErrorCodes.DBEmptyException, 'support-dbempty-error', data, ErrorStatusCodes.DBEmptyException);
+    constructor(data?: any) {
+        super('support-dbempty-error', data, ErrorStatusCodes.DBEmptyException);
     }
 }
 
 export class DBQueryErrorException extends DBException {
-    constructor(data?: unknown) {
-        super(ErrorCodes.DBQueryErrorException, 'support-dbquery-error', data);
+    constructor(data?: any) {
+        super('support-dbquery-error', data);
     }
 }

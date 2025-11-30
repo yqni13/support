@@ -30,3 +30,8 @@ export function mapMockDbClient(mockResult: any, mockBoolean: boolean = false, m
 
     return mockClient;
 }
+
+export function disableConsoleMessages() {
+    jest.spyOn(console, 'info').mockImplementation();
+    jest.spyOn(console, 'debug').mockImplementation();
+}

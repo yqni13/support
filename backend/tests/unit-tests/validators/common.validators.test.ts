@@ -6,6 +6,7 @@ import { ApiKeyStatus } from "../../../src/utils/enums/api-key-status.enum";
 import { UserStatus } from "../../../src/utils/enums/user-status.enum";
 import { Flag } from "../../../src/utils/enums/flag.enum";
 import { CommonExceptionMessage } from "../../../src/utils/enums/common-exception-messages.enum";
+import { DemoMode } from "../../../src/utils/enums/demo-mode.enum";
 
 describe('CustomValidator tests, priority: no model specification', () => {
 
@@ -84,6 +85,20 @@ describe('CustomValidator tests, priority: no model specification', () => {
         test('fn: validateEnum, params <enumObj> = Flag', () => {
             const mockParam_enumObj = Flag;
             const mockParam_enumName = 'flag';
+            const expectResult = true;
+
+            Object.values(mockParam_enumObj).forEach((value) => {
+                expect(CustomValidators.validateEnum(
+                    value,
+                    mockParam_enumObj,
+                    mockParam_enumName
+                )).toBe(expectResult);
+            })
+        })
+
+        test('fn: validateEnum, params <enumObj> = DemoMode', () => {
+            const mockParam_enumObj = DemoMode;
+            const mockParam_enumName = 'demoMode';
             const expectResult = true;
 
             Object.values(mockParam_enumObj).forEach((value) => {
