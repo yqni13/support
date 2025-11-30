@@ -7,12 +7,12 @@ import {
     TicketsUpdateDTO
 } from "../../../src/dtos/tickets.dto";
 import * as Utils from '../../../src/utils/common.utils';
+import * as MockUtils from "../../common.test-utils";
 import request from 'supertest';
 import { DBTestSetup } from "../db-container.setup";
 import { runMigrations } from '../../db-migrations.setup';
 import { TicketStatus } from "../../../src/utils/enums/ticket-status.enum";
 import { Flag } from "../../../src/utils/enums/flag.enum";
-import { Tickets } from "../../../src/repositories/interfaces/tickets.entity.interface";
 import { CommonExceptionMessage } from "../../../src/utils/enums/common-exception-messages.enum";
 import { ErrorStatusCodes } from "../../../src/utils/errorStatusCodes.utils";
 import { default as mockId } from "../../mock-data/id.mock-data.json";
@@ -46,28 +46,29 @@ jest.setTimeout(60000);
 
 describe('Integration test (repository specific), priority: Tickets', () => {
 
+    let dbTestSetup: DBTestSetup;
+    let apiUrl: string;
+    const testClientsName = 'TESTCLIENT';
+    const testUsersEmail = 'max.mustermann@yqni13.com';
+    const testNewParam_ticket_id = mockId.tickets.new[0];
+    beforeAll(async () => {
+        dbTestSetup = new DBTestSetup();
+        await dbTestSetup.init();
+        MockUtils.disableConsoleMessages(); // Surpress multiple messages (migration progress etc). Disable to debug.
+        await runMigrations('tickets.integration.test.ts');
+        apiUrl = '/api/v1/tickets';
+    });
+
+    beforeEach(async () => {
+        // Clean tables before each test to fill test data individually.
+        await dbTestSetup.clearTables();
+    });
+
+    afterAll(async () => {
+        await dbTestSetup.shutdown();
+    });
+
     describe('Testing valid fn calls', () => {
-
-        let dbTestSetup: DBTestSetup;
-        let apiUrl: string;
-        const testClientsName = 'TESTCLIENT';
-        const testUsersEmail = 'max.mustermann@yqni13.com';
-        const testNewParam_ticket_id = mockId.tickets.new[0];
-        beforeAll(async () => {
-            dbTestSetup = new DBTestSetup();
-            await dbTestSetup.init();
-            await runMigrations();
-            apiUrl = '/api/v1/tickets';
-        });
-
-        beforeEach(async () => {
-            // Clean tables before each test to fill test data individually.
-            await dbTestSetup.clearTables();
-        });
-
-        afterAll(async () => {
-            await dbTestSetup.shutdown();
-        });
 
         test('Repository process fn findById, result: "SUCCESS"', async () => {
             const testParam_id = mockId.tickets.valid[0];
@@ -258,41 +259,24 @@ describe('Integration test (repository specific), priority: Tickets', () => {
 
     describe('Testing invalid fn calls', () => {
 
-        let dbTestSetup: DBTestSetup;
-        let apiUrl: string;
-        beforeAll(async () => {
-            dbTestSetup = new DBTestSetup();
-            await dbTestSetup.init();
-            await runMigrations();
-            apiUrl = '/api/v1/tickets';
-        });
-
-        beforeEach(async () => {
-            await dbTestSetup.clearTables();
-        });
-
-        afterAll(async () => {
-            await dbTestSetup.shutdown();
-        });
-
         describe('All routes, priority: express-validators, location <params>', () => {
 
-            let testError: any;
+            let mockError: any;
             beforeEach(() => {
-                testError = {
+                mockError = {
                     type: 'field',
                     value: '',
                     msg: 'support-invalid-entry#ticket_id',
                     path: 'id',
                     location: 'params'
-                }
+                };
             })
 
             describe('Route: GET/by-id/:id', () => {
 
                 test('Params: <id>, validator: isUUID() by invalid id', async () => {
                     const testParam_id = 'invalid-id';
-                    testError = structuredClone(testError);
+                    const testError = structuredClone(mockError);
                     testError['value'] = testParam_id;
 
                     const testResponse = await request(app)
@@ -312,7 +296,7 @@ describe('Integration test (repository specific), priority: Tickets', () => {
                         message: 'test-message',
                         flag: null
                     }
-                    testError = structuredClone(testError);
+                    const testError = structuredClone(mockError);
                     testError['value'] = testParam_id;
 
                     const testResponse = await request(app)
@@ -328,7 +312,7 @@ describe('Integration test (repository specific), priority: Tickets', () => {
 
                 test('Params: <id>, validator: isUUID() by invalid id', async () => {
                     const testParam_id = 'invalid-id';
-                    testError = structuredClone(testError);
+                    const testError = structuredClone(mockError);
                     testError['value'] = testParam_id;
 
                     const testResponse = await request(app)
@@ -348,20 +332,20 @@ describe('Integration test (repository specific), priority: Tickets', () => {
                     let testParam_dto: TicketsFilterDTO = {
                         client_id: [mockId.clients.valid[0], 'invalid-id']
                     }
-                    const testError = {
+                    const testError = [{
                         type: 'field',
                         value: 'invalid-id',
                         msg: 'support-invalid-entry#client_id',
                         path: 'client_id[1]',
                         location: 'body'
-                    };
+                    }];
 
                     const testResponse = await request(app)
                         .post(`${apiUrl}/search`)
                         .send(testParam_dto);
 
                     expect(testResponse.statusCode).toBe(ErrorStatusCodes.InvalidPropertiesException);
-                    expect(testResponse.body.headers.data).toEqual([testError]);
+                    expect(testResponse.body.headers.data).toEqual(testError);
                 })
 
                 test('Params: <user_id>, validator: isUUID() by invalid value', async () => {
@@ -383,7 +367,7 @@ describe('Integration test (repository specific), priority: Tickets', () => {
                             path: 'user_id[2]',
                             location: 'body'
                         }
-                    ]
+                    ];
 
                     const testResponse = await request(app)
                         .post(`${apiUrl}/search`)
@@ -395,24 +379,6 @@ describe('Integration test (repository specific), priority: Tickets', () => {
             })
             
             describe('Route: POST/create', () => {
-
-                test('Params: <message>, validator: notEmpty() by undefined', async () => {
-                    let mockParam_dto = undefined;
-                    const testError = {
-                        type: 'field',
-                        value: '',
-                        msg: CommonExceptionMessage.REQUIRED,
-                        path: 'message',
-                        location: 'body'
-                    };
-
-                    const testResponse = await request(app)
-                        .post(`${apiUrl}/create`)
-                        .send(mockParam_dto);
-
-                    expect(testResponse.statusCode).toBe(ErrorStatusCodes.InvalidPropertiesException);
-                    expect(testResponse.body.headers.data).toContainEqual(testError);
-                })
 
                 test('Params: <message>, validator: isLength() by max > 1000 chars', async () => {
                     let mockParam_dto = {
@@ -506,6 +472,53 @@ describe('Integration test (repository specific), priority: Tickets', () => {
 
                     expect(testResponse.statusCode).toBe(ErrorStatusCodes.InvalidPropertiesException);
                     expect(testResponse.body.headers.data).toContainEqual(testError);
+                })
+            })
+        })
+
+        describe('All routes, priority: error middleware, location: <body>', () => {
+
+            let testError: any;
+            beforeEach(() => {
+                testError = {
+                    type: 'field',
+                    value: '',
+                    msg: 'support-payload-required',
+                    path: 'req.body',
+                    location: 'body'
+                };
+            })
+
+            describe('Route: POST/create', () => {
+
+                test('Params: <TicketsCreateDTO>, validator: requirePayload by undefined', async () =>{
+                    const testParam_dto = undefined;
+
+                    jest.spyOn(Utils, 'logError').mockImplementation();
+
+                    const testResponse = await request(app)
+                        .post(`${apiUrl}/create`)
+                        .send(testParam_dto);
+
+                    expect(testResponse.statusCode).toBe(ErrorStatusCodes.InvalidPropertiesException);
+                    expect(testResponse.body.headers.data).toEqual([testError]);
+                })
+            })
+
+            describe('Route: PUT/update/:id', () => {
+
+                test('Params: <TicketsUpdateDTO>, validator: hasBodyPayload by undefined', async () =>{
+                    const testParam_id = mockId.tickets.valid[0];
+                    const testParam_dto = undefined;
+
+                    jest.spyOn(Utils, 'logError').mockImplementation();
+
+                    const testResponse = await request(app)
+                        .put(`${apiUrl}/update/${testParam_id}`)
+                        .send(testParam_dto);
+
+                    expect(testResponse.statusCode).toBe(ErrorStatusCodes.InvalidPropertiesException);
+                    expect(testResponse.body.headers.data).toEqual([testError]);
                 })
             })
         })

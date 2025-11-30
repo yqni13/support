@@ -1,7 +1,7 @@
 import { join } from "path";
 import migrate from "node-pg-migrate";
 
-export async function runMigrations() {
+export async function runMigrations(testfile: string = 'unknown') {
     const {
         DB_TEST_HOST = "localhost",
         DB_TEST_PORT = "5432",
@@ -11,7 +11,6 @@ export async function runMigrations() {
     } = process.env;
     
     try {
-        console.log("Running testcontainer database migrations ...");
         const migrationsDir = join(process.cwd(), "migrations");
 
         await migrate({
@@ -28,8 +27,8 @@ export async function runMigrations() {
             verbose: true,
             count: 999,
         });
-        console.log("Migrations executed successfully.");
+        console.log(`Migrations executed successfully for: '${testfile}'.`);
     } catch (err: any) {
-        console.error("Migration failed: ", err);
+        console.error(`Migration failed for: '${testfile}': `, err);
     }
 }

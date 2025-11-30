@@ -1,3 +1,4 @@
+import { DemoMode } from "../utils/enums/demo-mode.enum"
 import { EnvMode } from "../utils/enums/env-mode.enum"
 import { MaintenanceMode } from "../utils/enums/maintenance-mode.enum"
 
@@ -42,4 +43,8 @@ export interface MaintenanceResponseDTO {
     maintenance_mode: MaintenanceMode,
     created_on: string,
     last_modified: string
+}
+
+export interface DemoModusDTO {
+    demo_mode?: DemoMode
 }

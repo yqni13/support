@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import * as Utils from '../../../src/utils/common.utils';
+import * as MockUtils from "../../common.test-utils";
 import request from 'supertest';
 import { ErrorStatusCodes } from '../../../src/utils/errorStatusCodes.utils';
 import { DBTestSetup } from "../db-container.setup";
@@ -30,7 +31,8 @@ describe('Integration test (repository specific), priority: Users', () => {
     beforeAll(async () => {
         dbTestSetup = new DBTestSetup();
         await dbTestSetup.init();
-        await runMigrations();
+        MockUtils.disableConsoleMessages(); // Surpress multiple messages (migration progress etc). Disable to debug.
+        await runMigrations('users.integration.test.ts');
         apiUrl = '/api/v1/users';
     });
 
@@ -286,22 +288,6 @@ describe('Integration test (repository specific), priority: Users', () => {
                 };
             });
 
-            describe('Route: POST/create', () => {
-
-                test('Params: <email>, validator: notEmpty() by undefined', async () => {
-                    const testParam_dto = {};
-                    const testError = structuredClone(mockError);
-                    testError['path'] = 'email';
-
-                    const testResponse = await request(app)
-                        .post(`${apiUrl}/create`)
-                        .send(testParam_dto);
-
-                    expect(testResponse.statusCode).toBe(ErrorStatusCodes.InvalidPropertiesException);
-                    expect(testResponse.body.headers.data).toContainEqual(testError);
-                })
-            })
-
             describe('Route: PUT/update/:id', () => {
 
                 const testData: Partial<Users> = {
@@ -350,6 +336,55 @@ describe('Integration test (repository specific), priority: Users', () => {
 
                     expect(testResponse.statusCode).toBe(ErrorStatusCodes.InvalidPropertiesException);
                     expect(testResponse.body.headers.data).toStrictEqual(testError);
+                })
+            })
+        })
+
+        describe('All routes, priority: require middleware, location: <body>', () => {
+
+            let mockError: any;
+            beforeEach(() => {
+                mockError = {
+                    type: 'field',
+                    value: '',
+                    msg: 'support-payload-required',
+                    path: 'req.body',
+                    location: 'body'
+                };
+            })
+
+            describe('Route: POST/create', () => {
+
+                test('Params: <UsersCreateDTO>, validator: requirePayload by undefined', async () =>{
+                    const testParam_dto = undefined;
+                    const testError = structuredClone(mockError);
+
+                    jest.spyOn(Utils, 'logError').mockImplementation();
+
+                    const testResponse = await request(app)
+                        .post(`${apiUrl}/create`)
+                        .send(testParam_dto);
+
+                    expect(testResponse.statusCode).toBe(ErrorStatusCodes.InvalidPropertiesException);
+                    expect(testResponse.body.headers.data).toEqual([testError]);
+                })
+            })
+
+            describe('Route: PUT/update/:id', () => {
+
+                test('Params: <UsersUpdateDTO>, validator: requirePayload by undefined', async () =>{
+                    const testParam_id = mockId.users.valid[0];
+                    const testParam_dto = undefined;
+                    const testError = structuredClone(mockError);
+
+                    jest.spyOn(Utils, 'logError').mockImplementation();
+
+                    const testResponse = await request(app)
+                        .put(`${apiUrl}/update/${testParam_id}`)
+                        .send(testParam_dto);
+
+                    expect(testResponse.statusCode).toBe(ErrorStatusCodes.InvalidPropertiesException);
+                    expect(testResponse.body.headers.data).toEqual([testError]);
                 })
             })
         })
