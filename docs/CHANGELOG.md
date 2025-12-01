@@ -4,9 +4,16 @@
 
 <br>
 
+### $\textsf{\color{skyblue}2025/12/01}$
+
+$\textsf{[v0.9.6\ =>\ {\textbf{\color{brown}v0.9.7}]}}$ app
+- $\textsf{\color{teal}Addition:}$ Added config file for hosting service 'Vercel' to deploy application in 'staging' environment.
+
+<br>
+
 ### $\textsf{\color{skyblue}2025/11/28}$
 
-$\textsf{[v0.9.4\ =>\ {\textbf{\color{brown}v0.9.6}]}}$ app
+$\textsf{[v0.9.4\ =>\ v0.9.6]}$ app
 - $\textsf{\color{teal}Addition:}$ Added '/meta/demo' route for demonstration and manual testing reasons.
 - $\textsf{\color{orange}Patch:}$ Refactored error- and validation-middleware to correctly validate empty and undefined payloads.
 
