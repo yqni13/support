@@ -9,8 +9,8 @@
     "test": "set NODE_ENV=test && jest --setupFiles dotenv/config",
     "build": "tsc",
     "start:dev": "ts-node --files src/server.ts",
-    "start:stag": "ts-node --files dist/server.js",
-    "start:prod": "ts-node --files dist/server.js"
+    "start:stag": "node dist/src/server.js",
+    "start:prod": "ts-node --files dist/src/server.js"
   },
   "author": "yqni13",
   "license": "ISC",
