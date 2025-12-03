@@ -4,6 +4,7 @@ import { TicketStatus } from "../../src/utils/enums/ticket-status.enum";
 import { UserStatus } from "../../src/utils/enums/user-status.enum";
 import { secrets } from "../../src/utils/secrets.utils";
 import { default as mockId } from "../mock-data/id.mock-data.json";
+import { SqlInsertSetup } from "./db-interface.setup";
 
 export class DBTestData {
     private static instance: DBTestData;
@@ -14,7 +15,8 @@ export class DBTestData {
             meta: 'meta',
             clients: 'clients',
             users: 'users',
-            tickets: 'tickets'
+            tickets: 'tickets',
+            rateLimits: 'rate_limits'
         };
     }
 
@@ -33,7 +35,7 @@ export class DBTestData {
         return tables;
     }
 
-    getMetaInsertSql(): { sql: string, values: any[] } {
+    getMetaInsertSql(): SqlInsertSetup {
         const sql = `INSERT INTO ${this.tableRecord['meta']}
         (id, app, author, build_on, environment, app_version, db_version, docker_image, docker_version, jenkins_version, maintenance_mode, created_on, last_modified)
         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13);
@@ -42,7 +44,7 @@ export class DBTestData {
         return { sql: sql, values: values };
     }
 
-    getClientsInsertSql(): { sql: string, values: any[] } {
+    getClientsInsertSql(): SqlInsertSetup {
         const sql = `INSERT INTO ${this.tableRecord['clients']}
         (client_id, name, api_key_hash, status, last_use, last_modified, created_on)
         VALUES ($1, $2, $3, $4, $5, $6, $7);
@@ -51,7 +53,7 @@ export class DBTestData {
         return { sql: sql, values: values };
     }
 
-    getUsersInsertSql(): { sql: string, values: any[] } {
+    getUsersInsertSql(): SqlInsertSetup {
         const sql = `INSERT INTO ${this.tableRecord['users']}
         (user_id, email, status, flag, last_modified, created_on)
         VALUES ($1, $2, $3, $4, $5, $6);
@@ -60,12 +62,21 @@ export class DBTestData {
         return { sql: sql, values: values };
     }
 
-    getTicketsInsertSql(): { sql: string, values: any[] } {
+    getTicketsInsertSql(): SqlInsertSetup {
         const sql = `INSERT INTO ${this.tableRecord['tickets']}
         (ticket_id, client_id, user_id, status, message, resource_paths, flag, last_modified, created_on)
         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9);
         `;
         const values = [mockId.tickets.valid[0], mockId.clients.valid[0], mockId.users.valid[0], TicketStatus.ISSUED, 'test-message', ['test/path/num0', 'test/path/num1'], null, '2025-01-01T14:00:04.000Z', '2025-01-01T14:00:04.000Z'];
+        return { sql: sql, values: values };
+    }
+
+    getRateLimitsInsertSql(): SqlInsertSetup {
+        const sql = `INSERT INTO ${this.tableRecord['rateLimits']}
+        (rate_limit_id, client_id, user_id, day, count, last_modified)
+        VALUES ($1, $2, $3, $4, $5, $6);
+        `;
+        const values = [mockId.rate_limits.valid[0], mockId.clients.valid[0], mockId.users.valid[0], '2025-01-01', 1, '2025-01-01T14:00:05.000Z'];
         return { sql: sql, values: values };
     }
 }

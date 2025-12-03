@@ -1,5 +1,5 @@
 # yqni13 | support
-$\texttt{\color{teal}{v0.9.7}}$
+$\texttt{\color{teal}{v0.9.8}}$
 
 
 <br>
@@ -121,8 +121,12 @@ Preventing an unwanted merge with unfinished/failed test run, the project is set
 
 ### $\textsf{\color{forestgreen}last update:}$
 
-$\textsf{[v0.9.6\ =>\ {\textbf{\color{brown}v0.9.7}]}}$ app
-- $\textsf{\color{teal}Addition:}$ Added config file for hosting service 'Vercel' to deploy application in 'staging' environment.
+$\textsf{[v0.9.7\ =>\ {\textbf{\color{brown}v0.9.8}]}}$ app<br>
+$\textsf{[v1.3.1\ =>\ {\textbf{\color{brown}v1.4.0}]}}$ database<br>
+$\textsf{[v1.0.3\ =>\ {\textbf{\color{brown}v1.0.5}]}}$ docker
+- $\textsf{\color{teal}Addition:}$ Added insert command to testcontainers ('rate_limits' table).
+- $\textsf{\color{teal}Addition:}$ Migrated 'rate_limits' table to database (no logic).
+- $\textsf{\color{orange}Patch:}$ Refactored Dockerfile (wrong 'omit' flag) and Docker Compose (missing target for local execution).
 
 <br>
 

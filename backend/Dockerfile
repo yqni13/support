@@ -20,7 +20,7 @@ RUN npm install
 
 COPY . .
 
-ENV NODE_ENV=dev
+ENV NODE_ENV=development
 
 # PORT
 EXPOSE 3000
