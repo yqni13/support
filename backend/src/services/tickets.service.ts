@@ -27,7 +27,12 @@ class TicketsService {
     }
 
     async searchTicketsByFilter(dto: TicketsFilterDTO): Promise<TicketsResponseDTO[] | null> {
-        let result = await ticketsRepository.findByFilter(dto);
+        let result: TicketsResponseDTO[] | null = null;
+        if(Utils.isEmptyObj(dto)) {
+            result = await ticketsRepository.findAll();
+        } else {
+            result = await ticketsRepository.findByFilter(dto);
+        }
         return !result ? null : Utils.mapArrayTimestamps<TicketsResponseDTO>(result, this.timeMapTargets);
     }
 

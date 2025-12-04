@@ -1,10 +1,10 @@
+import { IBaseQuery } from "../../src/repositories/interfaces/base.repository.interface";
 import { ApiKeyStatus } from "../../src/utils/enums/api-key-status.enum";
 import { MaintenanceMode } from "../../src/utils/enums/maintenance-mode.enum";
 import { TicketStatus } from "../../src/utils/enums/ticket-status.enum";
 import { UserStatus } from "../../src/utils/enums/user-status.enum";
 import { secrets } from "../../src/utils/secrets.utils";
 import { default as mockId } from "../mock-data/id.mock-data.json";
-import { SqlInsertSetup } from "./db-interface.setup";
 
 export class DBTestData {
     private static instance: DBTestData;
@@ -35,7 +35,7 @@ export class DBTestData {
         return tables;
     }
 
-    getMetaInsertSql(): SqlInsertSetup {
+    getMetaInsertSql(): IBaseQuery {
         // Manually set ID because within testfile id gets incremented due to deleting entries each test case.
         const sql = `INSERT INTO ${this.tableRecord['meta']}
         (id, app, author, build_on, environment, app_version, db_version, docker_image, docker_version, jenkins_version, maintenance_mode, created_on, last_modified)
@@ -45,7 +45,7 @@ export class DBTestData {
         return { sql: sql, values: values };
     }
 
-    getClientsInsertSql(): SqlInsertSetup {
+    getClientsInsertSql(): IBaseQuery {
         const sql = `INSERT INTO ${this.tableRecord['clients']}
         (client_id, name, api_key_hash, status, last_use, last_modified, created_on)
         VALUES ($1, $2, $3, $4, $5, $6, $7);
@@ -54,7 +54,7 @@ export class DBTestData {
         return { sql: sql, values: values };
     }
 
-    getUsersInsertSql(): SqlInsertSetup {
+    getUsersInsertSql(): IBaseQuery {
         const sql = `INSERT INTO ${this.tableRecord['users']}
         (user_id, email, status, flag, last_modified, created_on)
         VALUES ($1, $2, $3, $4, $5, $6);
@@ -63,7 +63,7 @@ export class DBTestData {
         return { sql: sql, values: values };
     }
 
-    getTicketsInsertSql(): SqlInsertSetup {
+    getTicketsInsertSql(): IBaseQuery {
         const sql = `INSERT INTO ${this.tableRecord['tickets']}
         (ticket_id, client_id, user_id, status, message, resource_paths, flag, last_modified, created_on)
         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9);
@@ -72,7 +72,7 @@ export class DBTestData {
         return { sql: sql, values: values };
     }
 
-    getRateLimitsInsertSql(): SqlInsertSetup {
+    getRateLimitsInsertSql(): IBaseQuery {
         // Manually set ID because within testfile id gets incremented due to deleting entries each test case.
         const sql = `INSERT INTO ${this.tableRecord['rateLimits']}
         (rate_limit_id, client_id, user_id, day, count, last_modified)
