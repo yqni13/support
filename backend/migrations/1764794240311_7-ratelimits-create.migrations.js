@@ -39,7 +39,8 @@ async function up(pgm) {
             type: 'TIMESTAMP',
             notNull: true
         }
-    })
+    });
+    pgm.sql(`ALTER SEQUENCE rate_limits_rate_limit_id_seq RESTART WITH 1;`);
 };
 
 /**

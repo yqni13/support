@@ -36,6 +36,7 @@ export class DBTestData {
     }
 
     getMetaInsertSql(): SqlInsertSetup {
+        // Manually set ID because within testfile id gets incremented due to deleting entries each test case.
         const sql = `INSERT INTO ${this.tableRecord['meta']}
         (id, app, author, build_on, environment, app_version, db_version, docker_image, docker_version, jenkins_version, maintenance_mode, created_on, last_modified)
         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13);
@@ -72,6 +73,7 @@ export class DBTestData {
     }
 
     getRateLimitsInsertSql(): SqlInsertSetup {
+        // Manually set ID because within testfile id gets incremented due to deleting entries each test case.
         const sql = `INSERT INTO ${this.tableRecord['rateLimits']}
         (rate_limit_id, client_id, user_id, day, count, last_modified)
         VALUES ($1, $2, $3, $4, $5, $6);
