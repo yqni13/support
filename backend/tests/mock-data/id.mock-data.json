@@ -10,6 +10,17 @@
             "9e024539-32e8-4317-8007-84a3956e6b57"
         ]
     },
+    "rate_limits": {
+        "invalid": [
+            0
+        ],
+        "new": [
+            2
+        ],
+        "valid": [
+            1
+        ]
+    },
     "tickets": {
         "invalid": [
             "b284d72d-1000-412c-8a7f-bbc9f9b5113d"
