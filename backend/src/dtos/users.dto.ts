@@ -16,7 +16,9 @@ export interface UsersUpdateDTO {
 export interface UsersFilterDTO {
     email?: SingleOrArray<string>,
     status?: SingleOrArray<UserStatus>,
-    flag?: SingleOrArray<Flag> | null
+    flag?: SingleOrArray<Flag> | null,
+    last_modified?: string[],
+    created_on?: string[]
 }
 
 export interface UsersResponseDTO {

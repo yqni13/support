@@ -144,9 +144,10 @@ describe('Integration test (repository specific), priority: Users', () => {
             expect(testResponse.body).toMatchObject(testResult);
         })
 
-        test('Repository process fn findByFilter, params: <flag> result: "SUCCESS"', async () => {
+        test('Repository process fn findByFilter, params: <flag, last_modified> result: "SUCCESS"', async () => {
             const testParam_dto: UsersFilterDTO = {
-                flag: null
+                flag: null,
+                last_modified: ['2024-12-01T10:00:00.000Z', '2025-12-01T14:00:00.000Z']
             };
             const testResult: UsersResponseDTO[] = [{
                 user_id: mockId.users.valid[0],

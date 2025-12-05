@@ -38,7 +38,7 @@ class UsersController {
     async postUsersSearch(req: Request, res: Response, next: NextFunction) {
         try {
             checkValidation(req);
-            const dto: UsersFilterDTO = req.body;
+            const dto: UsersFilterDTO = !req.body ? {} : req.body; // Null or undefined prohibited.
             const response: UsersResponseDTO[] | null = await usersService.searchUsersByFilter(dto);
             res.send(response);
         } catch(err: any) {

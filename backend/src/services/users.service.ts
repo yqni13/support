@@ -27,7 +27,12 @@ class UsersService {
     }
 
     async searchUsersByFilter(dto: UsersFilterDTO): Promise<UsersResponseDTO[] | null> {
-        let result = await usersRepository.findByFilter(dto);
+        let result: UsersResponseDTO[] | null = null;
+        if(Utils.isEmptyObj(result)) {
+            result = await usersRepository.findAll();
+        } else {
+            result = await usersRepository.findByFilter(dto);
+        }
         return !result ? null : Utils.mapArrayTimestamps<UsersResponseDTO>(result, this.timeMapTargets);
     }
 
