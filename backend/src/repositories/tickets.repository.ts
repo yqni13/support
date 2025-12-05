@@ -1,16 +1,11 @@
 import { DBConnection } from "../configs/db";
 import { QueryResult } from "pg";
 import { Tickets } from "./interfaces/tickets.entity.interface";
-import { IBaseQuery, IBaseRepository, ICreateRepository, IDeleteRepository, IFindRepository } from "./interfaces/base.repository.interface";
+import { IBaseRepository, ICreateRepository, IDeleteRepository, IFindRepository } from "./interfaces/base.repository.interface";
 import { TicketsFilterDTO, TicketsResponseExtendedDTO } from "../dtos/tickets.dto";
 import { DBQueryErrorException } from "../utils/exceptions/db.exception";
 import { logError } from "../utils/common.utils";
-
-interface TicketsTimestamps {
-    last_modified?: string[],
-    created_on?: string[]
-}
-
+import * as RepoUtils from "../utils/repository.utils";
 
 class TicketsRepository implements 
 IBaseRepository<Tickets>,
@@ -74,7 +69,7 @@ IDeleteRepository
      * @param dto Method only gets called when param is not empty.
      */
     async findByFilter(dto: TicketsFilterDTO): Promise<Tickets[] | null> {
-        const queryData = this._mapFilteredTicketsQueryValues(dto);
+        const queryData = RepoUtils.mapFilteredQueryValues(dto, this.table);
         const db = DBConnection.getInstance();
         let client: any;
         try {
@@ -155,62 +150,6 @@ IDeleteRepository
             await db.close(client);
             throw new DBQueryErrorException(err);
         }
-    }
-
-    _mapFilteredTicketsQueryValues(dto: TicketsFilterDTO): IBaseQuery {
-        const values: any[] = [];
-        const argGroups: string[] = [];
-        const timestampObj = {};
-        Object.entries(dto).forEach(([key, content]) => {
-            if(key !== 'last_modified' && key !== 'created_on') {
-                const valArr = Array.isArray(content) ? content : [content];
-                const conditions = valArr.map((value) => {
-                    if(value === null) {
-                        return `${key} IS NULL`;
-                    }
-
-                    values.push(value);
-                    const index = values.length;
-                    return `${key} = $${index}`;
-                });
-
-                if(conditions.length > 1) {
-                    // Multiple "OR" conditions need ( ) otherwise "AND" binds with higher priority.
-                    argGroups.push(`(${conditions.join(" OR ")})`);
-                } else {
-                    argGroups.push(conditions[0]);
-                }
-            } else {
-                Object.assign(timestampObj, { [key]: content });
-            }
-        })
-
-        let sql = `SELECT * FROM ${this.table} WHERE ${argGroups.length ? argGroups.join(" AND ") : ""}`;
-
-        if(dto.last_modified || dto.created_on) {
-            const queryTimestampData = this._mapTimestampFilters(timestampObj as TicketsTimestamps, values.length+1);
-            sql += argGroups.length ? ` AND ${queryTimestampData.sql}` : `${queryTimestampData.sql}`;
-            queryTimestampData.values.forEach((value) => values.push(value));
-        }
-        
-        return { sql: sql + ';', values: values };
-    }
-
-    /**
-     * @param data Timestamp values come in array [older, younger].
-     * @param valueIndex Index for query values.
-     */
-    private _mapTimestampFilters(data: TicketsTimestamps, valueIndex: number): IBaseQuery {
-        let sql: string = '';
-        const values: string[] = [];
-        Object.entries(data).forEach(([key, val], i) => {
-            sql += i > 0 ? ' AND ' : '';
-            sql += `(${key} >= $${valueIndex}::timestamp AND ${key} <= $${valueIndex+1}::timestamp)`
-            values.push(val[0], val[1]);
-            valueIndex = valueIndex + 2;
-        })
-
-        return { sql: sql, values: values };
     }
 }
 

@@ -6,7 +6,6 @@ import { DBQueryErrorException } from "../../../src/utils/exceptions/db.exceptio
 import { TicketStatus } from "../../../src/utils/enums/ticket-status.enum";
 import ticketsRepository from "../../../src/repositories/tickets.repository";
 import { TicketsFilterDTO, TicketsResponseDTO, TicketsResponseExtendedDTO, TicketsUpdateDTO } from "../../../src/dtos/tickets.dto";
-import { Flag } from "../../../src/utils/enums/flag.enum";
 
 jest.mock("../../../src/configs/db", () => {
     return {
@@ -367,83 +366,6 @@ describe('Database tests table <tickets>, priority: delete', () => {
 
             await expect(() => ticketsRepository.delete(mockParam_id))
                 .rejects.toThrow(expectExceptionResult);
-        })
-    })
-})
-
-describe('Database tests table <tickets>, priority: _mapFilteredTicketsQueryValues', () => {
-
-    describe('Testing valid fn calls', () => {
-
-        test('Map sql string and values array, params: TicketsFilterDTO without timestamps', () => {
-            const mockParam_dto: TicketsFilterDTO = {
-                status: TicketStatus.ACTIVE,
-                flag: [Flag.ERROR, Flag.WARNING]
-            };
-            const testFn = ticketsRepository._mapFilteredTicketsQueryValues(mockParam_dto);
-            const mockResult = {
-                sql: 'SELECT * FROM tickets WHERE status = $1 AND (flag = $2 OR flag = $3);',
-                values: [TicketStatus.ACTIVE, Flag.ERROR, Flag.WARNING]
-            };
-
-            expect(testFn).toMatchObject(mockResult);
-        })
-
-        test('Map sql string and values array, params: TicketsFilterDTO with 1 timestamp', () => {
-            const mockParam_dto: TicketsFilterDTO = {
-                status: TicketStatus.ACTIVE,
-                flag: [Flag.ERROR, Flag.WARNING],
-                last_modified: ['2024-12-31T10:00:00.000Z', '2025-12-05T10:00:00.000Z']
-            };
-            const testFn = ticketsRepository._mapFilteredTicketsQueryValues(mockParam_dto);
-            const mockResult = {
-                sql: `SELECT * FROM tickets WHERE status = $1 AND (flag = $2 OR flag = $3) AND (last_modified >= $4::timestamp AND last_modified <= $5::timestamp);`,
-                values: [TicketStatus.ACTIVE, Flag.ERROR, Flag.WARNING, mockParam_dto.last_modified![0], mockParam_dto.last_modified![1]]
-            };
-
-            expect(testFn).toMatchObject(mockResult);
-        })
-
-        test('Map sql string and values array, params: TicketsFilterDTO with 2 timestamps', () => {
-            const mockParam_dto: TicketsFilterDTO = {
-                status: TicketStatus.ACTIVE,
-                flag: [Flag.ERROR, Flag.WARNING],
-                last_modified: ['2024-12-31T10:00:00.000Z', '2025-12-05T10:00:00.000Z'],
-                created_on: ['2024-12-31T10:00:00.000Z', '2025-12-05T10:00:00.000Z']
-            };
-            const testFn = ticketsRepository._mapFilteredTicketsQueryValues(mockParam_dto);
-            const mockResult = {
-                sql: `SELECT * FROM tickets WHERE status = $1 AND (flag = $2 OR flag = $3) AND (last_modified >= $4::timestamp AND last_modified <= $5::timestamp) AND (created_on >= $6::timestamp AND created_on <= $7::timestamp);`,
-                values: [TicketStatus.ACTIVE, Flag.ERROR, Flag.WARNING, mockParam_dto.last_modified![0], mockParam_dto.last_modified![1], mockParam_dto.created_on![0], mockParam_dto.created_on![1]]
-            };
-
-            expect(testFn).toMatchObject(mockResult);
-        })
-
-        test('Map sql string and values array, params: TicketsFilterDTO only with timestamp', () => {
-            const mockParam_dto: TicketsFilterDTO = {
-                last_modified: ['2024-12-31T10:00:00.000Z', '2025-12-05T10:00:00.000Z']
-            };
-            const testFn = ticketsRepository._mapFilteredTicketsQueryValues(mockParam_dto);
-            const mockResult = {
-                sql: `SELECT * FROM tickets WHERE (last_modified >= $1::timestamp AND last_modified <= $2::timestamp);`,
-                values: [mockParam_dto.last_modified![0], mockParam_dto.last_modified![1]]
-            };
-
-            expect(testFn).toMatchObject(mockResult);
-        })
-
-        test('Map sql string and values array, params: TicketsFilterDTO only with timestamp', () => {
-            const mockParam_dto: TicketsFilterDTO = {
-                created_on: ['2024-12-31T10:00:00.000Z', '2025-12-05T10:00:00.000Z']
-            };
-            const testFn = ticketsRepository._mapFilteredTicketsQueryValues(mockParam_dto);
-            const mockResult = {
-                sql: `SELECT * FROM tickets WHERE (created_on >= $1::timestamp AND created_on <= $2::timestamp);`,
-                values: [mockParam_dto.created_on![0], mockParam_dto.created_on![1]]
-            };
-
-            expect(testFn).toMatchObject(mockResult);
         })
     })
 })

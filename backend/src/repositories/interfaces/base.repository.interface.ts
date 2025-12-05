@@ -14,8 +14,3 @@ export interface ICreateRepository<T> {
 export interface IDeleteRepository {
     delete(id: string | number): Promise<boolean>;
 }
-
-export interface IBaseQuery {
-    sql: string,
-    values: any[]
-}

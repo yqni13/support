@@ -49,7 +49,7 @@ export const postTicketsSearchSchema: ValidationChain[] = [
     body('last_modified')
         .custom((timestamps) => CustomValidator.validateTimestampFilter(timestamps))
         .optional(),
-        body('created_on')
+    body('created_on')
         .custom((timestamps) => CustomValidator.validateTimestampFilter(timestamps))
         .optional()
 ];
