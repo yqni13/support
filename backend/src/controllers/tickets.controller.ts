@@ -33,7 +33,7 @@ class TicketsController {
     async postTicketsSearch(req: Request, res: Response, next: NextFunction) {
         try {
             checkValidation(req);
-            const dto: TicketsFilterDTO = req.body;
+            const dto: TicketsFilterDTO = !req.body ? {} : req.body; // Null or undefined prohibited.
             const response: TicketsResponseDTO[] | null = await ticketsService.searchTicketsByFilter(dto);
             res.send(response);
         } catch(err: any) {

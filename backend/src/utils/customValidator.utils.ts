@@ -149,3 +149,26 @@ export function validatePathParam(arg: string | null | undefined): boolean {
     }
     return true;
 }
+
+export function validateTimestamp(timestamp: string): boolean {
+    const dateResult = new Date(timestamp);
+    if(dateResult.toString() === 'Invalid Date') {
+        throw new Error('support-invalid-entry#timestamp');
+    }
+    return true;
+}
+
+/**
+ * @description Check type, length, content and order of timestamp array (from...to).
+ */
+export function validateTimestampFilter(timestamps: any): boolean {
+    const errorMsg = 'support-invalid-entry#timestamps';
+    if(!Array.isArray(timestamps) || (timestamps as string[]).length !== 2) {
+        throw new Error(errorMsg);
+    }
+    (timestamps as string[]).forEach((timestamp) => validateTimestamp(timestamp));
+    if(new Date(timestamps[0]) > new Date(timestamps[1])) {
+        throw new Error(errorMsg);
+    }
+    return true;
+}

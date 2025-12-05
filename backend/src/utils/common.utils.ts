@@ -37,7 +37,7 @@ export function selectPrivateKey(source: MailSource): string {
 }
 
 export function logError(message: string, method: string, err: any) {
-    message += ` - ENV: '${secrets.ENV_MODE}'`;
+    message += ` - ENV: '${secrets.ENV_MODE.trim()}'`;
     logger.error(message, {
         error: err.code,
         stack: err.stack,

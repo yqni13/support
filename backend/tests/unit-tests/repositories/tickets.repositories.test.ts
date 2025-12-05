@@ -397,7 +397,7 @@ describe('Database tests table <tickets>, priority: _mapFilteredTicketsQueryValu
             };
             const testFn = ticketsRepository._mapFilteredTicketsQueryValues(mockParam_dto);
             const mockResult = {
-                sql: `SELECT * FROM tickets WHERE status = $1 AND (flag = $2 OR flag = $3) AND (last_modified >= timestamp $4 AND last_modified <= timestamp $5);`,
+                sql: `SELECT * FROM tickets WHERE status = $1 AND (flag = $2 OR flag = $3) AND (last_modified >= $4::timestamp AND last_modified <= $5::timestamp);`,
                 values: [TicketStatus.ACTIVE, Flag.ERROR, Flag.WARNING, mockParam_dto.last_modified![0], mockParam_dto.last_modified![1]]
             };
 
@@ -413,7 +413,7 @@ describe('Database tests table <tickets>, priority: _mapFilteredTicketsQueryValu
             };
             const testFn = ticketsRepository._mapFilteredTicketsQueryValues(mockParam_dto);
             const mockResult = {
-                sql: `SELECT * FROM tickets WHERE status = $1 AND (flag = $2 OR flag = $3) AND (last_modified >= timestamp $4 AND last_modified <= timestamp $5) AND (created_on >= timestamp $6 AND created_on <= timestamp $7);`,
+                sql: `SELECT * FROM tickets WHERE status = $1 AND (flag = $2 OR flag = $3) AND (last_modified >= $4::timestamp AND last_modified <= $5::timestamp) AND (created_on >= $6::timestamp AND created_on <= $7::timestamp);`,
                 values: [TicketStatus.ACTIVE, Flag.ERROR, Flag.WARNING, mockParam_dto.last_modified![0], mockParam_dto.last_modified![1], mockParam_dto.created_on![0], mockParam_dto.created_on![1]]
             };
 
@@ -426,8 +426,21 @@ describe('Database tests table <tickets>, priority: _mapFilteredTicketsQueryValu
             };
             const testFn = ticketsRepository._mapFilteredTicketsQueryValues(mockParam_dto);
             const mockResult = {
-                sql: `SELECT * FROM tickets WHERE (last_modified >= timestamp $1 AND last_modified <= timestamp $2);`,
+                sql: `SELECT * FROM tickets WHERE (last_modified >= $1::timestamp AND last_modified <= $2::timestamp);`,
                 values: [mockParam_dto.last_modified![0], mockParam_dto.last_modified![1]]
+            };
+
+            expect(testFn).toMatchObject(mockResult);
+        })
+
+        test('Map sql string and values array, params: TicketsFilterDTO only with timestamp', () => {
+            const mockParam_dto: TicketsFilterDTO = {
+                created_on: ['2024-12-31T10:00:00.000Z', '2025-12-05T10:00:00.000Z']
+            };
+            const testFn = ticketsRepository._mapFilteredTicketsQueryValues(mockParam_dto);
+            const mockResult = {
+                sql: `SELECT * FROM tickets WHERE (created_on >= $1::timestamp AND created_on <= $2::timestamp);`,
+                values: [mockParam_dto.created_on![0], mockParam_dto.created_on![1]]
             };
 
             expect(testFn).toMatchObject(mockResult);

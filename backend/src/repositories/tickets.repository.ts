@@ -192,7 +192,7 @@ IDeleteRepository
             sql += argGroups.length ? ` AND ${queryTimestampData.sql}` : `${queryTimestampData.sql}`;
             queryTimestampData.values.forEach((value) => values.push(value));
         }
-
+        
         return { sql: sql + ';', values: values };
     }
 
@@ -205,10 +205,11 @@ IDeleteRepository
         const values: string[] = [];
         Object.entries(data).forEach(([key, val], i) => {
             sql += i > 0 ? ' AND ' : '';
-            sql += `(${key} >= timestamp $${valueIndex} AND ${key} <= timestamp $${valueIndex+1})`
+            sql += `(${key} >= $${valueIndex}::timestamp AND ${key} <= $${valueIndex+1}::timestamp)`
             values.push(val[0], val[1]);
             valueIndex = valueIndex + 2;
         })
+
         return { sql: sql, values: values };
     }
 }
