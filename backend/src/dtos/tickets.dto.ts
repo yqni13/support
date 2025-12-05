@@ -27,7 +27,9 @@ export interface TicketsFilterDTO {
     client_id?: SingleOrArray<string>,
     user_id?: SingleOrArray<string>,
     status?: SingleOrArray<TicketStatus>,
-    flag?: SingleOrArray<Flag> | null
+    flag?: SingleOrArray<Flag> | null,
+    last_modified?: string[],
+    created_on?: string[]
 }
 
 export interface TicketsResponseDTO {

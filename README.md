@@ -1,5 +1,5 @@
 # yqni13 | support
-$\texttt{\color{teal}{v0.9.8}}$
+$\texttt{\color{teal}{v0.9.9}}$
 
 
 <br>
@@ -43,6 +43,7 @@ The development process is structured by the TDD (test driven development) princ
 
 <dl>
     <dd>🪲 support/bug-ticket handling including client + user data</dd>
+    <dd>:mag: filtered search for ticket + user data (properties + timespan)</dd>
     <dd>:closed_lock_with_key: maintenance mode can en/disable application via single request</dd>
     <dd>:key: request verification by api-keys</dd>
 </dl>
@@ -86,7 +87,7 @@ Install the packages `@jest/globals`, `@types/jest`, `supertest`, `@testcontaine
 ```sh
 npm install jest @jest/globals @types/jest supertest @testcontainers/postgresql testcontainers --save-dev
 ```
-190+ tests exist currently for models, utils, validators and workflows (integration tests) - see [tests](./backend/tests).<br>
+200+ tests exist currently for models, utils, validators and workflows (integration tests) - see [tests](./backend/tests).<br>
 Run tests on local device by including setup for dotenv/config to provide environment variables:
 ```sh
 set NODE_ENV=test && jest --setupFiles dotenv/config
@@ -121,12 +122,8 @@ Preventing an unwanted merge with unfinished/failed test run, the project is set
 
 ### $\textsf{\color{forestgreen}last update:}$
 
-$\textsf{[v0.9.7\ =>\ {\textbf{\color{brown}v0.9.8}]}}$ app<br>
-$\textsf{[v1.3.1\ =>\ {\textbf{\color{brown}v1.4.0}]}}$ database<br>
-$\textsf{[v1.0.3\ =>\ {\textbf{\color{brown}v1.0.5}]}}$ docker
-- $\textsf{\color{teal}Addition:}$ Added insert command to testcontainers ('rate_limits' table).
-- $\textsf{\color{teal}Addition:}$ Migrated 'rate_limits' table to database (no logic).
-- $\textsf{\color{orange}Patch:}$ Refactored Dockerfile (wrong 'omit' flag) and Docker Compose (missing target for local execution).
+$\textsf{[v0.9.8\ =>\ {\textbf{\color{brown}v0.9.9}]}}$ app
+- $\textsf{\color{green}Change:}$ Updated filtered search of entities 'users' and 'tickets' to optionally query on timespan for last changed/created timestamps.
 
 <br>
 

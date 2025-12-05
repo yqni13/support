@@ -45,7 +45,13 @@ export const postTicketsSearchSchema: ValidationChain[] = [
             content = Array.isArray(content) ? content : [content];
             content.forEach((flag) => CustomValidator.validateEnum(flag, Flag, 'flag'))
             return true;
-        })
+        }),
+    body('last_modified')
+        .custom((timestamps) => CustomValidator.validateTimestampFilter(timestamps))
+        .optional(),
+    body('created_on')
+        .custom((timestamps) => CustomValidator.validateTimestampFilter(timestamps))
+        .optional()
 ];
 
 export const postTicketSchema: ValidationChain[] = [

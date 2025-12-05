@@ -5,6 +5,7 @@ import { Users } from "./interfaces/users.entity.interface";
 import { logError } from "../utils/common.utils";
 import { UsersFilterDTO } from "../dtos/users.dto";
 import { DBQueryErrorException } from "../utils/exceptions/db.exception";
+import { mapFilteredQueryValues } from "../utils/repository.utils";
 
 class UsersRepository implements 
 IBaseRepository<Users>,
@@ -75,8 +76,11 @@ ICreateRepository<Users> {
         }
     }
 
+    /**
+     * @description Find entries by search params (dto is never empty for this method).
+     */
     async findByFilter(dto: UsersFilterDTO): Promise<Users[] | null> {
-        const queryData = this._mapFilteredUsersQueryValues(dto);
+        const queryData = mapFilteredQueryValues<UsersFilterDTO>(dto, this.table);
         const db = DBConnection.getInstance();
         let client: any;
         try {
@@ -138,34 +142,6 @@ ICreateRepository<Users> {
             await db.close(client);
             throw new DBQueryErrorException(err);
         }
-    }
-
-    _mapFilteredUsersQueryValues(dto: UsersFilterDTO): { sql: string, values: any[] } {
-        const values: any[] = [];
-        const argGroups: string[] = [];
-
-        Object.entries(dto).forEach(([key, content]) => {
-            const valArr = Array.isArray(content) ? content : [content];
-            const conditions = valArr.map((value) => {
-                if(value === null) {
-                    return `${key} IS NULL`;
-                }
-
-                values.push(value);
-                const index = values.length;
-                return `${key} = $${index}`;
-            });
-
-            if(conditions.length > 1) {
-                // Multiple "OR" conditions need ( ) otherwise "AND" binds with higher priority.
-                argGroups.push(`(${conditions.join(" OR ")})`);
-            } else {
-                argGroups.push(conditions[0]);
-            }
-        })
-
-        const sql = `SELECT * FROM ${this.table}${argGroups.length ? " WHERE " + argGroups.join(" AND ") : ""};`;
-        return { sql: sql, values: values };
     }
 }
 

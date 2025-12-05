@@ -6,7 +6,6 @@ import { DBQueryErrorException } from "../../../src/utils/exceptions/db.exceptio
 import { TicketStatus } from "../../../src/utils/enums/ticket-status.enum";
 import ticketsRepository from "../../../src/repositories/tickets.repository";
 import { TicketsFilterDTO, TicketsResponseDTO, TicketsResponseExtendedDTO, TicketsUpdateDTO } from "../../../src/dtos/tickets.dto";
-import { Flag } from "../../../src/utils/enums/flag.enum";
 
 jest.mock("../../../src/configs/db", () => {
     return {
@@ -367,26 +366,6 @@ describe('Database tests table <tickets>, priority: delete', () => {
 
             await expect(() => ticketsRepository.delete(mockParam_id))
                 .rejects.toThrow(expectExceptionResult);
-        })
-    })
-})
-
-describe('Database tests table <tickets>, priority: _mapFilteredTicketsQueryValues', () => {
-
-    describe('Testing valid fn calls', () => {
-
-        test('Map sql string and values array, params: TicketsFilterDTO', () => {
-            const mockParam_dto: TicketsFilterDTO = {
-                status: TicketStatus.ACTIVE,
-                flag: [Flag.ERROR, Flag.WARNING]
-            };
-            const testFn = ticketsRepository._mapFilteredTicketsQueryValues(mockParam_dto);
-            const mockResult = {
-                sql: 'SELECT * FROM tickets WHERE status = $1 AND (flag = $2 OR flag = $3);',
-                values: [TicketStatus.ACTIVE, Flag.ERROR, Flag.WARNING]
-            };
-
-            expect(testFn).toMatchObject(mockResult);
         })
     })
 })

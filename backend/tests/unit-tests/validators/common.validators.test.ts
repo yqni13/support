@@ -117,6 +117,22 @@ describe('CustomValidator tests, priority: no model specification', () => {
 
             expect(testFn).toBe(expectResult);
         })
+
+        test('fn: validateTimestamp, params <timestamp> = "2025-01-01T14:00:00.000Z"', () => {
+            const mockParam_timestamp = "2025-01-01T14:00:00.000Z";
+            const testFn = CustomValidators.validateTimestamp(mockParam_timestamp)
+            const expectResult = true;
+
+            expect(testFn).toBe(expectResult);
+        })
+
+        test('fn: validateTimestampFilter, params <timestamps> = ["older", "younger"]', () => {
+            const mockParam_timestamps = ['2025-01-01T14:00:00.000Z', '2025-01-10T13:00:00.000Z'];
+            const testFn = CustomValidators.validateTimestampFilter(mockParam_timestamps);
+            const expectResult = true;
+
+            expect(testFn).toBe(expectResult);
+        })
     })
 
     describe('Testing invalid fn calls', () => {
@@ -158,6 +174,27 @@ describe('CustomValidator tests, priority: no model specification', () => {
             expect(() => {
                 CustomValidators.validatePathParam(mockParam_arg);
             }).toThrow(expectResult);
+        })
+
+        test('fn: validateTimestamp, params <timestamp> = "abc"', () => {
+            const mockParam_timestamp = "abc";
+            const expectResult = 'support-invalid-entry#timestamp';
+
+            expect(() => { CustomValidators.validateTimestamp(mockParam_timestamp) }).toThrow(expectResult);
+        })
+
+        test('fn: validateTimestampFilter, params <timestamps> = ["younger", "older"]', () => {
+            const mockParam_timestamps = ['2025-01-10T13:00:00.000Z', '2025-01-01T14:00:00.000Z'];
+            const expectResult = 'support-invalid-entry#timestamps';
+
+            expect(() => { CustomValidators.validateTimestampFilter(mockParam_timestamps)}).toThrow(expectResult);
+        })
+
+        test('fn: validateTimestampFilter, params <timestamps> = ["single_value"]', () => {
+            const mockParam_timestamps = ['2025-01-01T14:00:00.000Z'];
+            const expectResult = 'support-invalid-entry#timestamps';
+
+            expect(() => { CustomValidators.validateTimestampFilter(mockParam_timestamps)}).toThrow(expectResult);
         })
     })
 })

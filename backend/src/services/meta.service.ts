@@ -17,34 +17,34 @@ class MetaService {
     }
 
     async getMetaById(id: number): Promise<MetaResponseDTO | null> {
-        let result = await metaRepository.findById(id);
+        const result = await metaRepository.findById(id);
         return !result ? null : Utils.mapObjTimestamps<MetaResponseDTO>(result, this.timeMapTargets);
     }
 
     async getMetaByName(name: string): Promise<MetaResponseDTO | null> {
-        let result = await metaRepository.findByName(name);
+        const result = await metaRepository.findByName(name);
         return !result ? null : Utils.mapObjTimestamps<MetaResponseDTO>(result, this.timeMapTargets);
     }
 
     async getAllMeta(): Promise<MetaResponseDTO[] | null> {
-        let result = await metaRepository.findAll();
+        const result = await metaRepository.findAll();
         return !result ? null : Utils.mapArrayTimestamps<MetaResponseDTO>(result, this.timeMapTargets);
     }
 
     async updateMeta(id: number, dto: MetaUpdateDTO): Promise<MetaResponseDTO | null> {
         dto.last_modified = Utils.getTimestampUTC();
-        let result = await metaRepository.update(id, dto);
+        const result = await metaRepository.update(id, dto);
         return !result ? null : Utils.mapObjTimestamps<MetaResponseDTO>(result, this.timeMapTargets);
     }
 
     async getMaintenanceMode(name: string): Promise<MaintenanceResponseDTO | null> {
-        let result = await metaRepository.findMaintenance(name);
+        const result = await metaRepository.findMaintenance(name);
         return !result ? null : Utils.mapObjTimestamps<MaintenanceResponseDTO>(result, this.timeMapTargets);
     }
 
     async updateMaintenanceMode(name: string, dto: MaintenanceUpdateDTO): Promise<MaintenanceResponseDTO | null> {
         dto.last_modified = Utils.getTimestampUTC();
-        let result = await metaRepository.updateMaintenance(name, dto);
+        const result = await metaRepository.updateMaintenance(name, dto);
         return !result ? null : Utils.mapObjTimestamps<MaintenanceResponseDTO>(result, this.timeMapTargets);
     }
 

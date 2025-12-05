@@ -4,9 +4,16 @@
 
 <br>
 
+### $\textsf{\color{skyblue}2025/12/05}$
+
+$\textsf{[v0.9.8\ =>\ {\textbf{\color{brown}v0.9.9}]}}$ app
+- $\textsf{\color{green}Change:}$ Updated filtered search of entities 'users' and 'tickets' to optionally query on timespan for last changed/created timestamps.
+
+<br>
+
 ### $\textsf{\color{skyblue}2025/12/03}$
 
-$\textsf{[v0.9.7\ =>\ {\textbf{\color{brown}v0.9.8}]}}$ app<br>
+$\textsf{[v0.9.7\ =>\ v0.9.8]}$ app<br>
 $\textsf{[v1.3.1\ =>\ {\textbf{\color{brown}v1.4.0}]}}$ database<br>
 $\textsf{[v1.0.3\ =>\ {\textbf{\color{brown}v1.0.5}]}}$ docker
 - $\textsf{\color{teal}Addition:}$ Added insert command to testcontainers ('rate_limits' table).

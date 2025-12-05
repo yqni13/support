@@ -38,8 +38,13 @@ class UsersController {
     async postUsersSearch(req: Request, res: Response, next: NextFunction) {
         try {
             checkValidation(req);
-            const dto: UsersFilterDTO = req.body;
-            const response: UsersResponseDTO[] | null = await usersService.searchUsersByFilter(dto);
+            let response: UsersResponseDTO[] | null = null;
+            if(!req.body) {
+                response = await usersService.getAllUsers();
+            } else {
+                const dto: UsersFilterDTO = req.body;
+                response = await usersService.searchUsersByFilter(dto);
+            }
             res.send(response);
         } catch(err: any) {
             next(err);

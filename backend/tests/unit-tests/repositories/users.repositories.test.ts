@@ -4,7 +4,7 @@ import * as MockUtils from "../../common.test-utils";
 import { Users } from "../../../src/repositories/interfaces/users.entity.interface";
 import { UserStatus } from "../../../src/utils/enums/user-status.enum";
 import usersRepository from "../../../src/repositories/users.repository";
-import { UsersFilterDTO, UsersUpdateDTO } from "../../../src/dtos/users.dto";
+import { UsersUpdateDTO } from "../../../src/dtos/users.dto";
 import { DBQueryErrorException } from "../../../src/utils/exceptions/db.exception";
 
 jest.mock("../../../src/configs/db", () => {
@@ -352,27 +352,6 @@ describe('Database tests table <users>, priority: udpate', () => {
 
             await expect(() => usersRepository.update(mockParam_id, mockParam_dto))
                 .rejects.toThrow(expectExceptionResult);
-        })
-    })
-})
-
-describe('Database tests table <users>, priority: _mapFilteredUsersQueryValues', () => {
-
-    describe('Testing valid fn calls', () => {
-
-        test('Map sql string and values array, params: UsersFilterDTO', () => {
-            const mockParam_dto: UsersFilterDTO = {
-                email: ['user@test.com', 'new-user@test.com'],
-                status: UserStatus.ACTIVE
-            }
-            const testFn = usersRepository._mapFilteredUsersQueryValues(mockParam_dto);
-            const expectResult = {
-                sql: "SELECT * FROM users WHERE (email = $1 OR email = $2) AND status = $3;",
-                values: ['user@test.com', 'new-user@test.com', 'active']
-            };
-
-            expect(testFn.sql).toContain(expectResult.sql);
-            expect(testFn.values).toStrictEqual(expectResult.values);
         })
     })
 })

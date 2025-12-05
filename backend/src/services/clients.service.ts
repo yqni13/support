@@ -24,30 +24,30 @@ class ClientsService {
      */
     async getClientByActiveKey(key: string): Promise<ClientsExistResponseDTO | null> {
         const hash = Utils.mapKeyToHash(key);
-        let result = await clientsRepository.findByActiveKey(hash);
+        const result = await clientsRepository.findByActiveKey(hash);
         return !result ? null : Utils.mapObjTimestamps<ClientsExistResponseDTO>(result, this.timeMapTargets);
     }
 
     async getClientStatusByName(name: string): Promise<ClientsStatusResponseDTO | null> {
-        let result = await clientsRepository.findStatusByName(name);
+        const result = await clientsRepository.findStatusByName(name);
         return !result ? null : clientsModel.mapToStatusResponseDTO(result as Clients);
     }
 
     async createClient(dto: ClientsCreateDTO): Promise<ClientsCreateResponseDTO> {
         const clientsCreateObj = clientsModel.generateClientsCreateObj(dto);
-        let result = await clientsRepository.create(clientsCreateObj.client);
+        const result = await clientsRepository.create(clientsCreateObj.client);
         return clientsModel.mapToCreateResponseDTO(result as Clients, clientsCreateObj.keyRaw);
     }
 
     async updateClientStatus(id: string, dto: ClientsStatusUpdateDTO): Promise<ClientsStatusResponseDTO | null> {
         dto.last_modified = Utils.getTimestampUTC();
-        let result = await clientsRepository.updateStatus(id, dto);
+        const result = await clientsRepository.updateStatus(id, dto);
         return !result ? null : clientsModel.mapToStatusResponseDTO(result as Clients);
     }
 
     async updateClientLastUse(id: string): Promise<ClientsLastUseResponseDTO | null> {
         const dto: ClientsLastUseUpdateDTO = { last_use: Utils.getTimestampUTC() };
-        let result = await clientsRepository.updateLastUse(id, dto);
+        const result = await clientsRepository.updateLastUse(id, dto);
         return !result ? null : clientsModel.mapToLastUseResponseDTO(result as Clients);
     }
 }

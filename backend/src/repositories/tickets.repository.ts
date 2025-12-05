@@ -1,11 +1,16 @@
+import {
+    IBaseRepository,
+    ICreateRepository,
+    IDeleteRepository,
+    IFindRepository
+} from "./interfaces/base.repository.interface";
 import { DBConnection } from "../configs/db";
 import { QueryResult } from "pg";
 import { Tickets } from "./interfaces/tickets.entity.interface";
-import { IBaseRepository, ICreateRepository, IDeleteRepository, IFindRepository } from "./interfaces/base.repository.interface";
 import { TicketsFilterDTO, TicketsResponseExtendedDTO } from "../dtos/tickets.dto";
 import { DBQueryErrorException } from "../utils/exceptions/db.exception";
 import { logError } from "../utils/common.utils";
-
+import { mapFilteredQueryValues } from "../utils/repository.utils";
 
 class TicketsRepository implements 
 IBaseRepository<Tickets>,
@@ -65,8 +70,11 @@ IDeleteRepository
         }
     }
 
+    /**
+     * @description Find entries by search params (dto is never empty for this method).
+     */
     async findByFilter(dto: TicketsFilterDTO): Promise<Tickets[] | null> {
-        const queryData = this._mapFilteredTicketsQueryValues(dto);
+        const queryData = mapFilteredQueryValues<TicketsFilterDTO>(dto, this.table);
         const db = DBConnection.getInstance();
         let client: any;
         try {
@@ -147,34 +155,6 @@ IDeleteRepository
             await db.close(client);
             throw new DBQueryErrorException(err);
         }
-    }
-
-    _mapFilteredTicketsQueryValues(dto: TicketsFilterDTO): { sql: string, values: string[] } {
-        const values: any[] = [];
-        const argGroups: string[] = [];
-
-        Object.entries(dto).forEach(([key, content]) => {
-            const valArr = Array.isArray(content) ? content : [content];
-            const conditions = valArr.map((value) => {
-                if(value === null) {
-                    return `${key} IS NULL`;
-                }
-
-                values.push(value);
-                const index = values.length;
-                return `${key} = $${index}`;
-            });
-
-            if(conditions.length > 1) {
-                // Multiple "OR" conditions need ( ) otherwise "AND" binds with higher priority.
-                argGroups.push(`(${conditions.join(" OR ")})`);
-            } else {
-                argGroups.push(conditions[0]);
-            }
-        })
-
-        const sql = `SELECT * FROM ${this.table}${argGroups.length ? " WHERE " + argGroups.join(" AND ") : ""};`;
-        return { sql: sql, values: values };
     }
 }
 
