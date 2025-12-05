@@ -5,7 +5,7 @@ import { Users } from "./interfaces/users.entity.interface";
 import { logError } from "../utils/common.utils";
 import { UsersFilterDTO } from "../dtos/users.dto";
 import { DBQueryErrorException } from "../utils/exceptions/db.exception";
-import * as RepoUtils from "../utils/repository.utils";
+import { mapFilteredQueryValues } from "../utils/repository.utils";
 
 class UsersRepository implements 
 IBaseRepository<Users>,
@@ -77,10 +77,10 @@ ICreateRepository<Users> {
     }
 
     /**
-     * @param dto Method only gets called when param is not empty.
+     * @description Find entries by search params (dto is never empty for this method).
      */
     async findByFilter(dto: UsersFilterDTO): Promise<Users[] | null> {
-        const queryData = RepoUtils.mapFilteredQueryValues<UsersFilterDTO>(dto, this.table);
+        const queryData = mapFilteredQueryValues<UsersFilterDTO>(dto, this.table);
         const db = DBConnection.getInstance();
         let client: any;
         try {

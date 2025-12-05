@@ -167,6 +167,8 @@ export function validateTimestampFilter(timestamps: any): boolean {
         throw new Error(errorMsg);
     }
     (timestamps as string[]).forEach((timestamp) => validateTimestamp(timestamp));
+
+    // Order must be: ["older", "younger"].
     if(new Date(timestamps[0]) > new Date(timestamps[1])) {
         throw new Error(errorMsg);
     }

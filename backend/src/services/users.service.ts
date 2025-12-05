@@ -12,27 +12,22 @@ class UsersService {
     }
 
     async getUserById(id: string): Promise<UsersResponseDTO | null> {
-        let result = await usersRepository.findById(id);
+        const result = await usersRepository.findById(id);
         return !result ? null : Utils.mapObjTimestamps<UsersResponseDTO>(result, this.timeMapTargets);
     }
 
     async getUserByEmail(email: string): Promise<UsersResponseDTO | null> {
-        let result = await usersRepository.findByEmail(email);
+        const result = await usersRepository.findByEmail(email);
         return !result ? null : Utils.mapObjTimestamps<UsersResponseDTO>(result, this.timeMapTargets);
     }
 
     async getAllUsers(): Promise<UsersResponseDTO[] | null> {
-        let result = await usersRepository.findAll();
+        const result = await usersRepository.findAll();
         return !result ? null : Utils.mapArrayTimestamps<UsersResponseDTO>(result, this.timeMapTargets);
     }
 
     async searchUsersByFilter(dto: UsersFilterDTO): Promise<UsersResponseDTO[] | null> {
-        let result: UsersResponseDTO[] | null = null;
-        if(Utils.isEmptyObj(result)) {
-            result = await usersRepository.findAll();
-        } else {
-            result = await usersRepository.findByFilter(dto);
-        }
+        const result = await usersRepository.findByFilter(dto);
         return !result ? null : Utils.mapArrayTimestamps<UsersResponseDTO>(result, this.timeMapTargets);
     }
 
@@ -44,7 +39,7 @@ class UsersService {
 
     async updateUser(id: string, dto: UsersUpdateDTO): Promise<UsersResponseDTO | null> {
         dto.last_modified = Utils.getTimestampUTC();
-        let result = await usersRepository.update(id, dto);
+        const result = await usersRepository.update(id, dto);
         return !result ? null : Utils.mapObjTimestamps<UsersResponseDTO>(result, this.timeMapTargets);
     }
 }

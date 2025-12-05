@@ -1,11 +1,16 @@
+import {
+    IBaseRepository,
+    ICreateRepository,
+    IDeleteRepository,
+    IFindRepository
+} from "./interfaces/base.repository.interface";
 import { DBConnection } from "../configs/db";
 import { QueryResult } from "pg";
 import { Tickets } from "./interfaces/tickets.entity.interface";
-import { IBaseRepository, ICreateRepository, IDeleteRepository, IFindRepository } from "./interfaces/base.repository.interface";
 import { TicketsFilterDTO, TicketsResponseExtendedDTO } from "../dtos/tickets.dto";
 import { DBQueryErrorException } from "../utils/exceptions/db.exception";
 import { logError } from "../utils/common.utils";
-import * as RepoUtils from "../utils/repository.utils";
+import { mapFilteredQueryValues } from "../utils/repository.utils";
 
 class TicketsRepository implements 
 IBaseRepository<Tickets>,
@@ -66,10 +71,10 @@ IDeleteRepository
     }
 
     /**
-     * @param dto Method only gets called when param is not empty.
+     * @description Find entries by search params (dto is never empty for this method).
      */
     async findByFilter(dto: TicketsFilterDTO): Promise<Tickets[] | null> {
-        const queryData = RepoUtils.mapFilteredQueryValues(dto, this.table);
+        const queryData = mapFilteredQueryValues<TicketsFilterDTO>(dto, this.table);
         const db = DBConnection.getInstance();
         let client: any;
         try {
