@@ -55,7 +55,11 @@ export const postTicketsSearchSchema: ValidationChain[] = [
 ];
 
 export const postTicketSchema: ValidationChain[] = [
-    // Body('user_email') validated in combination with authentication process (authUser).
+    body('user_email')
+        .trim()
+        .notEmpty()
+        .withMessage(Message.REQUIRED)
+        .custom((content: string) => CustomValidator.validateEmail(content)),
     body('message')
         .trim()
         .notEmpty()

@@ -201,7 +201,7 @@ describe('Integration test (repository specific), priority: Tickets', () => {
         test('Repository process fn create, result: "SUCCESS"', async () => {
             // TicketsCreateRequestDTO interface necessary to mock auth middleware (data for client_id & user_id).
             const testParam_dto: TicketsCreateRequestDTO = {
-                user_email: 'TESTCLIENT',
+                user_email: 'new-user@test.com',
                 message: 'new-test-message',
             };
 
