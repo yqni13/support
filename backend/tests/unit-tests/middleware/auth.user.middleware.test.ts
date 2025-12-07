@@ -39,7 +39,6 @@ describe('Middleware tests category <auth>, priority: authUser', () => {
 
             expect(usersService.getUserByEmail).toHaveBeenCalledWith(mockUserEmail);
             expect(req.apiUsers).toEqual(mockUser);
-            // Only important check but keep other checks for demo reasons.
             expect(next).toHaveBeenCalledWith();
         })
 
@@ -73,7 +72,7 @@ describe('Middleware tests category <auth>, priority: authUser', () => {
     describe('Testing invalid fn calls', () => {
 
         test('Verify user, error: InvalidUsersException', async () => {
-            const mockUserEmail = 'valid_user@test.com';
+            const mockUserEmail = 'valid-user@test.com';
             const mockUser: Users = {
                 user_id: mockId.users.valid[0],
                 email: mockUserEmail,

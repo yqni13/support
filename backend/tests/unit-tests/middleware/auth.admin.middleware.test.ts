@@ -22,7 +22,6 @@ describe('Middleware tests category <auth>, priority: authAdmin', () => {
             const middleware = authAdmin();
             await middleware(req, res, next);
 
-            // Only important check but keep other checks for demo reasons.
             expect(next).toHaveBeenCalledWith();
         })
     })
@@ -45,6 +44,7 @@ describe('Middleware tests category <auth>, priority: authAdmin', () => {
         test('Verify admin, error: InvalidCredentialsException', async () => {
             const mockApiKey = 'invalid_api_key';
             req.header.mockReturnValue(mockApiKey);
+
             jest.spyOn(Utils, 'logError').mockImplementation();
 
             const middleware = authAdmin();
