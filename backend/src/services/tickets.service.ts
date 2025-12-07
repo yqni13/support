@@ -17,17 +17,17 @@ class TicketsService {
     }
 
     async getTicketById(id: string): Promise<TicketsResponseExtendedDTO | null> {
-        let result = await ticketsRepository.findById(id);
+        const result = await ticketsRepository.findById(id);
         return !result ? null : Utils.mapObjTimestamps<TicketsResponseExtendedDTO>(result, this.timeMapTargets);
     }
 
     async getAllTickets(): Promise<TicketsResponseDTO[] | null> {
-        let result = await ticketsRepository.findAll();
+        const result = await ticketsRepository.findAll();
         return !result ? null : Utils.mapArrayTimestamps<TicketsResponseDTO>(result, this.timeMapTargets);
     }
 
     async searchTicketsByFilter(dto: TicketsFilterDTO): Promise<TicketsResponseDTO[] | null> {
-        let result = await ticketsRepository.findByFilter(dto);
+        const result = await ticketsRepository.findByFilter(dto);
         return !result ? null : Utils.mapArrayTimestamps<TicketsResponseDTO>(result, this.timeMapTargets);
     }
 
@@ -39,7 +39,7 @@ class TicketsService {
 
     async updateTicket(id: string, dto: TicketsUpdateDTO): Promise<TicketsResponseDTO | null> {
         dto = ticketsModel.mapTicketUpdateDto(dto);
-        let result = await ticketsRepository.update(id, dto);
+        const result = await ticketsRepository.update(id, dto);
         return !result ? null : Utils.mapObjTimestamps<TicketsResponseDTO>(result, this.timeMapTargets);
     }
 

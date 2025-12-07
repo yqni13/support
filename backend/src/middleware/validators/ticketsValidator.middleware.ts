@@ -45,11 +45,21 @@ export const postTicketsSearchSchema: ValidationChain[] = [
             content = Array.isArray(content) ? content : [content];
             content.forEach((flag) => CustomValidator.validateEnum(flag, Flag, 'flag'))
             return true;
-        })
+        }),
+    body('last_modified')
+        .custom((timestamps) => CustomValidator.validateTimestampFilter(timestamps))
+        .optional(),
+    body('created_on')
+        .custom((timestamps) => CustomValidator.validateTimestampFilter(timestamps))
+        .optional()
 ];
 
 export const postTicketSchema: ValidationChain[] = [
-    // Body('user_email') validated in combination with authentication process (authUser).
+    body('user_email')
+        .trim()
+        .notEmpty()
+        .withMessage(Message.REQUIRED)
+        .custom((content: string) => CustomValidator.validateEmail(content)),
     body('message')
         .trim()
         .notEmpty()

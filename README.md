@@ -1,5 +1,5 @@
 # yqni13 | support
-$\texttt{\color{teal}{v0.9.6}}$
+$\texttt{\color{teal}{v0.9.10}}$
 
 
 <br>
@@ -43,6 +43,7 @@ The development process is structured by the TDD (test driven development) princ
 
 <dl>
     <dd>🪲 support/bug-ticket handling including client + user data</dd>
+    <dd>:mag: filtered search for ticket + user data (properties + timespan)</dd>
     <dd>:closed_lock_with_key: maintenance mode can en/disable application via single request</dd>
     <dd>:key: request verification by api-keys</dd>
 </dl>
@@ -86,7 +87,7 @@ Install the packages `@jest/globals`, `@types/jest`, `supertest`, `@testcontaine
 ```sh
 npm install jest @jest/globals @types/jest supertest @testcontainers/postgresql testcontainers --save-dev
 ```
-190+ tests exist currently for models, utils, validators and workflows (integration tests) - see [tests](./backend/tests).<br>
+220+ tests exist currently for models, utils, validators and workflows (integration tests) - see [tests](./backend/tests).<br>
 Run tests on local device by including setup for dotenv/config to provide environment variables:
 ```sh
 set NODE_ENV=test && jest --setupFiles dotenv/config
@@ -121,9 +122,8 @@ Preventing an unwanted merge with unfinished/failed test run, the project is set
 
 ### $\textsf{\color{forestgreen}last update:}$
 
-$\textsf{[v0.9.4\ =>\ {\textbf{\color{brown}v0.9.6}]}}$ app
-- $\textsf{\color{teal}Addition:}$ Added '/meta/demo' route for demonstration and manual testing reasons.
-- $\textsf{\color{orange}Patch:}$ Refactored error- and validation-middleware to correctly validate empty and undefined payloads.
+$\textsf{[v0.9.9\ =>\ {\textbf{\color{brown}v0.9.10}]}}$ app
+- $\textsf{\color{teal}Addition:}$ Added tests to check middleware functions.
 
 <br>
 
