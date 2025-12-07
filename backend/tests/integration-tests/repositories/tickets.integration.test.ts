@@ -155,6 +155,32 @@ describe('Integration test (repository specific), priority: Tickets', () => {
             expect(testResponse.body).toMatchObject(testResult);
         })
 
+        test('Repository process fn findByFilter, params: <created_on[]> result: "SUCCESS"', async () => {
+            const testParam_dto: TicketsFilterDTO = {
+                created_on: ['2024-12-01T00:00:00.000Z', '2025-01-02T14:00:00.000Z']
+            };
+            const testResult: TicketsResponseDTO[] = [{
+                ticket_id: mockId.tickets.valid[0],
+                client_id: testValidClientsId,
+                user_id: testValidUsersId,
+                status: TicketStatus.ISSUED,
+                message: 'test-message',
+                flag: null,
+                last_modified: testTimestamp,
+                created_on: testTimestamp
+            }];
+
+            jest.spyOn(Utils, "getTimestampUTC").mockReturnValue(testTimestamp);
+
+            await dbTestSetup.addTestData();
+            const testResponse = await request(app)
+                .post(`${apiUrl}/search`)
+                .send(testParam_dto);
+
+            expect(testResponse.statusCode).toBe(200);
+            expect(testResponse.body).toMatchObject(testResult);
+        })
+
         test('Repository process fn findByFilter, params: <flag> result: []', async () => {
             const testParam_dto: TicketsFilterDTO = {
                 flag: Flag.ERROR
@@ -175,7 +201,7 @@ describe('Integration test (repository specific), priority: Tickets', () => {
         test('Repository process fn create, result: "SUCCESS"', async () => {
             // TicketsCreateRequestDTO interface necessary to mock auth middleware (data for client_id & user_id).
             const testParam_dto: TicketsCreateRequestDTO = {
-                user_email: 'TESTCLIENT',
+                user_email: 'new-user@test.com',
                 message: 'new-test-message',
             };
 

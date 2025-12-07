@@ -22,7 +22,7 @@ export function observe() {
             // await metaService.setMaintenanceMode(MaintenanceMode.D013)
             next();
         } catch(err: any) {
-            err.status = 429;
+            err.status = !err.status ? 429 : err.status;
             logError(
                 "OBSERVATION MIDDLEWARE ERROR ON API CALL",
                 "SUPPORT_middleware_observe",

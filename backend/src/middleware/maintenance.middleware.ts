@@ -15,7 +15,7 @@ export function maintain() {
             }
             next();
         } catch(err: any) {
-            err.status = 598;
+            err.status = !err.status ? 598 : err.status;
             logError(
                 "MAINTENANCE MIDDLEWARE ERROR ON API CALL",
                 "SUPPORT_middleware_maintain",
