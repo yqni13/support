@@ -4,9 +4,16 @@
 
 <br>
 
+### $\textsf{\color{skyblue}2025/12/06}$
+
+$\textsf{[v0.9.9\ =>\ {\textbf{\color{brown}v0.9.10}]}}$ app
+- $\textsf{\color{teal}Addition:}$ Added tests to check middleware functions.
+
+<br>
+
 ### $\textsf{\color{skyblue}2025/12/05}$
 
-$\textsf{[v0.9.8\ =>\ {\textbf{\color{brown}v0.9.9}]}}$ app
+$\textsf{[v0.9.8\ =>\ v0.9.9]}$ app
 - $\textsf{\color{green}Change:}$ Updated filtered search of entities 'users' and 'tickets' to optionally query on timespan for last changed/created timestamps.
 
 <br>

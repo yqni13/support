@@ -1,5 +1,5 @@
 # yqni13 | support
-$\texttt{\color{teal}{v0.9.9}}$
+$\texttt{\color{teal}{v0.9.10}}$
 
 
 <br>
@@ -87,7 +87,7 @@ Install the packages `@jest/globals`, `@types/jest`, `supertest`, `@testcontaine
 ```sh
 npm install jest @jest/globals @types/jest supertest @testcontainers/postgresql testcontainers --save-dev
 ```
-200+ tests exist currently for models, utils, validators and workflows (integration tests) - see [tests](./backend/tests).<br>
+220+ tests exist currently for models, utils, validators and workflows (integration tests) - see [tests](./backend/tests).<br>
 Run tests on local device by including setup for dotenv/config to provide environment variables:
 ```sh
 set NODE_ENV=test && jest --setupFiles dotenv/config
@@ -122,8 +122,8 @@ Preventing an unwanted merge with unfinished/failed test run, the project is set
 
 ### $\textsf{\color{forestgreen}last update:}$
 
-$\textsf{[v0.9.8\ =>\ {\textbf{\color{brown}v0.9.9}]}}$ app
-- $\textsf{\color{green}Change:}$ Updated filtered search of entities 'users' and 'tickets' to optionally query on timespan for last changed/created timestamps.
+$\textsf{[v0.9.9\ =>\ {\textbf{\color{brown}v0.9.10}]}}$ app
+- $\textsf{\color{teal}Addition:}$ Added tests to check middleware functions.
 
 <br>
 

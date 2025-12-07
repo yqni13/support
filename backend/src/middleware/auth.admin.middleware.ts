@@ -4,7 +4,6 @@ import {
 } from "../utils/exceptions/auth.exception";
 import { Request, Response, NextFunction } from "express";
 import { secrets } from "../utils/secrets.utils";
-import { EnvMode } from "../utils/enums/env-mode.enum";
 import { logError } from "../utils/common.utils";
 
 /**
@@ -19,13 +18,12 @@ export function authAdmin() {
             }
 
             const hasValidKey = adminKey.trim() === secrets.ADMIN_API.trim();
-            const isTestMode = secrets.ENV_MODE.trim() === EnvMode.TEST;
-            if(!isTestMode && !hasValidKey) {
+            if(!hasValidKey) {
                 throw new InvalidCredentialsException('support-invalid-admin-auth');
             }
             next();
         } catch(err: any) {
-            err.status = 401;
+            err.status = !err.status ? 401 : err.status;
             logError(
                 "AUTH MIDDLEWARE ERROR ON VERIFICATION",
                 "SUPPORT_middleware_authAdmin",
