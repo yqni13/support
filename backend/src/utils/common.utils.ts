@@ -7,6 +7,8 @@ import { Logger } from '../logger/config.logger';
 
 const logger = Logger.getLogger();
 
+export const now = (): Date => new Date();
+
 export function generateUUID(): string {
     return uuid_v4();
 }

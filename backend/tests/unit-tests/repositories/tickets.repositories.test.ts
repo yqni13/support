@@ -90,6 +90,11 @@ describe('Database tests table <tickets>, priority: findAll', () => {
 
     describe('Testing valid fn calls', () => {
 
+        let sql: string;
+        beforeEach(() => {
+            sql = 'SELECT';
+        });
+
         test('Return data for multiple existing entries', async () => {
             const mockData_entry0: TicketsResponseDTO = structuredClone(mockData);
             const mockData_entry1: TicketsResponseDTO = {
@@ -107,7 +112,6 @@ describe('Database tests table <tickets>, priority: findAll', () => {
             const mockErrorMsg = undefined;
             const mockExpectArray = true;
             const mockClient = MockUtils.mapMockDbClient(mockResult, mockBoolean, mockErrorMsg, mockExpectArray);
-            const sql = `SELECT`;
             const testFn = await ticketsRepository.findAll();
 
             expect(testFn).toEqual(mockResult);
@@ -116,6 +120,19 @@ describe('Database tests table <tickets>, priority: findAll', () => {
                 expect.stringContaining(sql)
             );
         });
+
+        test('Return null for non-existing entry', async () => {
+            const mockResult: TicketsResponseDTO[] | null = null;
+
+            const mockClient = MockUtils.mapMockDbClient(mockResult);
+            const testFn = await ticketsRepository.findAll();
+
+            expect(testFn).toEqual(mockResult);
+            expect(DBConnection.getInstance).toHaveBeenCalled();
+            expect(mockClient.query).toHaveBeenCalledWith(
+                expect.stringContaining(sql)
+            );
+        })
     })
 
     describe('Testing invalid fn calls', () => {
@@ -142,9 +159,9 @@ describe('Database tests table <tickets>, priority: findByFilter', () => {
         });
 
         test('Return data for existing entry, params: valid <user_id>', async () => {
-            const mockResult: TicketsResponseDTO[] = [structuredClone(mockData)];
             const mockParam_dto: TicketsFilterDTO = { user_id: structuredClone(mockData.user_id) };
             const mockValues = [mockParam_dto.user_id];
+            const mockResult: Tickets[] = [structuredClone(mockData)];
 
             const mockErrorMsg = undefined;
             const mockExpectArray = true;
@@ -160,13 +177,11 @@ describe('Database tests table <tickets>, priority: findByFilter', () => {
         })
 
         test('Return null for non-existing entry, params: non-existing <user_id>', async () => {
-            const mockResult = null;
             const mockParam_dto = { user_id: ['non-existing_users_test_id_0', 'non-existing_users_test_id_1'] };
             const mockValues = mockParam_dto.user_id;
+            const mockResult: Tickets[] | null = null;
 
-            const mockErrorMsg = undefined;
-            const mockExpectArray = true;
-            const mockClient = MockUtils.mapMockDbClient(mockResult, mockBoolean, mockErrorMsg, mockExpectArray);
+            const mockClient = MockUtils.mapMockDbClient(mockResult);
             const testFn = await ticketsRepository.findByFilter(mockParam_dto);
 
             expect(testFn).toEqual(mockResult);

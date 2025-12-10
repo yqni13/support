@@ -9,7 +9,7 @@ class UsersController {
             checkValidation(req);
             const id = req.params.id;
             const response: UsersResponseDTO | null = await usersService.getUserById(id);
-            res.send(response);
+            res.json(response);
         } catch(err: any) {
             next(err);
         }
@@ -20,7 +20,7 @@ class UsersController {
             checkValidation(req);
             const email = req.params.email;
             const response: UsersResponseDTO | null = await usersService.getUserByEmail(email);
-            res.send(response);
+            res.json(response);
         } catch(err: any) {
             next(err);
         }
@@ -29,7 +29,7 @@ class UsersController {
     async getAllUsers(req: Request, res: Response, next: NextFunction) {
         try {
             const response: UsersResponseDTO[] | null = await usersService.getAllUsers();
-            res.send(response);
+            res.json(response);
         } catch(err: any) {
             next(err);
         }
@@ -45,7 +45,7 @@ class UsersController {
                 const dto: UsersFilterDTO = req.body;
                 response = await usersService.searchUsersByFilter(dto);
             }
-            res.send(response);
+            res.json(response);
         } catch(err: any) {
             next(err);
         }
@@ -56,7 +56,7 @@ class UsersController {
             checkValidation(req);
             const dto: UsersCreateDTO = req.body;
             const response: UsersResponseDTO = await usersService.createUser(dto);
-            res.send(response);
+            res.json(response);
         } catch(err: any) {
             next(err);
         }
@@ -68,7 +68,7 @@ class UsersController {
             const id: string = req.params.id;
             const dto: UsersUpdateDTO = req.body;
             const response: UsersResponseDTO | null = await usersService.updateUser(id, dto);
-            res.send(response);
+            res.json(response);
         } catch(err: any) {
             next(err);
         }

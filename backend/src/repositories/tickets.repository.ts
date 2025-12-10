@@ -60,7 +60,7 @@ IDeleteRepository
             client = await db.connect();
             const result: QueryResult<Tickets> = await client.query(sql);
             await db.close(client);
-            return result.rows ?? null;
+            return !result.rows[0] || result.rows.length === 0 ? null : result.rows;
         } catch(err: any) {
             const message = "DB ERROR ON SELECT QUERY";
             const method = "SUPPORT_TicketsRepository_findAll";
@@ -81,7 +81,7 @@ IDeleteRepository
             client = await db.connect();
             const result: QueryResult<Tickets> = await client.query(queryData.sql, queryData.values);
             await db.close(client);
-            return result.rows ?? null;
+            return !result.rows[0] || result.rows.length === 0 ? null : result.rows;
         } catch(err: any) {
             const message = "DB ERROR ON SELECT QUERY";
             const method = "SUPPORT_TicketsRepository_findByFilter";

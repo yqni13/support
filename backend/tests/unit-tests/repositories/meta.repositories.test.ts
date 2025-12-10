@@ -145,6 +145,11 @@ describe('Database tests table <meta>, priority: findAll', () => {
 
     describe('Testing valid fn calls', () => {
 
+        let sql: string;
+        beforeEach(() => {
+            sql = 'SELECT * FROM meta ORDER BY id ASC;';
+        })
+
         test('Return data for multiple existing entries', async () => {
             const mockData_entry0 = structuredClone(mockData);
             const mockData_entry1 = structuredClone(mockData_entry0);
@@ -155,13 +160,23 @@ describe('Database tests table <meta>, priority: findAll', () => {
             const mockErrorMsg = undefined;
             const mockExpectArray = true;
             const mockClient = MockUtils.mapMockDbClient(mockResult, mockBoolean, mockErrorMsg, mockExpectArray);
-            const sql = `SELECT * FROM meta ORDER BY id ASC;`;
             const testFn = await metaRepository.findAll();
 
             expect(testFn).toEqual(mockResult);
             expect(DBConnection.getInstance).toHaveBeenCalled();
             expect(mockClient.query).toHaveBeenCalledWith(sql);
         });
+
+        test('Return null for non-existing entry', async () => {
+            const mockResult: Meta[] | null = null;
+
+            const mockClient = MockUtils.mapMockDbClient(mockResult);
+            const testFn = await metaRepository.findAll();
+
+            expect(testFn).toEqual(mockResult);
+            expect(DBConnection.getInstance).toHaveBeenCalled();
+            expect(mockClient.query).toHaveBeenCalledWith(sql);
+        })
     })
 
     describe('Testing invalid fn calls', () => {
