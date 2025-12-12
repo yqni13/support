@@ -2,6 +2,12 @@ import { SingleOrArray } from "../utils/custom-types.utils";
 import { Flag } from "../utils/enums/flag.enum";
 import { TicketStatus } from "../utils/enums/ticket-status.enum";
 
+export interface TicketsIntervalDTO {
+    client_id?: string,
+    user_id?: string,
+    intervalTime: string
+}
+
 export interface TicketsCreateRequestDTO {
     user_email: string,
     message: string,

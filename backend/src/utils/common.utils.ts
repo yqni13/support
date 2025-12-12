@@ -21,6 +21,11 @@ export function getTimestampUTC(timestamp?: Date): string {
     return timestamp ? new Date(timestamp).toISOString() : new Date().toISOString();
 }
 
+export function getDateUTC(timestamp?: Date): string {
+    const dateObj = timestamp ? new Date(timestamp) : new Date();
+    return dateObj.toISOString().slice(0, 10);
+}
+
 export function isEmptyObj(obj: any): boolean {
     return JSON.stringify(obj) === '{}';
 }

@@ -1,9 +1,5 @@
 import { ApiKeyStatus } from "../utils/enums/api-key-status.enum";
 
-export interface ClientsRateLimitsDTO {
-    intervalTime: string
-}
-
 export interface ClientsCreateDTO {
     name: string
 }

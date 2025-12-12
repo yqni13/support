@@ -73,12 +73,11 @@ export class DBTestData {
     }
 
     getRateLimitsInsertSql(): BaseQuery {
-        // Set ID manually because within testfile ID gets incremented due to deleting entries each test case.
         const sql = `INSERT INTO ${this.tableRecord['rateLimits']}
-        (rate_limit_id, client_id, user_id, day, count, last_modified)
-        VALUES ($1, $2, $3, $4, $5, $6);
+        (client_id, user_id, day, count, last_modified)
+        VALUES ($1, $2, $3, $4, $5);
         `;
-        const values = [mockId.rate_limits.valid[0], mockId.clients.valid[0], mockId.users.valid[0], '2025-01-01', 1, '2025-01-01T14:00:05.000Z'];
+        const values = [mockId.clients.valid[0], mockId.users.valid[0], '2025-01-01', 1, '2025-01-01T14:00:05.000Z'];
         return { sql: sql, values: values };
     }
 }

@@ -87,8 +87,10 @@ export class DBTestSetup {
         let tables: string[] = dbTestData.getDatabaseTables().reverse();
 
         // ForEach does not wait for async process to finish.
+        await this.client.query('BEGIN');
         for(const table of tables) {
-            await this.client.query(`TRUNCATE TABLE ${table} CASCADE;`);
+            await this.client.query(`TRUNCATE TABLE ${table} RESTART IDENTITY CASCADE;`);
         }
+        await this.client.query('COMMIT');
     }
 }
