@@ -1,0 +1,52 @@
+import { RateLimitsEngine } from "../../../src/middleware/engines/rate-limits.engine.middleware";
+import { RateLimitsData, RateLimitsResponse, RateLimitsRule } from "../../../src/middleware/interfaces/rate-limits.interface.middleware";
+import { secrets } from "../../../src/utils/secrets.utils";
+import { ClientsDailyLimitRule } from "../../../src/middleware/rules/rate-limits.rule.middleware";
+import rateLimitsService from "../../../src/services/rate-limits.service";
+
+describe('Middleware tests category <engines>, priority: RateLimitsEngine', () => {
+
+    describe('Testing valid fn calls', () => {
+
+        let mockValidClientsId: string;
+        let mockValidUsersId: string;
+        let mockParam_data: RateLimitsData;
+        beforeEach(() => {
+            mockValidClientsId = 'valid_clients_test_id',
+            mockValidUsersId = 'valid_users_test_id';
+            mockParam_data = {
+                client_id: mockValidClientsId,
+                user_id: mockValidUsersId
+            };
+        });
+
+        afterEach(() => {
+            jest.restoreAllMocks();
+        });
+
+        test('Params: <ClientsDailyLimitRule>, result: null', async () => {
+            jest.spyOn(rateLimitsService, 'updateRateLimit').mockImplementation();
+            jest.spyOn(ClientsDailyLimitRule.prototype, 'check').mockResolvedValue(null);
+            const rule: RateLimitsRule = new ClientsDailyLimitRule(secrets.RATELIMITS_CLIENTSDAILYLIMIT);
+            const engine = new RateLimitsEngine([rule]);
+
+            const mockResponse = null;
+            const testFn = await engine.process(mockParam_data);
+
+            expect(testFn).toBe(mockResponse);
+        })
+
+        test('Params: <ClientsDailyLimitRule>, result: RateLimitsResponse', async () => {
+            const response: RateLimitsResponse = { msg: 'support-ratelimits-clients-daily' };
+            jest.spyOn(rateLimitsService, 'updateRateLimit').mockImplementation();
+            jest.spyOn(ClientsDailyLimitRule.prototype, 'check').mockResolvedValue(response);
+            const rule: RateLimitsRule = new ClientsDailyLimitRule(secrets.RATELIMITS_CLIENTSDAILYLIMIT);
+            const engine = new RateLimitsEngine([rule]);
+
+            const mockResponse = response;
+            const testFn = await engine.process(mockParam_data);
+
+            expect(testFn).toBe(mockResponse);
+        })
+    })
+})

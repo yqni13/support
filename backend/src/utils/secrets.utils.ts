@@ -25,6 +25,10 @@ class Secrets {
     readonly DB_TEST_DATABASE: string;
     readonly TEST_APIKEY_RAW: string;
     readonly TEST_APIKEY_HASH: string;
+    readonly RATELIMITS_CLIENTSBURSTLIMIT: number;
+    readonly RATELIMITS_CLIENTSDAILYLIMIT: number;
+    readonly RATELIMITS_USERSBURSTLIMIT: number;
+    readonly RATELIMITS_USERSDAILYLIMIT: number;
 
     private static _instance: Secrets;
 
@@ -51,6 +55,10 @@ class Secrets {
         this.DB_TEST_DATABASE = this.setDbTestDatabase();
         this.TEST_APIKEY_RAW = this.setTestApiKeyRaw();
         this.TEST_APIKEY_HASH = this.setTestApiKeyHash();
+        this.RATELIMITS_CLIENTSBURSTLIMIT = this.setRateLimitsClientsBurstLimit();
+        this.RATELIMITS_CLIENTSDAILYLIMIT = this.setRateLimitsClientsDailyLimit();
+        this.RATELIMITS_USERSBURSTLIMIT = this.setRateLimitsUsersBurstLimit();
+        this.RATELIMITS_USERSDAILYLIMIT = this.setRateLimitsUsersDailyLimit();
     }
 
     static get instance(): Secrets {
@@ -226,6 +234,34 @@ class Secrets {
             throw new AuthSecretNotFoundException('secret-404-env#TEST_APIKEY_HASH');
         }
         return Config.TEST_APIKEY_HASH;
+    }
+
+    private setRateLimitsClientsBurstLimit() {
+        if(!Config.RATELIMITS_CLIENTSBURSTLIMIT) {
+            throw new AuthSecretNotFoundException('secret-404-env#RATELIMITS_CLIENTSBURSTLIMIT');
+        }
+        return Config.RATELIMITS_CLIENTSBURSTLIMIT;
+    }
+
+    private setRateLimitsClientsDailyLimit() {
+        if(!Config.RATELIMITS_CLIENTSDAILYLIMIT) {
+            throw new AuthSecretNotFoundException('secret-404-env#RATELIMITS_CLIENTSDAILYLIMIT');
+        }
+        return Config.RATELIMITS_CLIENTSDAILYLIMIT;
+    }
+
+    private setRateLimitsUsersBurstLimit() {
+        if(!Config.RATELIMITS_USERSBURSTLIMIT) {
+            throw new AuthSecretNotFoundException('secret-404-env#RATELIMITS_USERSBURSTLIMIT');
+        }
+        return Config.RATELIMITS_USERSBURSTLIMIT;
+    }
+
+    private setRateLimitsUsersDailyLimit() {
+        if(!Config.RATELIMITS_USERSDAILYLIMIT) {
+            throw new AuthSecretNotFoundException('secret-404-env#RATELIMITS_USERSDAILYLIMIT');
+        }
+        return Config.RATELIMITS_USERSDAILYLIMIT;
     }
 }
 

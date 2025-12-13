@@ -1,9 +1,6 @@
 export interface RateLimitsData {
     client_id: string,
     user_id: string,
-    user_email: string,
-    last_modified: string,
-    created_on: string
 }
 
 export interface RateLimitsResponse {
@@ -12,5 +9,5 @@ export interface RateLimitsResponse {
 }
 
 export interface RateLimitsRule {
-    check(data: RateLimitsData): Promise<RateLimitsResponse | null>;
+    check(data?: RateLimitsData): Promise<RateLimitsResponse | null>;
 }
