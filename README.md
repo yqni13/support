@@ -1,5 +1,5 @@
 # yqni13 | support
-$\texttt{\color{teal}{v0.9.10}}$
+$\texttt{\color{teal}{v0.10.0}}$
 
 
 <br>
@@ -46,6 +46,7 @@ The development process is structured by the TDD (test driven development) princ
     <dd>:mag: filtered search for ticket + user data (properties + timespan)</dd>
     <dd>:closed_lock_with_key: maintenance mode can en/disable application via single request</dd>
     <dd>:key: request verification by api-keys</dd>
+    <dd>🕵️ request rate limiting + violation handling</dd>
 </dl>
 
 <br>
@@ -65,7 +66,7 @@ To monitor errors the logging framework `Winston` is used in combination with Lo
 
 ### $\textsf{\color{teal}Demo}$
 
-Testing of the application server can be done automatically via Jest tests (next chapter) or manually by a separate demonstration route.<br>POST: `/meta/demo`<br>using the body payload to control the response - use the demo route to get exceptions, info message or the current application version number. With the implemented observation middleware, the demo route will be limited to 20 daily requests [following with ticket: SUPPORT-25-rate-limiting-engine]. As the demo route is not authenticated, you only need the following data:
+Testing of the application server can be done automatically via Jest tests (next chapter) or manually by a separate demonstration route.<br>POST: `/meta/demo`<br>using the body payload to control the response - use the demo route to get exceptions, info message or the current application version number. With the implemented observation middleware, the demo route will be limited to 20 daily requests [following with ticket: SUPPORT-46-demo-req-limit]. As the demo route is not authenticated, you only need the following data:
 ```sh
 [ROUTE] {{url}}/api/v1/meta/demo
 [PAYLOAD] { "demo_mode": "success" }
@@ -88,7 +89,7 @@ Install the packages `@jest/globals`, `@types/jest`, `supertest`, `@testcontaine
 ```sh
 npm install jest @jest/globals @types/jest supertest @testcontainers/postgresql testcontainers --save-dev
 ```
-220+ tests exist currently for models, utils, validators and workflows (integration tests) - see [tests](./backend/tests).<br>
+250+ tests exist currently for models, utils, validators and workflows (integration tests) - see [tests](./backend/tests).<br>
 Run tests on local device by including setup for dotenv/config to provide environment variables:
 ```sh
 set NODE_ENV=test && jest --setupFiles dotenv/config
@@ -123,8 +124,10 @@ Preventing an unwanted merge with unfinished/failed test run, the project is set
 
 ### $\textsf{\color{forestgreen}last update:}$
 
-$\textsf{[v1.0.5\ =>\ {\textbf{\color{brown}v1.0.6}]}}$ docker
-- $\textsf{\color{orange}Patch:}$ Refactored Dockerfile because of wrong path on execution command for 'production' stage.
+$\textsf{[v0.9.10\ =>\ {\textbf{\color{brown}v0.10.0}]}}$ app<br>
+$\textsf{[v1.4.0\ =>\ {\textbf{\color{brown}v1.4.1}]}}$ database
+- $\textsf{\color{teal}Addition:}$ Added logic to observe request rates and handle limit violations.
+- $\textsf{\color{orange}Patch:}$ Refactored migration 'rate_limits' due to wrong type of 'last_modified'.
 
 <br>
 

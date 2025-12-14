@@ -1,10 +1,11 @@
 import { Request, Response, NextFunction } from "express";
-import { InvalidUsersException } from "../utils/exceptions/auth.exception";
+import { BlockedUsersException, InvalidUsersException } from "../utils/exceptions/auth.exception";
 import { Users } from "../repositories/interfaces/users.entity.interface";
 import usersService from "../services/users.service";
 import { UsersCreateDTO } from "../dtos/users.dto";
 import { UserStatus } from "../utils/enums/user-status.enum";
 import { logError } from "../utils/common.utils";
+import { Flag } from "../utils/enums/flag.enum";
 
 /**
  * @description Status validation of existing user or create new user by email address.
@@ -25,6 +26,8 @@ export function authUser() {
 
             if(user.status === UserStatus.BLACKLISTED.trim()) {
                 throw new InvalidUsersException();
+            } else if(user.flag === Flag.ERROR.trim()) {
+                throw new BlockedUsersException();
             }
 
             req.apiUsers = user;
