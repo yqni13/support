@@ -20,14 +20,16 @@ const mockBoolean = false;
 
 describe('Database tests table <rate_limits>, priority: countById', () => {
 
-    let mockParam_dto: RateLimitsCountDTO;
+    let mockParam_dto_countById: RateLimitsCountDTO;
+    let mockParam_dto_countByDate: RateLimitsCountDTO;
     beforeEach(() => {
-        mockParam_dto = { client_id: 'valid_clients_test_id', day: '2025-01-01' };
+        mockParam_dto_countById = { client_id: 'valid_clients_test_id', day: '2025-01-01' };
+        mockParam_dto_countByDate = { day: '2025-02-05' };
     })
 
     describe('Testing valid fn calls', () => {
 
-        test('Return entries by ID, params: <RateLimitsCountDTO>', async () => {
+        test('Return entries by id and day, params: <RateLimitsCountDTO>', async () => {
             const mockResult: RateLimits[] = [ 
                 {
                     rate_limit_id: 1,
@@ -43,7 +45,41 @@ describe('Database tests table <rate_limits>, priority: countById', () => {
             const mockErrorMsg = undefined;
             const mockExpectArray = true;
             const mockClient = MockUtils.mapMockDbClient(mockResult, mockBoolean, mockErrorMsg, mockExpectArray);
-            const testFn = await rateLimitsRepository.countById(mockParam_dto);
+            const testFn = await rateLimitsRepository.count(mockParam_dto_countById);
+
+            expect(testFn).toEqual(mockResult);
+            expect(DBConnection.getInstance).toHaveBeenCalled();
+            expect(mockClient.query).toHaveBeenCalledWith(
+                expect.stringContaining('SELECT'),
+                expect.arrayContaining(mockValues)
+            );
+        })
+
+        test('Return entries by day, params: <RateLimitsCountDTO>', async () => {
+            const mockResult: RateLimits[] = [ 
+                {
+                    rate_limit_id: 2,
+                    client_id: 'valid_clients_test_id',
+                    user_id: 'valid_users_test_id',
+                    day: '2025-02-05',
+                    count: 1,
+                    last_modified: '2025-02-05T04:17:05.000Z'
+                },
+                {
+                    rate_limit_id: 3,
+                    client_id: 'valid_clients_test_id',
+                    user_id: 'valid_users_test_id',
+                    day: '2025-02-05',
+                    count: 1,
+                    last_modified: '2025-02-05T04:38:05.000Z'
+                }
+            ];
+            const mockValues: string[] = ['2025-02-05'];
+
+            const mockErrorMsg = undefined;
+            const mockExpectArray = true;
+            const mockClient = MockUtils.mapMockDbClient(mockResult, mockBoolean, mockErrorMsg, mockExpectArray);
+            const testFn = await rateLimitsRepository.count(mockParam_dto_countByDate);
 
             expect(testFn).toEqual(mockResult);
             expect(DBConnection.getInstance).toHaveBeenCalled();
@@ -62,7 +98,7 @@ describe('Database tests table <rate_limits>, priority: countById', () => {
             jest.spyOn(Utils, "logError").mockReturnValue();
             const _ = MockUtils.mapMockDbClient(mockResult, mockBoolean, mockErrorMsg);
 
-            await expect(() => rateLimitsRepository.countById(mockParam_dto))
+            await expect(() => rateLimitsRepository.count(mockParam_dto_countById))
                 .rejects.toThrow(expectExceptionResult);
         })
     })

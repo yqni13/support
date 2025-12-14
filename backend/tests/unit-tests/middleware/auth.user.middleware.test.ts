@@ -5,7 +5,8 @@ import { Users } from "../../../src/repositories/interfaces/users.entity.interfa
 import { UserStatus } from "../../../src/utils/enums/user-status.enum";
 import usersService from "../../../src/services/users.service";
 import { UsersResponseDTO } from "../../../src/dtos/users.dto";
-import { InvalidUsersException } from "../../../src/utils/exceptions/auth.exception";
+import { BlockedUsersException, InvalidUsersException } from "../../../src/utils/exceptions/auth.exception";
+import { Flag } from "../../../src/utils/enums/flag.enum";
 
 describe('Middleware tests category <auth>, priority: authUser', () => {
 
@@ -71,13 +72,37 @@ describe('Middleware tests category <auth>, priority: authUser', () => {
 
     describe('Testing invalid fn calls', () => {
 
+        test('Verify user, error: BlockedUsersException', async () => {
+            const mockUserEmail = 'valid-user@test.com';
+            const mockUser: Users = {
+                user_id: mockId.users.valid[0],
+                email: mockUserEmail,
+                status: UserStatus.ACTIVE,
+                flag: Flag.ERROR,
+                last_modified: mockTimestamp,
+                created_on: mockTimestamp
+            };
+            const req: any = { header: jest.fn(), body: { user_email: mockUserEmail }};
+
+            jest.spyOn(usersService, 'getUserByEmail').mockResolvedValue(mockUser);
+            jest.spyOn(Utils, 'logError').mockImplementation();
+
+            const middleware = authUser();
+            await middleware(req, res, next);
+
+            expect(usersService.getUserByEmail).toHaveBeenCalledWith(mockUserEmail);
+            const errArg = next.mock.calls[0][0];
+            expect(errArg).toBeInstanceOf(BlockedUsersException);
+            expect(errArg.status).toBe(401);
+        })
+
         test('Verify user, error: InvalidUsersException', async () => {
             const mockUserEmail = 'valid-user@test.com';
             const mockUser: Users = {
                 user_id: mockId.users.valid[0],
                 email: mockUserEmail,
                 status: UserStatus.BLACKLISTED,
-                flag: null,
+                flag: Flag.ERROR,
                 last_modified: mockTimestamp,
                 created_on: mockTimestamp
             };

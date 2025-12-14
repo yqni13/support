@@ -39,6 +39,9 @@ jest.mock('../../../src/middleware/auth.user.middleware', () => ({
 jest.mock('../../../src/middleware/maintenance.middleware', () => ({
     maintain: jest.fn(() =>  (req: Request, res: Response, next: NextFunction) => next())
 }));
+jest.mock('../../../src/middleware/observe.middleware.ts', () => ({
+    observe: jest.fn(() => (req: Request, res: Response, next: NextFunction) => next())
+}))
 
 import app from '../../../src/app';
 

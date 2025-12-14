@@ -29,6 +29,7 @@ class Secrets {
     readonly RATELIMITS_CLIENTSDAILYLIMIT: number;
     readonly RATELIMITS_USERSBURSTLIMIT: number;
     readonly RATELIMITS_USERSDAILYLIMIT: number;
+    readonly RATELIMITS_TOTALDAILYLIMIT: number;
 
     private static _instance: Secrets;
 
@@ -59,6 +60,7 @@ class Secrets {
         this.RATELIMITS_CLIENTSDAILYLIMIT = this.setRateLimitsClientsDailyLimit();
         this.RATELIMITS_USERSBURSTLIMIT = this.setRateLimitsUsersBurstLimit();
         this.RATELIMITS_USERSDAILYLIMIT = this.setRateLimitsUsersDailyLimit();
+        this.RATELIMITS_TOTALDAILYLIMIT = this.setRateLimitsTotalDailyLimit();
     }
 
     static get instance(): Secrets {
@@ -262,6 +264,13 @@ class Secrets {
             throw new AuthSecretNotFoundException('secret-404-env#RATELIMITS_USERSDAILYLIMIT');
         }
         return Config.RATELIMITS_USERSDAILYLIMIT;
+    }
+
+    private setRateLimitsTotalDailyLimit() {
+        if(!Config.RATELIMITS_TOTALDAILYLIMIT) {
+            throw new AuthSecretNotFoundException('secret-404-env#RATELIMITS_TOTALDAILYLIMIT');
+        }
+        return Config.RATELIMITS_TOTALDAILYLIMIT;
     }
 }
 

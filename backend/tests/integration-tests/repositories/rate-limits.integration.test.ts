@@ -32,14 +32,26 @@ describe('Integration test (repository specific without Route/Controller), prior
 
     describe('Testing valid fn calls', () => {
 
-        test('Repository process fn countById, params: <client_id>, result: "SUCCESS"', async () => {
+        test('Repository process fn count, params: <client_id, day>, result: "SUCCESS"', async () => {
             const dto: RateLimitsCountDTO = {
                 client_id: mockId.clients.valid[0],
                 day: '2025-01-01'
             };
 
             await dbTestSetup.addTestData();
-            const testResponse: number = await rateLimitsService.getCountById(dto);
+            const testResponse: number = await rateLimitsService.getRateLimitCount(dto);
+            const mockResponse: number = 1;
+
+            expect(testResponse).toBe(mockResponse);
+        })
+
+        test('Repository process fn count, params: <day>, result: "SUCCESS"', async () => {
+            const dto: RateLimitsCountDTO = {
+                day: '2025-01-01'
+            };
+
+            await dbTestSetup.addTestData();
+            const testResponse: number = await rateLimitsService.getRateLimitCount(dto);
             const mockResponse: number = 1;
 
             expect(testResponse).toBe(mockResponse);
