@@ -16,6 +16,30 @@ describe('Utils tets, priority: common', () => {
             expect(testFn).toEqual(expectResult);
         })
 
+        test('fn: getTimestampUTC, params: <timestamp>', () => {
+            const mockParam_timestamp = new Date('2025-01-01 14:00:00.000+00');
+            const testFn = Utils.getTimestampUTC(mockParam_timestamp);
+            const expectResult: string = '2025-01-01T14:00:00.000Z';
+
+            expect(testFn).toBe(expectResult);
+        })
+
+        test('fn: getDateUTC, params: <timestamp>', () => {
+            const mockParam_timestamp = new Date('2025-01-01T00:00:01.000Z');
+            const testFn = Utils.getDateUTC(mockParam_timestamp);
+            const expectResult: string = '2025-01-01';
+
+            expect(testFn).toBe(expectResult);
+        })
+
+        test('fn: getNextDayUTC, params: <timestamp>', () => {
+            const mockParam_timestamp = new Date('2025-01-31T14:00:00.000Z');
+            const testFn = Utils.getNextDayUTC(mockParam_timestamp);
+            const expectResult: string = '2025-02-01T00:00:01.000Z';
+
+            expect(testFn).toBe(expectResult);
+        })
+
         test('fn: isEmptyObj', () => {
             const mockParam_obj = {};
             const testFn = Utils.isEmptyObj(mockParam_obj);
