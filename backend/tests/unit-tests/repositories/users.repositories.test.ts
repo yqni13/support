@@ -137,6 +137,11 @@ describe('Database tests table <users>, priority: findAll', () => {
 
     describe('Testing valid fn calls', () => {
 
+        let sql: string;
+        beforeEach(() => {
+            sql = `SELECT * FROM users ORDER BY user_id ASC FETCH FIRST 100 ROWS ONLY;`;
+        });
+
         test('Return data for multiple existing entries', async () => {
             const mockData_entry0 = structuredClone(mockData);
             const mockData_entry1 = structuredClone(mockData_entry0);
@@ -147,13 +152,23 @@ describe('Database tests table <users>, priority: findAll', () => {
             const mockErrorMsg = undefined;
             const mockExpectArray = true;
             const mockClient = MockUtils.mapMockDbClient(mockResult, mockBoolean, mockErrorMsg, mockExpectArray);
-            const sql = `SELECT * FROM users ORDER BY user_id ASC FETCH FIRST 100 ROWS ONLY;`;
             const testFn = await usersRepository.findAll();
 
             expect(testFn).toEqual(mockResult);
             expect(DBConnection.getInstance).toHaveBeenCalled();
             expect(mockClient.query).toHaveBeenCalledWith(sql);
         });
+
+        test('Return null for non-existing entry', async () => {
+            const mockResult = null;
+
+            const mockClient = MockUtils.mapMockDbClient(mockResult);
+            const testFn = await usersRepository.findAll();
+
+            expect(testFn).toEqual(mockResult);
+            expect(DBConnection.getInstance).toHaveBeenCalled();
+            expect(mockClient.query).toHaveBeenCalledWith(sql);
+        })
     })
 
     describe('Testing invalid fn calls', () => {
@@ -202,9 +217,7 @@ describe('Database tests table <users>, priority: findByFilter', () => {
             const mockValues = mockParam_dto.email;
             const mockResult = null;
 
-            const mockErrorMsg = undefined;
-            const mockExpectArray = true;
-            const mockClient = MockUtils.mapMockDbClient(mockResult, mockBoolean, mockErrorMsg, mockExpectArray);
+            const mockClient = MockUtils.mapMockDbClient(mockResult);
             const testFn = await usersRepository.findByFilter(mockParam_dto);
 
             expect(testFn).toEqual(mockResult);

@@ -1,3 +1,9 @@
+import {
+    ClientsStatusResponseDTO,
+    ClientsLastUseResponseDTO,
+    ClientsStatusUpdateDTO,
+    ClientsLastUseUpdateDTO
+} from "../../../src/dtos/clients.dto";
 import { DBConnection } from "../../../src/configs/db";
 import * as Utils from "../../../src/utils/common.utils";
 import * as MockUtils from "../../common.test-utils";
@@ -6,7 +12,6 @@ import { ApiKeyStatus } from "../../../src/utils/enums/api-key-status.enum";
 import clientsRepository from "../../../src/repositories/clients.repository";
 import clientsModel from "../../../src/models/clients.model";
 import { secrets } from "../../../src/utils/secrets.utils";
-import { ClientsStatusResponseDTO, ClientsLastUseResponseDTO, ClientsStatusUpdateDTO, ClientsLastUseUpdateDTO } from "../../../src/dtos/clients.dto";
 import { DBQueryErrorException } from "../../../src/utils/exceptions/db.exception";
 
 jest.mock("../../../src/configs/db", () => {

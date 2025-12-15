@@ -103,12 +103,12 @@ describe('Integration test (repository specific), priority: Users', () => {
             expect(testResponse.body).toMatchObject(testResult);
         })
 
-        test('Repository process fn findByFilter, params: <email> result: []', async () => {
+        test('Repository process fn findByFilter, params: <email> result: null', async () => {
             const testParam_dto: UsersFilterDTO = {
                 email: 'user@test.com'
             };
             // No entry exists in db with email value from dto.
-            const testResult: UsersResponseDTO[] = [];
+            const testResult = null;
 
             await dbTestSetup.addTestData();
             const testResponse = await request(app)
@@ -116,7 +116,7 @@ describe('Integration test (repository specific), priority: Users', () => {
                 .send(testParam_dto);
 
             expect(testResponse.statusCode).toBe(200);
-            expect(testResponse.body).toMatchObject(testResult);
+            expect(testResponse.body).toBe(testResult);
         })
 
         test('Repository process fn findByFilter, params: <email[], status> result: "SUCCESS"', async () => {

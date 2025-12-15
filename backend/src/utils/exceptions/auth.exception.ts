@@ -87,3 +87,9 @@ export class InvalidUsersException extends AuthException {
         super('support-invalid-users', data);
     }
 }
+
+export class BlockedUsersException extends AuthException {
+    constructor(data?: any) {
+        super('support-blocked-users', data);
+    }
+}

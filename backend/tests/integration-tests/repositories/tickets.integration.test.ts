@@ -39,6 +39,9 @@ jest.mock('../../../src/middleware/auth.user.middleware', () => ({
 jest.mock('../../../src/middleware/maintenance.middleware', () => ({
     maintain: jest.fn(() =>  (req: Request, res: Response, next: NextFunction) => next())
 }));
+jest.mock('../../../src/middleware/observe.middleware.ts', () => ({
+    observe: jest.fn(() => (req: Request, res: Response, next: NextFunction) => next())
+}))
 
 import app from '../../../src/app';
 
@@ -113,11 +116,11 @@ describe('Integration test (repository specific), priority: Tickets', () => {
             expect(testResponse.body).toMatchObject(testResult);
         })
 
-        test('Repository process fn findByFilter, params: <client_id> result: []', async () => {
+        test('Repository process fn findByFilter, params: <client_id> result: null', async () => {
             const testParam_dto: TicketsFilterDTO = {
                 client_id: mockId.tickets.invalid[0]
             };
-            const testResult: TicketsResponseDTO[] = [];
+            const testResult: TicketsResponseDTO[] | null = null;
 
             await dbTestSetup.addTestData();
             const testResponse = await request(app)
@@ -125,7 +128,7 @@ describe('Integration test (repository specific), priority: Tickets', () => {
                 .send(testParam_dto);
 
             expect(testResponse.statusCode).toBe(200);
-            expect(testResponse.body).toMatchObject(testResult);
+            expect(testResponse.body).toBe(testResult);
         })
 
         test('Repository process fn findByFilter, params: <user_id[], status> result: "SUCCESS"', async () => {
@@ -181,11 +184,11 @@ describe('Integration test (repository specific), priority: Tickets', () => {
             expect(testResponse.body).toMatchObject(testResult);
         })
 
-        test('Repository process fn findByFilter, params: <flag> result: []', async () => {
+        test('Repository process fn findByFilter, params: <flag> result: null', async () => {
             const testParam_dto: TicketsFilterDTO = {
                 flag: Flag.ERROR
             };
-            const testResult: TicketsResponseDTO[] = [];
+            const testResult: TicketsResponseDTO[] | null = null;
 
             jest.spyOn(Utils, "getTimestampUTC").mockReturnValue(testTimestamp);
 
@@ -195,7 +198,7 @@ describe('Integration test (repository specific), priority: Tickets', () => {
                 .send(testParam_dto);
 
             expect(testResponse.statusCode).toBe(200);
-            expect(testResponse.body).toMatchObject(testResult);
+            expect(testResponse.body).toBe(testResult);
         })
 
         test('Repository process fn create, result: "SUCCESS"', async () => {

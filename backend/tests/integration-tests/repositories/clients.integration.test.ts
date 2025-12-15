@@ -75,14 +75,14 @@ describe('Integration test (repository specific), priority: Clients', () => {
 
         test('Repository process fn findStatusByName, result: "NO-ENTRY-FOUND"', async () => {
             const testParam_name = 'non-existing-client';
-            const testResult = {};
+            const testResult = null;
 
             await dbTestSetup.addTestData();
             const testResponse = await request(app)
                 .get(`${apiUrl}/status/${testParam_name}`);
 
             expect(testResponse.statusCode).toBe(200);
-            expect(testResponse.body).toMatchObject(testResult);
+            expect(testResponse.body).toBe(testResult);
         })
 
         test('Repository process fn create, result: "SUCCESS"', async () => {
