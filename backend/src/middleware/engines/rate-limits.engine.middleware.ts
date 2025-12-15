@@ -1,4 +1,4 @@
-import { RateLimitsUpdateDTO } from "../../dtos/rate-limits.dto";
+import { RateLimitsCreateUpdateDTO } from "../../dtos/rate-limits.dto";
 import rateLimitsService from "../../services/rate-limits.service";
 import { RateLimitsData, RateLimitsResponse, RateLimitsRule } from "../interfaces/rate-limits.interface.middleware";
 
@@ -9,17 +9,17 @@ export class RateLimitsEngine {
     }
 
     async process(data: RateLimitsData): Promise<RateLimitsResponse | null> {
-        const dto: RateLimitsUpdateDTO = { client_id: data.client_id, user_id: data.user_id };
+        const dto: RateLimitsCreateUpdateDTO = { client_id: data.client_id, user_id: data.user_id };
         for(const rule of this.rules) {
             const response = await rule.check(data);
             if(response) {
                 return response;
             }
         }
-        // Update rate_limits or create when no entry is found to update.
+        // Update table 'rate_limits' or create when no entry is found to update.
         const update = await rateLimitsService.updateRateLimit(dto);
         if(!update) {
-            await rateLimitsService.createRateLimit(data.client_id, data.user_id);
+            await rateLimitsService.createRateLimit(dto);
         }
         return null;
     }

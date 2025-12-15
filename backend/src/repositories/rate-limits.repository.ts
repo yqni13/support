@@ -1,5 +1,5 @@
 import { QueryResult } from "pg";
-import { RateLimitsCountDTO, RateLimitsCreateDTO, RateLimitsUpdateDTO } from "../dtos/rate-limits.dto";
+import { RateLimitsCountDTO, RateLimitsCreateUpdateDTO } from "../dtos/rate-limits.dto";
 import { RateLimits } from "./interfaces/rate-limits.entity.interface";
 import { logError } from "../utils/common.utils";
 import { DBQueryErrorException } from "../utils/exceptions/db.exception";
@@ -40,7 +40,7 @@ class RateLimitsRepository {
         }
     }
 
-    async create(entity: RateLimitsCreateDTO): Promise<RateLimits> {
+    async create(entity: Partial<RateLimits>): Promise<RateLimits> {
         // Information 'DATE type' handling in PostgreSQL:
         // - cast date from string to literal to ensure type in query
         // - returning value gets parsed to date type due to setTypeParser (OID 1082) in db.ts
@@ -65,7 +65,7 @@ class RateLimitsRepository {
         }
     }
 
-    async update(dto: RateLimitsUpdateDTO): Promise<RateLimits | null> {
+    async update(dto: RateLimitsCreateUpdateDTO): Promise<RateLimits | null> {
         const filterColumn0 = "client_id";
         const filterColumn1 = "user_id";
         const sql = `UPDATE ${this.table}

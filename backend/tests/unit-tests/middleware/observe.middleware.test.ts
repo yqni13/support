@@ -46,6 +46,7 @@ describe('Middleware tests category <security>, priority: observe', () => {
 
         test('Validate caller origin, result: "SUCCESS"', async () => {
             const mockRateLimits: RateLimitsResponse | null = null;
+
             jest.spyOn(RateLimitsEngine.prototype, 'process').mockResolvedValue(mockRateLimits);
 
             // middleware == factory fn returning express fn => fn(req, res, next)
@@ -59,7 +60,11 @@ describe('Middleware tests category <security>, priority: observe', () => {
     describe('Testing invalid fn calls', () => {
 
         test('Validate caller origin, error: ExceedMaxEndpointException by ClientsBurstLimitRule', async () => {
-            const mockRateLimits: RateLimitsResponse | null = { msg: 'support-ratelimits-clients-burst' };
+            const mockRateLimits: RateLimitsResponse | null = {
+                msg: 'support-ratelimits-clients-burst',
+                retryAfter: '2025-01-02T00.00.01.000Z'
+            };
+
             jest.spyOn(RateLimitsEngine.prototype, 'process').mockResolvedValue(mockRateLimits);
             jest.spyOn(Utils, 'logError').mockImplementation();
 

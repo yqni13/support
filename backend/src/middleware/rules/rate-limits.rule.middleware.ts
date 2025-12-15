@@ -15,7 +15,7 @@ export class ClientsBurstLimitRule implements RateLimitsRule {
         const dto: TicketsIntervalDTO = { client_id: data.client_id, intervalTime: '1 minute' };
         const tickets = await ticketsService.getTicketsByTimeInterval(dto);
         if(tickets && tickets.length >= this.requestLimit) {
-            return { msg: 'support-ratelimits-clients-burst' };
+            return { msg: 'support-ratelimits-clients-burst', retryAfter: Utils.getNextDayUTC() };
         }
 
         return null;
@@ -32,7 +32,7 @@ export class UsersBurstLimitRule implements RateLimitsRule {
         const dto: TicketsIntervalDTO = { user_id: data.user_id, intervalTime: '1 minute' };
         const tickets = await ticketsService.getTicketsByTimeInterval(dto);
         if(tickets && tickets.length >= this.requestLimit) {
-            return { msg: 'support-ratelimits-users-burst' };
+            return { msg: 'support-ratelimits-users-burst', retryAfter: Utils.getNextDayUTC() };
         }
 
         return null;
@@ -49,7 +49,7 @@ export class ClientsDailyLimitRule implements RateLimitsRule {
         const dto: RateLimitsCountDTO = { client_id: data.client_id, day: Utils.getDateUTC() };
         const count: number = await rateLimitsService.getRateLimitCount(dto);
         if(count >= this.requestLimit) {
-            return { msg: 'support-ratelimits-clients-daily' };
+            return { msg: 'support-ratelimits-clients-daily', retryAfter: Utils.getNextDayUTC() };
         }
 
         return null;
@@ -66,7 +66,7 @@ export class UsersDailyLimitRule implements RateLimitsRule {
         const dto: RateLimitsCountDTO = { user_id: data.user_id, day: Utils.getDateUTC() };
         const count: number = await rateLimitsService.getRateLimitCount(dto);
         if(count >= this.requestLimit) {
-            return { msg: 'support-ratelimits-users-daily' };
+            return { msg: 'support-ratelimits-users-daily', retryAfter: Utils.getNextDayUTC() };
         }
 
         return null;
@@ -83,7 +83,7 @@ export class TotalDailyLimitRule implements RateLimitsRule {
         const dto: RateLimitsCountDTO = { day: Utils.getDateUTC() };
         const count: number = await rateLimitsService.getRateLimitCount(dto);
         if(count >= this.requestLimit) {
-            return { msg: 'support-ratelimits-total-daily' };
+            return { msg: 'support-ratelimits-total-daily', retryAfter: Utils.getNextDayUTC() };
         }
         
         return null;

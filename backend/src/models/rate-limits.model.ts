@@ -1,7 +1,6 @@
-import { RateLimitsCreateDTO } from "../dtos/rate-limits.dto";
+import { RateLimitsCreateUpdateDTO } from "../dtos/rate-limits.dto";
 import { RateLimits } from "../repositories/interfaces/rate-limits.entity.interface";
 import { getDateUTC, getTimestampUTC } from "../utils/common.utils";
-
 
 class RateLimitsModel {
     mapCounts(data: RateLimits[] | null): number {
@@ -15,11 +14,11 @@ class RateLimitsModel {
         return count;
     }
 
-    mapRateLimitsCreateDTO(client_id: string, user_id: string): RateLimitsCreateDTO {
+    mapRateLimitsCreateUpdateDTO(dto: RateLimitsCreateUpdateDTO): RateLimitsCreateUpdateDTO {
         const timestamp = new Date();
         return {
-            client_id: client_id,
-            user_id: user_id,
+            client_id: dto.client_id,
+            user_id: dto.user_id,
             day: getDateUTC(timestamp),
             last_modified: getTimestampUTC(timestamp)
         };

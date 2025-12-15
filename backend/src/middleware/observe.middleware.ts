@@ -9,7 +9,7 @@ import { Request, Response, NextFunction } from "express";
 import { secrets } from "../utils/secrets.utils";
 import { logError } from "../utils/common.utils";
 import { RateLimitsEngine } from "./engines/rate-limits.engine.middleware";
-import { RateLimitsData } from "./interfaces/rate-limits.interface.middleware";
+import { RateLimitsData, RateLimitsResponse } from "./interfaces/rate-limits.interface.middleware";
 import { ExceedMaxEndpointException } from "../utils/exceptions/api.exception";
 
 export function observe() {
@@ -17,18 +17,8 @@ export function observe() {
         // TODO(yqni13): handle /meta/demo seperately (SUPPORT-46)
         try {
             // TODO(yqni13): update status of clients and flag of users on violations (SUPPORT-45)
-            const engine = new RateLimitsEngine([
-                new ClientsBurstLimitRule(secrets.RATELIMITS_CLIENTSBURSTLIMIT),
-                new ClientsDailyLimitRule(secrets.RATELIMITS_CLIENTSDAILYLIMIT),
-                new UsersBurstLimitRule(secrets.RATELIMITS_USERSBURSTLIMIT),
-                new UsersDailyLimitRule(secrets.RATELIMITS_USERSDAILYLIMIT),
-                new TotalDailyLimitRule(secrets.RATELIMITS_TOTALDAILYLIMIT)
-            ]);
-            const rateLimitsData: RateLimitsData = {
-                client_id: req.apiClients.client_id,
-                user_id: req.apiUsers.user_id
-            };
-            const rateLimits = await engine.process(rateLimitsData);
+
+            const rateLimits = await checkRateLimits(req);
             if(rateLimits) {
                 throw new ExceedMaxEndpointException(rateLimits.msg);
             }
@@ -47,4 +37,19 @@ export function observe() {
             next(err);
         }
     }
+}
+
+async function checkRateLimits(req: Request): Promise<RateLimitsResponse | null> {
+    const engine = new RateLimitsEngine([
+        new ClientsBurstLimitRule(secrets.RATELIMITS_CLIENTSBURSTLIMIT),
+        new ClientsDailyLimitRule(secrets.RATELIMITS_CLIENTSDAILYLIMIT),
+        new UsersBurstLimitRule(secrets.RATELIMITS_USERSBURSTLIMIT),
+        new UsersDailyLimitRule(secrets.RATELIMITS_USERSDAILYLIMIT),
+        new TotalDailyLimitRule(secrets.RATELIMITS_TOTALDAILYLIMIT)
+    ]);
+    const rateLimitsData: RateLimitsData = {
+        client_id: req.apiClients.client_id,
+        user_id: req.apiUsers.user_id
+    };
+    return await engine.process(rateLimitsData);
 }

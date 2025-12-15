@@ -2,8 +2,7 @@ import {
     ClientsStatusResponseDTO,
     ClientsLastUseResponseDTO,
     ClientsStatusUpdateDTO,
-    ClientsLastUseUpdateDTO,
-    ClientsExistResponseDTO
+    ClientsLastUseUpdateDTO
 } from "../../../src/dtos/clients.dto";
 import { DBConnection } from "../../../src/configs/db";
 import * as Utils from "../../../src/utils/common.utils";

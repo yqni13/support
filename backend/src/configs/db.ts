@@ -5,7 +5,7 @@ import { ErrorStatusCodes } from '../utils/errorStatusCodes.utils';
 import { EnvMode } from '../utils/enums/env-mode.enum';
 import { logError } from '../utils/common.utils';
 
-// Set to parse certain db data to specific types:
+// Global setting to parse certain db data to specific types:
 // 1082: type Date [yyyy-mm-dd] - otherwise Date will be returned as full timestamp + time zone changes
 pg.types.setTypeParser(1082, (val) => val);
 

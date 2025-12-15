@@ -18,12 +18,18 @@ export function mapKeyToHash(key: string): string {
 }
 
 export function getTimestampUTC(timestamp?: Date): string {
-    return timestamp ? new Date(timestamp).toISOString() : new Date().toISOString();
+    return timestamp ? timestamp.toISOString() : new Date().toISOString();
 }
 
 export function getDateUTC(timestamp?: Date): string {
-    const dateObj = timestamp ? new Date(timestamp) : new Date();
+    const dateObj = timestamp ? timestamp : new Date();
     return dateObj.toISOString().slice(0, 10);
+}
+
+export function getNextDayUTC(timestamp?: Date): string {
+    const now = timestamp ? timestamp : new Date();
+    now.setDate(now.getDate()+1);
+    return new Date(now.getFullYear(), now.getMonth()+1, now.getDate(), 0, 0, 1).toISOString();
 }
 
 export function isEmptyObj(obj: any): boolean {

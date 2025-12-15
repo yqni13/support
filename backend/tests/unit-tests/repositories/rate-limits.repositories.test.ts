@@ -1,5 +1,5 @@
 import { DBConnection } from "../../../src/configs/db";
-import { RateLimitsCountDTO, RateLimitsCreateDTO, RateLimitsResponseDTO, RateLimitsUpdateDTO } from "../../../src/dtos/rate-limits.dto";
+import { RateLimitsCountDTO, RateLimitsResponseDTO, RateLimitsCreateUpdateDTO } from "../../../src/dtos/rate-limits.dto";
 import rateLimitsRepository from "../../../src/repositories/rate-limits.repository";
 import { DBQueryErrorException } from "../../../src/utils/exceptions/db.exception";
 import * as MockUtils from "../../common.test-utils";
@@ -15,10 +15,11 @@ jest.mock("../../../src/configs/db", () => {
 });
 
 const mockTimestamp = '2025-01-01T14:00:05.000Z';
+const mockDate = '2025-01-01';
 const expectExceptionResult = DBQueryErrorException;
 const mockBoolean = false;
 
-describe('Database tests table <rate_limits>, priority: countById', () => {
+describe('Database tests table <rate_limits>, priority: count', () => {
 
     let mockParam_dto_countById: RateLimitsCountDTO;
     let mockParam_dto_countByDate: RateLimitsCountDTO;
@@ -106,26 +107,26 @@ describe('Database tests table <rate_limits>, priority: countById', () => {
 
 describe('Database tests table <rate_limits>, priority: create', () => {
 
-    let mockParam_entity: RateLimitsCreateDTO;
+    let mockParam_entity: RateLimitsCreateUpdateDTO;
     beforeEach(() => {
         mockParam_entity = {
             client_id: 'valid_clients_test_id',
             user_id: 'valid_users_test_id',
-            day: '2025-01-01',
+            day: mockDate,
             last_modified: mockTimestamp
         };
     })
 
     describe('Testing valid fn calls', () => {
 
-        test('Return data for created entry, params: <RateLimitsCreateDTO>', async () => {
+        test('Return data for created entry, params: <RateLimitsCreateUpdateDTO>', async () => {
             const mockResult: RateLimitsResponseDTO = {
                 rate_limit_id: 1,
                 client_id: mockParam_entity.client_id,
                 user_id: mockParam_entity.user_id,
-                day: mockParam_entity.day,
+                day: mockDate,
                 count: 1,
-                last_modified: mockParam_entity.last_modified
+                last_modified: mockTimestamp
             };
             const mockValues: string[] = [];
             Object.values(mockParam_entity).forEach((value) => {
@@ -163,7 +164,7 @@ describe('Database tests table <rate_limits>, priority: update', () => {
     describe('Testing valid fn calls', () => {
 
         let sql: string;
-        let mockParam_dto: RateLimitsUpdateDTO;
+        let mockParam_dto: RateLimitsCreateUpdateDTO;
         beforeEach(() => {
             sql = 'UPDATE';
             mockParam_dto = {
@@ -196,7 +197,7 @@ describe('Database tests table <rate_limits>, priority: update', () => {
         })
 
         test('Return null for non-existing entry by invalid ids', async () => {
-            const mockParam_dto_null: RateLimitsUpdateDTO = {
+            const mockParam_dto_null: RateLimitsCreateUpdateDTO = {
                 client_id: 'non-existing_clients_test_id',
                 user_id: 'non-existing_users_test_id',
                 day: '2025-01-01',
@@ -220,7 +221,7 @@ describe('Database tests table <rate_limits>, priority: update', () => {
     describe('Testing invalid fn calls', () => {
 
         test('Throw DBQueryErrorException by catch-block', async () => {
-            const mockParam_dto: RateLimitsUpdateDTO = {
+            const mockParam_dto: RateLimitsCreateUpdateDTO = {
                 client_id: 'invalid_clients_test_id',
                 user_id: 'invalid_users_test_id',
                 day: '2025-01-01',

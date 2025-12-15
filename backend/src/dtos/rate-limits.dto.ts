@@ -4,14 +4,7 @@ export interface RateLimitsCountDTO {
     day: string
 }
 
-export interface RateLimitsCreateDTO {
-    client_id: string,
-    user_id: string,
-    day: string,
-    last_modified: string
-}
-
-export interface RateLimitsUpdateDTO {
+export interface RateLimitsCreateUpdateDTO {
     client_id: string,
     user_id: string,
     day?: string,

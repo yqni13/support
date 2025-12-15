@@ -36,7 +36,7 @@ export class DBTestData {
     }
 
     getMetaInsertSql(): BaseQuery {
-        // Set ID manually because within testfile ID gets incremented due to deleting entries each test case.
+        // No need for id (serial) control because of no testing with INSERT or DELETE.
         const sql = `INSERT INTO ${this.tableRecord['meta']}
         (id, app, author, build_on, environment, app_version, db_version, docker_image, docker_version, jenkins_version, maintenance_mode, created_on, last_modified)
         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13);

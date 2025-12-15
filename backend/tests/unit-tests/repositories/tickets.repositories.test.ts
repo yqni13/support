@@ -232,7 +232,7 @@ describe('Database tests table <tickets>, priority: findByTimeInterval', () => {
             );
         })
 
-        test('Return null for existing entry but beyond time interval', async () => {
+        test('Return null for existing entry beyond time interval', async () => {
             const mockParam_dto: TicketsIntervalDTO = {
                 client_id: mockClientId,
                 intervalTime: '1 minute'

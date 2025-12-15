@@ -29,9 +29,11 @@ describe('Middleware tests category <engines>, priority: RateLimitsEngine', () =
 
         test('Params: <ClientsDailyLimitRule>, result: null', async () => {
             const mockResult_updateRateLimit: RateLimitsResponseDTO | null = null;
+
             jest.spyOn(rateLimitsService, 'updateRateLimit').mockResolvedValue(mockResult_updateRateLimit);
             jest.spyOn(rateLimitsService, 'createRateLimit').mockImplementation();
             jest.spyOn(ClientsDailyLimitRule.prototype, 'check').mockResolvedValue(null);
+
             const rule: RateLimitsRule = new ClientsDailyLimitRule(+secrets.RATELIMITS_CLIENTSDAILYLIMIT);
             const engine = new RateLimitsEngine([rule]);
 
@@ -42,8 +44,13 @@ describe('Middleware tests category <engines>, priority: RateLimitsEngine', () =
         })
 
         test('Params: <ClientsDailyLimitRule>, result: RateLimitsResponse', async () => {
-            const response: RateLimitsResponse = { msg: 'support-ratelimits-clients-daily' };
+            const response: RateLimitsResponse = {
+                msg: 'support-ratelimits-clients-daily',
+                retryAfter: '2025-01-02T00.00.01.000Z'
+            };
+
             jest.spyOn(ClientsDailyLimitRule.prototype, 'check').mockResolvedValue(response);
+
             const rule: RateLimitsRule = new ClientsDailyLimitRule(+secrets.RATELIMITS_CLIENTSDAILYLIMIT);
             const engine = new RateLimitsEngine([rule]);
 
