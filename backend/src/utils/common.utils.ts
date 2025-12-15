@@ -29,7 +29,7 @@ export function getDateUTC(timestamp?: Date): string {
 export function getNextDayUTC(timestamp?: Date): string {
     const now = timestamp ? timestamp : new Date();
     now.setDate(now.getDate()+1);
-    return new Date(now.getFullYear(), now.getMonth()+1, now.getDate(), 0, 0, 1).toISOString();
+    return `${now.toISOString().slice(0, 10)}T00:00:01.000Z`;
 }
 
 export function isEmptyObj(obj: any): boolean {
