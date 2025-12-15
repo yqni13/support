@@ -7,9 +7,9 @@ import {
 import { DBConnection } from "../configs/db";
 import { QueryResult } from "pg";
 import { Tickets } from "./interfaces/tickets.entity.interface";
-import { TicketsFilterDTO, TicketsResponseExtendedDTO } from "../dtos/tickets.dto";
+import { TicketsFilterDTO, TicketsIntervalDTO, TicketsResponseExtendedDTO } from "../dtos/tickets.dto";
 import { DBQueryErrorException } from "../utils/exceptions/db.exception";
-import { logError } from "../utils/common.utils";
+import { logError, now } from "../utils/common.utils";
 import { mapFilteredQueryValues } from "../utils/repository.utils";
 
 class TicketsRepository implements 
@@ -60,10 +60,35 @@ IDeleteRepository
             client = await db.connect();
             const result: QueryResult<Tickets> = await client.query(sql);
             await db.close(client);
-            return result.rows ?? null;
+            return !result.rows[0] || result.rows.length === 0 ? null : result.rows;
         } catch(err: any) {
             const message = "DB ERROR ON SELECT QUERY";
             const method = "SUPPORT_TicketsRepository_findAll";
+            logError(message, method, err);
+            await db.close(client);
+            throw new DBQueryErrorException(err);
+        }
+    }
+
+    async findByTimeInterval(dto: TicketsIntervalDTO): Promise<Tickets[] | null> {
+        const filterColumn0 = dto.client_id ? 'client_id' : 'user_id';
+        const filterColumn1 = "created_on";
+        // Information: timestamp/interval are used as literals, NOT generic datatypes ==> cast ::timestamp/::interval.
+        const sql = `SELECT * FROM ${this.table}
+        WHERE ${filterColumn0} = $1
+        AND ${filterColumn1} >= $2::timestamp - $3::interval;
+        `;
+        const values = [(dto.client_id ? dto.client_id : dto.user_id), now(), dto.intervalTime];
+        const db = DBConnection.getInstance();
+        let client: any;
+        try {
+            client = await db.connect();
+            const result: QueryResult<Tickets> = await client.query(sql, values);
+            await db.close(client);
+            return !result.rows[0] || result.rows.length === 0 ? null : result.rows;
+        } catch(err: any) {
+            const message = "DB ERROR ON SELECT QUERY";
+            const method = "SUPPORT_TicketsRepository_findByTimeInterval";
             logError(message, method, err);
             await db.close(client);
             throw new DBQueryErrorException(err);
@@ -81,7 +106,7 @@ IDeleteRepository
             client = await db.connect();
             const result: QueryResult<Tickets> = await client.query(queryData.sql, queryData.values);
             await db.close(client);
-            return result.rows ?? null;
+            return !result.rows[0] || result.rows.length === 0 ? null : result.rows;
         } catch(err: any) {
             const message = "DB ERROR ON SELECT QUERY";
             const method = "SUPPORT_TicketsRepository_findByFilter";

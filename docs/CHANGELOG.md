@@ -4,9 +4,25 @@
 
 <br>
 
+### $\textsf{\color{skyblue}2025/12/14}$
+
+$\textsf{[v0.9.10\ =>\ {\textbf{\color{brown}v0.10.0}]}}$ app<br>
+$\textsf{[v1.4.0\ =>\ {\textbf{\color{brown}v1.4.1}]}}$ database
+- $\textsf{\color{teal}Addition:}$ Added logic to observe request rates and handle limit violations.
+- $\textsf{\color{orange}Patch:}$ Refactored migration 'rate_limits' due to wrong type of 'last_modified'.
+
+<br>
+
+### $\textsf{\color{skyblue}2025/12/08}$
+
+$\textsf{[v1.0.5\ =>\ {\textbf{\color{brown}v1.0.6}]}}$ docker
+- $\textsf{\color{orange}Patch:}$ Refactored Dockerfile because of wrong path on execution command for 'production' stage.
+
+<br>
+
 ### $\textsf{\color{skyblue}2025/12/06}$
 
-$\textsf{[v0.9.9\ =>\ {\textbf{\color{brown}v0.9.10}]}}$ app
+$\textsf{[v0.9.9\ =>\ v0.9.10]}$ app
 - $\textsf{\color{teal}Addition:}$ Added tests to check middleware functions.
 
 <br>
@@ -21,8 +37,8 @@ $\textsf{[v0.9.8\ =>\ v0.9.9]}$ app
 ### $\textsf{\color{skyblue}2025/12/03}$
 
 $\textsf{[v0.9.7\ =>\ v0.9.8]}$ app<br>
-$\textsf{[v1.3.1\ =>\ {\textbf{\color{brown}v1.4.0}]}}$ database<br>
-$\textsf{[v1.0.3\ =>\ {\textbf{\color{brown}v1.0.5}]}}$ docker
+$\textsf{[v1.3.1\ =>\ v1.4.0]}$ database<br>
+$\textsf{[v1.0.3\ =>\ v1.0.5]}$ docker
 - $\textsf{\color{teal}Addition:}$ Added insert command to testcontainers ('rate_limits' table).
 - $\textsf{\color{teal}Addition:}$ Migrated 'rate_limits' table to database (no logic).
 - $\textsf{\color{orange}Patch:}$ Refactored Dockerfile (wrong 'omit' flag) and Docker Compose (missing target for local execution).

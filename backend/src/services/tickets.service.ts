@@ -3,7 +3,8 @@ import {
     TicketsResponseDTO,
     TicketsFilterDTO,
     TicketsCreateDTO,
-    TicketsUpdateDTO
+    TicketsUpdateDTO,
+    TicketsIntervalDTO
 } from "../dtos/tickets.dto";
 import ticketsModel from "../models/tickets.model";
 import ticketsRepository from "../repositories/tickets.repository";
@@ -23,6 +24,11 @@ class TicketsService {
 
     async getAllTickets(): Promise<TicketsResponseDTO[] | null> {
         const result = await ticketsRepository.findAll();
+        return !result ? null : Utils.mapArrayTimestamps<TicketsResponseDTO>(result, this.timeMapTargets);
+    }
+
+    async getTicketsByTimeInterval(dto: TicketsIntervalDTO): Promise<TicketsResponseDTO[] | null> {
+        const result = await ticketsRepository.findByTimeInterval(dto);
         return !result ? null : Utils.mapArrayTimestamps<TicketsResponseDTO>(result, this.timeMapTargets);
     }
 

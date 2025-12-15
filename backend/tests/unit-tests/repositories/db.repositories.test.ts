@@ -2,11 +2,15 @@ jest.mock('pg', () => {
     const mockRelease = jest.fn();
     const mockClient = { release: mockRelease };
     const mockConnect = jest.fn().mockResolvedValue(mockClient);
-    
+
+    // Mock the following parts of 'pg' otherwise real Module will be overwritten (error).
     return {
         Pool: jest.fn().mockImplementation(() => ({
             connect: mockConnect
         })),
+        types: {
+            setTypeParser: jest.fn()
+        },
         _mockClient: mockClient,
         _mockRelease: mockRelease,
         _mockConnect: mockConnect

@@ -7,6 +7,8 @@ import { Logger } from '../logger/config.logger';
 
 const logger = Logger.getLogger();
 
+export const now = (): Date => new Date();
+
 export function generateUUID(): string {
     return uuid_v4();
 }
@@ -16,7 +18,18 @@ export function mapKeyToHash(key: string): string {
 }
 
 export function getTimestampUTC(timestamp?: Date): string {
-    return timestamp ? new Date(timestamp).toISOString() : new Date().toISOString();
+    return timestamp ? timestamp.toISOString() : new Date().toISOString();
+}
+
+export function getDateUTC(timestamp?: Date): string {
+    const dateObj = timestamp ? timestamp : new Date();
+    return dateObj.toISOString().slice(0, 10);
+}
+
+export function getNextDayUTC(timestamp?: Date): string {
+    const now = timestamp ? timestamp : new Date();
+    now.setDate(now.getDate()+1);
+    return `${now.toISOString().slice(0, 10)}T00:00:01.000Z`;
 }
 
 export function isEmptyObj(obj: any): boolean {
@@ -39,7 +52,8 @@ export function selectPrivateKey(source: MailSource): string {
 export function logError(message: string, method: string, err: any) {
     message += ` - ENV: '${secrets.ENV_MODE.trim()}'`;
     logger.error(message, {
-        error: err.code,
+        error: err.error,
+        code: err.code ? err.code : err.status ? err.status : null,
         stack: err.stack,
         context: { method: method }
     });

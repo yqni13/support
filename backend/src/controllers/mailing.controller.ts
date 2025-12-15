@@ -7,7 +7,7 @@ class MailingController {
         try {
             checkValidation(req);
             const response = await MailingService.sendMail(req.body, null); // TODO(yqni13): files param missing
-            res.send(response)
+            res.json(response);
         } catch(err: any) {
             next(err);
         }

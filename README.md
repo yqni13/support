@@ -1,5 +1,5 @@
 # yqni13 | support
-$\texttt{\color{teal}{v0.9.10}}$
+$\texttt{\color{teal}{v0.10.0}}$
 
 
 <br>
@@ -32,7 +32,7 @@ $\texttt{\color{teal}{v0.9.10}}$
 ## How to
 
 ### Build & Deploy
-This application server will be hosted by <a href="https://render.com/">Render</a> in a Docker container and a PostgreSQL database by Neon.<br>
+This application server will be hosted by <a href="https://render.com/">Render</a> in a Docker container and a PostgreSQL database by Neon. Additionally a <a href="https://console.cron-job.org/">cron-job</a> is set up to keep the service alive on Render due to 15-min inactivity on free tier plan.<br>
 The development process is structured by the TDD (test driven development) principle.
 
 <br>
@@ -46,6 +46,7 @@ The development process is structured by the TDD (test driven development) princ
     <dd>:mag: filtered search for ticket + user data (properties + timespan)</dd>
     <dd>:closed_lock_with_key: maintenance mode can en/disable application via single request</dd>
     <dd>:key: request verification by api-keys</dd>
+    <dd>🕵️ request rate limiting + violation handling</dd>
 </dl>
 
 <br>
@@ -65,11 +66,12 @@ To monitor errors the logging framework `Winston` is used in combination with Lo
 
 ### $\textsf{\color{teal}Demo}$
 
-Testing of the application server can be done automatically via Jest tests (next chapter) or manually by a separate demonstration route.<br>POST: `/meta/demo`<br>using the body payload to control the response - use the demo route to get exceptions, info message or the current application version number. With the implemented observation middleware, the demo route will be limited to 20 daily requests. As the demo route is not authenticated, you only need the following data:
+Testing of the application server can be done automatically via Jest tests (next chapter) or manually by a separate demonstration route.<br>POST: `/meta/demo`<br>using the body payload to control the response - use the demo route to get exceptions, info message or the current application version number. With the implemented observation middleware, the demo route will be limited to 20 daily requests [following with ticket: SUPPORT-46-demo-req-limit]. As the demo route is not authenticated, you only need the following data:
 ```sh
-[ROUTE] url/api/v1/meta/demo
+[ROUTE] {{url}}/api/v1/meta/demo
 [PAYLOAD] { "demo_mode": "success" }
 ```
+Use `https://support-0hsq.onrender.com` for {{url}} to test on live conditions.<br>
 See Figure 2 for the different use cases & responses (Postman, v11.73.5) - from left to right:
 <br>[PAYLOAD]: { "mode_enum": "success" } => retrieve current version number as request without fail
 <br>[PAYLOAD]: undefined (none) or empty obj/array => retrieve exception for undefined body
@@ -87,7 +89,7 @@ Install the packages `@jest/globals`, `@types/jest`, `supertest`, `@testcontaine
 ```sh
 npm install jest @jest/globals @types/jest supertest @testcontainers/postgresql testcontainers --save-dev
 ```
-220+ tests exist currently for models, utils, validators and workflows (integration tests) - see [tests](./backend/tests).<br>
+250+ tests exist currently for models, utils, validators and workflows (integration tests) - see [tests](./backend/tests).<br>
 Run tests on local device by including setup for dotenv/config to provide environment variables:
 ```sh
 set NODE_ENV=test && jest --setupFiles dotenv/config
@@ -122,8 +124,10 @@ Preventing an unwanted merge with unfinished/failed test run, the project is set
 
 ### $\textsf{\color{forestgreen}last update:}$
 
-$\textsf{[v0.9.9\ =>\ {\textbf{\color{brown}v0.9.10}]}}$ app
-- $\textsf{\color{teal}Addition:}$ Added tests to check middleware functions.
+$\textsf{[v0.9.10\ =>\ {\textbf{\color{brown}v0.10.0}]}}$ app<br>
+$\textsf{[v1.4.0\ =>\ {\textbf{\color{brown}v1.4.1}]}}$ database
+- $\textsf{\color{teal}Addition:}$ Added logic to observe request rates and handle limit violations.
+- $\textsf{\color{orange}Patch:}$ Refactored migration 'rate_limits' due to wrong type of 'last_modified'.
 
 <br>
 
