@@ -46,7 +46,7 @@ class RateLimitsRepository {
         // - returning value gets parsed to date type due to setTypeParser (OID 1082) in db.ts
         const sql = `INSERT INTO ${this.table}
         (client_id, user_id, day, count, last_modified)
-        VALUES ($1, $2, $3::date, $4, $5)
+        VALUES ($1, $2, $3::date, $4, $5::timestamp)
         RETURNING *;`;
         const values = [entity.client_id, entity.user_id, entity.day, 1, entity.last_modified];
         const db = DBConnection.getInstance();
@@ -69,10 +69,9 @@ class RateLimitsRepository {
         const filterColumn0 = "client_id";
         const filterColumn1 = "user_id";
         const sql = `UPDATE ${this.table}
-        SET count = count + 1, last_modified = $1
+        SET count = count + 1, last_modified = $1::timestamp
         WHERE ${filterColumn0} = $2 AND ${filterColumn1} = $3 AND day = $4::date
-        RETURNING *;
-        `;
+        RETURNING *;`;
         const values = [dto.last_modified, dto.client_id, dto.user_id, dto.day];
         const db = DBConnection.getInstance();
         let client: any;

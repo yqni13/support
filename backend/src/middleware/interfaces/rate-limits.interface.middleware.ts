@@ -5,7 +5,7 @@ export interface RateLimitsData {
 
 export interface RateLimitsResponse {
     msg: string,
-    retryAfter?: string
+    retryAfter: string
 }
 
 export interface RateLimitsRule {

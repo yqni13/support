@@ -1,4 +1,5 @@
 import { RateLimitsCreateUpdateDTO } from "../../dtos/rate-limits.dto";
+import demoLimitsService from "../../services/demo-limits.service";
 import rateLimitsService from "../../services/rate-limits.service";
 import { RateLimitsData, RateLimitsResponse, RateLimitsRule } from "../interfaces/rate-limits.interface.middleware";
 
@@ -8,7 +9,7 @@ export class RateLimitsEngine {
         //
     }
 
-    async process(data: RateLimitsData): Promise<RateLimitsResponse | null> {
+    async process(data: RateLimitsData, isDemo: boolean = false): Promise<RateLimitsResponse | null> {
         const dto: RateLimitsCreateUpdateDTO = { client_id: data.client_id, user_id: data.user_id };
         for(const rule of this.rules) {
             const response = await rule.check(data);
@@ -16,10 +17,14 @@ export class RateLimitsEngine {
                 return response;
             }
         }
-        // Update table 'rate_limits' or create when no entry is found to update.
-        const update = await rateLimitsService.updateRateLimit(dto);
+        // Update respective table (rate_limits/demo_limits) or create when no entry is found to update.
+        const update = !isDemo 
+            ? await rateLimitsService.updateRateLimit(dto)
+            : await demoLimitsService.updateDemoLimit();
         if(!update) {
-            await rateLimitsService.createRateLimit(dto);
+            const _ = !isDemo
+                ? await rateLimitsService.createRateLimit(dto)
+                : await demoLimitsService.createDemoLimit();
         }
         return null;
     }

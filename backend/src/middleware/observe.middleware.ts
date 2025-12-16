@@ -1,6 +1,7 @@
 import {
     ClientsBurstLimitRule,
     ClientsDailyLimitRule,
+    DemoDailyLimitRule,
     TotalDailyLimitRule,
     UsersBurstLimitRule,
     UsersDailyLimitRule
@@ -12,15 +13,14 @@ import { RateLimitsEngine } from "./engines/rate-limits.engine.middleware";
 import { RateLimitsData, RateLimitsResponse } from "./interfaces/rate-limits.interface.middleware";
 import { ExceedMaxEndpointException } from "../utils/exceptions/api.exception";
 
-export function observe() {
+export function observe(isDemo: boolean = false) {
     return async function (req: Request, res: Response, next: NextFunction) {
-        // TODO(yqni13): handle /meta/demo seperately (SUPPORT-46)
         try {
             // TODO(yqni13): update status of clients and flag of users on violations (SUPPORT-45)
 
-            const rateLimits = await checkRateLimits(req);
+            const rateLimits = !isDemo ? await checkRateLimits(req) : await checkDemoLimits();
             if(rateLimits) {
-                throw new ExceedMaxEndpointException(rateLimits.msg);
+                throw new ExceedMaxEndpointException(rateLimits.msg, rateLimits.retryAfter);
             }
 
             // TODO(yqni13): set maintenance mode when exceeding total daily limit (SUPPORT-45)
@@ -52,4 +52,9 @@ async function checkRateLimits(req: Request): Promise<RateLimitsResponse | null>
         user_id: req.apiUsers.user_id
     };
     return await engine.process(rateLimitsData);
+}
+
+async function checkDemoLimits(): Promise<RateLimitsResponse | null> {
+    const engine = new RateLimitsEngine([new DemoDailyLimitRule(secrets.DEMOLIMITS_TOTALDAILYLIMIT)]);
+    return await engine.process({ client_id: 'demo', user_id: 'demo'}, true);
 }

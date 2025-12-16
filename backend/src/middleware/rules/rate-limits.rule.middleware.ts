@@ -1,5 +1,7 @@
+import { DemoLimitsCountDTO } from "../../dtos/demo-limits.dto";
 import { RateLimitsCountDTO } from "../../dtos/rate-limits.dto";
 import { TicketsIntervalDTO } from "../../dtos/tickets.dto";
+import demoLimitsService from "../../services/demo-limits.service";
 import rateLimitsService from "../../services/rate-limits.service";
 import ticketsService from "../../services/tickets.service";
 import * as Utils from "../../utils/common.utils";
@@ -85,8 +87,24 @@ export class TotalDailyLimitRule implements RateLimitsRule {
         if(count >= this.requestLimit) {
             return { msg: 'support-ratelimits-total-daily', retryAfter: Utils.getNextDayUTC() };
         }
-        
+
         return null;
     }
 }
 
+export class DemoDailyLimitRule implements RateLimitsRule {
+
+    constructor(private requestLimit: number) {
+        //
+    }
+
+    async check(): Promise<RateLimitsResponse | null> {
+        const dto: DemoLimitsCountDTO = { day: Utils.getDateUTC() };
+        const count: number = await demoLimitsService.getDemoLimitCount(dto);
+        if(count >= this.requestLimit) {
+            return { msg: 'support-demolimits-total-daily', retryAfter: Utils.getNextDayUTC() };
+        }
+
+        return null;
+    }
+}
