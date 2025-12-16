@@ -3,7 +3,7 @@ import * as Utils from '../../../src/utils/common.utils';
 import * as MockUtils from "../../common.test-utils";
 import request from 'supertest';
 import { ErrorStatusCodes } from '../../../src/utils/errorStatusCodes.utils';
-import { DBTestSetup } from "../db-container.setup";
+import { DBTestSetup } from "../../db-container.setup";
 import { runMigrations } from '../../db-migrations.setup';
 import { UsersUpdateDTO, UsersFilterDTO, UsersResponseDTO, UsersCreateDTO } from "../../../src/dtos/users.dto";
 import { Users } from "../../../src/repositories/interfaces/users.entity.interface";

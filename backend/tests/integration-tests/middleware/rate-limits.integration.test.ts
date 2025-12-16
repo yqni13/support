@@ -1,5 +1,5 @@
 import { default as mockId } from "../../mock-data/id.mock-data.json";
-import { DBTestSetup } from "../db-container.setup";
+import { DBTestSetup } from "../../db-container.setup";
 import { runMigrations } from '../../db-migrations.setup';
 import * as MockUtils from "../../common.test-utils";
 import * as Utils from '../../../src/utils/common.utils';

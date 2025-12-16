@@ -1,10 +1,10 @@
-import { BaseQuery } from "../../src/repositories/interfaces/common.repository.interface";
-import { ApiKeyStatus } from "../../src/utils/enums/api-key-status.enum";
-import { MaintenanceMode } from "../../src/utils/enums/maintenance-mode.enum";
-import { TicketStatus } from "../../src/utils/enums/ticket-status.enum";
-import { UserStatus } from "../../src/utils/enums/user-status.enum";
-import { secrets } from "../../src/utils/secrets.utils";
-import { default as mockId } from "../mock-data/id.mock-data.json";
+import { BaseQuery } from "../src/repositories/interfaces/common.repository.interface";
+import { ApiKeyStatus } from "../src/utils/enums/api-key-status.enum";
+import { MaintenanceMode } from "../src/utils/enums/maintenance-mode.enum";
+import { TicketStatus } from "../src/utils/enums/ticket-status.enum";
+import { UserStatus } from "../src/utils/enums/user-status.enum";
+import { secrets } from "../src/utils/secrets.utils";
+import { default as mockId } from "./mock-data/id.mock-data.json";
 
 export class DBTestData {
     private static instance: DBTestData;
