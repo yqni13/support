@@ -16,7 +16,8 @@ export class DBTestData {
             clients: 'clients',
             users: 'users',
             tickets: 'tickets',
-            rateLimits: 'rate_limits'
+            rateLimits: 'rate_limits',
+            demoLimits: 'demo_limits'
         };
     }
 
@@ -79,5 +80,14 @@ export class DBTestData {
         `;
         const values = [mockId.clients.valid[0], mockId.users.valid[0], '2025-01-01', 1, '2025-01-01T14:00:05.000Z'];
         return { sql: sql, values: values };
+    }
+
+    getDemoLimitsInsertSql(): BaseQuery {
+        const sql = `INSERT INTO ${this.tableRecord['demoLimits']}
+        (day, count, last_modified)
+        VALUES ($1, $2, $3);
+        `;
+        const values = ['2025-01-01', 1, '2025-01-01T14:00:06.000Z'];
+        return { sql: sql, values: values }; 
     }
 }

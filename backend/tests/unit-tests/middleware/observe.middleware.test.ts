@@ -44,7 +44,7 @@ describe('Middleware tests category <security>, priority: observe', () => {
 
     describe('Testing valid fn calls', () => {
 
-        test('Validate caller origin, result: "SUCCESS"', async () => {
+        test('Validate caller origin, route: /tickets/create, result: "SUCCESS"', async () => {
             const mockRateLimits: RateLimitsResponse | null = null;
 
             jest.spyOn(RateLimitsEngine.prototype, 'process').mockResolvedValue(mockRateLimits);
@@ -55,11 +55,23 @@ describe('Middleware tests category <security>, priority: observe', () => {
 
             expect(next).toHaveBeenCalledWith();
         })
+
+        test('Validate caller origin, route: /meta/demo, result: "SUCCESS"', async () => {
+            const mockRateLimits: RateLimitsResponse | null = null;
+
+            jest.spyOn(RateLimitsEngine.prototype, 'process').mockResolvedValue(mockRateLimits);
+
+            // middleware == factory fn returning express fn => fn(req, res, next)
+            const middleware = observe(true);
+            await middleware(req, res, next);
+
+            expect(next).toHaveBeenCalledWith();
+        })
     })
 
     describe('Testing invalid fn calls', () => {
 
-        test('Validate caller origin, error: ExceedMaxEndpointException by ClientsBurstLimitRule', async () => {
+        test('Validate caller origin, route: /tickets/create, error: ExceedMaxEndpointException', async () => {
             const mockRateLimits: RateLimitsResponse | null = {
                 msg: 'support-ratelimits-clients-burst',
                 retryAfter: '2025-01-02T00.00.01.000Z'
@@ -69,6 +81,23 @@ describe('Middleware tests category <security>, priority: observe', () => {
             jest.spyOn(Utils, 'logError').mockImplementation();
 
             const middleware = observe();
+            await middleware(req, res, next);
+
+            const errArg = next.mock.calls[0][0];
+            expect(errArg).toBeInstanceOf(ExceedMaxEndpointException);
+            expect(errArg.status).toBe(429);
+        })
+
+        test('Validate caller origin, route: /meta/demo, error: ExceedMaxEndpointException', async () => {
+            const mockRateLimits: RateLimitsResponse | null = {
+                msg: 'support-demolimits-total-daily',
+                retryAfter: '2025-01-02T00.00.01.000Z'
+            };
+
+            jest.spyOn(RateLimitsEngine.prototype, 'process').mockResolvedValue(mockRateLimits);
+            jest.spyOn(Utils, 'logError').mockImplementation();
+
+            const middleware = observe(true);
             await middleware(req, res, next);
 
             const errArg = next.mock.calls[0][0];
