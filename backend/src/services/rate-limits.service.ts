@@ -1,7 +1,8 @@
 import {
     RateLimitsCountDTO,
     RateLimitsResponseDTO,
-    RateLimitsCreateUpdateDTO
+    RateLimitsUpdateDTO,
+    RateLimitsCreateDTO
 } from "../dtos/rate-limits.dto";
 import rateLimitsModel from "../models/rate-limits.model";
 import { RateLimits } from "../repositories/interfaces/rate-limits.entity.interface";
@@ -20,13 +21,13 @@ class RateLimitsService {
         return rateLimitsModel.mapCounts(result);
     }
 
-    async createRateLimit(dto: RateLimitsCreateUpdateDTO): Promise<RateLimitsResponseDTO> {
-        const entity: Partial<RateLimits> = rateLimitsModel.mapRateLimitsCreateUpdateDTO(dto);
+    async createRateLimit(dto: RateLimitsCreateDTO): Promise<RateLimitsResponseDTO> {
+        const entity: Partial<RateLimits> = rateLimitsModel.mapNewEntity(dto);
         const result = await rateLimitsRepository.create(entity);
         return Utils.mapObjTimestamps<RateLimitsResponseDTO>(result, this.timeMapTargets);
     }
 
-    async updateRateLimit(dto: RateLimitsCreateUpdateDTO): Promise<RateLimitsResponseDTO | null> {
+    async updateRateLimit(dto: RateLimitsUpdateDTO): Promise<RateLimitsResponseDTO | null> {
         const timestamp = new Date();
         dto['day'] = Utils.getDateUTC(timestamp);
         dto['last_modified'] = Utils.getTimestampUTC(timestamp);

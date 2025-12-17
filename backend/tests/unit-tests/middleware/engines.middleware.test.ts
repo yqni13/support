@@ -1,3 +1,4 @@
+import { DemoLimitsResponseDTO } from "../../../src/dtos/demo-limits.dto";
 import { RateLimitsResponseDTO } from "../../../src/dtos/rate-limits.dto";
 import { RateLimitsEngine } from "../../../src/middleware/engines/rate-limits.engine.middleware";
 import { RateLimitsData, RateLimitsResponse, RateLimitsRule } from "../../../src/middleware/interfaces/rate-limits.interface.middleware";
@@ -68,7 +69,7 @@ describe('Middleware tests category <engines>, priority: RateLimitsEngine', () =
 
             test('Params: <DemoDailyLimitRule>, result: null', async () => {
                 const mockParam_isDemo = true;
-                const mockResult_updateDemoLimit: RateLimitsResponseDTO | null = null;
+                const mockResult_updateDemoLimit: DemoLimitsResponseDTO | null = null;
 
                 jest.spyOn(demoLimitsService, 'updateDemoLimit').mockResolvedValue(mockResult_updateDemoLimit);
                 jest.spyOn(demoLimitsService, 'createDemoLimit').mockImplementation();

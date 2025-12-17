@@ -1,5 +1,5 @@
 import { QueryResult } from "pg";
-import { RateLimitsCountDTO, RateLimitsCreateUpdateDTO } from "../dtos/rate-limits.dto";
+import { RateLimitsCountDTO, RateLimitsUpdateDTO } from "../dtos/rate-limits.dto";
 import { RateLimits } from "./interfaces/rate-limits.entity.interface";
 import { logError } from "../utils/common.utils";
 import { DBQueryErrorException } from "../utils/exceptions/db.exception";
@@ -48,7 +48,7 @@ class RateLimitsRepository {
         (client_id, user_id, day, count, last_modified)
         VALUES ($1, $2, $3::date, $4, $5::timestamp)
         RETURNING *;`;
-        const values = [entity.client_id, entity.user_id, entity.day, 1, entity.last_modified];
+        const values = [entity.client_id, entity.user_id, entity.day, entity.count, entity.last_modified];
         const db = DBConnection.getInstance();
         let client: any;
         try {
@@ -65,7 +65,7 @@ class RateLimitsRepository {
         }
     }
 
-    async update(dto: RateLimitsCreateUpdateDTO): Promise<RateLimits | null> {
+    async update(dto: RateLimitsUpdateDTO): Promise<RateLimits | null> {
         const filterColumn0 = "client_id";
         const filterColumn1 = "user_id";
         const sql = `UPDATE ${this.table}

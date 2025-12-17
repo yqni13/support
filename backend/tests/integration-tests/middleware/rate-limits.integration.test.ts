@@ -1,7 +1,8 @@
 import {
     RateLimitsCountDTO,
+    RateLimitsCreateDTO,
     RateLimitsResponseDTO,
-    RateLimitsCreateUpdateDTO
+    RateLimitsUpdateDTO
 } from "../../../src/dtos/rate-limits.dto";
 import { default as mockId } from "../../mock-data/id.mock-data.json";
 import { DBTestSetup } from "../../db-container.setup";
@@ -10,7 +11,7 @@ import * as MockUtils from "../../common.test-utils";
 import * as Utils from '../../../src/utils/common.utils';
 import rateLimitsService from "../../../src/services/rate-limits.service";
 import demoLimitsService from "../../../src/services/demo-limits.service";
-import { DemoLimitsResponseDTO } from "../../../src/dtos/demo-limits.dto";
+import { DemoLimitsCountDTO, DemoLimitsResponseDTO } from "../../../src/dtos/demo-limits.dto";
 
 jest.setTimeout(60000);
 
@@ -64,7 +65,7 @@ describe('Integration test (repository specific without Route/Controller), prior
 
         test('Repository process fn create, result: "SUCCESS"', async () => {
             const testTimestamp = '2025-01-02T14:00:05.000Z';
-            const mockParam_dto: RateLimitsCreateUpdateDTO = {
+            const mockParam_dto: RateLimitsCreateDTO = {
                 client_id: testValidClientsId,
                 user_id: testValidUsersId
             };
@@ -90,7 +91,7 @@ describe('Integration test (repository specific without Route/Controller), prior
 
         test('Repository process fn update, result: "SUCCESS"', async () => {
             const testTimestamp = '2025-01-01T22:22:22.000Z';
-            const dto: RateLimitsCreateUpdateDTO = {
+            const dto: RateLimitsUpdateDTO = {
                 client_id: testValidClientsId,
                 user_id: testValidUsersId
             };
@@ -115,7 +116,7 @@ describe('Integration test (repository specific without Route/Controller), prior
 
         test('Repository process fn update, result: null', async () => {
             const testTimestamp = '2025-01-02T22:22:22.000Z';
-            const dto: RateLimitsCreateUpdateDTO = {
+            const dto: RateLimitsUpdateDTO = {
                 client_id: testValidClientsId,
                 user_id: testValidUsersId
             };
@@ -134,7 +135,7 @@ describe('Integration test (repository specific without Route/Controller), prior
     describe('Testing valid fn calls, route: /meta/demo', () => {
 
         test('Repository process fn count, params: <day>, result: "SUCCESS"', async () => {
-            const dto: RateLimitsCountDTO = {
+            const dto: DemoLimitsCountDTO = {
                 day: '2025-01-01'
             };
 

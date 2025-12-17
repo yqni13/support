@@ -12,10 +12,10 @@ import * as Utils from "../../../../src/utils/common.utils";
 import ticketsService from "../../../../src/services/tickets.service";
 import { TicketStatus } from "../../../../src/utils/enums/ticket-status.enum";
 import rateLimitsService from "../../../../src/services/rate-limits.service";
+import demoLimitsService from "../../../../src/services/demo-limits.service";
 
 // Ensure correct type by converting secret to number via unary + operator.
 import { secrets } from "../../../../src/utils/secrets.utils"
-import demoLimitsService from "../../../../src/services/demo-limits.service";
 
 describe('Middleware tests category <observation|rate_limits>, priority: rules', () => {
 
@@ -292,23 +292,23 @@ describe('Middleware tests category <observation|rate_limits>, priority: rules',
         describe('Testing valid context calls', () => {
 
             test('Param: <RateLimitContext> number of calls within daily limit', async () => {
-                const ruleTDL = new DemoDailyLimitRule(+secrets.DEMOLIMITS_TOTALDAILYLIMIT);
+                const ruleDDL = new DemoDailyLimitRule(+secrets.DEMOLIMITS_TOTALDAILYLIMIT);
                 const mockCount = +(secrets.DEMOLIMITS_TOTALDAILYLIMIT) - 1;
 
                 jest.spyOn(demoLimitsService, 'getDemoLimitCount').mockResolvedValue(mockCount);
                 const expectResult = null;
-                const testFn = await ruleTDL.check();
+                const testFn = await ruleDDL.check();
 
                 expect(testFn).toBe(expectResult);
             })
 
             test('Param: <RateLimitContext> no existing entry', async () => {
-                const ruleTDL = new DemoDailyLimitRule(+secrets.DEMOLIMITS_TOTALDAILYLIMIT);
+                const ruleDDL = new DemoDailyLimitRule(+secrets.DEMOLIMITS_TOTALDAILYLIMIT);
                 const mockCount = 0;
 
                 jest.spyOn(demoLimitsService, 'getDemoLimitCount').mockResolvedValue(mockCount);
                 const expectResult = null;
-                const testFn = await ruleTDL.check();
+                const testFn = await ruleDDL.check();
 
                 expect(testFn).toBe(expectResult);
             })
@@ -317,7 +317,7 @@ describe('Middleware tests category <observation|rate_limits>, priority: rules',
         describe('Testing invalid context calls', () => {
 
             test('Param: <RateLimitContext> number of calls beyond daily limit', async () => {
-                const ruleTDL = new DemoDailyLimitRule(+secrets.DEMOLIMITS_TOTALDAILYLIMIT);
+                const ruleDDL = new DemoDailyLimitRule(+secrets.DEMOLIMITS_TOTALDAILYLIMIT);
                 const mockCount = +secrets.DEMOLIMITS_TOTALDAILYLIMIT;
 
                 jest.spyOn(demoLimitsService, 'getDemoLimitCount').mockResolvedValue(mockCount);
@@ -327,7 +327,7 @@ describe('Middleware tests category <observation|rate_limits>, priority: rules',
                     msg: 'support-demolimits-total-daily',
                     retryAfter: mockRetryAfter
                 };
-                const testFn = await ruleTDL.check();
+                const testFn = await ruleDDL.check();
 
                 expect(testFn).toMatchObject(expectResult);
             })

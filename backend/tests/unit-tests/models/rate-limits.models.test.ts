@@ -1,4 +1,4 @@
-import { RateLimitsCreateUpdateDTO } from "../../../src/dtos/rate-limits.dto";
+import { RateLimitsCreateDTO } from "../../../src/dtos/rate-limits.dto";
 import demoLimitsModel from "../../../src/models/demo-limits.model";
 import rateLimitsModel from "../../../src/models/rate-limits.model";
 import { DemoLimits } from "../../../src/repositories/interfaces/demo-limits.entity.interface";
@@ -89,12 +89,12 @@ describe('Model tests, priority: mapCounts', () => {
     })
 })
 
-describe('Model tests, class: <rate_limits>, priority: mapRateLimitsCreateUpdateDTO', () => {
+describe('Model tests, class: <rate_limits>, priority: mapNewEntity', () => {
 
     describe('Testing valid fn calls', () => {
 
-        test('Map timestamp/date values to DTO, entity: <RateLimitsCreateUpdateDTO>', () => {
-            const mockParam_dto: RateLimitsCreateUpdateDTO = {
+        test('Map timestamp/date values to DTO, entity: <RateLimitsCreateDTO>', () => {
+            const mockParam_dto: RateLimitsCreateDTO = {
                 client_id: 'valid_clients_test_id',
                 user_id: 'valid_users_test_id'
             }
@@ -104,13 +104,14 @@ describe('Model tests, class: <rate_limits>, priority: mapRateLimitsCreateUpdate
             jest.spyOn(Utils, 'getDateUTC').mockReturnValue(mockDate);
             jest.spyOn(Utils, 'getTimestampUTC').mockReturnValue(mockTimestamp);
 
-            const mockReturn: RateLimitsCreateUpdateDTO = {
+            const mockReturn: Partial<RateLimits> = {
                 client_id: mockParam_dto.client_id,
                 user_id: mockParam_dto.user_id,
                 day: mockDate,
+                count: 1,
                 last_modified: mockTimestamp
             };
-            const testFn = rateLimitsModel.mapRateLimitsCreateUpdateDTO(mockParam_dto);
+            const testFn = rateLimitsModel.mapNewEntity(mockParam_dto);
 
             expect(testFn).toMatchObject(mockReturn);
         })
