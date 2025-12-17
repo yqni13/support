@@ -12,6 +12,7 @@ import {
     patchMaintenanceSchema as updateMaintainSchema,
     postDemoSchema as demoSchema
 } from '../middleware/validators/metaValidator.middleware';
+import { observe } from '../middleware/observe.middleware';
 
 const router = Router();
 
@@ -66,7 +67,7 @@ router.put(
 // demo
 router.post(
     '/demo',
-    maintain(), requirePayload(),
+    maintain(), requirePayload(), observe(true),
     demoSchema,
     factory(metaController.postDemo)
 );

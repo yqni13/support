@@ -1,5 +1,5 @@
 # yqni13 | support
-$\texttt{\color{teal}{v0.10.0}}$
+$\texttt{\color{teal}{v0.11.1}}$
 
 
 <br>
@@ -66,7 +66,7 @@ To monitor errors the logging framework `Winston` is used in combination with Lo
 
 ### $\textsf{\color{teal}Demo}$
 
-Testing of the application server can be done automatically via Jest tests (next chapter) or manually by a separate demonstration route.<br>POST: `/meta/demo`<br>using the body payload to control the response - use the demo route to get exceptions, info message or the current application version number. With the implemented observation middleware, the demo route will be limited to 20 daily requests [following with ticket: SUPPORT-46-demo-req-limit]. As the demo route is not authenticated, you only need the following data:
+Testing of the application server can be done automatically via Jest tests (next chapter) or manually by a separate demonstration route.<br>POST: `/meta/demo`<br>using the body payload to control the response - use the demo route to get exceptions, info message or the current application version number. With the implemented observation middleware, the demo route will be limited to 20 daily requests. As the demo route is not authenticated, you only need the following data:
 ```sh
 [ROUTE] {{url}}/api/v1/meta/demo
 [PAYLOAD] { "demo_mode": "success" }
@@ -124,10 +124,11 @@ Preventing an unwanted merge with unfinished/failed test run, the project is set
 
 ### $\textsf{\color{forestgreen}last update:}$
 
-$\textsf{[v0.9.10\ =>\ {\textbf{\color{brown}v0.10.0}]}}$ app<br>
-$\textsf{[v1.4.0\ =>\ {\textbf{\color{brown}v1.4.1}]}}$ database
-- $\textsf{\color{teal}Addition:}$ Added logic to observe request rates and handle limit violations.
-- $\textsf{\color{orange}Patch:}$ Refactored migration 'rate_limits' due to wrong type of 'last_modified'.
+$\textsf{[v0.10.0\ =>\ {\textbf{\color{brown}v0.11.1}]}}$ app<br>
+$\textsf{[v1.4.1\ =>\ {\textbf{\color{brown}v1.5.0}]}}$ database
+- $\textsf{\color{teal}Addition:}$ Added logic to handle demo request rates + limit violations.
+- $\textsf{\color{teal}Addition:}$ Migrated 'demo_limits' table to database + service/repository logic.
+- $\textsf{\color{orange}Patch:}$ Added 'retryAfter' timestamp to exception for limit violations.
 
 <br>
 
