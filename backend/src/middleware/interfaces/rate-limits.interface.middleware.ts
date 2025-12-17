@@ -11,3 +11,7 @@ export interface RateLimitsResponse {
 export interface RateLimitsRule {
     check(data?: RateLimitsData): Promise<RateLimitsResponse | null>;
 }
+
+export interface RateLimitsCount {
+    increment(data?: RateLimitsData): Promise<void>;
+}

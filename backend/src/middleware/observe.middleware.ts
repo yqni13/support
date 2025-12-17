@@ -12,6 +12,7 @@ import { logError } from "../utils/common.utils";
 import { RateLimitsEngine } from "./engines/rate-limits.engine.middleware";
 import { RateLimitsData, RateLimitsResponse } from "./interfaces/rate-limits.interface.middleware";
 import { ExceedMaxEndpointException } from "../utils/exceptions/api.exception";
+import { DemoLimitsIncrement, RateLimitsIncrement } from "./adapter/rate-limits.adapter.middleware";
 
 export function observe(isDemo: boolean = false) {
     return async function (req: Request, res: Response, next: NextFunction) {
@@ -40,13 +41,16 @@ export function observe(isDemo: boolean = false) {
 }
 
 async function checkRateLimits(req: Request): Promise<RateLimitsResponse | null> {
-    const engine = new RateLimitsEngine([
-        new ClientsBurstLimitRule(secrets.RATELIMITS_CLIENTSBURSTLIMIT),
-        new ClientsDailyLimitRule(secrets.RATELIMITS_CLIENTSDAILYLIMIT),
-        new UsersBurstLimitRule(secrets.RATELIMITS_USERSBURSTLIMIT),
-        new UsersDailyLimitRule(secrets.RATELIMITS_USERSDAILYLIMIT),
-        new TotalDailyLimitRule(secrets.RATELIMITS_TOTALDAILYLIMIT)
-    ]);
+    const engine = new RateLimitsEngine(
+        [
+            new ClientsBurstLimitRule(secrets.RATELIMITS_CLIENTSBURSTLIMIT),
+            new ClientsDailyLimitRule(secrets.RATELIMITS_CLIENTSDAILYLIMIT),
+            new UsersBurstLimitRule(secrets.RATELIMITS_USERSBURSTLIMIT),
+            new UsersDailyLimitRule(secrets.RATELIMITS_USERSDAILYLIMIT),
+            new TotalDailyLimitRule(secrets.RATELIMITS_TOTALDAILYLIMIT)
+        ],
+        new RateLimitsIncrement()
+    );
     const rateLimitsData: RateLimitsData = {
         client_id: req.apiClients.client_id,
         user_id: req.apiUsers.user_id
@@ -55,6 +59,11 @@ async function checkRateLimits(req: Request): Promise<RateLimitsResponse | null>
 }
 
 async function checkDemoLimits(): Promise<RateLimitsResponse | null> {
-    const engine = new RateLimitsEngine([new DemoDailyLimitRule(secrets.DEMOLIMITS_TOTALDAILYLIMIT)]);
-    return await engine.process({ client_id: 'demo', user_id: 'demo'}, true);
+    const engine = new RateLimitsEngine(
+        [
+            new DemoDailyLimitRule(secrets.DEMOLIMITS_TOTALDAILYLIMIT)
+        ],
+        new DemoLimitsIncrement()
+    );
+    return await engine.process({ client_id: 'demo', user_id: 'demo'});
 }

@@ -1,31 +1,27 @@
-import { RateLimitsCreateDTO, RateLimitsUpdateDTO } from "../../dtos/rate-limits.dto";
-import demoLimitsService from "../../services/demo-limits.service";
-import rateLimitsService from "../../services/rate-limits.service";
-import { RateLimitsData, RateLimitsResponse, RateLimitsRule } from "../interfaces/rate-limits.interface.middleware";
+import {
+    RateLimitsCount,
+    RateLimitsData,
+    RateLimitsResponse,
+    RateLimitsRule
+} from "../interfaces/rate-limits.interface.middleware";
 
 export class RateLimitsEngine {
 
-    constructor(private rules: RateLimitsRule[]) {
+    constructor(
+        private rules: RateLimitsRule[],
+        private count: RateLimitsCount
+    ) {
         //
     }
 
-    async process(data: RateLimitsData, isDemo: boolean = false): Promise<RateLimitsResponse | null> {
-        const dto: RateLimitsUpdateDTO = { client_id: data.client_id, user_id: data.user_id };
+    async process(data: RateLimitsData): Promise<RateLimitsResponse | null> {
         for(const rule of this.rules) {
             const response = await rule.check(data);
             if(response) {
                 return response;
             }
         }
-        // Update respective table (rate_limits/demo_limits) or create when no entry is found to update.
-        const update = !isDemo 
-            ? await rateLimitsService.updateRateLimit(dto)
-            : await demoLimitsService.updateDemoLimit();
-        if(!update) {
-            const _ = !isDemo
-                ? await rateLimitsService.createRateLimit(dto as RateLimitsCreateDTO)
-                : await demoLimitsService.createDemoLimit();
-        }
+        await this.count.increment(data);
         return null;
     }
 }
