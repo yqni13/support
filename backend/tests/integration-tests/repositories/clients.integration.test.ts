@@ -3,7 +3,9 @@ import {
     ClientsCreateResponseDTO,
     ClientsStatusResponseDTO,
     ClientsCreateDTO,
-    ClientsStatusUpdateDTO
+    ClientsStatusUpdateDTO,
+    ClientsFlagResponseDTO,
+    ClientsFlagUpdateDTO
 } from "../../../src/dtos/clients.dto";
 import * as Utils from '../../../src/utils/common.utils';
 import * as MockUtils from "../../common.test-utils";
@@ -26,6 +28,8 @@ jest.mock('../../../src/middleware/maintenance.middleware', () => ({
 }));
 
 import app from '../../../src/app';
+import { Flag } from "../../../src/utils/enums/flag.enum";
+import clientsService from "../../../src/services/clients.service";
 
 jest.setTimeout(60000);
 const testTimestamp = '2025-01-01T14:00:02.000Z';
@@ -98,6 +102,7 @@ describe('Integration test (repository specific), priority: Clients', () => {
                 name: testParam_dto.name,
                 api_key: testVar_apiKey.keyRaw,
                 status: ApiKeyStatus.ACTIVE,
+                flag: null,
                 last_use: testTimestamp,
                 last_modified: testTimestamp,
                 created_on: testTimestamp
@@ -110,6 +115,44 @@ describe('Integration test (repository specific), priority: Clients', () => {
 
             expect(testResponse.statusCode).toBe(200);
             expect(testResponse.body).toMatchObject(testResult);
+        })
+
+        test('Repository process fn updateFlag, result: "SUCCESS"', async () => {
+            const testParam_id = mockId.clients.valid[0];
+            const testParam_dto: ClientsFlagUpdateDTO = {
+                flag: Flag.WARNING
+            };
+
+            jest.spyOn(Utils, "getTimestampUTC").mockReturnValue(testTimestamp);
+
+            const testResult: ClientsFlagResponseDTO | null = {
+                client_id: testParam_id,
+                flag: Flag.WARNING,
+                last_use: testTimestamp,
+                last_modified: testTimestamp,
+                created_on: testTimestamp
+            };
+
+            await dbTestSetup.addTestData();
+            const testResponse = await clientsService.updateClientFlag(testParam_id, testParam_dto);
+
+            expect(testResponse).toMatchObject(testResult);
+        })
+
+        test('Repository process fn updateFlag, result: null', async () => {
+            const testParam_id = mockId.clients.invalid[0];
+            const testParam_dto: ClientsFlagUpdateDTO = {
+                flag: Flag.WARNING
+            };
+
+            jest.spyOn(Utils, "getTimestampUTC").mockReturnValue(testTimestamp);
+
+            const testResult: ClientsFlagResponseDTO | null = null;
+
+            await dbTestSetup.addTestData();
+            const testResponse = await clientsService.updateClientFlag(testParam_id, testParam_dto);
+
+            expect(testResponse).toBe(testResult);
         })
 
         test('Repository process fn updateStatus, result: "SUCCESS"', async () => {

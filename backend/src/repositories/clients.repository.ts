@@ -4,8 +4,12 @@ import { QueryResult } from "pg";
 import { ApiKeyStatus } from "../utils/enums/api-key-status.enum";
 import { logError } from "../utils/common.utils";
 import { DBQueryErrorException } from "../utils/exceptions/db.exception";
+import { ICreateRepository, IUpdateFlagRepository } from "./interfaces/base.repository.interface";
 
-class ClientsRepository {
+class ClientsRepository implements 
+ICreateRepository<Clients>,
+IUpdateFlagRepository<Clients>
+{
     private table: string;
 
     constructor() {
@@ -52,11 +56,11 @@ class ClientsRepository {
 
     async create(entity: Clients): Promise<Clients> {
         const sql = `INSERT INTO ${this.table}
-        (client_id, name, api_key_hash, status, last_use, last_modified, created_on)
-        VALUES ($1, $2, $3, $4, $5, $6, $7)
+        (client_id, name, api_key_hash, status, flag, last_use, last_modified, created_on)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
         RETURNING *;
         `;
-        const values = [entity.client_id, entity.name, entity.api_key_hash, entity.status, entity.last_use, entity.last_modified, entity.created_on];
+        const values = [entity.client_id, entity.name, entity.api_key_hash, entity.status, entity.flag, entity.last_use, entity.last_modified, entity.created_on];
         const db = DBConnection.getInstance();
         let client: any;
         try {
@@ -67,6 +71,30 @@ class ClientsRepository {
         } catch(err: any) {
             const message = "DB ERROR ON INSERT QUERY";
             const method = "SUPPORT_ClientsRepository_create";
+            logError(message, method, err);
+            await db.close(client);
+            throw new DBQueryErrorException(err);
+        }
+    }
+
+    async updateFlag(id: string, dto: Partial<Clients>): Promise<Clients | null> {
+        const filterColumn = "client_id";
+        const sql = `UPDATE ${this.table}
+        SET flag = $1, last_modified = $2
+        WHERE ${filterColumn} = $3
+        RETURNING *;
+        `;
+        const values = [dto.flag, dto.last_modified, id];
+        const db = DBConnection.getInstance();
+        let client: any;
+        try {
+            client = await db.connect();
+            const result: QueryResult<Clients> = await client.query(sql, values);
+            await db.close(client);
+            return result.rows[0] ?? null;
+        } catch(err: any) {
+            const message = "DB ERROR ON UPDATE QUERY";
+            const method = "SUPPORT_ClientsRepository_updateFlag";
             logError(message, method, err);
             await db.close(client);
             throw new DBQueryErrorException(err);

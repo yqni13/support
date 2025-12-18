@@ -2,6 +2,8 @@ import {
     ClientsCreateDTO,
     ClientsCreateResponseDTO,
     ClientsExistResponseDTO,
+    ClientsFlagResponseDTO,
+    ClientsFlagUpdateDTO,
     ClientsLastUseResponseDTO,
     ClientsLastUseUpdateDTO,
     ClientsStatusResponseDTO,
@@ -37,6 +39,13 @@ class ClientsService {
         const clientsCreateObj = clientsModel.generateClientsCreateObj(dto);
         const result = await clientsRepository.create(clientsCreateObj.client);
         return clientsModel.mapToCreateResponseDTO(result as Clients, clientsCreateObj.keyRaw);
+    }
+
+    async updateClientFlag(id: string, dto: ClientsFlagUpdateDTO): Promise<ClientsFlagResponseDTO | null> {
+        dto.last_modified = Utils.getTimestampUTC();
+        const result = await clientsRepository.updateFlag(id, dto);
+        // TODO(yqni13): customized mappers necessary or mapObjTimestamps all we need?
+        return !result ? null : Utils.mapObjTimestamps<Clients>(result, this.timeMapTargets);
     }
 
     async updateClientStatus(id: string, dto: ClientsStatusUpdateDTO): Promise<ClientsStatusResponseDTO | null> {
