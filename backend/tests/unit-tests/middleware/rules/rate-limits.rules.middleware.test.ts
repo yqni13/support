@@ -13,6 +13,7 @@ import ticketsService from "../../../../src/services/tickets.service";
 import { TicketStatus } from "../../../../src/utils/enums/ticket-status.enum";
 import rateLimitsService from "../../../../src/services/rate-limits.service";
 import demoLimitsService from "../../../../src/services/demo-limits.service";
+import { Violation } from "../../../../src/utils/enums/violations.enum";
 
 // Ensure correct type by converting secret to number via unary + operator.
 import { secrets } from "../../../../src/utils/secrets.utils"
@@ -178,15 +179,23 @@ describe('Middleware tests category <observation|rate_limits>, priority: rules',
             test('Param: <RateLimitContext> number of calls beyond daily limit', async () => {
                 const ruleCDL = new ClientsDailyLimitRule(+secrets.RATELIMITS_CLIENTSDAILYLIMIT);
                 const mockCount = +secrets.RATELIMITS_CLIENTSDAILYLIMIT;
+                const testParam_data = structuredClone(mockParam_data);
+                Object.assign(testParam_data, { clients: { flag: null }});
 
                 jest.spyOn(rateLimitsService, 'getRateLimitCount').mockResolvedValue(mockCount);
                 jest.spyOn(Utils, 'getNextDayUTC').mockReturnValue(mockRetryAfter);
 
                 const expectResult: RateLimitsResponse = {
                     msg: 'support-ratelimits-clients-daily',
-                    retryAfter: mockRetryAfter
+                    retryAfter: mockRetryAfter,
+                    type: Violation.CLIENTSFLAG,
+                    penalty: {
+                        type: Violation.CLIENTSFLAG,
+                        id: 'valid_clients_test_id',
+                        penaltyValue: null
+                    }
                 };
-                const testFn = await ruleCDL.check(mockParam_data);
+                const testFn = await ruleCDL.check(testParam_data);
 
                 expect(testFn).toMatchObject(expectResult);
             })
@@ -225,15 +234,23 @@ describe('Middleware tests category <observation|rate_limits>, priority: rules',
             test('Param: <RateLimitContext> number of calls beyond daily limit', async () => {
                 const ruleUDL = new UsersDailyLimitRule(+secrets.RATELIMITS_USERSDAILYLIMIT);
                 const mockCount = +secrets.RATELIMITS_USERSDAILYLIMIT;
+                const testParam_data = structuredClone(mockParam_data);
+                Object.assign(testParam_data, { users: { flag: null }});
 
                 jest.spyOn(rateLimitsService, 'getRateLimitCount').mockResolvedValue(mockCount);
                 jest.spyOn(Utils, 'getNextDayUTC').mockReturnValue(mockRetryAfter);
 
                 const expectResult: RateLimitsResponse = {
                     msg: 'support-ratelimits-users-daily',
-                    retryAfter: mockRetryAfter
+                    retryAfter: mockRetryAfter,
+                    type: Violation.USERSFLAG,
+                    penalty: {
+                        type: Violation.USERSFLAG,
+                        id: 'valid_users_test_id',
+                        penaltyValue: null
+                    }
                 };
-                const testFn = await ruleUDL.check(mockParam_data);
+                const testFn = await ruleUDL.check(testParam_data);
 
                 expect(testFn).toMatchObject(expectResult);
             })

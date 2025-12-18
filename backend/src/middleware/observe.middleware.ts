@@ -13,14 +13,17 @@ import { RateLimitsEngine } from "./engines/rate-limits.engine.middleware";
 import { RateLimitsData, RateLimitsResponse } from "./interfaces/rate-limits.interface.middleware";
 import { ExceedMaxEndpointException } from "../utils/exceptions/api.exception";
 import { DemoLimitsIncrement, RateLimitsIncrement } from "./adapter/rate-limits.adapter.middleware";
+import { penaltyHandler } from "./container/penalty.container.middleware";
 
 export function observe(isDemo: boolean = false) {
     return async function (req: Request, res: Response, next: NextFunction) {
         try {
-            // TODO(yqni13): update status of clients and flag of users on violations (SUPPORT-45)
-
             const rateLimits = !isDemo ? await checkRateLimits(req) : await checkDemoLimits();
             if(rateLimits) {
+                // TODO(yqni13): validate here or in service to exec penalty?
+                if(rateLimits.penalty) {
+                    await penaltyHandler.apply(rateLimits.penalty);
+                }
                 throw new ExceedMaxEndpointException(rateLimits.msg, rateLimits.retryAfter);
             }
 
@@ -53,7 +56,9 @@ async function checkRateLimits(req: Request): Promise<RateLimitsResponse | null>
     );
     const rateLimitsData: RateLimitsData = {
         client_id: req.apiClients.client_id,
-        user_id: req.apiUsers.user_id
+        user_id: req.apiUsers.user_id,
+        client: req.apiClients,
+        user: req.apiUsers
     };
     return await engine.process(rateLimitsData);
 }
