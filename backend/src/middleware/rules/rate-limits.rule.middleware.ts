@@ -55,7 +55,6 @@ export class ClientsDailyLimitRule implements RateLimitsRule {
             return {
                 msg: 'support-ratelimits-clients-daily',
                 retryAfter: Utils.getNextDayUTC(),
-                type: Violation.CLIENTSFLAG,
                 penalty: {
                     type: Violation.CLIENTSFLAG,
                     id: data.client_id,
@@ -81,7 +80,6 @@ export class UsersDailyLimitRule implements RateLimitsRule {
             return {
                 msg: 'support-ratelimits-users-daily',
                 retryAfter: Utils.getNextDayUTC(),
-                type: Violation.USERSFLAG,
                 penalty: {
                     type: Violation.USERSFLAG,
                     id: data.user_id,

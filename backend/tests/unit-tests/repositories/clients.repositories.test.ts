@@ -41,6 +41,58 @@ const mockData: Clients = {
 const expectExceptionResult = DBQueryErrorException;
 const mockBoolean = false;
 
+describe('Database tests table <clients>, priority: findById', () => {
+
+    describe('Testing valid fn calls', () => {
+
+        let sql: string;
+        beforeEach(() => {
+            sql = `SELECT`;
+        });
+
+        test('Return data for existing entry, params: <id>', async () => {
+            const mockResult: Clients = structuredClone(mockData);
+            const mockClient = MockUtils.mapMockDbClient(mockResult);
+            const testFn = await clientsRepository.findById(mockVar_id);
+
+            expect(testFn).toEqual(mockResult);
+            expect(DBConnection.getInstance).toHaveBeenCalled();
+            expect(mockClient.query).toHaveBeenCalledWith(
+                expect.stringContaining(sql),
+                expect.arrayContaining([mockVar_id])
+            );
+        })
+
+        test('Return null for non-existing entry, params: <id>', async () => {
+            const mockParam_id = 'non-existing_clients_test_id';
+            const mockResult = null;
+            const mockClient = MockUtils.mapMockDbClient(mockResult);
+            const testFn = await clientsRepository.findByActiveKey(mockParam_id);
+
+            expect(testFn).toEqual(mockResult);
+            expect(DBConnection.getInstance).toHaveBeenCalled();
+            expect(mockClient.query).toHaveBeenCalledWith(
+                expect.stringContaining(sql),
+                expect.arrayContaining([mockParam_id])
+            );
+        })
+    })
+
+    describe('Testing invalid fn calls', () => {
+
+        test('Throw DBQueryErrorException by catch-block', async () => {
+            const mockParam_id = 'invalid_clients_test_id';
+            const mockErrorMsg = "DB ERROR ON SELECT QUERY";
+            const mockResult = null;
+            jest.spyOn(Utils, "logError").mockReturnValue();
+            const _ = MockUtils.mapMockDbClient(mockResult, mockBoolean, mockErrorMsg);
+
+            await expect(() => clientsRepository.findById(mockParam_id))
+                .rejects.toThrow(expectExceptionResult);
+        })
+    })
+})
+
 describe('Database tests table <clients>, priority: findByActiveKey', () => {
 
     describe('Testing valid fn calls', () => {

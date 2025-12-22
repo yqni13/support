@@ -188,7 +188,6 @@ describe('Middleware tests category <observation|rate_limits>, priority: rules',
                 const expectResult: RateLimitsResponse = {
                     msg: 'support-ratelimits-clients-daily',
                     retryAfter: mockRetryAfter,
-                    type: Violation.CLIENTSFLAG,
                     penalty: {
                         type: Violation.CLIENTSFLAG,
                         id: 'valid_clients_test_id',
@@ -243,7 +242,6 @@ describe('Middleware tests category <observation|rate_limits>, priority: rules',
                 const expectResult: RateLimitsResponse = {
                     msg: 'support-ratelimits-users-daily',
                     retryAfter: mockRetryAfter,
-                    type: Violation.USERSFLAG,
                     penalty: {
                         type: Violation.USERSFLAG,
                         id: 'valid_users_test_id',

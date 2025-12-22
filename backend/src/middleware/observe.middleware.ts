@@ -20,14 +20,11 @@ export function observe(isDemo: boolean = false) {
         try {
             const rateLimits = !isDemo ? await checkRateLimits(req) : await checkDemoLimits();
             if(rateLimits) {
-                // TODO(yqni13): validate here or in service to exec penalty?
-                if(rateLimits.penalty) {
-                    await penaltyHandler.apply(rateLimits.penalty);
-                }
+                await penaltyHandler.apply(rateLimits.penalty);
                 throw new ExceedMaxEndpointException(rateLimits.msg, rateLimits.retryAfter);
             }
 
-            // TODO(yqni13): set maintenance mode when exceeding total daily limit (SUPPORT-45)
+            // TODO(yqni13): set maintenance mode when exceeding total daily limit (SUPPORT-51)
             // Detect attack => disable application.
             // await metaService.setMaintenanceMode(MaintenanceMode.D013)
             next();

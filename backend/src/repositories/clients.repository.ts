@@ -16,6 +16,26 @@ IUpdateFlagRepository<Clients>
         this.table = "clients";
     }
 
+    async findById(id: string): Promise<Clients | null> {
+        const filterColumn = 'client_id';
+        const sql = `SELECT * FROM ${this.table} WHERE ${filterColumn} = $1;`;
+        const values = [id];
+        const db = DBConnection.getInstance();
+        let client: any;
+        try {
+            client = await db.connect();
+            const result: QueryResult<Clients> = await client.query(sql, values);
+            await db.close(client);
+            return result.rows[0] ?? null;
+        } catch(err: any) {
+            const message = "DB ERROR ON SELECT QUERY";
+            const method = "SUPPORT_ClientsRepository_findById";
+            logError(message, method, err);
+            await db.close(client);
+            throw new DBQueryErrorException(err);
+        }
+    }
+
     async findByActiveKey(hash: string): Promise<Clients | null> {
         const sql = `SELECT * FROM ${this.table} WHERE api_key_hash = $1 AND status = $2;`;
         const values = [hash, ApiKeyStatus.ACTIVE];

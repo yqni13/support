@@ -5,7 +5,8 @@ import {
     ClientsCreateDTO,
     ClientsStatusUpdateDTO,
     ClientsFlagResponseDTO,
-    ClientsFlagUpdateDTO
+    ClientsFlagUpdateDTO,
+    ClientsExistResponseDTO
 } from "../../../src/dtos/clients.dto";
 import * as Utils from '../../../src/utils/common.utils';
 import * as MockUtils from "../../common.test-utils";
@@ -57,6 +58,25 @@ describe('Integration test (repository specific), priority: Clients', () => {
     });
 
     describe('Testing valid fn calls', () => {
+
+        test('Repository process fn findById, result: "SUCCESS"', async () => {
+            const testParam_id = mockId.clients.valid[0];
+            const testResult: ClientsExistResponseDTO | null = {
+                client_id: mockId.clients.valid[0],
+                name: 'TESTCLIENT',
+                api_key_hash: secrets.TEST_APIKEY_HASH,
+                status: ApiKeyStatus.ACTIVE,
+                flag: null,
+                last_use: testTimestamp,
+                last_modified: testTimestamp,
+                created_on: testTimestamp
+            };
+
+            await dbTestSetup.addTestData();
+            const testResponse = await clientsService.getClientById(testParam_id);
+
+            expect(testResponse).toMatchObject(testResult);
+        })
 
         test('Repository process fn findStatusByName, result: "SUCCESS"', async () => {
             const testParam_name = 'TESTCLIENT';

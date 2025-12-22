@@ -22,6 +22,14 @@ class ClientsService {
     }
 
     /**
+     * @description Usage for testing purpose.
+     */
+    async getClientById(id: string): Promise<ClientsExistResponseDTO | null> {
+        const result = await clientsRepository.findById(id);
+        return !result ? null : Utils.mapObjTimestamps<ClientsExistResponseDTO>(result, this.timeMapTargets);
+    }
+
+    /**
      * @description Usage for apikey authentication in auth.middleware.ts.
      */
     async getClientByActiveKey(key: string): Promise<ClientsExistResponseDTO | null> {

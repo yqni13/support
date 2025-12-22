@@ -6,6 +6,7 @@ import { RateLimitsCount, RateLimitsData, RateLimitsResponse, RateLimitsRule } f
 import { ClientsDailyLimitRule, DemoDailyLimitRule } from "../../../src/middleware/rules/rate-limits.rule.middleware";
 import demoLimitsService from "../../../src/services/demo-limits.service";
 import rateLimitsService from "../../../src/services/rate-limits.service";
+import { Violation } from "../../../src/utils/enums/violations.enum";
 
 // Ensure correct type by converting secret to number via unary + operator.
 import { secrets } from "../../../src/utils/secrets.utils";
@@ -52,7 +53,12 @@ describe('Middleware tests category <engines>, priority: RateLimitsEngine', () =
             test('Params: <ClientsDailyLimitRule>, result: RateLimitsResponse', async () => {
                 const response: RateLimitsResponse = {
                     msg: 'support-ratelimits-clients-daily',
-                    retryAfter: '2025-01-02T00.00.01.000Z'
+                    retryAfter: '2025-01-02T00.00.01.000Z',
+                    penalty: {
+                        type: Violation.CLIENTSFLAG,
+                        id: mockValidClientsId,
+                        penaltyValue: null
+                    }
                 };
     
                 jest.spyOn(ClientsDailyLimitRule.prototype, 'check').mockResolvedValue(response);

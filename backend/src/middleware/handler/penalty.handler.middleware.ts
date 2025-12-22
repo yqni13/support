@@ -17,8 +17,8 @@ export class PenaltyHandler{
         //
     }
 
-    async apply(context: PenaltyContext) {
-        const handler = this.handlers.get(context.type);
+    async apply(context?: PenaltyContext) {
+        const handler = context ? this.handlers.get(context.type) : null;
         if(!handler) {
             return;
         }
