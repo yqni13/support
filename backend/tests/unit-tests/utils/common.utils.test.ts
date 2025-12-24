@@ -1,6 +1,9 @@
 import { Users } from "../../../src/repositories/interfaces/users.entity.interface";
 import * as Utils from "../../../src/utils/common.utils";
+import { Flag } from "../../../src/utils/enums/flag.enum";
+import { TicketStatus } from "../../../src/utils/enums/ticket-status.enum";
 import { UserStatus } from "../../../src/utils/enums/user-status.enum";
+import { Violation } from "../../../src/utils/enums/violations.enum";
 import { secrets } from "../../../src/utils/secrets.utils";
 
 describe('Utils tets, priority: common', () => {
@@ -114,6 +117,36 @@ describe('Utils tets, priority: common', () => {
             ];
 
             expect(testFn).toStrictEqual(expectResult);
+        })
+
+        test('fn: getNextRankEnumValue, params: <Flag>, get FIRST in order', () => {
+            const mockParam_enumObj = Flag;
+            const mockParam_value = null;
+
+            const mockResult = Flag.WARNING;
+            const testFn = Utils.getNextRankEnumValue(mockParam_enumObj, mockParam_value);
+
+            expect(testFn).toBe(mockResult);
+        })
+
+        test('fn: getNextRankEnumValue, params: <Violation> get NEXT in order', () => {
+            const mockParam_enumObj = Violation;
+            const mockParam_value = Violation.USERSFLAG;
+
+            const mockResult = Violation.USERSSTATUS;
+            const testFn = Utils.getNextRankEnumValue(mockParam_enumObj, mockParam_value);
+
+            expect(testFn).toBe(mockResult);
+        })
+
+        test('fn: getNextRankEnumValue, params: <TicketStatus>, get LAST in order (same value)', () => {
+            const mockParam_enumObj = TicketStatus;
+            const mockParam_value = TicketStatus.PAUSED;
+
+            const mockResult = TicketStatus.PAUSED;
+            const testFn = Utils.getNextRankEnumValue(mockParam_enumObj, mockParam_value);
+
+            expect(testFn).toBe(mockResult);
         })
     })
 

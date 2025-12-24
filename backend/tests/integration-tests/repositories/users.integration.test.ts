@@ -5,12 +5,13 @@ import request from 'supertest';
 import { ErrorStatusCodes } from '../../../src/utils/errorStatusCodes.utils';
 import { DBTestSetup } from "../../db-container.setup";
 import { runMigrations } from '../../db-migrations.setup';
-import { UsersUpdateDTO, UsersFilterDTO, UsersResponseDTO, UsersCreateDTO } from "../../../src/dtos/users.dto";
+import { UsersUpdateDTO, UsersFilterDTO, UsersResponseDTO, UsersCreateDTO, UsersFlagUpdateDTO } from "../../../src/dtos/users.dto";
 import { Users } from "../../../src/repositories/interfaces/users.entity.interface";
 import { UserStatus } from "../../../src/utils/enums/user-status.enum";
 import { Flag } from "../../../src/utils/enums/flag.enum";
 import { default as mockId } from "../../mock-data/id.mock-data.json";
 import { CommonExceptionMessage } from "../../../src/utils/enums/common-exception-messages.enum";
+import usersService from "../../../src/services/users.service";
 
 jest.mock('../../../src/middleware/auth.admin.middleware', () => ({
     authAdmin: jest.fn(() =>  (req: Request, res: Response, next: NextFunction) => next())
@@ -220,6 +221,29 @@ describe('Integration test (repository specific), priority: Users', () => {
 
             expect(testResponse.statusCode).toBe(200);
             expect(testResponse.body).toMatchObject(testResult)
+        })
+
+        test('Repository process fn updateFlag, result: "SUCCESS"', async () => {
+            const testParam_id = mockId.users.valid[0];
+            const testParam_dto: UsersFlagUpdateDTO = {
+                flag: Flag.WARNING
+            };
+
+            jest.spyOn(Utils, "getTimestampUTC").mockReturnValue(testTimestamp);
+
+            const testResult: UsersResponseDTO = {
+                user_id: testParam_id,
+                email: 'max.mustermann@yqni13.com',
+                status: UserStatus.ACTIVE,
+                flag: Flag.WARNING, 
+                last_modified: testTimestamp,
+                created_on: testTimestamp
+            };
+
+            await dbTestSetup.addTestData();
+            const testResponse = await usersService.updateUserFlag(testParam_id, testParam_dto);
+
+            expect(testResponse).toMatchObject(testResult)
         })
     })
 

@@ -6,6 +6,7 @@ import { UserStatus } from "../../../src/utils/enums/user-status.enum";
 import { RateLimitsEngine } from "../../../src/middleware/engines/rate-limits.engine.middleware";
 import { RateLimitsResponse } from "../../../src/middleware/interfaces/rate-limits.interface.middleware";
 import { ExceedMaxEndpointException } from "../../../src/utils/exceptions/api.exception";
+import { penaltyHandler } from "../../../src/middleware/container/penalty.container.middleware";
 
 describe('Middleware tests category <security>, priority: observe', () => {
 
@@ -78,6 +79,7 @@ describe('Middleware tests category <security>, priority: observe', () => {
             };
 
             jest.spyOn(RateLimitsEngine.prototype, 'process').mockResolvedValue(mockRateLimits);
+            jest.spyOn(penaltyHandler, 'apply').mockImplementation();
             jest.spyOn(Utils, 'logError').mockImplementation();
 
             const middleware = observe();
@@ -95,6 +97,7 @@ describe('Middleware tests category <security>, priority: observe', () => {
             };
 
             jest.spyOn(RateLimitsEngine.prototype, 'process').mockResolvedValue(mockRateLimits);
+            jest.spyOn(penaltyHandler, 'apply').mockImplementation();
             jest.spyOn(Utils, 'logError').mockImplementation();
 
             const middleware = observe(true);

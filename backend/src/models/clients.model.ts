@@ -1,4 +1,9 @@
-import { ClientsCreateDTO, ClientsCreateResponseDTO, ClientsLastUseResponseDTO, ClientsStatusResponseDTO } from "../dtos/clients.dto";
+import {
+    ClientsCreateDTO,
+    ClientsCreateResponseDTO,
+    ClientsLastUseResponseDTO,
+    ClientsStatusResponseDTO
+} from "../dtos/clients.dto";
 import { Clients } from "../repositories/interfaces/clients.entity.interface";
 import crypto from 'crypto';
 import * as Utils from "../utils/common.utils";
@@ -18,6 +23,7 @@ class ClientsModel {
             name: data.name,
             api_key: apiKey,
             status: data.status,
+            flag: data.flag,
             last_use: data.last_use,
             last_modified: data.last_modified,
             created_on: data.created_on
@@ -70,6 +76,7 @@ class ClientsModel {
             name: dto.name,
             api_key_hash: keyObj.keyHash,
             status: ApiKeyStatus.ACTIVE,
+            flag: null,
             last_use: timestamp,
             last_modified: timestamp,
             created_on: timestamp

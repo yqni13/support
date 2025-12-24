@@ -5,6 +5,7 @@ import demoLimitsService from "../../services/demo-limits.service";
 import rateLimitsService from "../../services/rate-limits.service";
 import ticketsService from "../../services/tickets.service";
 import * as Utils from "../../utils/common.utils";
+import { Violation } from "../../utils/enums/violations.enum";
 import { RateLimitsData, RateLimitsResponse, RateLimitsRule } from "../interfaces/rate-limits.interface.middleware";
 
 export class ClientsBurstLimitRule implements RateLimitsRule {
@@ -51,7 +52,15 @@ export class ClientsDailyLimitRule implements RateLimitsRule {
         const dto: RateLimitsCountDTO = { client_id: data.client_id, day: Utils.getDateUTC() };
         const count: number = await rateLimitsService.getRateLimitCount(dto);
         if(count >= this.requestLimit) {
-            return { msg: 'support-ratelimits-clients-daily', retryAfter: Utils.getNextDayUTC() };
+            return {
+                msg: 'support-ratelimits-clients-daily',
+                retryAfter: Utils.getNextDayUTC(),
+                penalty: {
+                    type: Violation.CLIENTSFLAG,
+                    id: data.client_id,
+                    penaltyValue: data.client?.flag ?? null
+                }
+            };
         }
 
         return null;
@@ -68,7 +77,15 @@ export class UsersDailyLimitRule implements RateLimitsRule {
         const dto: RateLimitsCountDTO = { user_id: data.user_id, day: Utils.getDateUTC() };
         const count: number = await rateLimitsService.getRateLimitCount(dto);
         if(count >= this.requestLimit) {
-            return { msg: 'support-ratelimits-users-daily', retryAfter: Utils.getNextDayUTC() };
+            return {
+                msg: 'support-ratelimits-users-daily',
+                retryAfter: Utils.getNextDayUTC(),
+                penalty: {
+                    type: Violation.USERSFLAG,
+                    id: data.user_id,
+                    penaltyValue: data.user?.flag ?? null
+                }
+            };
         }
 
         return null;

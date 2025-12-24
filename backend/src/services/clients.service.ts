@@ -2,6 +2,8 @@ import {
     ClientsCreateDTO,
     ClientsCreateResponseDTO,
     ClientsExistResponseDTO,
+    ClientsFlagResponseDTO,
+    ClientsFlagUpdateDTO,
     ClientsLastUseResponseDTO,
     ClientsLastUseUpdateDTO,
     ClientsStatusResponseDTO,
@@ -17,6 +19,14 @@ class ClientsService {
 
     constructor() {
         this.timeMapTargets = ['last_use', 'last_modified', 'created_on'];
+    }
+
+    /**
+     * @description Usage for testing purpose.
+     */
+    async getClientById(id: string): Promise<ClientsExistResponseDTO | null> {
+        const result = await clientsRepository.findById(id);
+        return !result ? null : Utils.mapObjTimestamps<ClientsExistResponseDTO>(result, this.timeMapTargets);
     }
 
     /**
@@ -37,6 +47,12 @@ class ClientsService {
         const clientsCreateObj = clientsModel.generateClientsCreateObj(dto);
         const result = await clientsRepository.create(clientsCreateObj.client);
         return clientsModel.mapToCreateResponseDTO(result as Clients, clientsCreateObj.keyRaw);
+    }
+
+    async updateClientFlag(id: string, dto: ClientsFlagUpdateDTO): Promise<ClientsFlagResponseDTO | null> {
+        dto.last_modified = Utils.getTimestampUTC();
+        const result = await clientsRepository.updateFlag(id, dto);
+        return !result ? null : Utils.mapObjTimestamps<ClientsFlagResponseDTO>(result, this.timeMapTargets);
     }
 
     async updateClientStatus(id: string, dto: ClientsStatusUpdateDTO): Promise<ClientsStatusResponseDTO | null> {

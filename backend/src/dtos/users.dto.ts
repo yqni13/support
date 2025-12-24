@@ -13,6 +13,11 @@ export interface UsersUpdateDTO {
     last_modified?: string
 }
 
+export interface UsersFlagUpdateDTO {
+    flag: Flag | null,
+    last_modified?: string
+}
+
 export interface UsersFilterDTO {
     email?: SingleOrArray<string>,
     status?: SingleOrArray<UserStatus>,

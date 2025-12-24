@@ -11,6 +11,10 @@ export interface ICreateRepository<T> {
     create(entity: T): Promise<T>;
 }
 
+export interface IUpdateFlagRepository<T> {
+    updateFlag(id: string | number, dto: Partial<T>): Promise<T | null>;
+}
+
 export interface IDeleteRepository {
     delete(id: string | number): Promise<boolean>;
 }

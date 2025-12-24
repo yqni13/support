@@ -4,10 +4,19 @@
 
 <br>
 
+### $\textsf{\color{skyblue}2025/12/22}$
+
+$\textsf{[v0.11.1\ =>\ {\textbf{\color{brown}v0.12.0}]}}$ app<br>
+$\textsf{[v1.5.0\ =>\ {\textbf{\color{brown}v1.5.1}]}}$ database
+- $\textsf{\color{teal}Addition:}$ Added logic to handle penalties (limit violations only currently).
+- $\textsf{\color{orange}Patch:}$ Added migration to update 'clients' table by adding 'flag' property.v
+
+<br>
+
 ### $\textsf{\color{skyblue}2025/12/16}$
 
-$\textsf{[v0.10.0\ =>\ {\textbf{\color{brown}v0.11.1}]}}$ app<br>
-$\textsf{[v1.4.1\ =>\ {\textbf{\color{brown}v1.5.0}]}}$ database
+$\textsf{[v0.10.0\ =>\ v0.11.1]}$ app<br>
+$\textsf{[v1.4.1\ =>\ v1.5.0]}$ database
 - $\textsf{\color{teal}Addition:}$ Added logic to handle demo request rates + limit violations.
 - $\textsf{\color{teal}Addition:}$ Migrated 'demo_limits' table to database + service/repository logic.
 - $\textsf{\color{orange}Patch:}$ Added 'retryAfter' timestamp to exception for limit violations.

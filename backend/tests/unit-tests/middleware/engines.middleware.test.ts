@@ -1,10 +1,12 @@
 import { DemoLimitsResponseDTO } from "../../../src/dtos/demo-limits.dto";
 import { RateLimitsResponseDTO } from "../../../src/dtos/rate-limits.dto";
+import { DemoLimitsIncrement, RateLimitsIncrement } from "../../../src/middleware/adapter/rate-limits.adapter.middleware";
 import { RateLimitsEngine } from "../../../src/middleware/engines/rate-limits.engine.middleware";
-import { RateLimitsData, RateLimitsResponse, RateLimitsRule } from "../../../src/middleware/interfaces/rate-limits.interface.middleware";
+import { RateLimitsCount, RateLimitsData, RateLimitsResponse, RateLimitsRule } from "../../../src/middleware/interfaces/rate-limits.interface.middleware";
 import { ClientsDailyLimitRule, DemoDailyLimitRule } from "../../../src/middleware/rules/rate-limits.rule.middleware";
 import demoLimitsService from "../../../src/services/demo-limits.service";
 import rateLimitsService from "../../../src/services/rate-limits.service";
+import { Violation } from "../../../src/utils/enums/violations.enum";
 
 // Ensure correct type by converting secret to number via unary + operator.
 import { secrets } from "../../../src/utils/secrets.utils";
@@ -39,7 +41,8 @@ describe('Middleware tests category <engines>, priority: RateLimitsEngine', () =
                 jest.spyOn(ClientsDailyLimitRule.prototype, 'check').mockResolvedValue(null);
     
                 const rule: RateLimitsRule = new ClientsDailyLimitRule(+secrets.RATELIMITS_CLIENTSDAILYLIMIT);
-                const engine = new RateLimitsEngine([rule]);
+                const count: RateLimitsCount = new RateLimitsIncrement();
+                const engine = new RateLimitsEngine([rule], count);
     
                 const mockResponse = null;
                 const testFn = await engine.process(mockParam_data);
@@ -50,13 +53,19 @@ describe('Middleware tests category <engines>, priority: RateLimitsEngine', () =
             test('Params: <ClientsDailyLimitRule>, result: RateLimitsResponse', async () => {
                 const response: RateLimitsResponse = {
                     msg: 'support-ratelimits-clients-daily',
-                    retryAfter: '2025-01-02T00.00.01.000Z'
+                    retryAfter: '2025-01-02T00.00.01.000Z',
+                    penalty: {
+                        type: Violation.CLIENTSFLAG,
+                        id: mockValidClientsId,
+                        penaltyValue: null
+                    }
                 };
     
                 jest.spyOn(ClientsDailyLimitRule.prototype, 'check').mockResolvedValue(response);
     
                 const rule: RateLimitsRule = new ClientsDailyLimitRule(+secrets.RATELIMITS_CLIENTSDAILYLIMIT);
-                const engine = new RateLimitsEngine([rule]);
+                const count: RateLimitsCount = new RateLimitsIncrement();
+                const engine = new RateLimitsEngine([rule], count);
     
                 const mockResponse = response;
                 const testFn = await engine.process(mockParam_data);
@@ -68,7 +77,6 @@ describe('Middleware tests category <engines>, priority: RateLimitsEngine', () =
         describe('Route: /meta/demo', () => {
 
             test('Params: <DemoDailyLimitRule>, result: null', async () => {
-                const mockParam_isDemo = true;
                 const mockResult_updateDemoLimit: DemoLimitsResponseDTO | null = null;
 
                 jest.spyOn(demoLimitsService, 'updateDemoLimit').mockResolvedValue(mockResult_updateDemoLimit);
@@ -76,16 +84,16 @@ describe('Middleware tests category <engines>, priority: RateLimitsEngine', () =
                 jest.spyOn(DemoDailyLimitRule.prototype, 'check').mockResolvedValue(null);
 
                 const rule: RateLimitsRule = new DemoDailyLimitRule(+secrets.DEMOLIMITS_TOTALDAILYLIMIT);
-                const engine = new RateLimitsEngine([rule]);
+                const count: RateLimitsCount = new DemoLimitsIncrement();
+                const engine = new RateLimitsEngine([rule], count);
 
                 const mockResponse = null;
-                const testFn = await engine.process({ client_id: 'demo', user_id: 'demo' }, mockParam_isDemo);
+                const testFn = await engine.process({ client_id: 'demo', user_id: 'demo' });
 
                 expect(testFn).toBe(mockResponse);
             })
 
             test('Params: <DemoDailyLimitRule>, result: RateLimitsResponse', async () => {
-                const mockParam_isDemo = true;
                 const response: RateLimitsResponse = {
                     msg: 'support-demolimits-total-daily',
                     retryAfter: '2025-01-02T00.00.01.000Z'
@@ -94,10 +102,11 @@ describe('Middleware tests category <engines>, priority: RateLimitsEngine', () =
                 jest.spyOn(DemoDailyLimitRule.prototype, 'check').mockResolvedValue(response);
 
                 const rule: RateLimitsRule = new DemoDailyLimitRule(+secrets.DEMOLIMITS_TOTALDAILYLIMIT);
-                const engine = new RateLimitsEngine([rule]);
+                const count: RateLimitsCount = new DemoLimitsIncrement();
+                const engine = new RateLimitsEngine([rule], count);
 
                 const mockResponse = response;
-                const testFn = await engine.process({ client_id: 'demo', user_id: 'demo' }, mockParam_isDemo);
+                const testFn = await engine.process({ client_id: 'demo', user_id: 'demo' });
 
                 expect(testFn).toBe(mockResponse);
             })

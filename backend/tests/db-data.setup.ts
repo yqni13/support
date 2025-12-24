@@ -48,10 +48,10 @@ export class DBTestData {
 
     getClientsInsertSql(): BaseQuery {
         const sql = `INSERT INTO ${this.tableRecord['clients']}
-        (client_id, name, api_key_hash, status, last_use, last_modified, created_on)
-        VALUES ($1, $2, $3, $4, $5, $6, $7);
+        (client_id, name, api_key_hash, status, flag, last_use, last_modified, created_on)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8);
         `;
-        const values = [mockId.clients.valid[0], 'TESTCLIENT', secrets.TEST_APIKEY_HASH, ApiKeyStatus.ACTIVE, '2025-01-01T14:00:02.000Z', '2025-01-01T14:00:02.000Z', '2025-01-01T14:00:02.000Z'];
+        const values = [mockId.clients.valid[0], 'TESTCLIENT', secrets.TEST_APIKEY_HASH, ApiKeyStatus.ACTIVE, null, '2025-01-01T14:00:02.000Z', '2025-01-01T14:00:02.000Z', '2025-01-01T14:00:02.000Z'];
         return { sql: sql, values: values };
     }
 
