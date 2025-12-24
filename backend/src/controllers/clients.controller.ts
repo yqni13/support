@@ -14,7 +14,7 @@ class ClientsController {
             checkValidation(req);
             const name = req.params.name;
             const response: ClientsStatusResponseDTO | null = await clientsService.getClientStatusByName(name);
-            res.send(response);
+            res.json(response);
         } catch(err: any) {
             next(err);
         }
@@ -25,7 +25,7 @@ class ClientsController {
             checkValidation(req);
             const dto: ClientsCreateDTO = req.body;
             const response: ClientsCreateResponseDTO = await clientsService.createClient(dto);
-            res.send(response);
+            res.json(response);
         } catch(err: any) {
             next(err);
         }
@@ -37,7 +37,7 @@ class ClientsController {
             const id: string = req.params.id;
             const dto: ClientsStatusUpdateDTO = req.body;
             const response: ClientsStatusResponseDTO | null = await clientsService.updateClientStatus(id, dto);
-            res.send(response);
+            res.json(response);
         } catch(err: any) {
             next(err);
         }

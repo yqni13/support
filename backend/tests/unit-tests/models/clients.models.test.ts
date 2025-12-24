@@ -16,6 +16,7 @@ let mockData: Clients = {
     name: 'testclient',
     api_key_hash: mockVar_apiKey.keyHash,
     status: ApiKeyStatus.ACTIVE,
+    flag: null,
     last_use: mockTimestamp,
     last_modified: mockTimestamp,
     created_on: mockTimestamp
@@ -34,6 +35,7 @@ describe('Model tests, class: <clients>, priority: mapToCreateResponseDTO', () =
                 name: mockParam_data.name,
                 api_key: mockVar_apiKey.keyRaw,
                 status: mockParam_data.status,
+                flag: null,
                 last_use: mockTimestamp,
                 last_modified: mockTimestamp,
                 created_on: mockTimestamp
@@ -102,6 +104,7 @@ describe('Model tests, class: <clients>, priority: generateClientsCreateObj', ()
                 name: mockParam_dto.name,
                 api_key_hash: mockApiKeyObj.keyHash,
                 status: ApiKeyStatus.ACTIVE,
+                flag: null,
                 last_use: mockTimestamp,
                 last_modified: mockTimestamp,
                 created_on: mockTimestamp

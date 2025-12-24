@@ -75,6 +75,8 @@ export class DBTestSetup {
             await this.client.query(ticketData.sql, ticketData.values);
             const rateLimitData = dbTestData.getRateLimitsInsertSql();
             await this.client.query(rateLimitData.sql, rateLimitData.values);
+            const demoLimitData = dbTestData.getDemoLimitsInsertSql();
+            await this.client.query(demoLimitData.sql, demoLimitData.values);
             await this.client.query('COMMIT');
         } catch (err: any) {
             await this.client.query('ROLLBACK');
@@ -87,8 +89,11 @@ export class DBTestSetup {
         let tables: string[] = dbTestData.getDatabaseTables().reverse();
 
         // ForEach does not wait for async process to finish.
+        await this.client.query('BEGIN');
         for(const table of tables) {
-            await this.client.query(`TRUNCATE TABLE ${table} CASCADE;`);
+            // 'RESTART IDENTITY' because some tables use auto-incremented id's.
+            await this.client.query(`TRUNCATE TABLE ${table} RESTART IDENTITY CASCADE;`);
         }
+        await this.client.query('COMMIT');
     }
 }

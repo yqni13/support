@@ -5,15 +5,18 @@ export class ApiException extends Error {
     public error: string;
     public status: number;
     public data?: any;
+    public retryAfter?: string;
     public isOperational: boolean;
 
     constructor(
         message: string,
+        retryAfter?: string,
         data?: any,
         status: number = 404
     ) {
         super(message);
         this.message = message;
+        this.retryAfter = retryAfter,
         this.name = 'API Error';
         this.error = this.constructor.name;
         this.status = status;
@@ -41,7 +44,7 @@ export class UnimplementedException extends ApiException {
 }
 
 export class ExceedMaxEndpointException extends ApiException {
-    constructor(message: string, data?: any) {
-        super(message, data, ErrorStatusCodes.ExceedMaxEndpointException);
+    constructor(message: string, retryAfter: string, data?: any) {
+        super(message, retryAfter, data, ErrorStatusCodes.ExceedMaxEndpointException);
     }
 }

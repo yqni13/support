@@ -1,17 +1,21 @@
-import { Pool, PoolClient } from 'pg';
+import * as pg from 'pg';
 import { secrets } from '../utils/secrets.utils';
 import { DBConnectionException, DBEmptyException } from '../utils/exceptions/db.exception';
 import { ErrorStatusCodes } from '../utils/errorStatusCodes.utils';
 import { EnvMode } from '../utils/enums/env-mode.enum';
 import { logError } from '../utils/common.utils';
 
+// Global setting to parse certain db data to specific types:
+// 1082: type Date [yyyy-mm-dd] - otherwise Date will be returned as full timestamp + time zone changes
+pg.types.setTypeParser(1082, (val) => val);
+
 export class DBConnection {
     private static instance: DBConnection;
-    #pool: Pool;
+    #pool: pg.Pool;
 
     constructor() {
         const connectionString = this._getConnectionString(secrets.ENV_MODE);
-        this.#pool = new Pool({connectionString});
+        this.#pool = new pg.Pool({connectionString});
     }
 
     static getInstance(): DBConnection {
@@ -80,7 +84,7 @@ export class DBConnection {
         }
     }
 
-    async connect(): Promise<PoolClient> {
+    async connect(): Promise<pg.PoolClient> {
         try {
             const client = await this.#pool.connect();
             return client;
@@ -94,7 +98,7 @@ export class DBConnection {
         }
     }
 
-    async close(client: PoolClient) {
+    async close(client: pg.PoolClient) {
         try {
             client.release(true);
         } catch(error: any) {

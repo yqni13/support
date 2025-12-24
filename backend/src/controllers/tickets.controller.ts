@@ -15,7 +15,7 @@ class TicketsController {
             checkValidation(req);
             const id = req.params.id;
             const response: TicketsResponseExtendedDTO | null = await ticketsService.getTicketById(id);
-            res.send(response);
+            res.json(response);
         } catch(err: any) {
             next(err);
         }
@@ -24,7 +24,7 @@ class TicketsController {
     async getAllTickets(req: Request, res: Response, next: NextFunction) {
         try {
             const response: TicketsResponseDTO[] | null = await ticketsService.getAllTickets();
-            res.send(response);
+            res.json(response);
         } catch(err: any) {
             next(err);
         }
@@ -40,7 +40,7 @@ class TicketsController {
                 const dto: TicketsFilterDTO = req.body;
                 response = await ticketsService.searchTicketsByFilter(dto);
             }
-            res.send(response);
+            res.json(response);
         } catch(err: any) {
             next(err);
         }
@@ -55,7 +55,7 @@ class TicketsController {
                 user_id: req.apiUsers.user_id
             };
             const response: TicketsResponseDTO = await ticketsService.createTicket(dto);
-            res.send(response);
+            res.json(response);
         } catch(err: any) {
             next(err);
         }
@@ -67,7 +67,7 @@ class TicketsController {
             const id: string = req.params.id;
             const dto: TicketsUpdateDTO = req.body;
             const response: TicketsResponseDTO | null = await ticketsService.updateTicket(id, dto);
-            res.send(response);
+            res.json(response);
         } catch(err: any) {
             next(err);
         }
@@ -78,7 +78,7 @@ class TicketsController {
             checkValidation(req);
             const id = req.params.id;
             const response: boolean = await ticketsService.deleteTicket(id);
-            res.send(response);
+            res.json(response);
         } catch(err: any) {
             next(err);
         }

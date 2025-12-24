@@ -14,6 +14,7 @@ import {
 
 } from '../middleware/validators/ticketsValidator.middleware';
 import { requirePayload } from '../middleware/require.middleware';
+import { observe } from '../middleware/observe.middleware';
 
 const router = Router();
 
@@ -43,7 +44,7 @@ router.post(
 // create
 router.post(
     '/create',
-    maintain(), authClient(), authUser(), requirePayload(),
+    maintain(), authClient(), authUser(), requirePayload(), observe(),
     postSchema,
     factory(ticketsController.postTicket)
 );

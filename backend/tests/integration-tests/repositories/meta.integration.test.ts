@@ -1,6 +1,6 @@
 import { Maintenance, Meta } from './../../../src/repositories/interfaces/meta.entity.interface';
 import { NextFunction, Request, Response } from "express";
-import { DBTestSetup } from "../db-container.setup";
+import { DBTestSetup } from "../../db-container.setup";
 import { runMigrations } from '../../db-migrations.setup';
 import request from 'supertest';
 import * as Utils from '../../../src/utils/common.utils';

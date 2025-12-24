@@ -28,6 +28,7 @@ describe('Middleware tests category <auth>, priority: authClient', () => {
                 name: 'valid_clients_test_name',
                 api_key_hash: secrets.TEST_APIKEY_HASH,
                 status: ApiKeyStatus.ACTIVE,
+                flag: null,
                 last_use: mockTimestamp,
                 last_modified: mockTimestamp,
                 created_on: mockTimestamp

@@ -3,20 +3,25 @@ import {
     ClientsCreateResponseDTO,
     ClientsStatusResponseDTO,
     ClientsCreateDTO,
-    ClientsStatusUpdateDTO
+    ClientsStatusUpdateDTO,
+    ClientsFlagResponseDTO,
+    ClientsFlagUpdateDTO,
+    ClientsExistResponseDTO
 } from "../../../src/dtos/clients.dto";
 import * as Utils from '../../../src/utils/common.utils';
 import * as MockUtils from "../../common.test-utils";
 import request from 'supertest';
 import { ErrorStatusCodes } from '../../../src/utils/errorStatusCodes.utils';
 import { ApiKeyStatus } from "../../../src/utils/enums/api-key-status.enum";
-import { DBTestSetup } from "../db-container.setup";
+import { DBTestSetup } from "../../db-container.setup";
 import { runMigrations } from '../../db-migrations.setup';
 import clientsModel from "../../../src/models/clients.model";
 import { Clients } from "../../../src/repositories/interfaces/clients.entity.interface";
 import { CommonExceptionMessage } from "../../../src/utils/enums/common-exception-messages.enum";
 import { default as mockId } from "../../mock-data/id.mock-data.json";
 import { secrets } from "../../../src/utils/secrets.utils";
+import { Flag } from "../../../src/utils/enums/flag.enum";
+import clientsService from "../../../src/services/clients.service";
 
 jest.mock('../../../src/middleware/auth.admin.middleware', () => ({
     authAdmin: jest.fn(() =>  (req: Request, res: Response, next: NextFunction) => next())
@@ -38,13 +43,12 @@ describe('Integration test (repository specific), priority: Clients', () => {
     beforeAll(async () => {
         dbTestSetup = new DBTestSetup();
         await dbTestSetup.init();
-        MockUtils.disableConsoleMessages(); // Surpress multiple messages (migration progress etc). Disable to debug.
+        MockUtils.disableConsoleMessages();
         await runMigrations('clients.integration.test.ts');
         apiUrl = '/api/v1/clients';
     });
 
     beforeEach(async () => {
-        // Clean tables before each test to fill test data individually.
         await dbTestSetup.clearTables();
     });
 
@@ -53,6 +57,25 @@ describe('Integration test (repository specific), priority: Clients', () => {
     });
 
     describe('Testing valid fn calls', () => {
+
+        test('Repository process fn findById, result: "SUCCESS"', async () => {
+            const testParam_id = mockId.clients.valid[0];
+            const testResult: ClientsExistResponseDTO | null = {
+                client_id: mockId.clients.valid[0],
+                name: 'TESTCLIENT',
+                api_key_hash: secrets.TEST_APIKEY_HASH,
+                status: ApiKeyStatus.ACTIVE,
+                flag: null,
+                last_use: testTimestamp,
+                last_modified: testTimestamp,
+                created_on: testTimestamp
+            };
+
+            await dbTestSetup.addTestData();
+            const testResponse = await clientsService.getClientById(testParam_id);
+
+            expect(testResponse).toMatchObject(testResult);
+        })
 
         test('Repository process fn findStatusByName, result: "SUCCESS"', async () => {
             const testParam_name = 'TESTCLIENT';
@@ -75,14 +98,14 @@ describe('Integration test (repository specific), priority: Clients', () => {
 
         test('Repository process fn findStatusByName, result: "NO-ENTRY-FOUND"', async () => {
             const testParam_name = 'non-existing-client';
-            const testResult = {};
+            const testResult = null;
 
             await dbTestSetup.addTestData();
             const testResponse = await request(app)
                 .get(`${apiUrl}/status/${testParam_name}`);
 
             expect(testResponse.statusCode).toBe(200);
-            expect(testResponse.body).toMatchObject(testResult);
+            expect(testResponse.body).toBe(testResult);
         })
 
         test('Repository process fn create, result: "SUCCESS"', async () => {
@@ -98,6 +121,7 @@ describe('Integration test (repository specific), priority: Clients', () => {
                 name: testParam_dto.name,
                 api_key: testVar_apiKey.keyRaw,
                 status: ApiKeyStatus.ACTIVE,
+                flag: null,
                 last_use: testTimestamp,
                 last_modified: testTimestamp,
                 created_on: testTimestamp
@@ -110,6 +134,44 @@ describe('Integration test (repository specific), priority: Clients', () => {
 
             expect(testResponse.statusCode).toBe(200);
             expect(testResponse.body).toMatchObject(testResult);
+        })
+
+        test('Repository process fn updateFlag, result: "SUCCESS"', async () => {
+            const testParam_id = mockId.clients.valid[0];
+            const testParam_dto: ClientsFlagUpdateDTO = {
+                flag: Flag.WARNING
+            };
+
+            jest.spyOn(Utils, "getTimestampUTC").mockReturnValue(testTimestamp);
+
+            const testResult: ClientsFlagResponseDTO | null = {
+                client_id: testParam_id,
+                flag: Flag.WARNING,
+                last_use: testTimestamp,
+                last_modified: testTimestamp,
+                created_on: testTimestamp
+            };
+
+            await dbTestSetup.addTestData();
+            const testResponse = await clientsService.updateClientFlag(testParam_id, testParam_dto);
+
+            expect(testResponse).toMatchObject(testResult);
+        })
+
+        test('Repository process fn updateFlag, result: null', async () => {
+            const testParam_id = mockId.clients.invalid[0];
+            const testParam_dto: ClientsFlagUpdateDTO = {
+                flag: Flag.WARNING
+            };
+
+            jest.spyOn(Utils, "getTimestampUTC").mockReturnValue(testTimestamp);
+
+            const testResult: ClientsFlagResponseDTO | null = null;
+
+            await dbTestSetup.addTestData();
+            const testResponse = await clientsService.updateClientFlag(testParam_id, testParam_dto);
+
+            expect(testResponse).toBe(testResult);
         })
 
         test('Repository process fn updateStatus, result: "SUCCESS"', async () => {

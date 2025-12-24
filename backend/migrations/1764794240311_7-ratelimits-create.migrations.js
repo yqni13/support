@@ -36,7 +36,7 @@ async function up(pgm) {
             default: 0,
         },
         last_modified: {
-            type: 'TIMESTAMP',
+            type: 'TIMESTAMP WITH TIME ZONE',
             notNull: true
         }
     });

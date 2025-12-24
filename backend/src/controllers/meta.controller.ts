@@ -10,7 +10,7 @@ class MetaController {
             checkValidation(req);
             const id: number = +(req.params.id);
             const response: MetaResponseDTO | null = await metaService.getMetaById(id);
-            res.send(response);
+            res.json(response);
         } catch(err: any) {
             next(err);
         }
@@ -21,7 +21,7 @@ class MetaController {
             checkValidation(req);
             const name: string = req.params.name;
             const response: MetaResponseDTO | null = await metaService.getMetaByName(name);
-            res.send(response);
+            res.json(response);
         } catch(err: any) {
             next(err);
         }
@@ -30,7 +30,7 @@ class MetaController {
     async getAllMeta(req: Request, res: Response, next: NextFunction) {
         try {
             const response: MetaResponseDTO[] | null = await metaService.getAllMeta();
-            res.send(response);
+            res.json(response);
         } catch(err: any) {
             next(err);
         }
@@ -42,7 +42,7 @@ class MetaController {
             const id: number = +(req.params.id);
             const dto: MetaUpdateDTO = req.body;
             const response: MetaResponseDTO | null = await metaService.updateMeta(id, dto);
-            res.send(response);
+            res.json(response);
         } catch(err: any) {
             next(err);
         }
@@ -53,7 +53,7 @@ class MetaController {
             checkValidation(req);
             const name: string = req.params.name;
             const response: MaintenanceResponseDTO | null = await metaService.getMaintenanceMode(name);
-            res.send(response);
+            res.json(response);
         } catch(err: any) {
             next(err);
         }
@@ -65,7 +65,7 @@ class MetaController {
             const name: string = req.params.name;
             const dto: MaintenanceUpdateDTO = req.body;
             const response: MaintenanceResponseDTO | null = await metaService.updateMaintenanceMode(name, dto);
-            res.send(response);
+            res.json(response);
         } catch(err: any) {
             next(err);
         }
@@ -77,7 +77,7 @@ class MetaController {
             checkValidation(req);
             const dto: DemoModusDTO = req.body;
             const response: Record<string, string> = await metaService.searchDemoByPayload(dto);
-            res.send(response);
+            res.json(response);
         } catch(err: any) {
             next(err);
         }
