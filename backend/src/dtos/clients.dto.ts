@@ -1,7 +1,13 @@
 import { ApiKeyStatus } from "../utils/enums/api-key-status.enum";
+import { Flag } from "../utils/enums/flag.enum";
 
 export interface ClientsCreateDTO {
     name: string
+}
+
+export interface ClientsFlagUpdateDTO {
+    flag: Flag | null,
+    last_modified?: string
 }
 
 export interface ClientsStatusUpdateDTO {
@@ -18,6 +24,7 @@ export interface ClientsExistResponseDTO {
     name: string,
     api_key_hash: string,
     status: ApiKeyStatus,
+    flag: Flag | null,
     last_use: string,
     last_modified: string,
     created_on: string
@@ -28,6 +35,15 @@ export interface ClientsCreateResponseDTO {
     name: string,
     api_key: string,
     status: ApiKeyStatus,
+    flag: Flag | null,
+    last_use: string,
+    last_modified: string,
+    created_on: string
+}
+
+export interface ClientsFlagResponseDTO {
+    client_id: string,
+    flag: Flag | null,
     last_use: string,
     last_modified: string,
     created_on: string

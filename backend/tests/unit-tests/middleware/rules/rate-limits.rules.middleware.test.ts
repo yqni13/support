@@ -1,6 +1,7 @@
 import {
     ClientsBurstLimitRule,
     ClientsDailyLimitRule,
+    DemoDailyLimitRule,
     TotalDailyLimitRule,
     UsersBurstLimitRule,
     UsersDailyLimitRule
@@ -11,6 +12,8 @@ import * as Utils from "../../../../src/utils/common.utils";
 import ticketsService from "../../../../src/services/tickets.service";
 import { TicketStatus } from "../../../../src/utils/enums/ticket-status.enum";
 import rateLimitsService from "../../../../src/services/rate-limits.service";
+import demoLimitsService from "../../../../src/services/demo-limits.service";
+import { Violation } from "../../../../src/utils/enums/violations.enum";
 
 // Ensure correct type by converting secret to number via unary + operator.
 import { secrets } from "../../../../src/utils/secrets.utils"
@@ -55,7 +58,7 @@ describe('Middleware tests category <observation|rate_limits>, priority: rules',
     describe('Ruleset: <ClientsBurstLimitRule>', () => {
 
         describe('Testing valid context calls', () => {
-    
+
             test('Param: <RateLimitContext> with valid number of client calls', async () => {
                 const ruleCBL = new ClientsBurstLimitRule(3);
                 const mockContext = structuredClone(mockBurstContext);
@@ -67,6 +70,7 @@ describe('Middleware tests category <observation|rate_limits>, priority: rules',
                 expect(testFn).toBe(expectResult);
             })
         })
+
         describe('Testing invalid context calls', () => {
 
             test('Param: <RateLimitContext> with max client calls', async () => {
@@ -100,7 +104,7 @@ describe('Middleware tests category <observation|rate_limits>, priority: rules',
     describe('Ruleset: <UsersBurstLimitRule>', () => {
 
         describe('Testing valid context calls', () => {
-    
+
             test('Param: <RateLimitContext> with valid number of user calls', async () => {
                 const ruleUBL = new UsersBurstLimitRule(3);
                 const mockContext = structuredClone(mockBurstContext);
@@ -114,7 +118,7 @@ describe('Middleware tests category <observation|rate_limits>, priority: rules',
         })
 
         describe('Testing invalid context calls', () => {
-    
+
             test('Param: <RateLimitContext> with max user calls', async () => {
                 const ruleUBL = new UsersBurstLimitRule(3);
                 const mockContext = structuredClone(mockBurstContext);
@@ -169,20 +173,28 @@ describe('Middleware tests category <observation|rate_limits>, priority: rules',
                 expect(testFn).toBe(expectResult);
             })
         })
+
         describe('Testing invalid context calls', () => {
 
             test('Param: <RateLimitContext> number of calls beyond daily limit', async () => {
                 const ruleCDL = new ClientsDailyLimitRule(+secrets.RATELIMITS_CLIENTSDAILYLIMIT);
                 const mockCount = +secrets.RATELIMITS_CLIENTSDAILYLIMIT;
+                const testParam_data = structuredClone(mockParam_data);
+                Object.assign(testParam_data, { clients: { flag: null }});
 
                 jest.spyOn(rateLimitsService, 'getRateLimitCount').mockResolvedValue(mockCount);
                 jest.spyOn(Utils, 'getNextDayUTC').mockReturnValue(mockRetryAfter);
 
                 const expectResult: RateLimitsResponse = {
                     msg: 'support-ratelimits-clients-daily',
-                    retryAfter: mockRetryAfter
+                    retryAfter: mockRetryAfter,
+                    penalty: {
+                        type: Violation.CLIENTSFLAG,
+                        id: 'valid_clients_test_id',
+                        penaltyValue: null
+                    }
                 };
-                const testFn = await ruleCDL.check(mockParam_data);
+                const testFn = await ruleCDL.check(testParam_data);
 
                 expect(testFn).toMatchObject(expectResult);
             })
@@ -215,20 +227,28 @@ describe('Middleware tests category <observation|rate_limits>, priority: rules',
                 expect(testFn).toBe(expectResult);
             })
         })
+
         describe('Testing invalid context calls', () => {
 
             test('Param: <RateLimitContext> number of calls beyond daily limit', async () => {
                 const ruleUDL = new UsersDailyLimitRule(+secrets.RATELIMITS_USERSDAILYLIMIT);
                 const mockCount = +secrets.RATELIMITS_USERSDAILYLIMIT;
+                const testParam_data = structuredClone(mockParam_data);
+                Object.assign(testParam_data, { users: { flag: null }});
 
                 jest.spyOn(rateLimitsService, 'getRateLimitCount').mockResolvedValue(mockCount);
                 jest.spyOn(Utils, 'getNextDayUTC').mockReturnValue(mockRetryAfter);
 
                 const expectResult: RateLimitsResponse = {
                     msg: 'support-ratelimits-users-daily',
-                    retryAfter: mockRetryAfter
+                    retryAfter: mockRetryAfter,
+                    penalty: {
+                        type: Violation.USERSFLAG,
+                        id: 'valid_users_test_id',
+                        penaltyValue: null
+                    }
                 };
-                const testFn = await ruleUDL.check(mockParam_data);
+                const testFn = await ruleUDL.check(testParam_data);
 
                 expect(testFn).toMatchObject(expectResult);
             })
@@ -261,6 +281,7 @@ describe('Middleware tests category <observation|rate_limits>, priority: rules',
                 expect(testFn).toBe(expectResult);
             })
         })
+
         describe('Testing invalid context calls', () => {
 
             test('Param: <RateLimitContext> number of calls beyond daily limit', async () => {
@@ -275,6 +296,53 @@ describe('Middleware tests category <observation|rate_limits>, priority: rules',
                     retryAfter: mockRetryAfter
                 };
                 const testFn = await ruleTDL.check();
+
+                expect(testFn).toMatchObject(expectResult);
+            })
+        })
+    })
+
+    describe('Ruleset: <DemoDailyLimitRule>', () => {
+
+        describe('Testing valid context calls', () => {
+
+            test('Param: <RateLimitContext> number of calls within daily limit', async () => {
+                const ruleDDL = new DemoDailyLimitRule(+secrets.DEMOLIMITS_TOTALDAILYLIMIT);
+                const mockCount = +(secrets.DEMOLIMITS_TOTALDAILYLIMIT) - 1;
+
+                jest.spyOn(demoLimitsService, 'getDemoLimitCount').mockResolvedValue(mockCount);
+                const expectResult = null;
+                const testFn = await ruleDDL.check();
+
+                expect(testFn).toBe(expectResult);
+            })
+
+            test('Param: <RateLimitContext> no existing entry', async () => {
+                const ruleDDL = new DemoDailyLimitRule(+secrets.DEMOLIMITS_TOTALDAILYLIMIT);
+                const mockCount = 0;
+
+                jest.spyOn(demoLimitsService, 'getDemoLimitCount').mockResolvedValue(mockCount);
+                const expectResult = null;
+                const testFn = await ruleDDL.check();
+
+                expect(testFn).toBe(expectResult);
+            })
+        })
+
+        describe('Testing invalid context calls', () => {
+
+            test('Param: <RateLimitContext> number of calls beyond daily limit', async () => {
+                const ruleDDL = new DemoDailyLimitRule(+secrets.DEMOLIMITS_TOTALDAILYLIMIT);
+                const mockCount = +secrets.DEMOLIMITS_TOTALDAILYLIMIT;
+
+                jest.spyOn(demoLimitsService, 'getDemoLimitCount').mockResolvedValue(mockCount);
+                jest.spyOn(Utils, 'getNextDayUTC').mockReturnValue(mockRetryAfter);
+
+                const expectResult: RateLimitsResponse = {
+                    msg: 'support-demolimits-total-daily',
+                    retryAfter: mockRetryAfter
+                };
+                const testFn = await ruleDDL.check();
 
                 expect(testFn).toMatchObject(expectResult);
             })

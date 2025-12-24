@@ -9,7 +9,7 @@ import {
 import * as Utils from '../../../src/utils/common.utils';
 import * as MockUtils from "../../common.test-utils";
 import request from 'supertest';
-import { DBTestSetup } from "../db-container.setup";
+import { DBTestSetup } from "../../db-container.setup";
 import { runMigrations } from '../../db-migrations.setup';
 import { TicketStatus } from "../../../src/utils/enums/ticket-status.enum";
 import { Flag } from "../../../src/utils/enums/flag.enum";

@@ -72,3 +72,18 @@ export function mapArrayTimestamps<T>(data: T[], timeMapTargets: string[]): T[] 
     })
     return data as T[];
 }
+
+export function getNextRankEnumValue<T extends Record<string, any>>(enumObj: T, value: T[keyof T] | null): T[keyof T] {
+    const values = Object.values(enumObj);
+    if(value === null) {
+        return values[0];
+    }
+
+    const index = values.indexOf(value);
+
+    if(index === -1 || index === values.length - 1) {
+        return values[values.length - 1];
+    }
+
+    return values[index + 1];
+}

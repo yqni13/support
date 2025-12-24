@@ -4,8 +4,9 @@ import * as MockUtils from "../../common.test-utils";
 import { Users } from "../../../src/repositories/interfaces/users.entity.interface";
 import { UserStatus } from "../../../src/utils/enums/user-status.enum";
 import usersRepository from "../../../src/repositories/users.repository";
-import { UsersUpdateDTO } from "../../../src/dtos/users.dto";
+import { UsersUpdateDTO, UsersFlagUpdateDTO } from "../../../src/dtos/users.dto";
 import { DBQueryErrorException } from "../../../src/utils/exceptions/db.exception";
+import { Flag } from "../../../src/utils/enums/flag.enum";
 
 jest.mock("../../../src/configs/db", () => {
     return {
@@ -37,8 +38,9 @@ describe('Database tests table <users>, priority: findById', () => {
         });
 
         test('Return data for existing entry, params: valid <id>', async () => {
-            const mockResult: Users = structuredClone(mockData);
             const mockParam_id = 'valid_users_test_id';
+
+            const mockResult: Users | null = structuredClone(mockData);
             const mockClient = MockUtils.mapMockDbClient(mockResult);
             const testFn = await usersRepository.findById(mockParam_id);
 
@@ -52,7 +54,8 @@ describe('Database tests table <users>, priority: findById', () => {
 
         test('Return null for non-existing entry, params: non-existing <id>', async () => {
             const mockParam_id = 'non-existing_users_test_id';
-            const mockResult = null;
+            const mockResult: Users | null = null;
+
             const mockClient = MockUtils.mapMockDbClient(mockResult);
             const testFn = await usersRepository.findById(mockParam_id);
 
@@ -69,8 +72,9 @@ describe('Database tests table <users>, priority: findById', () => {
 
         test('Throw DBQueryErrorException by catch-block', async () => {
             const mockParam_id = 'error_users_test_id';
+
             const mockErrorMsg = "DB ERROR ON SELECT QUERY";
-            const mockResult = null;
+            const mockResult: Users | null = null;
             jest.spyOn(Utils, "logError").mockReturnValue();
             const _ = MockUtils.mapMockDbClient(mockResult, mockBoolean, mockErrorMsg);
 
@@ -364,6 +368,71 @@ describe('Database tests table <users>, priority: udpate', () => {
             const _ = MockUtils.mapMockDbClient(mockResult, mockBoolean, mockErrorMsg);
 
             await expect(() => usersRepository.update(mockParam_id, mockParam_dto))
+                .rejects.toThrow(expectExceptionResult);
+        })
+    })
+})
+
+describe('Database tests table <users>, priority: udpateFlag', () => {
+
+    let sql: string;
+    let mockParam_dto: UsersFlagUpdateDTO;
+    beforeEach(() => {
+        sql = `UPDATE`;
+        mockParam_dto = {
+            flag: Flag.WARNING,
+            last_modified: mockTimestamp
+        };
+    });
+
+    describe('Testing valid fn calls', () => {
+
+        test('Return data of changed entry by valid id', async () => {
+            const mockParam_id = 'valid_users_test_id';
+            const mockValues = [mockParam_dto.flag, mockParam_dto.last_modified, mockParam_id];
+
+            const mockResult: Users = structuredClone(mockData);
+            mockResult.flag = Flag.WARNING;
+
+            const mockClient = MockUtils.mapMockDbClient(mockResult);
+            const testFn = await usersRepository.updateFlag(mockParam_id, mockParam_dto);
+
+            expect(testFn).toEqual(mockResult);
+            expect(DBConnection.getInstance).toHaveBeenCalled();
+            expect(mockClient.query).toHaveBeenCalledWith(
+                expect.stringContaining(sql),
+                expect.arrayContaining(mockValues)
+            );
+        })
+
+        test('Return null for no entries by non-existing id', async () => {
+            const mockParam_id = 'non-existing_users_test_id';
+            const mockValues = [mockParam_dto.flag, mockParam_dto.last_modified, mockParam_id];
+
+            const mockResult = null;
+
+            const mockClient = MockUtils.mapMockDbClient(mockResult);
+            const testFn = await usersRepository.updateFlag(mockParam_id, mockParam_dto);
+
+            expect(testFn).toEqual(mockResult);
+            expect(DBConnection.getInstance).toHaveBeenCalled();
+            expect(mockClient.query).toHaveBeenCalledWith(
+                expect.stringContaining(sql),
+                expect.arrayContaining(mockValues)
+            );
+        })
+    })
+
+    describe('Testing invalid fn calls', () => {
+
+        test('Throw DBQueryErrorException by catch-block', async () => {
+            const mockParam_id = 'error_users_test_id';
+            const mockErrorMsg = "DB ERROR ON UPDATE QUERY";
+            const mockResult = null;
+            jest.spyOn(Utils, "logError").mockReturnValue();
+            const _ = MockUtils.mapMockDbClient(mockResult, mockBoolean, mockErrorMsg);
+
+            await expect(() => usersRepository.updateFlag(mockParam_id, mockParam_dto))
                 .rejects.toThrow(expectExceptionResult);
         })
     })

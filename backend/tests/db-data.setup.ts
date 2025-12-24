@@ -1,10 +1,10 @@
-import { BaseQuery } from "../../src/repositories/interfaces/common.repository.interface";
-import { ApiKeyStatus } from "../../src/utils/enums/api-key-status.enum";
-import { MaintenanceMode } from "../../src/utils/enums/maintenance-mode.enum";
-import { TicketStatus } from "../../src/utils/enums/ticket-status.enum";
-import { UserStatus } from "../../src/utils/enums/user-status.enum";
-import { secrets } from "../../src/utils/secrets.utils";
-import { default as mockId } from "../mock-data/id.mock-data.json";
+import { BaseQuery } from "../src/repositories/interfaces/common.repository.interface";
+import { ApiKeyStatus } from "../src/utils/enums/api-key-status.enum";
+import { MaintenanceMode } from "../src/utils/enums/maintenance-mode.enum";
+import { TicketStatus } from "../src/utils/enums/ticket-status.enum";
+import { UserStatus } from "../src/utils/enums/user-status.enum";
+import { secrets } from "../src/utils/secrets.utils";
+import { default as mockId } from "./mock-data/id.mock-data.json";
 
 export class DBTestData {
     private static instance: DBTestData;
@@ -16,7 +16,8 @@ export class DBTestData {
             clients: 'clients',
             users: 'users',
             tickets: 'tickets',
-            rateLimits: 'rate_limits'
+            rateLimits: 'rate_limits',
+            demoLimits: 'demo_limits'
         };
     }
 
@@ -47,10 +48,10 @@ export class DBTestData {
 
     getClientsInsertSql(): BaseQuery {
         const sql = `INSERT INTO ${this.tableRecord['clients']}
-        (client_id, name, api_key_hash, status, last_use, last_modified, created_on)
-        VALUES ($1, $2, $3, $4, $5, $6, $7);
+        (client_id, name, api_key_hash, status, flag, last_use, last_modified, created_on)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8);
         `;
-        const values = [mockId.clients.valid[0], 'TESTCLIENT', secrets.TEST_APIKEY_HASH, ApiKeyStatus.ACTIVE, '2025-01-01T14:00:02.000Z', '2025-01-01T14:00:02.000Z', '2025-01-01T14:00:02.000Z'];
+        const values = [mockId.clients.valid[0], 'TESTCLIENT', secrets.TEST_APIKEY_HASH, ApiKeyStatus.ACTIVE, null, '2025-01-01T14:00:02.000Z', '2025-01-01T14:00:02.000Z', '2025-01-01T14:00:02.000Z'];
         return { sql: sql, values: values };
     }
 
@@ -79,5 +80,14 @@ export class DBTestData {
         `;
         const values = [mockId.clients.valid[0], mockId.users.valid[0], '2025-01-01', 1, '2025-01-01T14:00:05.000Z'];
         return { sql: sql, values: values };
+    }
+
+    getDemoLimitsInsertSql(): BaseQuery {
+        const sql = `INSERT INTO ${this.tableRecord['demoLimits']}
+        (day, count, last_modified)
+        VALUES ($1, $2, $3);
+        `;
+        const values = ['2025-01-01', 1, '2025-01-01T14:00:06.000Z'];
+        return { sql: sql, values: values }; 
     }
 }

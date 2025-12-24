@@ -75,6 +75,8 @@ export class DBTestSetup {
             await this.client.query(ticketData.sql, ticketData.values);
             const rateLimitData = dbTestData.getRateLimitsInsertSql();
             await this.client.query(rateLimitData.sql, rateLimitData.values);
+            const demoLimitData = dbTestData.getDemoLimitsInsertSql();
+            await this.client.query(demoLimitData.sql, demoLimitData.values);
             await this.client.query('COMMIT');
         } catch (err: any) {
             await this.client.query('ROLLBACK');
