@@ -3,7 +3,7 @@ name: support
 services:
   app:
     container_name: app_support
-    image: yqni13/support:v1.0.5 # keep version up-to-date
+    image: yqni13/support:v1.0.6 # keep version up-to-date
     build:
       context: .
       target: dev

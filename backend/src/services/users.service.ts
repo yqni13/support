@@ -1,4 +1,10 @@
-import { UsersUpdateDTO, UsersFilterDTO, UsersResponseDTO, UsersCreateDTO } from "../dtos/users.dto";
+import {
+    UsersUpdateDTO,
+    UsersFilterDTO,
+    UsersResponseDTO,
+    UsersCreateDTO,
+    UsersFlagUpdateDTO
+} from "../dtos/users.dto";
 import usersRepository from "../repositories/users.repository";
 import * as Utils from "../utils/common.utils";
 import usersModel from "../models/users.model";
@@ -40,6 +46,12 @@ class UsersService {
     async updateUser(id: string, dto: UsersUpdateDTO): Promise<UsersResponseDTO | null> {
         dto.last_modified = Utils.getTimestampUTC();
         const result = await usersRepository.update(id, dto);
+        return !result ? null : Utils.mapObjTimestamps<UsersResponseDTO>(result, this.timeMapTargets);
+    }
+
+    async updateUserFlag(id: string, dto: UsersFlagUpdateDTO): Promise<UsersResponseDTO | null> {
+        dto.last_modified = Utils.getTimestampUTC();
+        const result = await usersRepository.updateFlag(id, dto);
         return !result ? null : Utils.mapObjTimestamps<UsersResponseDTO>(result, this.timeMapTargets);
     }
 }

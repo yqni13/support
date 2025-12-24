@@ -27,9 +27,14 @@ module.exports = {
 
 Since a central db is in use for this project, the migration can be executed locally.
 
-Set connection string as environment variable by the following command in powershell:
+Set connection string as environment variable by the following command in powershell<br>
+local database:
 ```sh
 path> $env:DATABASE_URL = "postgresql://<user>:<password>@<host>:<port>/<db>"
+```
+hosted database (like Neon):
+```sh
+path> $env:DATABASE_URL = "postgresql://<user>:<password>@<host>/<db>?sslmode=require"
 ```
 
 (direction: 'up' or 'down')
