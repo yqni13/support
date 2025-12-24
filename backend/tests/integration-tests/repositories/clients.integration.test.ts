@@ -20,6 +20,8 @@ import { Clients } from "../../../src/repositories/interfaces/clients.entity.int
 import { CommonExceptionMessage } from "../../../src/utils/enums/common-exception-messages.enum";
 import { default as mockId } from "../../mock-data/id.mock-data.json";
 import { secrets } from "../../../src/utils/secrets.utils";
+import { Flag } from "../../../src/utils/enums/flag.enum";
+import clientsService from "../../../src/services/clients.service";
 
 jest.mock('../../../src/middleware/auth.admin.middleware', () => ({
     authAdmin: jest.fn(() =>  (req: Request, res: Response, next: NextFunction) => next())
@@ -29,8 +31,6 @@ jest.mock('../../../src/middleware/maintenance.middleware', () => ({
 }));
 
 import app from '../../../src/app';
-import { Flag } from "../../../src/utils/enums/flag.enum";
-import clientsService from "../../../src/services/clients.service";
 
 jest.setTimeout(60000);
 const testTimestamp = '2025-01-01T14:00:02.000Z';
@@ -43,13 +43,12 @@ describe('Integration test (repository specific), priority: Clients', () => {
     beforeAll(async () => {
         dbTestSetup = new DBTestSetup();
         await dbTestSetup.init();
-        MockUtils.disableConsoleMessages(); // Surpress multiple messages (migration progress etc). Disable to debug.
+        MockUtils.disableConsoleMessages();
         await runMigrations('clients.integration.test.ts');
         apiUrl = '/api/v1/clients';
     });
 
     beforeEach(async () => {
-        // Clean tables before each test to fill test data individually.
         await dbTestSetup.clearTables();
     });
 

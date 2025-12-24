@@ -51,7 +51,7 @@ describe('Database tests table <clients>, priority: findById', () => {
         });
 
         test('Return data for existing entry, params: <id>', async () => {
-            const mockResult: Clients = structuredClone(mockData);
+            const mockResult: Clients | null = structuredClone(mockData);
             const mockClient = MockUtils.mapMockDbClient(mockResult);
             const testFn = await clientsRepository.findById(mockVar_id);
 
@@ -65,9 +65,9 @@ describe('Database tests table <clients>, priority: findById', () => {
 
         test('Return null for non-existing entry, params: <id>', async () => {
             const mockParam_id = 'non-existing_clients_test_id';
-            const mockResult = null;
+            const mockResult: Clients | null = null;
             const mockClient = MockUtils.mapMockDbClient(mockResult);
-            const testFn = await clientsRepository.findByActiveKey(mockParam_id);
+            const testFn = await clientsRepository.findById(mockParam_id);
 
             expect(testFn).toEqual(mockResult);
             expect(DBConnection.getInstance).toHaveBeenCalled();
@@ -83,7 +83,7 @@ describe('Database tests table <clients>, priority: findById', () => {
         test('Throw DBQueryErrorException by catch-block', async () => {
             const mockParam_id = 'invalid_clients_test_id';
             const mockErrorMsg = "DB ERROR ON SELECT QUERY";
-            const mockResult = null;
+            const mockResult: Clients | null = null;
             jest.spyOn(Utils, "logError").mockReturnValue();
             const _ = MockUtils.mapMockDbClient(mockResult, mockBoolean, mockErrorMsg);
 
@@ -345,7 +345,7 @@ describe('Database tests table <clients>, priority: updateFlag', () => {
             const mockParam_id = 'valid_clients_test_id';
             const mockValues = [mockParam_dto.flag, mockTimestamp, mockParam_id];
 
-            const mockResult: ClientsFlagResponseDTO = {
+            const mockResult: ClientsFlagResponseDTO | null = {
                 client_id: mockParam_id,
                 flag: Flag.WARNING,
                 last_use: mockTimestamp,
@@ -367,7 +367,7 @@ describe('Database tests table <clients>, priority: updateFlag', () => {
             const mockParam_id = 'non-existing_clients_test_id';
             const mockValues = [mockParam_dto.flag, mockTimestamp, mockParam_id];
 
-            const mockResult = null;
+            const mockResult: ClientsFlagResponseDTO | null = null;
             const mockClient = MockUtils.mapMockDbClient(mockResult);
             const testFn = await clientsRepository.updateFlag(mockParam_id, mockParam_dto);
 
@@ -385,7 +385,7 @@ describe('Database tests table <clients>, priority: updateFlag', () => {
         test('Throw DBQueryErrorException by catch-block', async () => {
             const mockParam_id = 'error_clients_test_id';
             const mockErrorMsg = "DB ERROR ON UPDATE QUERY";
-            const mockResult = null;
+            const mockResult: ClientsFlagResponseDTO | null = null;
             jest.spyOn(Utils, "logError").mockReturnValue();
             const _ = MockUtils.mapMockDbClient(mockResult, mockBoolean, mockErrorMsg);
 

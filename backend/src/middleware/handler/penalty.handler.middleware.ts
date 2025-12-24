@@ -44,6 +44,5 @@ export class UsersFlagPenalty implements PenaltyApply<Extract<PenaltyContext, { 
         const id = context.id;
         const dto: UsersFlagUpdateDTO = { flag: getNextRankEnumValue(Flag, context.penaltyValue) };
         await usersService.updateUserFlag(id, dto);
-        // TODO(yqni13): add mail notification (SUPPORT-49)
     }
 }

@@ -12,7 +12,7 @@ export interface ICreateRepository<T> {
 }
 
 export interface IUpdateFlagRepository<T> {
-    updateFlag(id: string|number, dto: Partial<T>): Promise<T | null>;
+    updateFlag(id: string | number, dto: Partial<T>): Promise<T | null>;
 }
 
 export interface IDeleteRepository {

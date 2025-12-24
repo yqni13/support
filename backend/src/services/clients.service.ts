@@ -52,8 +52,7 @@ class ClientsService {
     async updateClientFlag(id: string, dto: ClientsFlagUpdateDTO): Promise<ClientsFlagResponseDTO | null> {
         dto.last_modified = Utils.getTimestampUTC();
         const result = await clientsRepository.updateFlag(id, dto);
-        // TODO(yqni13): customized mappers necessary or mapObjTimestamps all we need?
-        return !result ? null : Utils.mapObjTimestamps<Clients>(result, this.timeMapTargets);
+        return !result ? null : Utils.mapObjTimestamps<ClientsFlagResponseDTO>(result, this.timeMapTargets);
     }
 
     async updateClientStatus(id: string, dto: ClientsStatusUpdateDTO): Promise<ClientsStatusResponseDTO | null> {

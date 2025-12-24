@@ -6,10 +6,7 @@ import { logError } from "../utils/common.utils";
 import { DBQueryErrorException } from "../utils/exceptions/db.exception";
 import { ICreateRepository, IUpdateFlagRepository } from "./interfaces/base.repository.interface";
 
-class ClientsRepository implements 
-ICreateRepository<Clients>,
-IUpdateFlagRepository<Clients>
-{
+class ClientsRepository implements ICreateRepository<Clients>, IUpdateFlagRepository<Clients> {
     private table: string;
 
     constructor() {
@@ -19,12 +16,12 @@ IUpdateFlagRepository<Clients>
     async findById(id: string): Promise<Clients | null> {
         const filterColumn = 'client_id';
         const sql = `SELECT * FROM ${this.table} WHERE ${filterColumn} = $1;`;
-        const values = [id];
+        const value = [id];
         const db = DBConnection.getInstance();
         let client: any;
         try {
             client = await db.connect();
-            const result: QueryResult<Clients> = await client.query(sql, values);
+            const result: QueryResult<Clients> = await client.query(sql, value);
             await db.close(client);
             return result.rows[0] ?? null;
         } catch(err: any) {

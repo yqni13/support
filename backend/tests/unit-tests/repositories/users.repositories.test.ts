@@ -38,8 +38,9 @@ describe('Database tests table <users>, priority: findById', () => {
         });
 
         test('Return data for existing entry, params: valid <id>', async () => {
-            const mockResult: Users = structuredClone(mockData);
             const mockParam_id = 'valid_users_test_id';
+
+            const mockResult: Users | null = structuredClone(mockData);
             const mockClient = MockUtils.mapMockDbClient(mockResult);
             const testFn = await usersRepository.findById(mockParam_id);
 
@@ -53,7 +54,8 @@ describe('Database tests table <users>, priority: findById', () => {
 
         test('Return null for non-existing entry, params: non-existing <id>', async () => {
             const mockParam_id = 'non-existing_users_test_id';
-            const mockResult = null;
+            const mockResult: Users | null = null;
+
             const mockClient = MockUtils.mapMockDbClient(mockResult);
             const testFn = await usersRepository.findById(mockParam_id);
 
@@ -70,8 +72,9 @@ describe('Database tests table <users>, priority: findById', () => {
 
         test('Throw DBQueryErrorException by catch-block', async () => {
             const mockParam_id = 'error_users_test_id';
+
             const mockErrorMsg = "DB ERROR ON SELECT QUERY";
-            const mockResult = null;
+            const mockResult: Users | null = null;
             jest.spyOn(Utils, "logError").mockReturnValue();
             const _ = MockUtils.mapMockDbClient(mockResult, mockBoolean, mockErrorMsg);
 

@@ -11,6 +11,7 @@ import { UserStatus } from "../../../src/utils/enums/user-status.enum";
 import { Flag } from "../../../src/utils/enums/flag.enum";
 import { default as mockId } from "../../mock-data/id.mock-data.json";
 import { CommonExceptionMessage } from "../../../src/utils/enums/common-exception-messages.enum";
+import usersService from "../../../src/services/users.service";
 
 jest.mock('../../../src/middleware/auth.admin.middleware', () => ({
     authAdmin: jest.fn(() =>  (req: Request, res: Response, next: NextFunction) => next())
@@ -20,7 +21,6 @@ jest.mock('../../../src/middleware/maintenance.middleware', () => ({
 }));
 
 import app from '../../../src/app';
-import usersService from "../../../src/services/users.service";
 
 jest.setTimeout(60000);
 const testTimestamp = '2025-01-01T14:00:03.000Z';

@@ -20,7 +20,7 @@ describe('Middleware tests category <handlers>, priority: PenaltyHandler', () =>
     beforeAll(async () => {
         dbTestSetup = new DBTestSetup();
         await dbTestSetup.init();
-        MockUtils.disableConsoleMessages(); // Surpress multiple messages (migration progress etc). Disable to debug.
+        MockUtils.disableConsoleMessages();
         await runMigrations('penalty.integration.test.ts');
     });
 
