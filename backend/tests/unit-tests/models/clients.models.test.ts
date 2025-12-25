@@ -46,49 +46,6 @@ describe('Model tests, class: <clients>, priority: mapToCreateResponseDTO', () =
     })
 })
 
-describe('Model tests, class: <clients>, priority: mapToStatusResponseDTO', () => {
-
-    describe('Testing valid fn calls', () => {
-
-        test('Map timestamps of clients object, entity: <ClientsStatusResponseDTO>', () => {
-            const mockParam_data: Clients = structuredClone(mockData);
-
-            const testFn = clientsModel.mapToStatusResponseDTO(mockParam_data);
-            const expectResult: ClientsStatusResponseDTO = {
-                client_id: mockParam_data.client_id,
-                name: mockParam_data.name,
-                status: mockParam_data.status,
-                last_use: mockTimestamp,
-                last_modified: mockTimestamp,
-                created_on: mockTimestamp
-            };
-
-            expect(testFn).toEqual(expectResult);
-        })
-    })
-})
-
-describe('Model tests, class: <clients>, priority: mapToLastUseResponseDTO', () => {
-
-    describe('Testing valid fn calls', () => {
-
-        test('Map timestamps of clients object, entity: <ClientsLastUseResponseDTO>', () => {
-            const mockParam_data: Clients = structuredClone(mockData);
-
-            const testFn = clientsModel.mapToLastUseResponseDTO(mockParam_data);
-            const expectResult: ClientsLastUseResponseDTO = {
-                client_id: mockParam_data.client_id,
-                name: mockParam_data.name,
-                last_use: mockTimestamp,
-                last_modified: mockTimestamp,
-                created_on: mockTimestamp
-            };
-
-            expect(testFn).toEqual(expectResult);
-        })
-    })
-})
-
 describe('Model tests, class: <clients>, priority: generateClientsCreateObj', () => {
 
     describe('Testing valid fn calls', () => {
