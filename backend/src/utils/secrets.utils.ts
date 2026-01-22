@@ -1,8 +1,11 @@
 import { Config } from'../configs/config';
 import { AuthSecretNotFoundException } from'./exceptions/auth.exception';
+import path from 'path';
 import fs from "fs";
 
 class Secrets {
+    readonly APP_VERSION: string;
+    readonly APP_META: Record<string, string>;
     readonly ADMIN_API: string;
     readonly ENV_MODE: string;
     readonly PORT: number;
@@ -35,6 +38,8 @@ class Secrets {
     private static _instance: Secrets;
 
     private constructor() {
+        this.APP_VERSION = this.getAppVersion();
+        this.APP_META = this.getAppMeta();
         this.ADMIN_API = this.setAdminApi();
         this.ENV_MODE = this.setEnvMode();
         this.PORT = this.setPort();
@@ -70,6 +75,16 @@ class Secrets {
             Secrets._instance = new Secrets();
         }
         return Secrets._instance;
+    }
+
+    private getAppVersion() {
+        let packageJSON = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../../package.json'), 'utf-8'));
+        return !packageJSON ? '0.0.0' : packageJSON.version;
+    }
+
+    private getAppMeta() {
+        let packageJSON = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../../package.json'), 'utf-8'));
+        return !packageJSON ? null : packageJSON.appMeta;
     }
 
     private setAdminApi() {

@@ -1,5 +1,5 @@
 # yqni13 | support
-$\texttt{\color{teal}{v0.12.1}}$
+$\texttt{\color{teal}{v1.0.0-beta.1}}$
 
 
 <br>
@@ -54,10 +54,10 @@ The development process is structured by the TDD (test driven development) princ
 ### $\textsf{\color{teal}Logging}$
 
 To monitor errors the logging framework `Winston` is used in combination with Logtail from `Betterstack` as a Singleton: [config](./backend/src/logger/config.logger.ts)
-<br>While working within local (DEV) or test environment, error messages are logged into the consoles. For the deployed environments (STAG/PROD) the logging is set to send logtails to Betterstack (longer storage time than app-hosting service). For easy access and monitoring of error messages, the Betterstack UI client dashboard comes in handy (see Figure 1). 
+<br>While working within local (DEV) or test environment, error messages are logged into the consoles. For the deployed environments (STAG/PROD) the logging is set to send logtails to Betterstack (longer storage time than app-hosting service). For easy access and monitoring of error messages, the Betterstack UI client dashboard comes in handy (see Figure 1). Additional meta data (environment + version numbers) help identifying and assigning errors.
 <div align="center">
     <img src="assets/img/betterstack_logging.png" alt="&nbsp;Betterstack logging dashboard">
-    Figure 1 - Betterstack logging dashboard, v0.9.4
+    Figure 1 - Betterstack logging dashboard, v1.0.0-beta.1
 </div>
 
 <br>
@@ -124,8 +124,14 @@ Preventing an unwanted merge with unfinished/failed test run, the project is set
 
 ### $\textsf{\color{forestgreen}last update:}$
 
-$\textsf{[v0.12.0\ =>\ {\textbf{\color{brown}v0.12.1}]}}$ app<br>
-- $\textsf{\color{orange}Patch:}$ Refactored clients response mapping.
+$\textsf{[v0.12.1\ =>\ {\textbf{\color{brown}v1.0.0-beta.1}]}}$ app<br>
+$\textsf{[v1.5.1\ =>\ {\textbf{\color{brown}v1.5.2}]}}$ database
+- $\textsf{\color{teal}Addition:}$ Added version based data to file 'package.json' for main usage (static in-memory) => first official beta version 🎉.
+- $\textsf{\color{orange}Patch:}$ Updated:
+  + logger to use version data in central configuration (defaultMeta).
+  + version validation to enable pre-release structures (SemVer Specification 9).
+  + maintenance mode options (additional mode for blocking by penalty for traffic).
+  + migration to add 'maintenance_mode' to table 'meta' with the new correct default value ('E-000' => 'A-000').
 
 <br>
 
