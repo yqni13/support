@@ -10,8 +10,8 @@ export function maintain() {
         try {
             let mode = await metaService.getMaintenanceMode('support');
             mode = !mode ? null : mode as MaintenanceResponseDTO;            
-            if(!mode || mode.maintenance_mode !== MaintenanceMode.E000) {
-                throw new MaintenanceException(!mode ? MaintenanceMode.D013 : mode.maintenance_mode);
+            if(!mode || mode.maintenance_mode !== MaintenanceMode.A000) {
+                throw new MaintenanceException(!mode ? MaintenanceMode.E013 : mode.maintenance_mode);
             }
             next();
         } catch(err: any) {

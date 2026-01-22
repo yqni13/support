@@ -18,7 +18,7 @@ describe('Middleware tests category <common>, priority: maintain', () => {
             id: 1,
             app: 'support',
             build_on: mockTimestamp,
-            maintenance_mode: MaintenanceMode.E000,
+            maintenance_mode: MaintenanceMode.A000,
             created_on: mockTimestamp,
             last_modified: mockTimestamp
         }
@@ -27,7 +27,7 @@ describe('Middleware tests category <common>, priority: maintain', () => {
 
     describe('Testing valid fn calls', () => {
 
-        test('Verify maintenance status, result: "E-000"', async () => {
+        test('Verify maintenance status, result: "A-000"', async () => {
             jest.spyOn(metaService, 'getMaintenanceMode').mockResolvedValue(mockMaintenanceResponse);
 
             // middleware == factory fn returning express fn => fn(req, res, next)
@@ -52,9 +52,9 @@ describe('Middleware tests category <common>, priority: maintain', () => {
             expect(errArg.status).toBe(ErrorStatusCodes.MaintenanceException);
         })
 
-        test('Validate req.body, error: MaintenanceException by "A-008"', async () => {
+        test('Validate req.body, error: MaintenanceException by "M-008"', async () => {
             const mockResponse = structuredClone(mockMaintenanceResponse) as MaintenanceResponseDTO;
-            mockResponse['maintenance_mode'] = MaintenanceMode.A008;
+            mockResponse['maintenance_mode'] = MaintenanceMode.M008;
 
             jest.spyOn(metaService, 'getMaintenanceMode').mockResolvedValue(mockResponse);
             jest.spyOn(Utils, 'logError').mockImplementation();
@@ -67,9 +67,24 @@ describe('Middleware tests category <common>, priority: maintain', () => {
             expect(errArg.status).toBe(ErrorStatusCodes.MaintenanceException);
         })
 
-        test('Validate req.body, error: MaintenanceException by "D-013"', async () => {
+        test('Validate req.body, error: MaintenanceException by "E-013"', async () => {
             const mockResponse = structuredClone(mockMaintenanceResponse) as MaintenanceResponseDTO;
-            mockResponse['maintenance_mode'] = MaintenanceMode.D013;
+            mockResponse['maintenance_mode'] = MaintenanceMode.E013;
+
+            jest.spyOn(metaService, 'getMaintenanceMode').mockResolvedValue(mockResponse);
+            jest.spyOn(Utils, 'logError').mockImplementation();
+
+            const middleware = maintain();
+            await middleware(req, res, next);
+
+            const errArg = next.mock.calls[0][0];
+            expect(errArg).toBeInstanceOf(MaintenanceException);
+            expect(errArg.status).toBe(ErrorStatusCodes.MaintenanceException);
+        })
+
+        test('Validate req.body, error: MaintenanceException by "T-011"', async () => {
+            const mockResponse = structuredClone(mockMaintenanceResponse) as MaintenanceResponseDTO;
+            mockResponse['maintenance_mode'] = MaintenanceMode.T011;
 
             jest.spyOn(metaService, 'getMaintenanceMode').mockResolvedValue(mockResponse);
             jest.spyOn(Utils, 'logError').mockImplementation();

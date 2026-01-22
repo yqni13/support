@@ -1,7 +1,8 @@
-export type MaintenanceMode = 'A-008' | 'D-013' | 'E-000';
+export type MaintenanceMode = 'A-000' | 'E-013' | 'M-008' | 'T-011';
 
 export const MaintenanceMode = {
-    A008: 'A-008' as MaintenanceMode, // application blocked (in maintenance)
-    D013: 'D-013' as MaintenanceMode, // application blocked (error)
-    E000: 'E-000' as MaintenanceMode  // application working
+    A000: 'A-000' as MaintenanceMode, // application working
+    E013: 'E-013' as MaintenanceMode, // application blocked (ERROR)
+    M008: 'M-008' as MaintenanceMode, // application blocked (ERROR_MAINTENANCE)
+    T011: 'T-011' as MaintenanceMode, // application blocked (ERROR_TRAFFIC)
 }

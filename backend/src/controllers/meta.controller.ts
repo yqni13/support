@@ -62,9 +62,9 @@ class MetaController {
     async patchMaintenanceMode(req: Request, res: Response, next: NextFunction) {
         try {
             checkValidation(req);
-            const name: string = req.params.name;
+            const id: number = +req.params.id;
             const dto: MaintenanceUpdateDTO = req.body;
-            const response: MaintenanceResponseDTO | null = await metaService.updateMaintenanceMode(name, dto);
+            const response: MaintenanceResponseDTO | null = await metaService.updateMaintenanceMode(id, dto);
             res.json(response);
         } catch(err: any) {
             next(err);
