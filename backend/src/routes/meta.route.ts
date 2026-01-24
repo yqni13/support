@@ -57,7 +57,7 @@ router.put(
 
 // updateMaintenance
 router.put(
-    '/maintenance/:name',
+    '/maintenance/:id',
     authAdmin(), requirePayload(),
     updateMaintainSchema,
     factory(metaController.patchMaintenanceMode)

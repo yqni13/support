@@ -44,13 +44,13 @@ export const patchMetaSchema: ValidationChain[] = [
         .notEmpty()
         .withMessage(Message.REQUIRED)
         .bail()
-        .custom((val) => CustomValidator.validateVersionStructure(val, 2)),
+        .custom((val) => CustomValidator.validateVersionStructure(val)),
     body('db_version')
         .trim()
         .notEmpty()
         .withMessage(Message.REQUIRED)
         .bail()
-        .custom((val) => CustomValidator.validateVersionStructure(val, 2)),
+        .custom((val) => CustomValidator.validateVersionStructure(val)),
     body('docker_image')
         .trim()
         .notEmpty()
@@ -60,13 +60,13 @@ export const patchMetaSchema: ValidationChain[] = [
         .notEmpty()
         .withMessage(Message.REQUIRED)
         .bail()
-        .custom((val) => CustomValidator.validateVersionStructure(val, 2)),
+        .custom((val) => CustomValidator.validateVersionStructure(val)),
     body('jenkins_version')
         .trim()
         .notEmpty()
         .withMessage(Message.REQUIRED)
         .bail()
-        .custom((val) => CustomValidator.validateVersionStructure(val, 2)),
+        .custom((val) => CustomValidator.validateVersionStructure(val)),
     body('last_modified')
         .isEmpty()
         .withMessage(Message.FORBIDDEN)
@@ -78,8 +78,11 @@ export const getMaintenanceSchema: ValidationChain[] = [
 ];
 
 export const patchMaintenanceSchema: ValidationChain[] = [
-    param('name')
-        .custom((content: string) => CustomValidator.validatePathParam(content)),
+    param('id')
+        .custom((content: string) => CustomValidator.validatePathParam(content))
+        .bail()
+        .isInt()
+        .withMessage('support-invalid-entry#meta_id'),
     body('maintenance_mode')
         .trim()
         .notEmpty()

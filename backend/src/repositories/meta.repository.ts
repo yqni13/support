@@ -129,14 +129,14 @@ class MetaRepository implements IBaseRepository<Meta>, IFindRepository<Meta> {
         }
     }
 
-    async updateMaintenance(name: string, dto: Partial<Meta>): Promise<Maintenance | null> {
-        const filterColumn = "app";
+    async updateMaintenance(id: number, dto: Partial<Meta>): Promise<Maintenance | null> {
+        const filterColumn = "id";
         const sql = `UPDATE ${this.table}
         SET maintenance_mode = $1, last_modified = $2
         WHERE ${filterColumn} = $3
         RETURNING id, app, build_on, maintenance_mode, created_on, last_modified;
         `;
-        const values = [dto.maintenance_mode, dto.last_modified, name];
+        const values = [dto.maintenance_mode, dto.last_modified, id];
         let db = DBConnection.getInstance();
         let client: any;
         try {

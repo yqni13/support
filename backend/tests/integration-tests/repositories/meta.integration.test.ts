@@ -7,10 +7,11 @@ import * as Utils from '../../../src/utils/common.utils';
 import * as MockUtils from "../../common.test-utils";
 import { ErrorStatusCodes } from '../../../src/utils/errorStatusCodes.utils';
 import { MaintenanceMode } from '../../../src/utils/enums/maintenance-mode.enum';
-import { MetaUpdateDTO } from '../../../src/dtos/meta.dto';
+import { MaintenanceUpdateDTO, MetaUpdateDTO } from '../../../src/dtos/meta.dto';
 import { CommonExceptionMessage } from '../../../src/utils/enums/common-exception-messages.enum';
 import { EnvMode } from '../../../src/utils/enums/env-mode.enum';
 import { DemoMode } from '../../../src/utils/enums/demo-mode.enum';
+import { default as mockId } from "../../mock-data/id.mock-data.json";
 
 jest.mock('../../../src/middleware/auth.admin.middleware', () => ({
     authAdmin: jest.fn(() =>  (req: Request, res: Response, next: NextFunction) => next())
@@ -46,7 +47,7 @@ describe('Integration test (repository specific), priority: Meta', () => {
             docker_image: 'no-image',
             docker_version: '0.3.0',
             jenkins_version: '0.4.0',
-            maintenance_mode: MaintenanceMode.E000,
+            maintenance_mode: MaintenanceMode.A000,
             last_modified: testTimestamp,
             created_on: testTimestamp
         }
@@ -76,7 +77,7 @@ describe('Integration test (repository specific), priority: Meta', () => {
                 docker_image: "no-image",
                 docker_version: "0.0.3",
                 jenkins_version: "0.0.4",
-                maintenance_mode: MaintenanceMode.E000,
+                maintenance_mode: MaintenanceMode.A000,
                 last_modified: testTimestamp,
                 created_on: testTimestamp
             };
@@ -102,7 +103,7 @@ describe('Integration test (repository specific), priority: Meta', () => {
                 docker_image: "no-image",
                 docker_version: "0.0.3",
                 jenkins_version: "0.0.4",
-                maintenance_mode: MaintenanceMode.E000,
+                maintenance_mode: MaintenanceMode.A000,
                 last_modified: testTimestamp,
                 created_on: testTimestamp
             };
@@ -127,7 +128,7 @@ describe('Integration test (repository specific), priority: Meta', () => {
                 docker_image: "no-image",
                 docker_version: "0.0.3",
                 jenkins_version: "0.0.4",
-                maintenance_mode: MaintenanceMode.E000,
+                maintenance_mode: MaintenanceMode.A000,
                 last_modified: testTimestamp,
                 created_on: testTimestamp
             }];
@@ -178,7 +179,7 @@ describe('Integration test (repository specific), priority: Meta', () => {
                 id: mockResult.id,
                 app: testParam_name,
                 build_on: testTimestamp,
-                maintenance_mode: MaintenanceMode.E000,
+                maintenance_mode: MaintenanceMode.A000,
                 last_modified: testTimestamp,
                 created_on: testTimestamp
             };
@@ -192,15 +193,15 @@ describe('Integration test (repository specific), priority: Meta', () => {
         })
 
         test('Repository process fn updateMaintenance, result: "Success"', async () => {
-            const testParam_name = 'support';
-            const testParam_data = { maintenance_mode: MaintenanceMode.D013 };
+            const testParam_id = mockId.meta.valid[0];
+            const testParam_data = { maintenance_mode: MaintenanceMode.E013 };
 
             // Mock Utils generated timeStamp for easy comparison.
             jest.spyOn(Utils, "getTimestampUTC").mockReturnValue(testTimestamp);
 
             const testResult: Maintenance = {
                 id: mockResult.id,
-                app: testParam_name,
+                app: 'support',
                 build_on: testTimestamp,
                 maintenance_mode: testParam_data.maintenance_mode,
                 last_modified: testTimestamp,
@@ -209,7 +210,7 @@ describe('Integration test (repository specific), priority: Meta', () => {
 
             await dbTestSetup.addTestData();
             const testResponse = await request(app)
-                .put(`${apiUrl}/maintenance/${testParam_name}`)
+                .put(`${apiUrl}/maintenance/${testParam_id}`)
                 .send(testParam_data);
 
             expect(testResponse.statusCode).toBe(200);
@@ -306,6 +307,31 @@ describe('Integration test (repository specific), priority: Meta', () => {
                     expect(testResponse.body.headers.data).toEqual([testError]);
                 })
             })
+
+            describe('Route: PUT/maintenance/:id', () => {
+
+                test('Params: <id>, validator: isInt by string', async () => {
+                    const testParam_id = 'invalid_test_id';
+                    const testParam_dto: MaintenanceUpdateDTO = {
+                        maintenance_mode: MaintenanceMode.M008
+                    };
+
+                    const testError = {
+                        type: 'field',
+                        value: testParam_id,
+                        msg: 'support-invalid-entry#meta_id',
+                        path: 'id',
+                        location: 'params'
+                    };
+
+                    const testResponse = await request(app)
+                        .put(`${apiUrl}/maintenance/${testParam_id}`)
+                        .send(testParam_dto);
+
+                    expect(testResponse.statusCode).toBe(ErrorStatusCodes.InvalidPropertiesException);
+                    expect(testResponse.body.headers.data).toEqual([testError]);
+                })
+            })
         })
 
         describe('All routes, priority: express-validators, location: <body>', () => {
@@ -389,14 +415,14 @@ describe('Integration test (repository specific), priority: Meta', () => {
             describe('Route: PUT/maintenance/:name', () => {
 
                 test('Params: <MaintenanceUpdateDTO>, validator: requirePayload by undefined', async () =>{
-                    const testParam_name = 'valid_meta_test_name';
+                    const testParam_id = mockId.meta.valid[0];
                     const testParam_dto = undefined;
                     const testError = structuredClone(mockError);
 
                     jest.spyOn(Utils, 'logError').mockImplementation();
 
                     const testResponse = await request(app)
-                        .put(`${apiUrl}/maintenance/${testParam_name}`)
+                        .put(`${apiUrl}/maintenance/${testParam_id}`)
                         .send(testParam_dto);
 
                     expect(testResponse.statusCode).toBe(ErrorStatusCodes.InvalidPropertiesException);

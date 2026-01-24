@@ -42,9 +42,9 @@ class MetaService {
         return !result ? null : Utils.mapObjTimestamps<MaintenanceResponseDTO>(result, this.timeMapTargets);
     }
 
-    async updateMaintenanceMode(name: string, dto: MaintenanceUpdateDTO): Promise<MaintenanceResponseDTO | null> {
+    async updateMaintenanceMode(id: number, dto: MaintenanceUpdateDTO): Promise<MaintenanceResponseDTO | null> {
         dto.last_modified = Utils.getTimestampUTC();
-        const result = await metaRepository.updateMaintenance(name, dto);
+        const result = await metaRepository.updateMaintenance(id, dto);
         return !result ? null : Utils.mapObjTimestamps<MaintenanceResponseDTO>(result, this.timeMapTargets);
     }
 
