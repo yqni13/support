@@ -8,6 +8,8 @@ import { logError } from "../utils/common.utils";
 export function maintain() {
     return async function (req: Request, res: Response, next: NextFunction) {
         try {
+            // TODO(yqni13): implement caching meta data (Memcached, Redis, ...) instead db-query
+            // https://www.memcached.org/
             let mode = await metaService.getMaintenanceMode('support');
             mode = !mode ? null : mode as MaintenanceResponseDTO;            
             if(!mode || mode.maintenance_mode !== MaintenanceMode.A000) {

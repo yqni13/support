@@ -1,5 +1,5 @@
 # yqni13 | support
-$\texttt{\color{teal}{v1.0.0-beta.1}}$
+$\texttt{\color{teal}{v1.0.0-beta.2}}$
 
 
 <br>
@@ -124,14 +124,10 @@ Preventing an unwanted merge with unfinished/failed test run, the project is set
 
 ### $\textsf{\color{forestgreen}last update:}$
 
-$\textsf{[v0.12.1\ =>\ {\textbf{\color{brown}v1.0.0-beta.1}]}}$ app<br>
-$\textsf{[v1.5.1\ =>\ {\textbf{\color{brown}v1.5.2}]}}$ database
-- $\textsf{\color{teal}Addition:}$ Added version based data to file 'package.json' for main usage (static in-memory) => first official beta version 🎉.
+$\textsf{[v1.0.0-beta.1\ =>\ {\textbf{\color{brown}v1.0.0-beta.2}]}}$ app
 - $\textsf{\color{orange}Patch:}$ Updated:
-  + logger to use version data in central configuration (defaultMeta).
-  + version validation to enable pre-release structures (SemVer Specification 9).
-  + maintenance mode options (additional mode for blocking by penalty for traffic).
-  + migration to add 'maintenance_mode' to table 'meta' with the new correct default value ('E-000' => 'A-000').
+  + rate-limit rule "TotalDailyLimitRule" by adding penalty
+  + penalties by adding violation for maintenance (context: traffic)
 
 <br>
 
