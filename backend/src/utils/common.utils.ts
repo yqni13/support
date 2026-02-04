@@ -7,6 +7,10 @@ import { Logger } from '../logger/config.logger';
 
 const logger = Logger.getLogger();
 
+/**
+ * @description Testable function for current Date object.
+ * @returns new Date()
+ */
 export const now = (): Date => new Date();
 
 export function generateUUID(): string {

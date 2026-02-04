@@ -3,5 +3,5 @@ export enum Violation {
     USERSFLAG = 'users-flag',
     USERSSTATUS = 'users-status',
     TICKETSFLAG = 'tickets-flag',
-    MAINTENANCE_TRAFFIC = 'maintenance-error-traffic',
+    MAINTENANCE_TRAFFIC = 'maintenance-traffic',
 }
