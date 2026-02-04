@@ -18,15 +18,11 @@ import { penaltyHandler } from "./container/penalty.container.middleware";
 export function observe(isDemo: boolean = false) {
     return async function (req: Request, res: Response, next: NextFunction) {
         try {
-            const rateLimits = !isDemo ? await checkRateLimits(req) : await checkDemoLimits();
-            if(rateLimits) {
-                await penaltyHandler.apply(rateLimits.penalty);
-                throw new ExceedMaxEndpointException(rateLimits.msg, rateLimits.retryAfter);
+            const provokedRateLimits = !isDemo ? await checkRateLimits(req) : await checkDemoLimits();
+            if(provokedRateLimits) {
+                await penaltyHandler.apply(provokedRateLimits.penalty);
+                throw new ExceedMaxEndpointException(provokedRateLimits.msg, provokedRateLimits.retryAfter);
             }
-
-            // TODO(yqni13): set maintenance mode when exceeding total daily limit (SUPPORT-51)
-            // Detect attack => disable application.
-            // await metaService.setMaintenanceMode(MaintenanceMode.D013)
             next();
         } catch(err: any) {
             err.status = !err.status ? 429 : err.status;

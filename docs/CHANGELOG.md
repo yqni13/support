@@ -4,9 +4,18 @@
 
 <br>
 
+### $\textsf{\color{skyblue}2026/02/03}$
+
+$\textsf{[v1.0.0-beta.1\ =>\ {\textbf{\color{brown}v1.0.0-beta.2}]}}$ app
+- $\textsf{\color{orange}Patch:}$ Updated:
+  + rate-limit rule "TotalDailyLimitRule" by adding penalty
+  + penalties by adding violation for maintenance (context: traffic)
+
+<br>
+
 ### $\textsf{\color{skyblue}2026/01/22}$
 
-$\textsf{[v0.12.1\ =>\ {\textbf{\color{brown}v1.0.0-beta.1}]}}$ app<br>
+$\textsf{[v0.12.1\ =>\ v1.0.0-beta.1]}$ app<br>
 $\textsf{[v1.5.1\ =>\ {\textbf{\color{brown}v1.5.2}]}}$ database
 - $\textsf{\color{teal}Addition:}$ Added version based data to file 'package.json' for main usage (static in-memory) => first official beta version 🎉.
 - $\textsf{\color{orange}Patch:}$ Updated:
