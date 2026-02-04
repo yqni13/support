@@ -5,6 +5,7 @@ import demoLimitsService from "../../services/demo-limits.service";
 import rateLimitsService from "../../services/rate-limits.service";
 import ticketsService from "../../services/tickets.service";
 import * as Utils from "../../utils/common.utils";
+import { MaintenanceMode } from "../../utils/enums/maintenance-mode.enum";
 import { Violation } from "../../utils/enums/violations.enum";
 import { RateLimitsData, RateLimitsResponse, RateLimitsRule } from "../interfaces/rate-limits.interface.middleware";
 
@@ -102,7 +103,15 @@ export class TotalDailyLimitRule implements RateLimitsRule {
         const dto: RateLimitsCountDTO = { day: Utils.getDateUTC() };
         const count: number = await rateLimitsService.getRateLimitCount(dto);
         if(count >= this.requestLimit) {
-            return { msg: 'support-ratelimits-total-daily', retryAfter: Utils.getNextDayUTC() };
+            return { 
+                msg: 'support-ratelimits-total-daily', 
+                retryAfter: Utils.getNextDayUTC(),
+                penalty: {
+                    type: Violation.MAINTENANCE_TRAFFIC,
+                    id: 1,
+                    penaltyValue: MaintenanceMode.T011
+                }
+            };
         }
 
         return null;

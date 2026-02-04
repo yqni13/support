@@ -7,6 +7,10 @@ import { Logger } from '../logger/config.logger';
 
 const logger = Logger.getLogger();
 
+/**
+ * @description Testable function for current Date object.
+ * @returns new Date()
+ */
 export const now = (): Date => new Date();
 
 export function generateUUID(): string {
@@ -50,12 +54,13 @@ export function selectPrivateKey(source: MailSource): string {
 }
 
 export function logError(message: string, method: string, err: any) {
-    message += ` - ENV: '${secrets.ENV_MODE.trim()}'`;
     logger.error(message, {
         error: err.error,
-        code: err.code ? err.code : err.status ? err.status : null,
+        code: err.status ? err.status : err.code ? err.code : null,
         stack: err.stack,
-        context: { method: method }
+        context: {
+            method: method,
+        }
     });
 }
 

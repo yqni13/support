@@ -153,7 +153,7 @@ describe('CustomValidator tests, priority: no model specification', () => {
         })
 
         test('fn: validateEnum, params: invalid <language> by key', () => {
-            const mockParam_value = { INVALID: MaintenanceMode.D013 };
+            const mockParam_value = { INVALID: MaintenanceMode.T011 };
             const mockParam_enumObj = MaintenanceMode;
             const mockParam_enumName = 'maintenanceMode';
             const expectResult = `support-invalid-entry#${mockParam_enumName}`;

@@ -11,7 +11,7 @@ async function up(pgm) {
         maintenance_mode: {
             type: 'varchar(5)',
             notNull: true,
-            default: 'E-000'
+            default: 'A-000'
         }
     })
 };

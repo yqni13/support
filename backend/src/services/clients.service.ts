@@ -40,7 +40,7 @@ class ClientsService {
 
     async getClientStatusByName(name: string): Promise<ClientsStatusResponseDTO | null> {
         const result = await clientsRepository.findStatusByName(name);
-        return !result ? null : clientsModel.mapToStatusResponseDTO(result as Clients);
+        return !result ? null : Utils.mapObjTimestamps<ClientsStatusResponseDTO>(result, this.timeMapTargets);
     }
 
     async createClient(dto: ClientsCreateDTO): Promise<ClientsCreateResponseDTO> {
@@ -58,13 +58,13 @@ class ClientsService {
     async updateClientStatus(id: string, dto: ClientsStatusUpdateDTO): Promise<ClientsStatusResponseDTO | null> {
         dto.last_modified = Utils.getTimestampUTC();
         const result = await clientsRepository.updateStatus(id, dto);
-        return !result ? null : clientsModel.mapToStatusResponseDTO(result as Clients);
+        return !result ? null : Utils.mapObjTimestamps<ClientsStatusResponseDTO>(result, this.timeMapTargets);
     }
 
     async updateClientLastUse(id: string): Promise<ClientsLastUseResponseDTO | null> {
         const dto: ClientsLastUseUpdateDTO = { last_use: Utils.getTimestampUTC() };
         const result = await clientsRepository.updateLastUse(id, dto);
-        return !result ? null : clientsModel.mapToLastUseResponseDTO(result as Clients);
+        return !result ? null : Utils.mapObjTimestamps<ClientsLastUseResponseDTO>(result, this.timeMapTargets);
     }
 }
 
