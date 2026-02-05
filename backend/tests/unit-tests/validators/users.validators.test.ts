@@ -1,4 +1,4 @@
-import * as CustomValidators from '../../../src/utils/customValidator.utils';
+import * as CustomValidators from '../../../src/validation/common.validation';
 
 describe('CustomValidator tests, priority: users model', () => {
 

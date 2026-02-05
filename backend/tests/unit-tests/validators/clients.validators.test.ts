@@ -1,4 +1,4 @@
-import * as CustomValidator from '../../../src/utils/customValidator.utils';
+import * as CustomValidator from '../../../src/validation/common.validation';
 import { MalformedApiKeyException } from '../../../src/utils/exceptions/auth.exception';
 
 describe('CustomValidator tests, priority: clients model', () => {

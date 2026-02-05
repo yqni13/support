@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { InvalidApiKeyException, MissingApiKeyException } from "../utils/exceptions/auth.exception";
-import { validateApiKey } from "../utils/customValidator.utils";
+import { validateApiKey } from "../validation/common.validation";
 import clientsService from "../services/clients.service";
 import { Clients } from "../repositories/interfaces/clients.entity.interface";
 import { logError } from "../utils/common.utils";

@@ -1,4 +1,4 @@
-import * as CustomValidator from "../../../src/utils/customValidator.utils";
+import * as CustomValidator from "../../../src/validation/common.validation";
 
 describe('CustomValidator test, priority: META', () => {
 

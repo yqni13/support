@@ -1,5 +1,5 @@
 import { body, param, ValidationChain } from 'express-validator';
-import * as CustomValidator from "../../utils/customValidator.utils";
+import * as CustomValidator from "../common.validation";
 import { ApiKeyStatus } from '../../utils/enums/api-key-status.enum';
 import { CommonExceptionMessage as Message } from '../../utils/enums/common-exception-messages.enum';
 

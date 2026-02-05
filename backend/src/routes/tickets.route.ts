@@ -12,7 +12,7 @@ import {
     patchTicketSchema as patchSchema,
     deleteTicketSchema as deleteSchema
 
-} from '../middleware/validators/ticketsValidator.middleware';
+} from '../validation/schemata/tickets.schema.validation';
 import { requirePayload } from '../middleware/require.middleware';
 import { observe } from '../middleware/observe.middleware';
 

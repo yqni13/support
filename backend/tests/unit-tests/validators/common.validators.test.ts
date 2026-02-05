@@ -1,5 +1,5 @@
 import { MaintenanceMode } from "../../../src/utils/enums/maintenance-mode.enum";
-import * as CustomValidators from "../../../src/utils/customValidator.utils";
+import * as CustomValidators from "../../../src/validation/common.validation";
 import { EnvMode } from "../../../src/utils/enums/env-mode.enum";
 import { MailSource } from "../../../src/utils/enums/mail-source.enum";
 import { ApiKeyStatus } from "../../../src/utils/enums/api-key-status.enum";

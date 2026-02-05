@@ -1,5 +1,5 @@
 import { body, param, ValidationChain } from 'express-validator';
-import * as CustomValidator from "../../utils/customValidator.utils";
+import * as CustomValidator from "../common.validation";
 import { UserStatus } from '../../utils/enums/user-status.enum';
 import { Flag } from '../../utils/enums/flag.enum';
 import { SingleOrArray } from '../../utils/custom-types.utils';

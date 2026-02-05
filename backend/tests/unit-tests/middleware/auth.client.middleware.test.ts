@@ -4,7 +4,7 @@ import clientsService from "../../../src/services/clients.service";
 import { default as mockId } from "../../mock-data/id.mock-data.json";
 import { secrets } from "../../../src/utils/secrets.utils";
 import { ApiKeyStatus } from "../../../src/utils/enums/api-key-status.enum";
-import * as CustomValidator from "../../../src/utils/customValidator.utils";
+import * as CustomValidator from "../../../src/validation/common.validation";
 import * as Utils from "../../../src/utils/common.utils";
 import { authClient } from "../../../src/middleware/auth.client.middleware";
 import { ErrorStatusCodes } from "../../../src/utils/errorStatusCodes.utils";

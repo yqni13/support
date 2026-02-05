@@ -8,7 +8,7 @@ import {
     postUsersSearchSchema as searchSchema,
     postUserSchema as createSchema,
     patchUserSchema as updateSchema
-} from '../middleware/validators/usersValidator.middleware';
+} from '../validation/schemata/users.schema.validation';
 import { maintain } from '../middleware/maintenance.middleware';
 import { requirePayload } from '../middleware/require.middleware';
 

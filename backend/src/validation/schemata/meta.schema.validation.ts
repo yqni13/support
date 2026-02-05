@@ -1,5 +1,5 @@
 import { body, param, ValidationChain } from 'express-validator';
-import * as CustomValidator from '../../utils/customValidator.utils';
+import * as CustomValidator from '../common.validation';
 import { MaintenanceMode } from '../../utils/enums/maintenance-mode.enum';
 import { CommonExceptionMessage as Message } from '../../utils/enums/common-exception-messages.enum';
 import { DemoMode } from '../../utils/enums/demo-mode.enum';
