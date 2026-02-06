@@ -1,5 +1,5 @@
 import { body, param, ValidationChain } from 'express-validator';
-import * as CustomValidator from "../common.validation";
+import * as CommonValidators from "../common.validation";
 import { UserStatus } from '../../utils/enums/user-status.enum';
 import { Flag } from '../../utils/enums/flag.enum';
 import { SingleOrArray } from '../../utils/custom-types.utils';
@@ -7,7 +7,7 @@ import { CommonExceptionMessage as Message } from '../../utils/enums/common-exce
 
 export const getUserByIdSchema: ValidationChain[] = [
     param('id')
-        .custom((content: string) => CustomValidator.validatePathParam(content))
+        .custom((content: string) => CommonValidators.validatePathParam(content))
         .bail()
         .isUUID(4)
         .withMessage('support-invalid-entry#user_id')
@@ -15,23 +15,23 @@ export const getUserByIdSchema: ValidationChain[] = [
 
 export const getUserByEmailSchema: ValidationChain[] = [
     param('email')
-        .custom((content: string) => CustomValidator.validatePathParam(content))
+        .custom((content: string) => CommonValidators.validatePathParam(content))
         .bail()
-        .custom((content: string) => CustomValidator.validateEmail(content))
+        .custom((content: string) => CommonValidators.validateEmail(content))
 ];
 
 export const postUsersSearchSchema: ValidationChain[] = [
     body('email')
         .custom((content: SingleOrArray<string>) => {
             content = Array.isArray(content) ? content : [content];
-            content.forEach((email) => CustomValidator.validateEmail(email))
+            content.forEach((email) => CommonValidators.validateEmail(email))
             return true;
         })
         .optional(),
     body('status')
         .custom((content: SingleOrArray<UserStatus>) => {
             content = Array.isArray(content) ? content : [content];
-            content.forEach((status) => CustomValidator.validateEnum(status, UserStatus, 'userStatus'))
+            content.forEach((status) => CommonValidators.validateEnum(status, UserStatus, 'userStatus'))
             return true;
         })
         .optional(),
@@ -42,14 +42,14 @@ export const postUsersSearchSchema: ValidationChain[] = [
                 return true;
             }
             content = Array.isArray(content) ? content : [content];
-            content.forEach((flag) => CustomValidator.validateEnum(flag, Flag, 'flag'))
+            content.forEach((flag) => CommonValidators.validateEnum(flag, Flag, 'flag'))
             return true;
         }),
     body('last_modified')
-        .custom((timestamps) => CustomValidator.validateTimestampFilter(timestamps))
+        .custom((timestamps) => CommonValidators.validateTimestampFilter(timestamps))
         .optional(),
     body('created_on')
-        .custom((timestamps) => CustomValidator.validateTimestampFilter(timestamps))
+        .custom((timestamps) => CommonValidators.validateTimestampFilter(timestamps))
         .optional()
 ];
 
@@ -60,14 +60,14 @@ export const postUserSchema: ValidationChain[] = [
         .withMessage(Message.REQUIRED)
         .bail()
         .custom(async(val: string) => {
-            CustomValidator.validateEmail(val);
-            await CustomValidator.validateEmailUniqueness(val);
+            CommonValidators.validateEmail(val);
+            await CommonValidators.validateEmailUniqueness(val);
         })
 ];
 
 export const patchUserSchema: ValidationChain[] = [
     param('id')
-        .custom((content: string) => CustomValidator.validatePathParam(content))
+        .custom((content: string) => CommonValidators.validatePathParam(content))
         .bail()
         .isUUID(4)
         .withMessage('support-invalid-entry#user_id'),
@@ -77,18 +77,18 @@ export const patchUserSchema: ValidationChain[] = [
         .withMessage(Message.REQUIRED)
         .bail()
         .custom(async(val: string) => {
-            CustomValidator.validateEmail(val);
-            await CustomValidator.validateEmailUniqueness(val);
+            CommonValidators.validateEmail(val);
+            await CommonValidators.validateEmailUniqueness(val);
         }),
     body('status')
         .trim()
         .notEmpty()
         .withMessage(Message.REQUIRED)
         .bail()
-        .custom((status: string) => CustomValidator.validateEnum(status, UserStatus, 'userStatus')),
+        .custom((status: string) => CommonValidators.validateEnum(status, UserStatus, 'userStatus')),
     body('flag')
         .trim()
-        .custom((flag: string) => CustomValidator.validateEnum(flag, Flag, 'flag'))
+        .custom((flag: string) => CommonValidators.validateEnum(flag, Flag, 'flag'))
         .optional({values: 'null'}),
     body('last_modified')
         .isEmpty()

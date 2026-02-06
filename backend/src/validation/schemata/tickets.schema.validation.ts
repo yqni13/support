@@ -1,5 +1,5 @@
 import { body, param, ValidationChain } from 'express-validator';
-import * as CustomValidator from "../common.validation";
+import * as CommonValidators from "../common.validation";
 import { Flag } from '../../utils/enums/flag.enum';
 import { TicketStatus } from '../../utils/enums/ticket-status.enum';
 import { SingleOrArray } from '../../utils/custom-types.utils';
@@ -7,7 +7,7 @@ import { CommonExceptionMessage as Message } from '../../utils/enums/common-exce
 
 export const getTicketSchema: ValidationChain[] = [
     param('id')
-        .custom((content: string) => CustomValidator.validatePathParam(content))
+        .custom((content: string) => CommonValidators.validatePathParam(content))
         .bail()
         .isUUID(4)
         .withMessage('support-invalid-entry#ticket_id')
@@ -32,7 +32,7 @@ export const postTicketsSearchSchema: ValidationChain[] = [
     body('status')
         .custom((content: SingleOrArray<TicketStatus>) => {
             content = Array.isArray(content) ? content : [content];
-            content.forEach((status) => CustomValidator.validateEnum(status, TicketStatus, 'ticketStatus'))
+            content.forEach((status) => CommonValidators.validateEnum(status, TicketStatus, 'ticketStatus'))
             return true;
         })
         .optional(),
@@ -43,14 +43,14 @@ export const postTicketsSearchSchema: ValidationChain[] = [
                 return true;
             }
             content = Array.isArray(content) ? content : [content];
-            content.forEach((flag) => CustomValidator.validateEnum(flag, Flag, 'flag'))
+            content.forEach((flag) => CommonValidators.validateEnum(flag, Flag, 'flag'))
             return true;
         }),
     body('last_modified')
-        .custom((timestamps) => CustomValidator.validateTimestampFilter(timestamps))
+        .custom((timestamps) => CommonValidators.validateTimestampFilter(timestamps))
         .optional(),
     body('created_on')
-        .custom((timestamps) => CustomValidator.validateTimestampFilter(timestamps))
+        .custom((timestamps) => CommonValidators.validateTimestampFilter(timestamps))
         .optional()
 ];
 
@@ -59,7 +59,7 @@ export const postTicketSchema: ValidationChain[] = [
         .trim()
         .notEmpty()
         .withMessage(Message.REQUIRED)
-        .custom((content: string) => CustomValidator.validateEmail(content)),
+        .custom((content: string) => CommonValidators.validateEmail(content)),
     body('message')
         .trim()
         .notEmpty()
@@ -74,7 +74,7 @@ export const postTicketSchema: ValidationChain[] = [
 
 export const patchTicketSchema: ValidationChain[] = [
     param('id')
-        .custom((content: string) => CustomValidator.validatePathParam(content))
+        .custom((content: string) => CommonValidators.validatePathParam(content))
         .bail()
         .isUUID(4)
         .withMessage('support-invalid-entry#ticket_id'),
@@ -83,7 +83,7 @@ export const patchTicketSchema: ValidationChain[] = [
         .notEmpty()
         .withMessage(Message.REQUIRED)
         .bail()
-        .custom((status: TicketStatus) => CustomValidator.validateEnum(status, TicketStatus, 'ticketStatus')),
+        .custom((status: TicketStatus) => CommonValidators.validateEnum(status, TicketStatus, 'ticketStatus')),
     body('message')
         .trim()
         .notEmpty()
@@ -96,7 +96,7 @@ export const patchTicketSchema: ValidationChain[] = [
         .withMessage(Message.FORBIDDEN),
     body('flag')
         .trim()
-        .custom((flag: string) => CustomValidator.validateEnum(flag, Flag, 'flag'))
+        .custom((flag: string) => CommonValidators.validateEnum(flag, Flag, 'flag'))
         .optional({values: 'null'}),
     body('last_modified')
         .isEmpty()
@@ -105,7 +105,7 @@ export const patchTicketSchema: ValidationChain[] = [
 
 export const deleteTicketSchema: ValidationChain[] = [
     param('id')
-        .custom((content: string) => CustomValidator.validatePathParam(content))
+        .custom((content: string) => CommonValidators.validatePathParam(content))
         .bail()
         .isUUID(4)
         .withMessage('support-invalid-entry#ticket_id')

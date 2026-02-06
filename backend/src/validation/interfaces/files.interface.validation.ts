@@ -1,4 +1,4 @@
-export interface FilesTotalValidation {
+export interface FilesValidationContext {
     files: any[],
     required: boolean,
     maxNumber: number,

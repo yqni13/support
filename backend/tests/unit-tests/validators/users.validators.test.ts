@@ -1,12 +1,12 @@
-import * as CustomValidators from '../../../src/validation/common.validation';
+import * as CommonValidators from '../../../src/validation/common.validation';
 
-describe('CustomValidator tests, priority: users model', () => {
+describe('CommonValidators tests, priority: users model', () => {
 
     describe('Testing valid fn calls', () => {
 
         test('fn: validateEmail, params: <email> = user@test.com', () => {
             const mockParam_email = 'user@test.com';
-            const testFn = CustomValidators.validateEmail(mockParam_email);
+            const testFn = CommonValidators.validateEmail(mockParam_email);
             const expectResult = true;
 
             expect(testFn).toBe(expectResult);
@@ -14,7 +14,7 @@ describe('CustomValidator tests, priority: users model', () => {
 
         test('fn: validateEmail, params: <email> = user@test.co.at', () => {
             const mockParam_email = 'user@test.co.at';
-            const testFn = CustomValidators.validateEmail(mockParam_email);
+            const testFn = CommonValidators.validateEmail(mockParam_email);
             const expectResult = true;
 
             expect(testFn).toBe(expectResult);
@@ -28,7 +28,7 @@ describe('CustomValidator tests, priority: users model', () => {
             const expectResult = 'support-invalid-length#email<@>$1';
 
             expect(() => {
-                CustomValidators.validateEmail(mockParam_email);
+                CommonValidators.validateEmail(mockParam_email);
             }).toThrow(expectResult);
         })
 
@@ -38,7 +38,7 @@ describe('CustomValidator tests, priority: users model', () => {
             const expectResult = 'support-invalid-min#email?6';
 
             expect(() => {
-                CustomValidators.validateEmailLength(mockParam_email, mockParam_posATsign);
+                CommonValidators.validateEmailLength(mockParam_email, mockParam_posATsign);
             }).toThrow(expectResult);
         })
 
@@ -48,7 +48,7 @@ describe('CustomValidator tests, priority: users model', () => {
             const expectResult = 'support-invalid-max#email!320';
 
             expect(() => {
-                CustomValidators.validateEmailLength(mockParam_email, mockParam_posATsign);
+                CommonValidators.validateEmailLength(mockParam_email, mockParam_posATsign);
             }).toThrow(expectResult);
         })
 
@@ -58,7 +58,7 @@ describe('CustomValidator tests, priority: users model', () => {
             const expectResult = 'support-invalid-length#email-username';
 
             expect(() => {
-                CustomValidators.validateEmailLength(mockParam_email, mockParam_posATsign);
+                CommonValidators.validateEmailLength(mockParam_email, mockParam_posATsign);
             }).toThrow(expectResult);
         })
 
@@ -68,7 +68,7 @@ describe('CustomValidator tests, priority: users model', () => {
             const expectResult = 'support-invalid-length#email-username';
 
             expect(() => {
-                CustomValidators.validateEmailLength(mockParam_email, mockParam_posATsign);
+                CommonValidators.validateEmailLength(mockParam_email, mockParam_posATsign);
             }).toThrow(expectResult);
         })
 
@@ -78,7 +78,7 @@ describe('CustomValidator tests, priority: users model', () => {
             const expectResult = 'support-invalid-length#email-domain';
 
             expect(() => {
-                CustomValidators.validateEmailLength(mockParam_email, mockParam_posATsign);
+                CommonValidators.validateEmailLength(mockParam_email, mockParam_posATsign);
             }).toThrow(expectResult);
         })
 
@@ -88,7 +88,7 @@ describe('CustomValidator tests, priority: users model', () => {
             const expectResult = 'support-invalid-length#email-domain';
 
             expect(() => {
-                CustomValidators.validateEmailLength(mockParam_email, mockParam_posATsign);
+                CommonValidators.validateEmailLength(mockParam_email, mockParam_posATsign);
             }).toThrow(expectResult);
         })
 
@@ -98,7 +98,7 @@ describe('CustomValidator tests, priority: users model', () => {
             const expectResult = 'support-invalid-length#email-topleveldomain?2';
 
             expect(() => {
-                CustomValidators.validateEmailLength(mockParam_email, mockParam_posATsign);
+                CommonValidators.validateEmailLength(mockParam_email, mockParam_posATsign);
             }).toThrow(expectResult);
         })
 
@@ -108,7 +108,7 @@ describe('CustomValidator tests, priority: users model', () => {
             const expectResult = 'support-invalid-email#regex-username';
 
             expect(() => {
-                CustomValidators.validateEmailSyntax(mockParam_email, mockParam_posATsign);
+                CommonValidators.validateEmailSyntax(mockParam_email, mockParam_posATsign);
             }).toThrow(expectResult);
         })
 
@@ -118,7 +118,7 @@ describe('CustomValidator tests, priority: users model', () => {
             const expectResult = 'support-invalid-email#regex-domain';
 
             expect(() => {
-                CustomValidators.validateEmailSyntax(mockParam_email, mockParam_posATsign);
+                CommonValidators.validateEmailSyntax(mockParam_email, mockParam_posATsign);
             }).toThrow(expectResult);
         })
 
@@ -128,7 +128,7 @@ describe('CustomValidator tests, priority: users model', () => {
             const expectResult = 'support-invalid-email#regex-domain';
 
             expect(() => {
-                CustomValidators.validateEmailSyntax(mockParam_email, mockParam_posATsign);
+                CommonValidators.validateEmailSyntax(mockParam_email, mockParam_posATsign);
             }).toThrow(expectResult);
         })
 
@@ -138,7 +138,7 @@ describe('CustomValidator tests, priority: users model', () => {
             const expectResult = 'support-invalid-email#hyphen<@>';
 
             expect(() => {
-                CustomValidators.validateEmailSyntax(mockParam_email, mockParam_posATsign);
+                CommonValidators.validateEmailSyntax(mockParam_email, mockParam_posATsign);
             }).toThrow(expectResult);
         })
 
@@ -148,7 +148,7 @@ describe('CustomValidator tests, priority: users model', () => {
             const expectResult = 'support-invalid-email#hyphen<@>';
 
             expect(() => {
-                CustomValidators.validateEmailSyntax(mockParam_email, mockParam_posATsign);
+                CommonValidators.validateEmailSyntax(mockParam_email, mockParam_posATsign);
             }).toThrow(expectResult);
         })
 
@@ -158,7 +158,7 @@ describe('CustomValidator tests, priority: users model', () => {
             const expectResult = 'support-invalid-email#mailserver';
 
             expect(() => {
-                CustomValidators.validateEmailSyntax(mockParam_email, mockParam_posATsign);
+                CommonValidators.validateEmailSyntax(mockParam_email, mockParam_posATsign);
             }).toThrow(expectResult);
         })
 
@@ -168,7 +168,7 @@ describe('CustomValidator tests, priority: users model', () => {
             const expectResult = 'support-invalid-email#mailserver';
 
             expect(() => {
-                CustomValidators.validateEmailSyntax(mockParam_email, mockParam_posATsign);
+                CommonValidators.validateEmailSyntax(mockParam_email, mockParam_posATsign);
             }).toThrow(expectResult);
         })
 
@@ -177,7 +177,7 @@ describe('CustomValidator tests, priority: users model', () => {
             const expectResult = 'support-invalid-email#keyword:noreply';
 
             expect(() => {
-                CustomValidators.validateEmailPolicies(mockParam_email);
+                CommonValidators.validateEmailPolicies(mockParam_email);
             }).toThrow(expectResult);
         })
 
@@ -186,7 +186,7 @@ describe('CustomValidator tests, priority: users model', () => {
             const expectResult = 'support-invalid-email#keyword:emptyspaces';
 
             expect(() => {
-                CustomValidators.validateEmailPolicies(mockParam_email);
+                CommonValidators.validateEmailPolicies(mockParam_email);
             }).toThrow(expectResult);
         })
     })

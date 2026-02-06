@@ -1,13 +1,13 @@
-import * as CustomValidator from '../../../src/validation/common.validation';
+import * as CommonValidators from '../../../src/validation/common.validation';
 import { MalformedApiKeyException } from '../../../src/utils/exceptions/auth.exception';
 
-describe('CustomValidator tests, priority: clients model', () => {
+describe('CommonValidators tests, priority: clients model', () => {
 
     describe('Testing valid fn calls', () => {
 
         test('fn: validateApiKey, params: <key>', () => {
             const mockParam_key = 'h6O6rPDkVkAvyYTHLlcL2viGlp5sWmfCbUZx9MdnOU';
-            const testFn = CustomValidator.validateApiKey(mockParam_key);
+            const testFn = CommonValidators.validateApiKey(mockParam_key);
             const expectResult = true;
 
             expect(testFn).toBe(expectResult);
@@ -20,7 +20,7 @@ describe('CustomValidator tests, priority: clients model', () => {
             const mockParam_key = 'h6O6rPD';
             const expectResult = MalformedApiKeyException;
 
-            expect(() => CustomValidator.validateApiKey(mockParam_key))
+            expect(() => CommonValidators.validateApiKey(mockParam_key))
                 .toThrow(expectResult);
         })
 
@@ -28,7 +28,7 @@ describe('CustomValidator tests, priority: clients model', () => {
             const mockParam_key = 'h6O6rPDkVkAvyYTHLlc-+-+-lp5sWmfCbUZx9MdnOU';
             const expectResult = MalformedApiKeyException;
 
-            expect(() => CustomValidator.validateApiKey(mockParam_key))
+            expect(() => CommonValidators.validateApiKey(mockParam_key))
                 .toThrow(expectResult);
         })
     })
