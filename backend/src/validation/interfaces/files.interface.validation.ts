@@ -1,6 +1,7 @@
+import { Multer } from 'multer';
+
 export interface FilesValidationContext {
-    files: any[],
-    required: boolean,
+    files?: Express.Multer.File[],
     maxNumber: number,
     maxSize: number,
     types: string[],
