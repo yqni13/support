@@ -2,8 +2,8 @@ import { UsersFilterDTO } from "../dtos/users.dto";
 import clientsRepository from "../repositories/clients.repository";
 import { Users } from "../repositories/interfaces/users.entity.interface";
 import usersRepository from "../repositories/users.repository";
-import { CommonExceptionMessage } from "./enums/common-exception-messages.enum";
-import { MalformedApiKeyException } from "./exceptions/auth.exception";
+import { CommonExceptionMessage } from "../utils/enums/common-exception-messages.enum";
+import { MalformedApiKeyException } from "../utils/exceptions/auth.exception";
 
 /**
  * @description validating version regarding guidelines of Semantic Versioning 2.0.0

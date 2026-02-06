@@ -1,5 +1,5 @@
 # yqni13 | support
-$\texttt{\color{teal}{v1.0.0-beta.2}}$
+$\texttt{\color{teal}{v1.0.0-beta.3}}$
 
 
 <br>
@@ -124,10 +124,8 @@ Preventing an unwanted merge with unfinished/failed test run, the project is set
 
 ### $\textsf{\color{forestgreen}last update:}$
 
-$\textsf{[v1.0.0-beta.1\ =>\ {\textbf{\color{brown}v1.0.0-beta.2}]}}$ app
-- $\textsf{\color{orange}Patch:}$ Updated:
-  + rate-limit rule "TotalDailyLimitRule" by adding penalty
-  + penalties by adding violation for maintenance (context: traffic)
+$\textsf{[v1.0.0-beta.2\ =>\ {\textbf{\color{brown}v1.0.0-beta.3}]}}$ app
+- $\textsf{\color{orange}Patch:}$ Refactored and renamed validation files, added basic files validation (not completed) and interfaces.
 
 <br>
 

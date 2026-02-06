@@ -11,7 +11,7 @@ import {
     patchMetaSchema as updateSchema,
     patchMaintenanceSchema as updateMaintainSchema,
     postDemoSchema as demoSchema
-} from '../middleware/validators/metaValidator.middleware';
+} from '../validation/schemata/meta.schema.validation';
 import { observe } from '../middleware/observe.middleware';
 
 const router = Router();

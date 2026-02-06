@@ -38,8 +38,8 @@ export class InvalidEndpointException extends ApiException {
 }
 
 export class UnimplementedException extends ApiException {
-    constructor(message: string, data?: any) {
-        super(message, data, ErrorStatusCodes.UnimplementedException);
+    constructor(data?: any) {
+        super('support-unimplemented', data, ErrorStatusCodes.UnimplementedException);
     }
 }
 
