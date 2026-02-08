@@ -1,3 +1,4 @@
+import { InvalidFilesException } from "../utils/exceptions/validation.exception";
 import { FilesValidationContext } from "./interfaces/files.interface.validation";
 
 export function initFilesValidation(data: FilesValidationContext): boolean {
@@ -12,14 +13,14 @@ export function initFilesValidation(data: FilesValidationContext): boolean {
 
 export function validateFilesMaxNumber(files: Express.Multer.File[], max: number) {
     if(files.length > max) {
-        throw new Error(`support-invalid-max#files!${max}`);
+        throw new InvalidFilesException(`support-invalid-max#files!${max}`);
     }
 }
 
 export function validateFilesType(files: Express.Multer.File[], validTypes: string[]) {
     files.forEach((file: Express.Multer.File) => {
         if(!validTypes.includes(file.mimetype)) {
-            throw new Error('support-files-mimetype');
+            throw new InvalidFilesException('support-files-mimetype');
         }
     })
 }
@@ -28,7 +29,7 @@ export function validateFilesSizeEach(files: Express.Multer.File[], maxInMb: num
     const validSize = 1024 * 1024 * maxInMb;
     files.forEach((file: Express.Multer.File) => {
         if(file.size > validSize) {
-            throw new Error('support-files-size-each');
+            throw new InvalidFilesException('support-files-size-each');
         }
     })
 }

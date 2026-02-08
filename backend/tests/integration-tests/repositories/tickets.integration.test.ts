@@ -201,11 +201,11 @@ describe('Integration test (repository specific), priority: Tickets', () => {
             expect(testResponse.body).toBe(testResult);
         })
 
-        test('Repository process fn create, result: "SUCCESS"', async () => {
+        test('Repository process fn create, priority: without files, result: "SUCCESS"', async () => {
             // TicketsCreateRequestDTO interface necessary to mock auth middleware (data for client_id & user_id).
             const testParam_dto: TicketsCreateRequestDTO = {
-                user_email: 'new-user@test.com',
-                message: 'new-test-message',
+                user_email: 'new-user0@test.com',
+                message: 'new-test-message0',
             };
 
             // TODO(yqni13): mock img-handling on implementation at SUPPORT-4
@@ -227,6 +227,89 @@ describe('Integration test (repository specific), priority: Tickets', () => {
             const testResponse = await request(app)
                 .post(`${apiUrl}/create`)
                 .send(testParam_dto);
+
+            expect(testResponse.statusCode).toBe(200);
+            expect(testResponse.body).toMatchObject(testResult)
+        })
+
+        test('Repository process fn create, priority: with single file, result: "SUCCESS"', async () => {
+            const testParam_dto: TicketsCreateRequestDTO = {
+                user_email: 'new-user1@test.com',
+                message: 'new-test-message1',
+            };
+            const mockFile = {
+                filename: 'test-image1.webp',
+                buffer: Buffer.alloc(1024 * 1024 * 0.2, 0) // 200kb
+            };
+
+            // TODO(yqni13): mock img-handling on implementation at SUPPORT-4
+            jest.spyOn(Utils, "generateUUID").mockReturnValue(testNewParam_ticket_id);
+            jest.spyOn(Utils, "getTimestampUTC").mockReturnValue(testTimestamp);
+
+            const testResult: TicketsResponseDTO = {
+                ticket_id: testNewParam_ticket_id,
+                client_id: testValidClientsId,
+                user_id: testValidUsersId,
+                status: TicketStatus.ISSUED,
+                message: testParam_dto.message,
+                flag: null,
+                last_modified: testTimestamp,
+                created_on: testTimestamp
+            };
+
+            await dbTestSetup.addTestData();
+
+            // Without file attachment => request content-type: application/json (use .send(dto))
+            // With file attachment => request content-type: multipart/form-data (use .field(property))
+            const testResponse = await request(app)
+                .post(`${apiUrl}/create`)
+                .attach('files', mockFile.buffer, mockFile.filename)
+                .field('user_email', testParam_dto.user_email)
+                .field('message', testParam_dto.message);
+
+            expect(testResponse.statusCode).toBe(200);
+            expect(testResponse.body).toMatchObject(testResult)
+        })
+
+        test('Repository process fn create, priority: with multiple files, result: "SUCCESS"', async () => {
+            const testParam_dto: TicketsCreateRequestDTO = {
+                user_email: 'new-user2@test.com',
+                message: 'new-test-message2',
+            };
+            const mockFiles = [
+                {
+                    filename: 'test1-image2.webp',
+                    buffer: Buffer.alloc(1024 * 1024 * 0.2, 0) // 200kb
+                },
+                {
+                    filename: 'test2-image2.webp',
+                    buffer: Buffer.alloc(1024 * 1024 * 0.3, 0) // 300kb
+                }
+            ];
+
+            // TODO(yqni13): mock img-handling on implementation at SUPPORT-4
+            jest.spyOn(Utils, "generateUUID").mockReturnValue(testNewParam_ticket_id);
+            jest.spyOn(Utils, "getTimestampUTC").mockReturnValue(testTimestamp);
+
+            const testResult: TicketsResponseDTO = {
+                ticket_id: testNewParam_ticket_id,
+                client_id: testValidClientsId,
+                user_id: testValidUsersId,
+                status: TicketStatus.ISSUED,
+                message: testParam_dto.message,
+                flag: null,
+                last_modified: testTimestamp,
+                created_on: testTimestamp
+            };
+
+            await dbTestSetup.addTestData();
+
+            const testResponse = await request(app)
+                .post(`${apiUrl}/create`)
+                .attach('files', mockFiles[0].buffer, mockFiles[0].filename)
+                .attach('files', mockFiles[1].buffer, mockFiles[1].filename)
+                .field('user_email', testParam_dto.user_email)
+                .field('message', testParam_dto.message);
 
             expect(testResponse.statusCode).toBe(200);
             expect(testResponse.body).toMatchObject(testResult)
@@ -548,6 +631,104 @@ describe('Integration test (repository specific), priority: Tickets', () => {
 
                     expect(testResponse.statusCode).toBe(ErrorStatusCodes.InvalidPropertiesException);
                     expect(testResponse.body.headers.data).toEqual([testError]);
+                })
+            })
+        })
+
+        describe('All routes, priority: validation middleware, location: <files>', () => {
+
+            describe('Route: POST/create', () => {
+
+                let testParam_dto: TicketsCreateRequestDTO;
+                beforeEach(() => {
+                    testParam_dto = {
+                        user_email: 'invalid-new-user@test.com',
+                        message: 'invalid-new-test-message',
+                    };
+                })
+
+                test('Files: invalid number of files, validator: validateFilesMaxNumber', async () =>{
+                    const mockFiles = [
+                        {
+                            filename: 'test-file0.webp',
+                            buffer: Buffer.alloc(1024 * 1024 * 0.2, 0) // 200kb
+                        },
+                        {
+                            filename: 'test-file1.webp',
+                            buffer: Buffer.alloc(1024 * 1024 * 0.3, 0) // 300kb
+                        },
+                        {
+                            filename: 'test-file2.webp',
+                            buffer: Buffer.alloc(1024 * 1024 * 0.2, 0) // 200kb
+                        },
+                        {
+                            filename: 'test-file3.webp',
+                            buffer: Buffer.alloc(1024 * 1024 * 0.4, 0) // 400kb
+                        },
+                        {
+                            filename: 'test-file4.webp',
+                            buffer: Buffer.alloc(1024 * 1024 * 0.3, 0) // 300kb
+                        },
+                        {
+                            filename: 'test-file5.webp',
+                            buffer: Buffer.alloc(1024 * 1024 * 0.18, 0) // 180kb
+                        }
+                    ];
+                    const errorMsg = 'support-invalid-max#files!5';
+
+                    jest.spyOn(Utils, 'logError').mockImplementation();
+
+                    const testResponse = await request(app)
+                        .post(`${apiUrl}/create`)
+                        .attach('files', mockFiles[0].buffer, mockFiles[0].filename)
+                        .attach('files', mockFiles[1].buffer, mockFiles[1].filename)
+                        .attach('files', mockFiles[2].buffer, mockFiles[2].filename)
+                        .attach('files', mockFiles[3].buffer, mockFiles[3].filename)
+                        .attach('files', mockFiles[4].buffer, mockFiles[4].filename)
+                        .attach('files', mockFiles[5].buffer, mockFiles[5].filename)
+                        .field('user_email', testParam_dto.user_email)
+                        .field('message', testParam_dto.message);
+
+                    expect(testResponse.statusCode).toBe(ErrorStatusCodes.InvalidFilesException);
+                    expect(testResponse.body.headers.message).toEqual(errorMsg);
+                })
+
+                test('Files: 1x invalid, validator: validateFilesType', async () =>{
+                    const mockFile = {
+                        filename: 'test-file.doxc', // Multer gets type from filename.
+                        buffer: Buffer.alloc(1024 * 1024 * 0.1, 0) // 100kb
+                    };
+                    const errorMsg = 'support-files-mimetype';
+
+                    jest.spyOn(Utils, 'logError').mockImplementation();
+
+                    const testResponse = await request(app)
+                        .post(`${apiUrl}/create`)
+                        .attach('files', mockFile.buffer, mockFile.filename)
+                        .field('user_email', testParam_dto.user_email)
+                        .field('message', testParam_dto.message);
+
+                    expect(testResponse.statusCode).toBe(ErrorStatusCodes.InvalidFilesException);
+                    expect(testResponse.body.headers.message).toEqual(errorMsg);
+                })
+
+                test('Files: 1x invalid, validator: validateFilesSizeEach', async () =>{
+                    const mockFile = {
+                        filename: 'test-file.webp',
+                        buffer: Buffer.alloc(1024 * 1024 * 1.5, 0) // 1.5mb
+                    };
+                    const errorMsg = 'support-files-size-each';
+
+                    jest.spyOn(Utils, 'logError').mockImplementation();
+
+                    const testResponse = await request(app)
+                        .post(`${apiUrl}/create`)
+                        .attach('files', mockFile.buffer, mockFile.filename)
+                        .field('user_email', testParam_dto.user_email)
+                        .field('message', testParam_dto.message);
+
+                    expect(testResponse.statusCode).toBe(ErrorStatusCodes.InvalidFilesException);
+                    expect(testResponse.body.headers.message).toEqual(errorMsg);
                 })
             })
         })
