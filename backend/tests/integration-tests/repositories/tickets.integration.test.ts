@@ -238,9 +238,10 @@ describe('Integration test (repository specific), priority: Tickets', () => {
                 message: 'new-test-message1',
             };
             const mockFile = {
-                filename: 'test-image1.webp',
+                filename: 'test-image1.webp', // mapped to originalname as Express.Multer.File
                 buffer: Buffer.alloc(1024 * 1024 * 0.2, 0) // 200kb
             };
+            const mockPaths = [`tickets/${testNewParam_ticket_id}/0_${testNewParam_ticket_id}.webp`];
 
             // TODO(yqni13): mock img-handling on implementation at SUPPORT-4
             jest.spyOn(Utils, "generateUUID").mockReturnValue(testNewParam_ticket_id);
@@ -252,6 +253,7 @@ describe('Integration test (repository specific), priority: Tickets', () => {
                 user_id: testValidUsersId,
                 status: TicketStatus.ISSUED,
                 message: testParam_dto.message,
+                resource_paths: mockPaths,
                 flag: null,
                 last_modified: testTimestamp,
                 created_on: testTimestamp
@@ -278,13 +280,17 @@ describe('Integration test (repository specific), priority: Tickets', () => {
             };
             const mockFiles = [
                 {
-                    filename: 'test1-image2.webp',
+                    filename: 'test1-image2.webp', // mapped to originalname as Express.Multer.File
                     buffer: Buffer.alloc(1024 * 1024 * 0.2, 0) // 200kb
                 },
                 {
-                    filename: 'test2-image2.webp',
+                    filename: 'test2-image2.webp', // mapped to originalname as Express.Multer.File
                     buffer: Buffer.alloc(1024 * 1024 * 0.3, 0) // 300kb
                 }
+            ];
+            const mockPaths = [
+                `tickets/${testNewParam_ticket_id}/0_${testNewParam_ticket_id}.webp`,
+                `tickets/${testNewParam_ticket_id}/1_${testNewParam_ticket_id}.webp`
             ];
 
             // TODO(yqni13): mock img-handling on implementation at SUPPORT-4
@@ -297,6 +303,7 @@ describe('Integration test (repository specific), priority: Tickets', () => {
                 user_id: testValidUsersId,
                 status: TicketStatus.ISSUED,
                 message: testParam_dto.message,
+                resource_paths: mockPaths,
                 flag: null,
                 last_modified: testTimestamp,
                 created_on: testTimestamp
@@ -686,6 +693,25 @@ describe('Integration test (repository specific), priority: Tickets', () => {
                         .attach('files', mockFiles[3].buffer, mockFiles[3].filename)
                         .attach('files', mockFiles[4].buffer, mockFiles[4].filename)
                         .attach('files', mockFiles[5].buffer, mockFiles[5].filename)
+                        .field('user_email', testParam_dto.user_email)
+                        .field('message', testParam_dto.message);
+
+                    expect(testResponse.statusCode).toBe(ErrorStatusCodes.InvalidFilesException);
+                    expect(testResponse.body.headers.message).toEqual(errorMsg);
+                })
+
+                test('Files: 1x invalid, validator: validateFilesNames', async () =>{
+                    const mockFile = {
+                        filename: 'test-file-no-type',
+                        buffer: Buffer.alloc(1024 * 1024 * 1.5, 0) // 1.5mb
+                    };
+                    const errorMsg = 'support-files-invalid-name';
+
+                    jest.spyOn(Utils, 'logError').mockImplementation();
+
+                    const testResponse = await request(app)
+                        .post(`${apiUrl}/create`)
+                        .attach('files', mockFile.buffer, mockFile.filename)
                         .field('user_email', testParam_dto.user_email)
                         .field('message', testParam_dto.message);
 

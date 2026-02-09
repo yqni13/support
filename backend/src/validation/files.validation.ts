@@ -6,6 +6,7 @@ export function initFilesValidation(data: FilesValidationContext): boolean {
         return true;
     }
     validateFilesMaxNumber(data.files, data.maxNumber);
+    validateFilesNames(data.files);
     validateFilesType(data.files, data.types);
     validateFilesSizeEach(data.files, data.maxSize);
     return true;
@@ -15,6 +16,17 @@ export function validateFilesMaxNumber(files: Express.Multer.File[], max: number
     if(files.length > max) {
         throw new InvalidFilesException(`support-invalid-max#files!${max}`);
     }
+}
+
+export function validateFilesNames(files: Express.Multer.File[]) {
+    files.forEach((file: Express.Multer.File) => {
+        const origName = file.originalname;
+        const fileName = file.filename;
+        if((!origName || origName === '' || !origName.includes('.'))
+        && (!fileName || fileName === '' || !fileName.includes('.'))) {
+            throw new InvalidFilesException('support-files-invalid-name');
+        }
+    })
 }
 
 export function validateFilesType(files: Express.Multer.File[], validTypes: string[]) {

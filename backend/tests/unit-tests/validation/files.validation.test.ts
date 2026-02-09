@@ -14,7 +14,7 @@ describe('FileValidators tests, priority: no model specification', () => {
             originalname: 'test-pdf.pdf',
             encoding: '7bit',
             mimetype: 'application/pdf',
-            size: 218632, // 213KB
+            size: 218632, // 213kb
             destination: '',
             filename: 'test-pdf.pdf',
             path: '',
@@ -26,7 +26,7 @@ describe('FileValidators tests, priority: no model specification', () => {
             originalname: 'test-image.webp',
             encoding: '7bit',
             mimetype: 'image/webp',
-            size: 377592, // 368KB
+            size: 377592, // 368kb
             destination: '',
             filename: 'test-image.webp',
             path: '',
@@ -38,7 +38,7 @@ describe('FileValidators tests, priority: no model specification', () => {
             originalname: 'test-video.mp4',
             encoding: '7bit',
             mimetype: 'video/mp4',
-            size: 904438, // 883KB
+            size: 904438, // 883kb
             destination: '',
             filename: 'test-video.mp4',
             path: '',
@@ -50,7 +50,7 @@ describe('FileValidators tests, priority: no model specification', () => {
             originalname: 'test-compress.zip',
             encoding: '7bit',
             mimetype: 'application/x-zip-compressed',
-            size: 210855, // 205KB
+            size: 210855, // 205kb
             destination: '',
             filename: 'test-compress.zip',
             path: '',
@@ -62,7 +62,7 @@ describe('FileValidators tests, priority: no model specification', () => {
             originalname: 'test-document.docx',
             encoding: '7bit',
             mimetype: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-            size: 31855, // 31KB
+            size: 31855, // 31kb
             destination: '',
             filename: 'test-document.docx',
             path: '',
@@ -104,6 +104,36 @@ describe('FileValidators tests, priority: no model specification', () => {
                 expect(() => FileValidators.validateFilesMaxNumber(
                     mockParam_files, mockParam_max
                 )).toThrow(mockError);
+            })
+        })
+    })
+
+    describe('Priority: <validateFilesNames>', () => {
+
+        describe('Testing valid fn calls', () => {
+
+            test('Params: <files>.length = 1, valid names', () => {
+                const mockParam_files = [mockFile_webp];
+                expect(() => FileValidators.validateFilesNames(mockParam_files)).not.toThrow();
+            })
+        })
+
+        describe('Testing invalid fn calls', () => {
+
+            test('Params: <files>.length = 1, invalid names as empty strings', () => {
+                const mockParam_files = [mockFile_webp];
+                mockParam_files[0].originalname = '';
+                mockParam_files[0].filename = '';
+                const mockError = 'support-files-invalid-name';
+                expect(() => FileValidators.validateFilesNames(mockParam_files)).toThrow(mockError);
+            })
+
+            test('Params: <files>.length = 1, invalid names with missing "." and type', () => {
+                const mockParam_files = [mockFile_webp];
+                mockParam_files[0].originalname = 'test-file';
+                mockParam_files[0].filename = 'test-file';
+                const mockError = 'support-files-invalid-name';
+                expect(() => FileValidators.validateFilesNames(mockParam_files)).toThrow(mockError);
             })
         })
     })

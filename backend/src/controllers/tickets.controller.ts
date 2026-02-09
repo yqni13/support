@@ -54,7 +54,8 @@ class TicketsController {
                 client_id: req.apiClients.client_id,
                 user_id: req.apiUsers.user_id
             };
-            const response: TicketsResponseDTO = await ticketsService.createTicket(dto);
+            const files = req.files as Express.Multer.File[] ?? null;
+            const response: TicketsResponseDTO = await ticketsService.createTicket(dto, files);
             res.json(response);
         } catch(err: any) {
             next(err);
