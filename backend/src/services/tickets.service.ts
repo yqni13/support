@@ -38,7 +38,7 @@ class TicketsService {
     }
 
     async createTicket(dto: TicketsCreateDTO, files: Express.Multer.File[] | null): Promise<TicketsResponseDTO> {
-        const ticket = ticketsModel.generateTicket(dto, files);
+        const ticket = await ticketsModel.generateTicket(dto, files);
         const result = await ticketsRepository.create(ticket);
         return Utils.mapObjTimestamps<TicketsResponseDTO>(result, this.timeMapTargets); 
     }

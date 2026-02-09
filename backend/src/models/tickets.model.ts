@@ -5,14 +5,14 @@ import { TicketStatus } from "../utils/enums/ticket-status.enum";
 import { FilesService } from "../services/files.service";
 
 class TicketsModel {
-    generateTicket(dto: TicketsCreateDTO, files: Express.Multer.File[] | null): Tickets {
+    async generateTicket(dto: TicketsCreateDTO, files: Express.Multer.File[] | null): Promise<Tickets> {
         const timestamp = Utils.getTimestampUTC();
         const newId = Utils.generateUUID();
         let paths: string[] | null = null;
         if(files) {
             const filesService = new FilesService(files);
             filesService.transformFiles(newId);
-            // await filesService.uploadFiles();
+            await filesService.uploadFiles();
             paths = filesService.getResourcePaths();
         }
         return {
@@ -30,7 +30,6 @@ class TicketsModel {
 
     mapTicketUpdateDto(dto: TicketsUpdateDTO): TicketsUpdateDTO {
         const timestamp = Utils.getTimestampUTC();
-        // TODO(yqni13): add img-handling at SUPPORT-4
         return {
             ...dto,
             last_modified: timestamp

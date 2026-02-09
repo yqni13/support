@@ -1,12 +1,14 @@
-import { UnimplementedException } from "../utils/exceptions/api.exception";
+import { CloudService } from "./cloud.service";
+import { secrets } from "../utils/secrets.utils";
 
 export class FilesService {
-    private _basePath: string;
+    private _basePath = 'tickets';
     private _files: Express.Multer.File[];
+    private _cloudService: CloudService;
     
     constructor(baseFiles: Express.Multer.File[]) {
         this._files = baseFiles;
-        this._basePath = 'tickets';
+        this._cloudService = new CloudService();
     }
 
     transformFiles(ticketId: string) {
@@ -39,6 +41,15 @@ export class FilesService {
     }
 
     async uploadFiles() {
-        throw new UnimplementedException();
+        await Promise.all(
+            this._files.map(file => {
+                this._cloudService.upload({
+                    bucket: secrets.CLOUD_BUCKET,
+                    key: file.path,
+                    buffer: file.buffer,
+                    contentType: file.mimetype
+                })
+            })
+        )
     }
 }

@@ -1,5 +1,5 @@
 # yqni13 | support
-$\texttt{\color{teal}{v1.0.0-beta.3}}$
+$\texttt{\color{teal}{v1.0.0}}$
 
 
 <br>
@@ -32,7 +32,7 @@ $\texttt{\color{teal}{v1.0.0-beta.3}}$
 ## How to
 
 ### Build & Deploy
-This application server will be hosted by <a href="https://render.com/">Render</a> in a Docker container and a PostgreSQL database by Neon. Additionally a <a href="https://console.cron-job.org/">cron-job</a> is set up to keep the service alive on Render due to 15-min inactivity on free tier plan.<br>
+This application server will is hosted by <a href="https://render.com/">Render</a> in a Docker container and a PostgreSQL database hosted by Neon. Additionally a <a href="https://console.cron-job.org/">cron-job</a> is set up to keep the service alive on Render due to 15-min inactivity on free tier plan.<br>
 The development process is structured by the TDD (test driven development) principle.
 
 <br>
@@ -43,6 +43,7 @@ The development process is structured by the TDD (test driven development) princ
 
 <dl>
     <dd>🪲 support/bug-ticket handling including client + user data</dd>
+    <dd>📂 file handling from requests + cloud storage</dd>
     <dd>:mag: filtered search for ticket + user data (properties + timespan)</dd>
     <dd>:closed_lock_with_key: maintenance mode can en/disable application via single request</dd>
     <dd>:key: request verification by api-keys</dd>
@@ -124,14 +125,13 @@ Preventing an unwanted merge with unfinished/failed test run, the project is set
 
 ### $\textsf{\color{forestgreen}last update:}$
 
-$\textsf{[v1.0.0-beta.2\ =>\ {\textbf{\color{brown}v1.0.0-beta.3}]}}$ app
-- $\textsf{\color{orange}Patch:}$ Refactored and renamed validation files, added basic files validation (not completed) and interfaces.
+$\textsf{[v1.0.0-beta.3\ =>\ {\textbf{\color{brown}v1.0.0}]}}$ app
+- $\textsf{\color{teal}Addition:}$ Added file handling (tickets create) + cloud upload.
 
 <br>
 
 ### Update objectives:
 <dl>
-    <dd>- cloudflare setup</dd>
     <dd>- jenkins setup</dd>
     <dd>- host setup</dd>
     <dd>- mail setup</dd>

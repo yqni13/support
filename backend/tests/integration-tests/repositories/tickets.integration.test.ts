@@ -44,6 +44,7 @@ jest.mock('../../../src/middleware/observe.middleware.ts', () => ({
 }))
 
 import app from '../../../src/app';
+import { FilesService } from "../../../src/services/files.service";
 
 jest.setTimeout(60000);
 
@@ -208,7 +209,6 @@ describe('Integration test (repository specific), priority: Tickets', () => {
                 message: 'new-test-message0',
             };
 
-            // TODO(yqni13): mock img-handling on implementation at SUPPORT-4
             jest.spyOn(Utils, "generateUUID").mockReturnValue(testNewParam_ticket_id);
             jest.spyOn(Utils, "getTimestampUTC").mockReturnValue(testTimestamp);
 
@@ -243,9 +243,11 @@ describe('Integration test (repository specific), priority: Tickets', () => {
             };
             const mockPaths = [`tickets/${testNewParam_ticket_id}/0_${testNewParam_ticket_id}.webp`];
 
-            // TODO(yqni13): mock img-handling on implementation at SUPPORT-4
             jest.spyOn(Utils, "generateUUID").mockReturnValue(testNewParam_ticket_id);
             jest.spyOn(Utils, "getTimestampUTC").mockReturnValue(testTimestamp);
+            jest.spyOn(FilesService.prototype, 'transformFiles').mockImplementation();
+            jest.spyOn(FilesService.prototype, 'uploadFiles').mockImplementation();
+            jest.spyOn(FilesService.prototype, 'getResourcePaths').mockReturnValue(mockPaths);
 
             const testResult: TicketsResponseDTO = {
                 ticket_id: testNewParam_ticket_id,
@@ -293,9 +295,11 @@ describe('Integration test (repository specific), priority: Tickets', () => {
                 `tickets/${testNewParam_ticket_id}/1_${testNewParam_ticket_id}.webp`
             ];
 
-            // TODO(yqni13): mock img-handling on implementation at SUPPORT-4
             jest.spyOn(Utils, "generateUUID").mockReturnValue(testNewParam_ticket_id);
             jest.spyOn(Utils, "getTimestampUTC").mockReturnValue(testTimestamp);
+            jest.spyOn(FilesService.prototype, 'transformFiles').mockImplementation();
+            jest.spyOn(FilesService.prototype, 'uploadFiles').mockImplementation();
+            jest.spyOn(FilesService.prototype, 'getResourcePaths').mockReturnValue(mockPaths);
 
             const testResult: TicketsResponseDTO = {
                 ticket_id: testNewParam_ticket_id,
@@ -330,7 +334,6 @@ describe('Integration test (repository specific), priority: Tickets', () => {
                 flag: null
             };
 
-            // TODO(yqni13): mock img-handling on implementation at SUPPORT-4
             jest.spyOn(Utils, "getTimestampUTC").mockReturnValue(testTimestamp);
 
             const testResult: TicketsResponseDTO = {

@@ -5,6 +5,7 @@ import { TicketStatus } from "../../../src/utils/enums/ticket-status.enum";
 import { Tickets } from "../../../src/repositories/interfaces/tickets.entity.interface";
 import ticketsModel from "../../../src/models/tickets.model";
 import { Readable } from 'stream';
+import { FilesService } from "../../../src/services/files.service";
 
 const mockTimestamp = '2025-01-01T14:00:04.000Z';
 
@@ -44,7 +45,7 @@ describe('Model tests, class: <tickets>, priority: generateTicket', () => {
 
     describe('Testing valid fn calls', () => {
 
-        test('Generate new object, entity: <Tickets>, priority: no files', () => {
+        test('Generate new object, entity: <Tickets>, priority: no files', async () => {
             const mockParam_id = 'valid_tickets_test_id';
             const mockParam_dto: TicketsCreateDTO = {
                 client_id: 'valid_clients_test_id',
@@ -53,11 +54,10 @@ describe('Model tests, class: <tickets>, priority: generateTicket', () => {
             };
             const mockParam_files: Express.Multer.File[] | null = null;
 
-            // TODO(yqni13): mock file processing
             jest.spyOn(Utils, "generateUUID").mockReturnValue(mockParam_id);
             jest.spyOn(Utils, "getTimestampUTC").mockReturnValue(mockTimestamp);
 
-            const testFn = ticketsModel.generateTicket(mockParam_dto, mockParam_files);
+            const testFn = await ticketsModel.generateTicket(mockParam_dto, mockParam_files);
             const expectResult: Tickets = {
                 ticket_id: mockParam_id,
                 client_id: mockParam_dto.client_id,
@@ -72,7 +72,7 @@ describe('Model tests, class: <tickets>, priority: generateTicket', () => {
             expect(testFn).toEqual(expectResult);
         })
 
-        test('Generate new object, entity: <Tickets>, priority: single file', () => {
+        test('Generate new object, entity: <Tickets>, priority: single file', async () => {
             const mockParam_id = mockId.tickets.valid[0];
             const mockParam_dto: TicketsCreateDTO = {
                 client_id: 'valid_clients_test_id',
@@ -82,11 +82,13 @@ describe('Model tests, class: <tickets>, priority: generateTicket', () => {
             const mockParam_files: Express.Multer.File[] | null = [mockFile_pdf];
             const mockPaths = [`tickets/${mockParam_id}/0_${mockParam_id}.pdf`];
 
-            // TODO(yqni13): mock file processing
             jest.spyOn(Utils, "generateUUID").mockReturnValue(mockParam_id);
             jest.spyOn(Utils, "getTimestampUTC").mockReturnValue(mockTimestamp);
+            jest.spyOn(FilesService.prototype, 'transformFiles').mockImplementation();
+            jest.spyOn(FilesService.prototype, 'uploadFiles').mockImplementation();
+            jest.spyOn(FilesService.prototype, 'getResourcePaths').mockReturnValue(mockPaths);
 
-            const testFn = ticketsModel.generateTicket(mockParam_dto, mockParam_files);
+            const testFn = await ticketsModel.generateTicket(mockParam_dto, mockParam_files);
             const expectResult: Tickets = {
                 ticket_id: mockParam_id,
                 client_id: mockParam_dto.client_id,
@@ -102,7 +104,7 @@ describe('Model tests, class: <tickets>, priority: generateTicket', () => {
             expect(testFn).toEqual(expectResult);
         })
 
-        test('Generate new object, entity: <Tickets>, priority: multiple files', () => {
+        test('Generate new object, entity: <Tickets>, priority: multiple files', async () => {
             const mockParam_id = mockId.tickets.valid[0];
             const mockParam_dto: TicketsCreateDTO = {
                 client_id: 'valid_clients_test_id',
@@ -115,11 +117,13 @@ describe('Model tests, class: <tickets>, priority: generateTicket', () => {
                 `tickets/${mockParam_id}/1_${mockParam_id}.webp`
             ];
 
-            // TODO(yqni13): mock file processing
             jest.spyOn(Utils, "generateUUID").mockReturnValue(mockParam_id);
             jest.spyOn(Utils, "getTimestampUTC").mockReturnValue(mockTimestamp);
+            jest.spyOn(FilesService.prototype, 'transformFiles').mockImplementation();
+            jest.spyOn(FilesService.prototype, 'uploadFiles').mockImplementation();
+            jest.spyOn(FilesService.prototype, 'getResourcePaths').mockReturnValue(mockPaths);
 
-            const testFn = ticketsModel.generateTicket(mockParam_dto, mockParam_files);
+            const testFn = await ticketsModel.generateTicket(mockParam_dto, mockParam_files);
             const expectResult: Tickets = {
                 ticket_id: mockParam_id,
                 client_id: mockParam_dto.client_id,

@@ -4,9 +4,16 @@
 
 <br>
 
+### $\textsf{\color{skyblue}2026/02/09}$
+
+$\textsf{[v1.0.0-beta.3\ =>\ {\textbf{\color{brown}v1.0.0}]}}$ app
+- $\textsf{\color{teal}Addition:}$ Added file handling (tickets create) + cloud upload.
+
+<br>
+
 ### $\textsf{\color{skyblue}2026/02/05}$
 
-$\textsf{[v1.0.0-beta.2\ =>\ {\textbf{\color{brown}v1.0.0-beta.3}]}}$ app
+$\textsf{[v1.0.0-beta.2\ =>\ v1.0.0-beta.3]}$ app
 - $\textsf{\color{orange}Patch:}$ Refactored and renamed validation files, added basic files validation (not completed) and interfaces.
 
 <br>
