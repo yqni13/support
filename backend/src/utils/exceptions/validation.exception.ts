@@ -25,3 +25,9 @@ export class InvalidPropertiesException extends ValidationException {
         super(message, data);
     }
 }
+
+export class InvalidFilesException extends ValidationException {
+    constructor(message: string, data?: any) {
+        super(message, data);
+    }
+}

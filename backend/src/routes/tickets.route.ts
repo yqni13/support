@@ -1,10 +1,3 @@
-import { Router } from 'express';
-import { awaitHandlerFactory as factory } from '../middleware/awaitHandlerFactory.middleware';
-import { authAdmin } from '../middleware/auth.admin.middleware';
-import { authClient } from '../middleware/auth.client.middleware';
-import { authUser } from '../middleware/auth.user.middleware';
-import { maintain } from '../middleware/maintenance.middleware';
-import ticketsController from '../controllers/tickets.controller';
 import {
     getTicketSchema as getSchema,
     postTicketsSearchSchema as searchSchema,
@@ -13,8 +6,17 @@ import {
     deleteTicketSchema as deleteSchema
 
 } from '../validation/schemata/tickets.schema.validation';
-import { requirePayload } from '../middleware/require.middleware';
+import ticketsController from '../controllers/tickets.controller';
+import { Router } from 'express';
+import { awaitHandlerFactory as factory } from '../middleware/awaitHandlerFactory.middleware';
+import { authAdmin } from '../middleware/auth.admin.middleware';
+import { authClient } from '../middleware/auth.client.middleware';
+import { authUser } from '../middleware/auth.user.middleware';
+import { maintain } from '../middleware/maintenance.middleware';
 import { observe } from '../middleware/observe.middleware';
+import { parseFiles } from '../middleware/files/parse.files.middleware';
+import { requirePayload } from '../middleware/require.middleware';
+import { validateFiles } from '../middleware/files/validate.files.middleware';
 
 const router = Router();
 
@@ -44,7 +46,8 @@ router.post(
 // create
 router.post(
     '/create',
-    maintain(), authClient(), authUser(), requirePayload(), observe(),
+    maintain(), parseFiles(), authClient(), authUser(),
+    requirePayload(), observe(), validateFiles(),
     postSchema,
     factory(ticketsController.postTicket)
 );

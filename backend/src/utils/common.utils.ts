@@ -92,3 +92,19 @@ export function getNextRankEnumValue<T extends Record<string, any>>(enumObj: T, 
 
     return values[index + 1];
 }
+
+/**
+ * 
+ * @returns {string} Returns substring or empty string if endChar is not found in text.
+ */
+export function getPreCharString(text: string, endChar: string): string {
+    return text.substring(0, text.indexOf(endChar));
+}
+
+/**
+ * 
+ * @returns {string} Returns substring or empty string if startChar is not found in text.
+ */
+export function getPostCharString(text: string, startChar: string): string {
+    return text.substring(text.indexOf(startChar)+1);
+}

@@ -63,7 +63,6 @@ router.put(
     factory(metaController.patchMaintenanceMode)
 );
 
-// TODO(yqni13): implement observe-middleware at SUPPORT-25
 // demo
 router.post(
     '/demo',

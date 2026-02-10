@@ -1,7 +1,6 @@
 export interface FilesValidationContext {
-    files: any[],
-    required: boolean,
+    files?: Express.Multer.File[],
     maxNumber: number,
-    maxSize: number,
+    maxSizeInMb: number,
     types: string[],
 }
