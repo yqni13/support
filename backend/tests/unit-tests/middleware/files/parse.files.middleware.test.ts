@@ -18,7 +18,7 @@ describe('Middleware tests category <files>, priority: parseFiles', () => {
 
     describe('Testing valid fn calls', () => {
 
-        test('Parse file data into req.files, call next()', () => {
+        test('Mock file-parsing of data into req.files, call next()', () => {
             const mockMulter = jest.fn(
                 (mockReq, mockRes, callback) => callback()
             );
@@ -35,7 +35,7 @@ describe('Middleware tests category <files>, priority: parseFiles', () => {
 
     describe('Testing invalid fn calls', () => {
 
-        test('Parse file data into req.files, call next(err)', () => {
+        test('Mock file-parsing of data into req.files, call next(err)', () => {
             jest.spyOn(CommonUtils, 'logError').mockImplementation();
             const errorMsg = 'parsing failed';
             const mockError = new Error(errorMsg);

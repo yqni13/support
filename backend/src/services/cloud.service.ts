@@ -1,6 +1,6 @@
 import { secrets } from "../utils/secrets.utils";
 import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
-import { CloudUpload } from "./interfaces/cloud.interface.service";
+import { CloudUploadContext } from "./interfaces/cloud.interface.service";
 import { logError } from "../utils/common.utils";
 import { UnexpectedApiResponseException } from "../utils/exceptions/api.exception";
 
@@ -20,7 +20,7 @@ export class CloudService {
         })
     }
 
-    async upload(params: CloudUpload) {
+    async upload(params: CloudUploadContext) {
         try {
             const r2Client = this.getR2Client();
             const command = new PutObjectCommand({
@@ -31,7 +31,7 @@ export class CloudService {
             });
             await r2Client.send(command);
         } catch(err: any) {
-            err.status = err.status ?? 502; // Only for logging.
+            err.status = err.status ?? 502; // For logging only.
             logError(
                 "CLOUD SERVICE ERROR ON UPLOAD",
                 err.message ?? "SUPPORT_CloudService_upload",

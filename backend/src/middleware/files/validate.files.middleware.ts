@@ -14,7 +14,7 @@ export function validateFiles() {
             const params: FilesValidationContext = {
                 files: req.files as Express.Multer.File[] ?? undefined,
                 maxNumber: 5,
-                maxSize: 1,
+                maxSizeInMb: 1,
                 types: allowedMimetypes
             };
 

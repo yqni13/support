@@ -10,7 +10,7 @@ class TicketsModel {
         const newId = Utils.generateUUID();
         let paths: string[] | null = null;
         if(files) {
-            const filesService = new FilesService(files);
+            const filesService = new FilesService(files, 'tickets');
             filesService.transformFiles(newId);
             await filesService.uploadFiles();
             paths = filesService.getResourcePaths();

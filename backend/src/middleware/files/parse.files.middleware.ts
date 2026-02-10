@@ -6,7 +6,7 @@ export function parseFiles() {
     const upload = multer({ storage: multer.memoryStorage() });
     
     return function(req: Request, res: Response, next: NextFunction) {
-        upload.array('files')(req, res, (err: any) => {
+        upload.array('attachment')(req, res, (err: any) => {
             if(err) {
                 err.status = err.status ?? 500;
                 logError(

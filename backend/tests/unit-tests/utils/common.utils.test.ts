@@ -148,6 +148,38 @@ describe('Utils tets, priority: common', () => {
 
             expect(testFn).toBe(mockResult);
         })
+
+        test('fn: getPreCharString, params: <text> = "demo-text", <endChar> = "-"', () => {
+            const mockParam_text = 'demo-text';
+            const mockParam_endChar = '-';
+            const mockResult = 'demo';
+            const testFn = Utils.getPreCharString(mockParam_text, mockParam_endChar);
+            expect(testFn).toBe(mockResult);
+        })
+
+        test('fn: getPreCharString, params: <text> = "demo-text", <endChar> = "."', () => {
+            const mockParam_text = 'demo-text';
+            const mockParam_endChar = '.';
+            const mockResult = '';
+            const testFn = Utils.getPreCharString(mockParam_text, mockParam_endChar);
+            expect(testFn).toBe(mockResult);
+        })
+
+        test('fn: getPostCharString, params: <text> = "demotext-", <startChar> = "-"', () => {
+            const mockParam_text = 'demotext-';
+            const mockParam_startChar = '-';
+            const mockResult = '';
+            const testFn = Utils.getPostCharString(mockParam_text, mockParam_startChar);
+            expect(testFn).toBe(mockResult);
+        })
+
+        test('fn: getPostCharString, params: <text> = "-demotext", <startChar> = "-"', () => {
+            const mockParam_text = '-demotext';
+            const mockParam_startChar = '-';
+            const mockResult = 'demotext';
+            const testFn = Utils.getPostCharString(mockParam_text, mockParam_startChar);
+            expect(testFn).toBe(mockResult);
+        })
     })
 
     describe('Testing invalid fn calls', () => {

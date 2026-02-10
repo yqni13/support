@@ -52,13 +52,23 @@ The development process is structured by the TDD (test driven development) princ
 
 <br>
 
+### $\textsf{\color{teal}File handling}$
+
+User can attach files for any support/bug ticket to provide further information (screenshots, images, ...) on their message. Attachments are limited to upload up to `5` files and each file can be up to `1`mb [see validation](./backend/src/middleware/files/validate.files.middleware.ts). Currently only `images` (webp, jpg, jpeg, png) and `pdf` files are supported, but more will follow. Cloud in use is `Cloudflare` (see Figure 1) using S3Client for api communication and files will be deleted when a ticket is closed or expired.
+<div align="center">
+    <img src="assets/img/cloudflare_demo.png" alt="&nbsp;Cloudflare upload demo">
+    Figure 1 - Cloudflare upload demo, v1.0.0
+</div>
+
+<br>
+
 ### $\textsf{\color{teal}Logging}$
 
 To monitor errors the logging framework `Winston` is used in combination with Logtail from `Betterstack` as a Singleton: [config](./backend/src/logger/config.logger.ts)
-<br>While working within local (DEV) or test environment, error messages are logged into the consoles. For the deployed environments (STAG/PROD) the logging is set to send logtails to Betterstack (longer storage time than app-hosting service). For easy access and monitoring of error messages, the Betterstack UI client dashboard comes in handy (see Figure 1). Additional meta data (environment + version numbers) help identifying and assigning errors.
+<br>While working within local (DEV) or test environment, error messages are logged into the consoles. For the deployed environments (STAG/PROD) the logging is set to send logtails to Betterstack (longer storage time than app-hosting service). For easy access and monitoring of error messages, the Betterstack UI client dashboard comes in handy (see Figure 2). Additional meta data (environment + version numbers) help identifying and assigning errors.
 <div align="center">
     <img src="assets/img/betterstack_logging.png" alt="&nbsp;Betterstack logging dashboard">
-    Figure 1 - Betterstack logging dashboard, v1.0.0-beta.1
+    Figure 2 - Betterstack logging dashboard, v1.0.0-beta.1
 </div>
 
 <br>
@@ -73,14 +83,14 @@ Testing of the application server can be done automatically via Jest tests (next
 [PAYLOAD] { "demo_mode": "success" }
 ```
 Use `https://support-0hsq.onrender.com` for {{url}} to test on live conditions.<br>
-See Figure 2 for the different use cases & responses (Postman, v11.73.5) - from left to right:
+See Figure 3 for the different use cases & responses (Postman, v11.73.5) - from left to right:
 <br>[PAYLOAD]: { "mode_enum": "success" } => retrieve current version number as request without fail
 <br>[PAYLOAD]: undefined (none) or empty obj/array => retrieve exception for undefined body
 <br>[PAYLOAD]: { "mode_enum": "%§$" } => retrieve exception due to invalid value
 <br>[PAYLOAD]: { "mode_enum": "error" } => retrieve exception for intended failing db query (see data.message: SEL instead of SELECT)
 <div align="center">
     <img src="assets/img/demo_results.png" alt="&nbsp;Betterstack logging dashboard">
-    Figure 2 - /meta/demo responses, v0.9.6
+    Figure 3 - /meta/demo responses, v0.9.6
 </div>
 
 ### $\textsf{\color{teal}Jest}$
@@ -106,16 +116,16 @@ or simply save as script command in `package.json` to run `npm test`:
 <br>
 
 To automatically check tests before merging feature/development branch further up, a `GitHub Action` is set up, see [main.yml](.github/workflows/main.yml).<br>
-Preventing an unwanted merge with unfinished/failed test run, the project is set up to disable merging until all tests have passed (see Figure 3 to Figure 4).
+Preventing an unwanted merge with unfinished/failed test run, the project is set up to disable merging until all tests have passed (see Figure 4 to Figure 5).
 
 <div align="center">
     <img src="assets/img/github-action-jest-processing.png" alt="&nbsp;GitHub processing tests">
-    Figure 3 - processing tests, v0.9.1
+    Figure 4 - processing tests, v0.9.1
 </div>
 <br>
 <div align="center">
     <img src="assets/img/github-action-jest-passed.png" alt="&nbsp;GitHub tests passed">
-    Figure 4 - passing tests, v0.9.1
+    Figure 5 - passing tests, v0.9.1
 </div>
 
 <br>

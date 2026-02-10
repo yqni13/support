@@ -73,7 +73,7 @@ describe('Model tests, class: <tickets>, priority: generateTicket', () => {
         })
 
         test('Generate new object, entity: <Tickets>, priority: single file', async () => {
-            const mockParam_id = mockId.tickets.valid[0];
+            const mockParam_id = mockId.tickets.new[0];
             const mockParam_dto: TicketsCreateDTO = {
                 client_id: 'valid_clients_test_id',
                 user_id: 'valid_users_test_id',
@@ -105,7 +105,7 @@ describe('Model tests, class: <tickets>, priority: generateTicket', () => {
         })
 
         test('Generate new object, entity: <Tickets>, priority: multiple files', async () => {
-            const mockParam_id = mockId.tickets.valid[0];
+            const mockParam_id = mockId.tickets.new[0];
             const mockParam_dto: TicketsCreateDTO = {
                 client_id: 'valid_clients_test_id',
                 user_id: 'valid_users_test_id',

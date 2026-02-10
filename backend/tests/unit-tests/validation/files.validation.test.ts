@@ -120,9 +120,17 @@ describe('FileValidators tests, priority: no model specification', () => {
 
         describe('Testing invalid fn calls', () => {
 
-            test('Params: <files>.length = 1, invalid names as empty strings', () => {
+            test('Params: <files>.length = 1, invalid names with missing pre-name', () => {
                 const mockParam_files = [mockFile_webp];
-                mockParam_files[0].originalname = '';
+                mockParam_files[0].originalname = '.jpg';
+                mockParam_files[0].filename = '';
+                const mockError = 'support-files-invalid-name';
+                expect(() => FileValidators.validateFilesNames(mockParam_files)).toThrow(mockError);
+            })
+
+            test('Params: <files>.length = 1, invalid names with min 1 empty string', () => {
+                const mockParam_files = [mockFile_webp];
+                mockParam_files[0].originalname = 'test-file';
                 mockParam_files[0].filename = '';
                 const mockError = 'support-files-invalid-name';
                 expect(() => FileValidators.validateFilesNames(mockParam_files)).toThrow(mockError);
@@ -131,7 +139,7 @@ describe('FileValidators tests, priority: no model specification', () => {
             test('Params: <files>.length = 1, invalid names with missing "." and type', () => {
                 const mockParam_files = [mockFile_webp];
                 mockParam_files[0].originalname = 'test-file';
-                mockParam_files[0].filename = 'test-file';
+                mockParam_files[0].filename = '.jpg';
                 const mockError = 'support-files-invalid-name';
                 expect(() => FileValidators.validateFilesNames(mockParam_files)).toThrow(mockError);
             })

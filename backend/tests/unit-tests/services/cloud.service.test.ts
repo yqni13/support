@@ -1,6 +1,6 @@
 import { PutObjectCommand } from "@aws-sdk/client-s3";
 import { CloudService } from "../../../src/services/cloud.service";
-import { CloudUpload } from "../../../src/services/interfaces/cloud.interface.service"
+import { CloudUploadContext } from "../../../src/services/interfaces/cloud.interface.service"
 import { secrets } from "../../../src/utils/secrets.utils";
 import * as mockId from "../../mock-data/id.mock-data.json";
 import * as CommonUtils from "../../../src/utils/common.utils";
@@ -15,9 +15,9 @@ describe('Service tests, class <CloudService>, priority: <upload>', () => {
     describe('Testing valid fn calls', () => {
 
         test('Call PutObjectCommand and send() with correct params', async () => {
-            const mockParam_params: CloudUpload = {
+            const mockParam_params: CloudUploadContext = {
                 bucket: secrets.CLOUD_BUCKET,
-                key: `tickets/${mockId.tickets.valid[0]}/0_${mockId.tickets.valid[0]}.webp`,
+                key: `tickets/${mockId.tickets.new[0]}/0_${mockId.tickets.new[0]}.webp`,
                 buffer: Buffer.from([0x52,0x49,0x46,0x46,0x24,0x00,0x00,0x00,0x57,0x45,0x42,0x50]),
                 contentType: 'image/webp'
             };
@@ -41,10 +41,10 @@ describe('Service tests, class <CloudService>, priority: <upload>', () => {
 
     describe('Testing invalid fn calls', () => {
 
-        test('Call send() and throw exception on mocked api error', async () => {
-            const mockParam_params: CloudUpload = {
+        test('Call PutObjectCommand and send() to throw exception on mocked api error', async () => {
+            const mockParam_params: CloudUploadContext = {
                 bucket: secrets.CLOUD_BUCKET,
-                key: `tickets/${mockId.tickets.valid[0]}/0_${mockId.tickets.valid[0]}.webp`,
+                key: `tickets/${mockId.tickets.new[0]}/0_${mockId.tickets.new[0]}.webp`,
                 buffer: Buffer.from([0x52,0x49,0x46,0x46,0x24,0x00,0x00,0x00,0x57,0x45,0x42,0x50]),
                 contentType: 'image/webp'
             };

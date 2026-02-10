@@ -30,7 +30,7 @@ describe('Middleware tests category <files>, priority: validateFiles', () => {
 
     describe('Testing valid fn calls', () => {
 
-        test('Validate files, params: single valid file', async () => {
+        test('Validate files with validation middleware, params: single valid file', async () => {
             const mockFile = mockFile_webp;
             mockFile.size = 377592; // 368KB
             req.files = [mockFile];
@@ -44,7 +44,7 @@ describe('Middleware tests category <files>, priority: validateFiles', () => {
 
     describe('Testing invalid fn calls', () => {
 
-        test('Validate files, params: single invalid file', async () => {
+        test('Validate files with validation middleware, params: single invalid file', async () => {
             const mockFile = mockFile_webp;
             mockFile.size = 1810655; // 1.72MB
             req.files = [mockFile];

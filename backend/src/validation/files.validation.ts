@@ -1,3 +1,4 @@
+import { getPreCharString } from "../utils/common.utils";
 import { InvalidFilesException } from "../utils/exceptions/validation.exception";
 import { FilesValidationContext } from "./interfaces/files.interface.validation";
 
@@ -8,7 +9,7 @@ export function initFilesValidation(data: FilesValidationContext): boolean {
     validateFilesMaxNumber(data.files, data.maxNumber);
     validateFilesNames(data.files);
     validateFilesType(data.files, data.types);
-    validateFilesSizeEach(data.files, data.maxSize);
+    validateFilesSizeEach(data.files, data.maxSizeInMb);
     return true;
 }
 
@@ -20,10 +21,11 @@ export function validateFilesMaxNumber(files: Express.Multer.File[], max: number
 
 export function validateFilesNames(files: Express.Multer.File[]) {
     files.forEach((file: Express.Multer.File) => {
-        const origName = file.originalname;
-        const fileName = file.filename;
-        if((!origName || origName === '' || !origName.includes('.'))
-        && (!fileName || fileName === '' || !fileName.includes('.'))) {
+        const origName = file.originalname ?? '';
+        const fileName = file.filename ?? '';
+        // Substring of pre-name also returns '' when no '.' found => '.jpg' and 'test-name' checks invalid.
+        if((origName === '' || getPreCharString(origName, '.') === '')
+        && (fileName === '' || getPreCharString(fileName, '.') === '')) {
             throw new InvalidFilesException('support-files-invalid-name');
         }
     })

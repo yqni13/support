@@ -1,24 +1,26 @@
+import { getPostCharString } from "../utils/common.utils";
 import { CloudService } from "./cloud.service";
 import { secrets } from "../utils/secrets.utils";
 
 export class FilesService {
-    private _basePath = 'tickets';
+    private _basePath: string;
     private _files: Express.Multer.File[];
     private _cloudService: CloudService;
     
-    constructor(baseFiles: Express.Multer.File[]) {
+    constructor(baseFiles: Express.Multer.File[], basePath: string) {
         this._files = baseFiles;
+        this._basePath = basePath;
         this._cloudService = new CloudService();
     }
 
-    transformFiles(ticketId: string) {
+    transformFiles(id: string) {
         this._files.forEach((file: Express.Multer.File, index: number) => {
             if(!file.originalname || file.originalname === '') {
                 file.originalname = file.filename;
             }
-            const fileType = this.convertTypeFromFilename(file.originalname);
-            const name = `${index}_${ticketId}.${fileType}`;
-            file.path = `${this._basePath}/${ticketId}/${name}`;
+            const fileType = getPostCharString(file.originalname, '.');
+            const name = `${index}_${id}.${fileType}`;
+            file.path = `${this._basePath}/${id}/${name}`;
             file.filename = name;
             file.originalname = name;
         })
@@ -26,10 +28,6 @@ export class FilesService {
 
     get files(): Express.Multer.File[] {
         return this._files;
-    }
-
-    convertTypeFromFilename(filename: string): string {
-        return filename.substring(filename.indexOf('.')+1);
     }
 
     getResourcePaths(): string[] {
@@ -42,14 +40,14 @@ export class FilesService {
 
     async uploadFiles() {
         await Promise.all(
-            this._files.map(file => {
+            this._files.map(file => 
                 this._cloudService.upload({
                     bucket: secrets.CLOUD_BUCKET,
                     key: file.path,
                     buffer: file.buffer,
                     contentType: file.mimetype
                 })
-            })
-        )
+            )
+        );
     }
 }

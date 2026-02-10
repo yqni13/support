@@ -16,6 +16,7 @@ import { Flag } from "../../../src/utils/enums/flag.enum";
 import { CommonExceptionMessage } from "../../../src/utils/enums/common-exception-messages.enum";
 import { ErrorStatusCodes } from "../../../src/utils/errorStatusCodes.utils";
 import { default as mockId } from "../../mock-data/id.mock-data.json";
+import { FilesService } from "../../../src/services/files.service";
 
 const testValidClientsId = mockId.clients.valid[0];
 const testValidUsersId = mockId.users.valid[0];
@@ -44,7 +45,6 @@ jest.mock('../../../src/middleware/observe.middleware.ts', () => ({
 }))
 
 import app from '../../../src/app';
-import { FilesService } from "../../../src/services/files.service";
 
 jest.setTimeout(60000);
 
@@ -267,7 +267,7 @@ describe('Integration test (repository specific), priority: Tickets', () => {
             // With file attachment => request content-type: multipart/form-data (use .field(property))
             const testResponse = await request(app)
                 .post(`${apiUrl}/create`)
-                .attach('files', mockFile.buffer, mockFile.filename)
+                .attach('attachment', mockFile.buffer, mockFile.filename)
                 .field('user_email', testParam_dto.user_email)
                 .field('message', testParam_dto.message);
 
@@ -317,8 +317,8 @@ describe('Integration test (repository specific), priority: Tickets', () => {
 
             const testResponse = await request(app)
                 .post(`${apiUrl}/create`)
-                .attach('files', mockFiles[0].buffer, mockFiles[0].filename)
-                .attach('files', mockFiles[1].buffer, mockFiles[1].filename)
+                .attach('attachment', mockFiles[0].buffer, mockFiles[0].filename)
+                .attach('attachment', mockFiles[1].buffer, mockFiles[1].filename)
                 .field('user_email', testParam_dto.user_email)
                 .field('message', testParam_dto.message);
 
@@ -380,6 +380,123 @@ describe('Integration test (repository specific), priority: Tickets', () => {
     })
 
     describe('Testing invalid fn calls', () => {
+
+        describe('All routes, priority: validation middleware, location: <files>', () => {
+
+            describe('Route: POST/create', () => {
+
+                let testParam_dto: TicketsCreateRequestDTO;
+                beforeEach(() => {
+                    testParam_dto = {
+                        user_email: 'invalid-new-user@test.com',
+                        message: 'invalid-new-test-message',
+                    };
+                })
+
+                test('Files: invalid number of files, validator: validateFilesMaxNumber', async () =>{
+                    const mockFiles = [
+                        {
+                            filename: 'test-file0.webp',
+                            buffer: Buffer.alloc(1024 * 1024 * 0.2, 0) // 200kb
+                        },
+                        {
+                            filename: 'test-file1.webp',
+                            buffer: Buffer.alloc(1024 * 1024 * 0.3, 0) // 300kb
+                        },
+                        {
+                            filename: 'test-file2.webp',
+                            buffer: Buffer.alloc(1024 * 1024 * 0.2, 0) // 200kb
+                        },
+                        {
+                            filename: 'test-file3.webp',
+                            buffer: Buffer.alloc(1024 * 1024 * 0.4, 0) // 400kb
+                        },
+                        {
+                            filename: 'test-file4.webp',
+                            buffer: Buffer.alloc(1024 * 1024 * 0.3, 0) // 300kb
+                        },
+                        {
+                            filename: 'test-file5.webp',
+                            buffer: Buffer.alloc(1024 * 1024 * 0.18, 0) // 180kb
+                        }
+                    ];
+                    const errorMsg = 'support-invalid-max#files!5';
+
+                    jest.spyOn(Utils, 'logError').mockImplementation();
+
+                    const testResponse = await request(app)
+                        .post(`${apiUrl}/create`)
+                        .attach('attachment', mockFiles[0].buffer, mockFiles[0].filename)
+                        .attach('attachment', mockFiles[1].buffer, mockFiles[1].filename)
+                        .attach('attachment', mockFiles[2].buffer, mockFiles[2].filename)
+                        .attach('attachment', mockFiles[3].buffer, mockFiles[3].filename)
+                        .attach('attachment', mockFiles[4].buffer, mockFiles[4].filename)
+                        .attach('attachment', mockFiles[5].buffer, mockFiles[5].filename)
+                        .field('user_email', testParam_dto.user_email)
+                        .field('message', testParam_dto.message);
+
+                    expect(testResponse.statusCode).toBe(ErrorStatusCodes.InvalidFilesException);
+                    expect(testResponse.body.headers.message).toEqual(errorMsg);
+                })
+
+                test('Files: 1x invalid name, validator: validateFilesNames', async () =>{
+                    const mockFile = {
+                        filename: 'test-file-no-type',
+                        buffer: Buffer.alloc(1024 * 1024 * 0.5, 0) // 500kb
+                    };
+                    const errorMsg = 'support-files-invalid-name';
+
+                    jest.spyOn(Utils, 'logError').mockImplementation();
+
+                    const testResponse = await request(app)
+                        .post(`${apiUrl}/create`)
+                        .attach('attachment', mockFile.buffer, mockFile.filename)
+                        .field('user_email', testParam_dto.user_email)
+                        .field('message', testParam_dto.message);
+
+                    expect(testResponse.statusCode).toBe(ErrorStatusCodes.InvalidFilesException);
+                    expect(testResponse.body.headers.message).toEqual(errorMsg);
+                })
+
+                test('Files: 1x invalid type, validator: validateFilesType', async () =>{
+                    const mockFile = {
+                        filename: 'test-file.doxc', // Multer gets type from filename.
+                        buffer: Buffer.alloc(1024 * 1024 * 0.1, 0) // 100kb
+                    };
+                    const errorMsg = 'support-files-mimetype';
+
+                    jest.spyOn(Utils, 'logError').mockImplementation();
+
+                    const testResponse = await request(app)
+                        .post(`${apiUrl}/create`)
+                        .attach('attachment', mockFile.buffer, mockFile.filename)
+                        .field('user_email', testParam_dto.user_email)
+                        .field('message', testParam_dto.message);
+
+                    expect(testResponse.statusCode).toBe(ErrorStatusCodes.InvalidFilesException);
+                    expect(testResponse.body.headers.message).toEqual(errorMsg);
+                })
+
+                test('Files: 1x invalid size, validator: validateFilesSizeEach', async () =>{
+                    const mockFile = {
+                        filename: 'test-file.webp',
+                        buffer: Buffer.alloc(1024 * 1024 * 1.5, 0) // 1.5mb
+                    };
+                    const errorMsg = 'support-files-size-each';
+
+                    jest.spyOn(Utils, 'logError').mockImplementation();
+
+                    const testResponse = await request(app)
+                        .post(`${apiUrl}/create`)
+                        .attach('attachment', mockFile.buffer, mockFile.filename)
+                        .field('user_email', testParam_dto.user_email)
+                        .field('message', testParam_dto.message);
+
+                    expect(testResponse.statusCode).toBe(ErrorStatusCodes.InvalidFilesException);
+                    expect(testResponse.body.headers.message).toEqual(errorMsg);
+                })
+            })
+        })
 
         describe('All routes, priority: express-validators, location <params>', () => {
 
@@ -641,123 +758,6 @@ describe('Integration test (repository specific), priority: Tickets', () => {
 
                     expect(testResponse.statusCode).toBe(ErrorStatusCodes.InvalidPropertiesException);
                     expect(testResponse.body.headers.data).toEqual([testError]);
-                })
-            })
-        })
-
-        describe('All routes, priority: validation middleware, location: <files>', () => {
-
-            describe('Route: POST/create', () => {
-
-                let testParam_dto: TicketsCreateRequestDTO;
-                beforeEach(() => {
-                    testParam_dto = {
-                        user_email: 'invalid-new-user@test.com',
-                        message: 'invalid-new-test-message',
-                    };
-                })
-
-                test('Files: invalid number of files, validator: validateFilesMaxNumber', async () =>{
-                    const mockFiles = [
-                        {
-                            filename: 'test-file0.webp',
-                            buffer: Buffer.alloc(1024 * 1024 * 0.2, 0) // 200kb
-                        },
-                        {
-                            filename: 'test-file1.webp',
-                            buffer: Buffer.alloc(1024 * 1024 * 0.3, 0) // 300kb
-                        },
-                        {
-                            filename: 'test-file2.webp',
-                            buffer: Buffer.alloc(1024 * 1024 * 0.2, 0) // 200kb
-                        },
-                        {
-                            filename: 'test-file3.webp',
-                            buffer: Buffer.alloc(1024 * 1024 * 0.4, 0) // 400kb
-                        },
-                        {
-                            filename: 'test-file4.webp',
-                            buffer: Buffer.alloc(1024 * 1024 * 0.3, 0) // 300kb
-                        },
-                        {
-                            filename: 'test-file5.webp',
-                            buffer: Buffer.alloc(1024 * 1024 * 0.18, 0) // 180kb
-                        }
-                    ];
-                    const errorMsg = 'support-invalid-max#files!5';
-
-                    jest.spyOn(Utils, 'logError').mockImplementation();
-
-                    const testResponse = await request(app)
-                        .post(`${apiUrl}/create`)
-                        .attach('files', mockFiles[0].buffer, mockFiles[0].filename)
-                        .attach('files', mockFiles[1].buffer, mockFiles[1].filename)
-                        .attach('files', mockFiles[2].buffer, mockFiles[2].filename)
-                        .attach('files', mockFiles[3].buffer, mockFiles[3].filename)
-                        .attach('files', mockFiles[4].buffer, mockFiles[4].filename)
-                        .attach('files', mockFiles[5].buffer, mockFiles[5].filename)
-                        .field('user_email', testParam_dto.user_email)
-                        .field('message', testParam_dto.message);
-
-                    expect(testResponse.statusCode).toBe(ErrorStatusCodes.InvalidFilesException);
-                    expect(testResponse.body.headers.message).toEqual(errorMsg);
-                })
-
-                test('Files: 1x invalid, validator: validateFilesNames', async () =>{
-                    const mockFile = {
-                        filename: 'test-file-no-type',
-                        buffer: Buffer.alloc(1024 * 1024 * 1.5, 0) // 1.5mb
-                    };
-                    const errorMsg = 'support-files-invalid-name';
-
-                    jest.spyOn(Utils, 'logError').mockImplementation();
-
-                    const testResponse = await request(app)
-                        .post(`${apiUrl}/create`)
-                        .attach('files', mockFile.buffer, mockFile.filename)
-                        .field('user_email', testParam_dto.user_email)
-                        .field('message', testParam_dto.message);
-
-                    expect(testResponse.statusCode).toBe(ErrorStatusCodes.InvalidFilesException);
-                    expect(testResponse.body.headers.message).toEqual(errorMsg);
-                })
-
-                test('Files: 1x invalid, validator: validateFilesType', async () =>{
-                    const mockFile = {
-                        filename: 'test-file.doxc', // Multer gets type from filename.
-                        buffer: Buffer.alloc(1024 * 1024 * 0.1, 0) // 100kb
-                    };
-                    const errorMsg = 'support-files-mimetype';
-
-                    jest.spyOn(Utils, 'logError').mockImplementation();
-
-                    const testResponse = await request(app)
-                        .post(`${apiUrl}/create`)
-                        .attach('files', mockFile.buffer, mockFile.filename)
-                        .field('user_email', testParam_dto.user_email)
-                        .field('message', testParam_dto.message);
-
-                    expect(testResponse.statusCode).toBe(ErrorStatusCodes.InvalidFilesException);
-                    expect(testResponse.body.headers.message).toEqual(errorMsg);
-                })
-
-                test('Files: 1x invalid, validator: validateFilesSizeEach', async () =>{
-                    const mockFile = {
-                        filename: 'test-file.webp',
-                        buffer: Buffer.alloc(1024 * 1024 * 1.5, 0) // 1.5mb
-                    };
-                    const errorMsg = 'support-files-size-each';
-
-                    jest.spyOn(Utils, 'logError').mockImplementation();
-
-                    const testResponse = await request(app)
-                        .post(`${apiUrl}/create`)
-                        .attach('files', mockFile.buffer, mockFile.filename)
-                        .field('user_email', testParam_dto.user_email)
-                        .field('message', testParam_dto.message);
-
-                    expect(testResponse.statusCode).toBe(ErrorStatusCodes.InvalidFilesException);
-                    expect(testResponse.body.headers.message).toEqual(errorMsg);
                 })
             })
         })

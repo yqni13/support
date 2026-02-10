@@ -1,4 +1,4 @@
-export interface CloudUpload {
+export interface CloudUploadContext {
     bucket: string,
     key: string,
     buffer: Buffer,
