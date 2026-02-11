@@ -4,3 +4,8 @@ export interface CloudUploadContext {
     buffer: Buffer,
     contentType: string
 }
+
+export interface CloudDeleteContext {
+    bucket: string,
+    keys: Record<'Key', string>[]
+}

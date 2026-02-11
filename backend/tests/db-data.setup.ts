@@ -90,4 +90,13 @@ export class DBTestData {
         const values = ['2025-01-01', 1, '2025-01-01T14:00:06.000Z'];
         return { sql: sql, values: values }; 
     }
+
+    getTicketsWithoutPathsInsertSql(): BaseQuery {
+        const sql = `INSERT INTO ${this.tableRecord['tickets']}
+        (ticket_id, client_id, user_id, status, message, resource_paths, flag, last_modified, created_on)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9);
+        `;
+        const values = [mockId.tickets.valid[1], mockId.clients.valid[0], mockId.users.valid[0], TicketStatus.ISSUED, 'test-message-without-resource_paths', undefined, null, '2025-01-01T14:00:07.000Z', '2025-01-01T14:00:07.000Z'];
+        return { sql: sql, values: values };
+    }
 }

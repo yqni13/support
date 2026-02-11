@@ -17,6 +17,8 @@ import { CommonExceptionMessage } from "../../../src/utils/enums/common-exceptio
 import { ErrorStatusCodes } from "../../../src/utils/errorStatusCodes.utils";
 import { default as mockId } from "../../mock-data/id.mock-data.json";
 import { FilesService } from "../../../src/services/files.service";
+import ticketsModel from "../../../src/models/tickets.model";
+import { CloudService } from "../../../src/services/cloud.service";
 
 const testValidClientsId = mockId.clients.valid[0];
 const testValidUsersId = mockId.users.valid[0];
@@ -98,16 +100,29 @@ describe('Integration test (repository specific), priority: Tickets', () => {
         })
 
         test('Repository process fn findAll, result: "SUCCESS"', async () => {
-            const testResult: TicketsResponseDTO[] = [{
-                ticket_id: mockId.tickets.valid[0],
-                client_id: testValidClientsId,
-                user_id: testValidUsersId,
-                status: TicketStatus.ISSUED,
-                message: 'test-message',
-                flag: null,
-                last_modified: testTimestamp,
-                created_on: testTimestamp
-            }];
+            const testResult: TicketsResponseDTO[] = [
+                {
+                    ticket_id: mockId.tickets.valid[0],
+                    client_id: testValidClientsId,
+                    user_id: testValidUsersId,
+                    status: TicketStatus.ISSUED,
+                    message: 'test-message',
+                    resource_paths: ['test/path/num0', 'test/path/num1'],
+                    flag: null,
+                    last_modified: testTimestamp,
+                    created_on: testTimestamp
+                },
+                {
+                    ticket_id: mockId.tickets.valid[1],
+                    client_id: testValidClientsId,
+                    user_id: testValidUsersId,
+                    status: TicketStatus.ISSUED,
+                    message: 'test-message-without-resource_paths',
+                    flag: null,
+                    last_modified: '2025-01-01T14:00:07.000Z',
+                    created_on: '2025-01-01T14:00:07.000Z'
+                }
+            ];
 
             await dbTestSetup.addTestData();
             const testResponse = await request(app)
@@ -137,16 +152,29 @@ describe('Integration test (repository specific), priority: Tickets', () => {
                 user_id: [testValidUsersId, mockId.tickets.invalid[0]],
                 status: TicketStatus.ISSUED
             };
-            const testResult: TicketsResponseDTO[] = [{
-                ticket_id: mockId.tickets.valid[0],
-                client_id: testValidClientsId,
-                user_id: testValidUsersId,
-                status: TicketStatus.ISSUED,
-                message: 'test-message',
-                flag: null,
-                last_modified: testTimestamp,
-                created_on: testTimestamp
-            }];
+            const testResult: TicketsResponseDTO[] = [
+                {
+                    ticket_id: mockId.tickets.valid[0],
+                    client_id: testValidClientsId,
+                    user_id: testValidUsersId,
+                    status: TicketStatus.ISSUED,
+                    message: 'test-message',
+                    resource_paths: ['test/path/num0', 'test/path/num1'],
+                    flag: null,
+                    last_modified: testTimestamp,
+                    created_on: testTimestamp
+                },
+                {
+                    ticket_id: mockId.tickets.valid[1],
+                    client_id: testValidClientsId,
+                    user_id: testValidUsersId,
+                    status: TicketStatus.ISSUED,
+                    message: 'test-message-without-resource_paths',
+                    flag: null,
+                    last_modified: '2025-01-01T14:00:07.000Z',
+                    created_on: '2025-01-01T14:00:07.000Z'
+                }
+            ];
 
             jest.spyOn(Utils, "getTimestampUTC").mockReturnValue(testTimestamp);
 
@@ -163,16 +191,29 @@ describe('Integration test (repository specific), priority: Tickets', () => {
             const testParam_dto: TicketsFilterDTO = {
                 created_on: ['2024-12-01T00:00:00.000Z', '2025-01-02T14:00:00.000Z']
             };
-            const testResult: TicketsResponseDTO[] = [{
-                ticket_id: mockId.tickets.valid[0],
-                client_id: testValidClientsId,
-                user_id: testValidUsersId,
-                status: TicketStatus.ISSUED,
-                message: 'test-message',
-                flag: null,
-                last_modified: testTimestamp,
-                created_on: testTimestamp
-            }];
+            const testResult: TicketsResponseDTO[] = [
+                {
+                    ticket_id: mockId.tickets.valid[0],
+                    client_id: testValidClientsId,
+                    user_id: testValidUsersId,
+                    status: TicketStatus.ISSUED,
+                    message: 'test-message',
+                    resource_paths: ['test/path/num0', 'test/path/num1'],
+                    flag: null,
+                    last_modified: testTimestamp,
+                    created_on: testTimestamp
+                },
+                {
+                    ticket_id: mockId.tickets.valid[1],
+                    client_id: testValidClientsId,
+                    user_id: testValidUsersId,
+                    status: TicketStatus.ISSUED,
+                    message: 'test-message-without-resource_paths',
+                    flag: null,
+                    last_modified: '2025-01-01T14:00:07.000Z',
+                    created_on: '2025-01-01T14:00:07.000Z'
+                }
+            ];
 
             jest.spyOn(Utils, "getTimestampUTC").mockReturnValue(testTimestamp);
 
@@ -354,9 +395,26 @@ describe('Integration test (repository specific), priority: Tickets', () => {
             expect(testResponse.body).toMatchObject(testResult)
         })
 
-        test('Repository process fn delete, result: "SUCCESS"', async () => {
+        test('Repository process fn delete with empty resource_paths, result: "SUCCESS"', async () => {
+            const testParam_id = mockId.tickets.valid[1];
+            const testResult = true;
+            jest.spyOn(ticketsModel, 'isPermittedToDelete').mockReturnValue(true);
+
+            await dbTestSetup.addTestData();
+            const testResponse = await request(app)
+                .delete(`${apiUrl}/delete/${testParam_id}`);
+
+            expect(testResponse.statusCode).toBe(200);
+            expect(testResponse.body).toBe(testResult);
+        })
+
+        test('Repository process fn delete with existing data for resource_paths, result: "SUCCESS"', async () => {
             const testParam_id = mockId.tickets.valid[0];
             const testResult = true;
+
+            jest.spyOn(ticketsModel, 'isPermittedToDelete').mockReturnValue(true);
+            jest.spyOn(ticketsModel, 'handleTicketBeforeDelete').mockImplementation();
+            jest.spyOn(CloudService.prototype, 'delete').mockImplementation();
 
             await dbTestSetup.addTestData();
             const testResponse = await request(app)

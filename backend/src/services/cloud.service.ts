@@ -1,6 +1,6 @@
 import { secrets } from "../utils/secrets.utils";
-import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
-import { CloudUploadContext } from "./interfaces/cloud.interface.service";
+import { S3Client, PutObjectCommand, DeleteObjectsCommand } from "@aws-sdk/client-s3";
+import { CloudDeleteContext, CloudUploadContext } from "./interfaces/cloud.interface.service";
 import { logError } from "../utils/common.utils";
 import { UnexpectedApiResponseException } from "../utils/exceptions/api.exception";
 
@@ -20,6 +20,10 @@ export class CloudService {
         })
     }
 
+    /**
+     * 
+     * @description Execute upload of SINGLE file per request.
+     */
     async upload(params: CloudUploadContext) {
         try {
             const r2Client = this.getR2Client();
@@ -35,6 +39,31 @@ export class CloudService {
             logError(
                 "CLOUD SERVICE ERROR ON UPLOAD",
                 err.message ?? "SUPPORT_CloudService_upload",
+                err
+            );
+            throw new UnexpectedApiResponseException();
+        }
+    }
+
+    /**
+     * 
+     * @description Execute deletion of MULTIPLE files within single request.
+     */
+    async delete(params: CloudDeleteContext) {
+        try {
+            const r2Client = this.getR2Client();
+            const command = new DeleteObjectsCommand({
+                Bucket: params.bucket,
+                Delete: {
+                    Objects: params.keys
+                }
+            });
+            await r2Client.send(command);
+        } catch(err: any) {
+            err.status = err.status ?? 502; // For logging only.
+            logError(
+                "CLOUD SERVICE ERROR ON DELETE",
+                err.message ?? "SUPPORT_CloudService_delete",
                 err
             );
             throw new UnexpectedApiResponseException();

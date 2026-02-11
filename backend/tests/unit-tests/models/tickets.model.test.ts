@@ -1,4 +1,4 @@
-import { TicketsCreateDTO, TicketsUpdateDTO } from "../../../src/dtos/tickets.dto";
+import { TicketsCreateDTO, TicketsResponseDTO, TicketsUpdateDTO } from "../../../src/dtos/tickets.dto";
 import * as Utils from "../../../src/utils/common.utils";
 import * as mockId from "../../mock-data/id.mock-data.json";
 import { TicketStatus } from "../../../src/utils/enums/ticket-status.enum";
@@ -162,6 +162,134 @@ describe('Model tests, class: <tickets>, priority: <mapTicketUpdateDto>', () => 
             };
 
             expect(testFn).toEqual(expectResult);
+        })
+    })
+})
+
+describe('Model tests, class: <tickets>, priority: handleTicketBeforeDelete', () => {
+
+    describe('Testing valid fn calls', () => {
+
+        test('Check for file deletion => call FilesService.deleteFiles(), params: <dto>', async () => {
+            const mockParam_dto: TicketsResponseDTO = {
+                ticket_id: mockId.tickets.valid[0],
+                client_id: mockId.clients.valid[0],
+                user_id: mockId.users.valid[0],
+                status: TicketStatus.ISSUED,
+                message: 'test-message',
+                resource_paths: [`tickets/${mockId.tickets.valid[0]}/0_${mockId.tickets.valid[0]}.jpg`],
+                flag: null,
+                last_modified: mockTimestamp,
+                created_on: mockTimestamp
+            };
+            const testSpy = jest.spyOn(FilesService.prototype, 'deleteFiles').mockImplementation();
+            await ticketsModel.handleTicketBeforeDelete(mockParam_dto);
+
+            expect(testSpy).toHaveBeenCalledWith(mockParam_dto.resource_paths);
+            testSpy.mockRestore();
+        })
+    })
+
+    describe('Testing invalid fn calls', () => {
+
+        test('Check for file deletion => does NOT call FilesService.deleteFiles(), params: <dto>', async () => {
+            const mockParam_dto: TicketsResponseDTO = {
+                ticket_id: mockId.tickets.valid[1],
+                client_id: mockId.clients.valid[0],
+                user_id: mockId.users.valid[0],
+                status: TicketStatus.ISSUED,
+                message: 'test-message-without-resource_paths',
+                flag: null,
+                last_modified: mockTimestamp,
+                created_on: mockTimestamp
+            };
+            const testSpy = jest.spyOn(FilesService.prototype, 'deleteFiles').mockImplementation();
+            await ticketsModel.handleTicketBeforeDelete(mockParam_dto);
+
+            expect(testSpy).not.toHaveBeenCalled();
+            testSpy.mockRestore();
+        })
+    })
+})
+
+describe('Model tests, class: <tickets>, priority: isPermittedToDelete', () => {
+
+    let mockParam_dto: TicketsResponseDTO;
+    beforeEach(() => {
+        mockParam_dto = {
+            ticket_id: mockId.tickets.valid[0],
+            client_id: mockId.clients.valid[0],
+            user_id: mockId.users.valid[0],
+            status: TicketStatus.CLOSED,
+            message: 'test-message',
+            flag: null,
+            last_modified: mockTimestamp,
+            created_on: mockTimestamp
+        };
+    })
+    afterEach(() => {
+        jest.restoreAllMocks();
+    });
+
+    describe('Testing valid fn calls', () => {
+
+        test('Get permission to delete, params: timeRange >= 0 days, status = "cancel"', () => {
+            jest.spyOn(Utils, 'now').mockReturnValue(new Date('2025-01-03T11:07:00.000Z'));
+            const testParam_dto = structuredClone(mockParam_dto);
+            testParam_dto.status = TicketStatus.CANCEL;
+            const testFn = ticketsModel.isPermittedToDelete(testParam_dto);
+            const expectResult = true;
+
+            expect(testFn).toBe(expectResult);
+        })
+
+        test('Get permission to delete, params: timeRange > 30 days, status = "closed"', () => {
+            jest.spyOn(Utils, 'now').mockReturnValue(new Date('2025-02-12T11:07:00.000Z'));
+            const testFn = ticketsModel.isPermittedToDelete(mockParam_dto);
+            const expectResult = true;
+
+            expect(testFn).toBe(expectResult);
+        })
+
+        test('Get permission to delete, params: timeRange > 180 days, status = "paused"', () => {
+            jest.spyOn(Utils, 'now').mockReturnValue(new Date('2025-08-01T15:41:00.000Z'));
+            const testParam_dto = structuredClone(mockParam_dto);
+            testParam_dto.status = TicketStatus.PAUSED;
+            const testFn = ticketsModel.isPermittedToDelete(testParam_dto);
+            const expectResult = true;
+
+            expect(testFn).toBe(expectResult);
+        })
+    })
+
+    describe('Testing invalid fn calls', () => {
+
+        test('Deny permission to delete, params: timeRange < 30 days, status = "closed"', () => {
+            jest.spyOn(Utils, 'now').mockReturnValue(new Date('2025-01-21T20:37:00.000Z'));
+            const testFn = ticketsModel.isPermittedToDelete(mockParam_dto);
+            const expectResult = false;
+
+            expect(testFn).toBe(expectResult);
+        })
+
+        test('Deny permission to delete, params: timeRange > 30 days, status = "active"', () => {
+            jest.spyOn(Utils, 'now').mockReturnValue(new Date('2025-02-12T11:07:00.000Z'));
+            const testParam_dto = structuredClone(mockParam_dto);
+            testParam_dto.status = TicketStatus.ACTIVE;
+            const testFn = ticketsModel.isPermittedToDelete(testParam_dto);
+            const expectResult = false;
+
+            expect(testFn).toBe(expectResult);
+        })
+
+        test('Deny permission to delete, params: timeRange > 180 days, status = "active"', () => {
+            jest.spyOn(Utils, 'now').mockReturnValue(new Date('2025-08-01T15:41:00.000Z'));
+            const testParam_dto = structuredClone(mockParam_dto);
+            testParam_dto.status = TicketStatus.ACTIVE;
+            const testFn = ticketsModel.isPermittedToDelete(testParam_dto);
+            const expectResult = false;
+
+            expect(testFn).toBe(expectResult);
         })
     })
 })

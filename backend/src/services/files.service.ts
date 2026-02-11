@@ -1,6 +1,7 @@
 import { getPostCharString } from "../utils/common.utils";
 import { CloudService } from "./cloud.service";
 import { secrets } from "../utils/secrets.utils";
+import { CloudDeleteContext } from "./interfaces/cloud.interface.service";
 
 export class FilesService {
     private _basePath: string;
@@ -49,5 +50,17 @@ export class FilesService {
                 })
             )
         );
+    }
+
+    async deleteFiles(paths: string[]) {
+        const keyArr: Record<'Key', string>[] = [];
+        paths.forEach((path: string) => {
+            keyArr.push({ Key: path });
+        });
+        const params: CloudDeleteContext = {
+            bucket: secrets.CLOUD_BUCKET,
+            keys: keyArr
+        };
+        await this._cloudService.delete(params);
     }
 }
