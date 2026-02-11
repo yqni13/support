@@ -1,5 +1,5 @@
 # yqni13 | support
-$\texttt{\color{teal}{v1.0.0}}$
+$\texttt{\color{teal}{v1.1.0}}$
 
 
 <br>
@@ -43,7 +43,7 @@ The development process is structured by the TDD (test driven development) princ
 
 <dl>
     <dd>🪲 support/bug-ticket handling including client + user data</dd>
-    <dd>📂 file handling from requests + cloud storage</dd>
+    <dd>📂 file handling (upload/delete) from requests + cloud storage</dd>
     <dd>:mag: filtered search for ticket + user data (properties + timespan)</dd>
     <dd>:closed_lock_with_key: maintenance mode can en/disable application via single request</dd>
     <dd>:key: request verification by api-keys</dd>
@@ -54,7 +54,7 @@ The development process is structured by the TDD (test driven development) princ
 
 ### $\textsf{\color{teal}File handling}$
 
-User can attach files for any support/bug ticket to provide further information (screenshots, images, ...) on their message. Attachments are limited to upload up to `5` files and each file can be up to `1`mb [see validation](./backend/src/middleware/files/validate.files.middleware.ts). Currently only `images` (webp, jpg, jpeg, png) and `pdf` files are supported, but more will follow. Cloud in use is `Cloudflare` (see Figure 1) using S3Client for api communication and files will be deleted when a ticket is closed or expired.
+User can attach files for any support/bug ticket to provide further information (screenshots, images, ...) on their message. Attachments are limited to upload up to `5` files and each file can be up to `1`mb [see validation](./backend/src/middleware/files/validate.files.middleware.ts). Currently only `images` (webp, jpg, jpeg, png) and `pdf` files are supported, but more will follow. Cloud in use is `Cloudflare` (see Figure 1) using S3Client for api communication and files will be deleted when a ticket is closed, canceled or expired (time check).
 <div align="center">
     <img src="assets/img/cloudflare_demo.png" alt="&nbsp;Cloudflare upload demo">
     Figure 1 - Cloudflare upload demo, v1.0.0
@@ -135,8 +135,8 @@ Preventing an unwanted merge with unfinished/failed test run, the project is set
 
 ### $\textsf{\color{forestgreen}last update:}$
 
-$\textsf{[v1.0.0-beta.3\ =>\ {\textbf{\color{brown}v1.0.0}]}}$ app
-- $\textsf{\color{teal}Addition:}$ Added file handling (tickets create) + cloud upload.
+$\textsf{[v1.0.0\ =>\ {\textbf{\color{brown}v1.1.0}]}}$ app
+- $\textsf{\color{teal}Addition:}$ Added deletion to file handling + delete-permission check.
 
 <br>
 

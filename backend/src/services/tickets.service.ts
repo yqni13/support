@@ -50,7 +50,13 @@ class TicketsService {
     }
 
     async deleteTicket(id: string): Promise<boolean> {
-        return await ticketsRepository.delete(id);
+        const ticket = await ticketsRepository.findById(id);
+        if(ticket && ticketsModel.hasPermissionToDelete(ticket)) {
+            await ticketsModel.handleTicketBeforeDelete(ticket as TicketsResponseDTO);
+            return await ticketsRepository.delete(id);
+        } else {
+            return false;
+        }
     }
 }
 

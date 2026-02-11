@@ -1,4 +1,4 @@
-import { TicketsCreateDTO, TicketsUpdateDTO } from "../dtos/tickets.dto";
+import { TicketsCreateDTO, TicketsResponseDTO, TicketsUpdateDTO } from "../dtos/tickets.dto";
 import { Tickets } from "../repositories/interfaces/tickets.entity.interface";
 import * as Utils from "../utils/common.utils";
 import { TicketStatus } from "../utils/enums/ticket-status.enum";
@@ -34,6 +34,24 @@ class TicketsModel {
             ...dto,
             last_modified: timestamp
         };
+    }
+
+    async handleTicketBeforeDelete(dto: TicketsResponseDTO) {
+        if(dto.resource_paths && dto.resource_paths.length > 0) {
+            const filesService = new FilesService([], 'tickets');
+            await filesService.deleteFiles(dto.resource_paths);
+        }
+    }
+
+    hasPermissionToDelete(dto: TicketsResponseDTO): boolean {
+        const deleteRules = [
+            { timeRange: 180, apply: (status: TicketStatus) => status === TicketStatus.PAUSED },
+            { timeRange: 30, apply: (status: TicketStatus) => status === TicketStatus.CLOSED },
+            { timeRange: 0, apply: (status: TicketStatus) => status === TicketStatus.CANCEL }
+        ];
+        const days = Math.floor((Utils.now().getTime() - new Date(dto.created_on).getTime()) / (1000 * 3600 * 24));
+
+        return deleteRules.find(rule => days >= rule.timeRange)?.apply(dto.status) ?? false;
     }
 }
 

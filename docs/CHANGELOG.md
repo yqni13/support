@@ -4,9 +4,16 @@
 
 <br>
 
+### $\textsf{\color{skyblue}2026/02/11}$
+
+$\textsf{[v1.0.0\ =>\ {\textbf{\color{brown}v1.1.0}]}}$ app
+- $\textsf{\color{teal}Addition:}$ Added deletion to file handling (admin only) + delete-permission check.
+
+<br>
+
 ### $\textsf{\color{skyblue}2026/02/09}$
 
-$\textsf{[v1.0.0-beta.3\ =>\ {\textbf{\color{brown}v1.0.0}]}}$ app
+$\textsf{[v1.0.0-beta.3\ =>\ v1.0.0]}$ app
 - $\textsf{\color{teal}Addition:}$ Added file handling (tickets create) + cloud upload.
 
 <br>
