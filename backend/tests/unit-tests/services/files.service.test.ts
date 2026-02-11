@@ -3,6 +3,7 @@ import { UnexpectedApiResponseException } from "../../../src/utils/exceptions/ap
 import * as mockId from "../../mock-data/id.mock-data.json";
 import { Readable } from 'stream';
 import { secrets } from "../../../src/utils/secrets.utils";
+import { CloudDeleteContext } from "../../../src/services/interfaces/cloud.interface.service";
 
 // Necessary to have class CloudService as jest.fn at runtime => otherwise mockImplementation() does not exist.
 jest.mock("../../../src/services/cloud.service.ts", () => {
@@ -168,7 +169,7 @@ describe('Service tests, class <FilesService>, priority: <uploadFiles>', () => {
 
     describe('Testing valid fn calls', () => {
 
-        test('Upload all files, params: <files>.lenght = 2, result: "SUCCESS"', async () => {
+        test('Upload all files, params: <files>.length = 2, result: "SUCCESS"', async () => {
             const filesService = new FilesService(mockFiles, basePath);
             await expect(filesService.uploadFiles()).resolves.toBeUndefined();
             expect(mockUploadFn).toHaveBeenCalledTimes(mockFiles.length)
@@ -196,6 +197,54 @@ describe('Service tests, class <FilesService>, priority: <uploadFiles>', () => {
                 .mockRejectedValue(new UnexpectedApiResponseException()); // Simulate 2nd file upload to be error.
             await expect(filesService.uploadFiles()).rejects.toThrow('support-invalid-api');
             expect(mockUploadFn).toHaveBeenCalledTimes(2);
+        })
+    })
+})
+
+describe('Service tests, class <FilesService>, priority: <deleteFiles>', () => {
+
+    let mockDeleteFn: jest.Mock;
+    let mockParam_paths: string[] = [];
+    let mockParamObject: CloudDeleteContext;
+    beforeEach(() => {
+        mockDeleteFn = jest.fn().mockResolvedValue(undefined);
+        (CloudService as jest.Mock).mockImplementation(() => ({ delete: mockDeleteFn }));
+        mockParam_paths = [
+            `tickets/${mockId.tickets.valid[0]}/0_${mockId.tickets.valid[0]}.webp`,
+            `tickets/${mockId.tickets.valid[0]}/1_${mockId.tickets.valid[0]}.webp`
+        ];
+        mockParamObject = {
+            bucket: secrets.CLOUD_BUCKET,
+            keys: [
+                { Key: mockParam_paths[0] },
+                { Key: mockParam_paths[1] }
+            ]
+        };
+    })
+    afterEach(() => {
+        jest.clearAllMocks();
+    })
+
+    describe('Testing valid fn calls', () => {
+
+        test('Delete all files, params: <paths>.length = 2, result: "SUCCESS"', async () => {
+            const filesService = new FilesService([], basePath);
+
+            await expect(filesService.deleteFiles(mockParam_paths)).resolves.toBeUndefined();
+            expect(mockDeleteFn).toHaveBeenCalledTimes(1)
+            expect(mockDeleteFn).toHaveBeenCalledWith(mockParamObject);
+        })
+    })
+
+    describe('Testing invalid fn calls', () => {
+
+        test('Delete all files, params: <paths>.length = 2, result: "ERROR"', async () => {
+            const filesService = new FilesService([], basePath);
+            mockDeleteFn.mockRejectedValue(new UnexpectedApiResponseException());
+
+            await expect(filesService.deleteFiles(mockParam_paths)).rejects.toThrow('support-invalid-api');
+            expect(mockDeleteFn).toHaveBeenCalledTimes(1);
+            expect(mockDeleteFn).toHaveBeenCalledWith(mockParamObject);
         })
     })
 })

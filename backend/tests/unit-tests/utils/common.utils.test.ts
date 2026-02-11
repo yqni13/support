@@ -141,9 +141,9 @@ describe('Utils tets, priority: common', () => {
 
         test('fn: getNextRankEnumValue, params: <TicketStatus>, get LAST in order (same value)', () => {
             const mockParam_enumObj = TicketStatus;
-            const mockParam_value = TicketStatus.PAUSED;
+            const mockParam_value = TicketStatus.CANCEL;
 
-            const mockResult = TicketStatus.PAUSED;
+            const mockResult = TicketStatus.CANCEL;
             const testFn = Utils.getNextRankEnumValue(mockParam_enumObj, mockParam_value);
 
             expect(testFn).toBe(mockResult);
