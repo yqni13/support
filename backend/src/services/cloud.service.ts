@@ -20,6 +20,10 @@ export class CloudService {
         })
     }
 
+    /**
+     * 
+     * @description Execute upload of SINGLE file per request.
+     */
     async upload(params: CloudUploadContext) {
         try {
             const r2Client = this.getR2Client();
@@ -41,6 +45,10 @@ export class CloudService {
         }
     }
 
+    /**
+     * 
+     * @description Execute deletion of MULTIPLE files within single request.
+     */
     async delete(params: CloudDeleteContext) {
         try {
             const r2Client = this.getR2Client();

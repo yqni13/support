@@ -183,7 +183,7 @@ describe('Model tests, class: <tickets>, priority: handleTicketBeforeDelete', ()
                 created_on: mockTimestamp
             };
             const testSpy = jest.spyOn(FilesService.prototype, 'deleteFiles').mockImplementation();
-            const _ = await ticketsModel.handleTicketBeforeDelete(mockParam_dto);
+            await ticketsModel.handleTicketBeforeDelete(mockParam_dto);
 
             expect(testSpy).toHaveBeenCalledWith(mockParam_dto.resource_paths);
             testSpy.mockRestore();
@@ -194,17 +194,17 @@ describe('Model tests, class: <tickets>, priority: handleTicketBeforeDelete', ()
 
         test('Check for file deletion => does NOT call FilesService.deleteFiles(), params: <dto>', async () => {
             const mockParam_dto: TicketsResponseDTO = {
-                ticket_id: mockId.tickets.valid[0],
+                ticket_id: mockId.tickets.valid[1],
                 client_id: mockId.clients.valid[0],
                 user_id: mockId.users.valid[0],
                 status: TicketStatus.ISSUED,
-                message: 'test-message',
+                message: 'test-message-without-resource_paths',
                 flag: null,
                 last_modified: mockTimestamp,
                 created_on: mockTimestamp
             };
             const testSpy = jest.spyOn(FilesService.prototype, 'deleteFiles').mockImplementation();
-            const _ = await ticketsModel.handleTicketBeforeDelete(mockParam_dto);
+            await ticketsModel.handleTicketBeforeDelete(mockParam_dto);
 
             expect(testSpy).not.toHaveBeenCalled();
             testSpy.mockRestore();
@@ -212,7 +212,7 @@ describe('Model tests, class: <tickets>, priority: handleTicketBeforeDelete', ()
     })
 })
 
-describe('Model tests, class: <tickets>, priority: hasPermissionToDelete', () => {
+describe('Model tests, class: <tickets>, priority: isPermittedToDelete', () => {
 
     let mockParam_dto: TicketsResponseDTO;
     beforeEach(() => {
@@ -237,7 +237,7 @@ describe('Model tests, class: <tickets>, priority: hasPermissionToDelete', () =>
             jest.spyOn(Utils, 'now').mockReturnValue(new Date('2025-01-03T11:07:00.000Z'));
             const testParam_dto = structuredClone(mockParam_dto);
             testParam_dto.status = TicketStatus.CANCEL;
-            const testFn = ticketsModel.hasPermissionToDelete(testParam_dto);
+            const testFn = ticketsModel.isPermittedToDelete(testParam_dto);
             const expectResult = true;
 
             expect(testFn).toBe(expectResult);
@@ -245,7 +245,7 @@ describe('Model tests, class: <tickets>, priority: hasPermissionToDelete', () =>
 
         test('Get permission to delete, params: timeRange > 30 days, status = "closed"', () => {
             jest.spyOn(Utils, 'now').mockReturnValue(new Date('2025-02-12T11:07:00.000Z'));
-            const testFn = ticketsModel.hasPermissionToDelete(mockParam_dto);
+            const testFn = ticketsModel.isPermittedToDelete(mockParam_dto);
             const expectResult = true;
 
             expect(testFn).toBe(expectResult);
@@ -255,7 +255,7 @@ describe('Model tests, class: <tickets>, priority: hasPermissionToDelete', () =>
             jest.spyOn(Utils, 'now').mockReturnValue(new Date('2025-08-01T15:41:00.000Z'));
             const testParam_dto = structuredClone(mockParam_dto);
             testParam_dto.status = TicketStatus.PAUSED;
-            const testFn = ticketsModel.hasPermissionToDelete(testParam_dto);
+            const testFn = ticketsModel.isPermittedToDelete(testParam_dto);
             const expectResult = true;
 
             expect(testFn).toBe(expectResult);
@@ -266,7 +266,7 @@ describe('Model tests, class: <tickets>, priority: hasPermissionToDelete', () =>
 
         test('Deny permission to delete, params: timeRange < 30 days, status = "closed"', () => {
             jest.spyOn(Utils, 'now').mockReturnValue(new Date('2025-01-21T20:37:00.000Z'));
-            const testFn = ticketsModel.hasPermissionToDelete(mockParam_dto);
+            const testFn = ticketsModel.isPermittedToDelete(mockParam_dto);
             const expectResult = false;
 
             expect(testFn).toBe(expectResult);
@@ -276,7 +276,7 @@ describe('Model tests, class: <tickets>, priority: hasPermissionToDelete', () =>
             jest.spyOn(Utils, 'now').mockReturnValue(new Date('2025-02-12T11:07:00.000Z'));
             const testParam_dto = structuredClone(mockParam_dto);
             testParam_dto.status = TicketStatus.ACTIVE;
-            const testFn = ticketsModel.hasPermissionToDelete(testParam_dto);
+            const testFn = ticketsModel.isPermittedToDelete(testParam_dto);
             const expectResult = false;
 
             expect(testFn).toBe(expectResult);
@@ -286,7 +286,7 @@ describe('Model tests, class: <tickets>, priority: hasPermissionToDelete', () =>
             jest.spyOn(Utils, 'now').mockReturnValue(new Date('2025-08-01T15:41:00.000Z'));
             const testParam_dto = structuredClone(mockParam_dto);
             testParam_dto.status = TicketStatus.ACTIVE;
-            const testFn = ticketsModel.hasPermissionToDelete(testParam_dto);
+            const testFn = ticketsModel.isPermittedToDelete(testParam_dto);
             const expectResult = false;
 
             expect(testFn).toBe(expectResult);

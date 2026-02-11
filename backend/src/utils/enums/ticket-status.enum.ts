@@ -1,4 +1,4 @@
-export type TicketStatus = 'issued' | 'active' | 'closed' | 'paused';
+export type TicketStatus = 'issued' | 'active' | 'closed' | 'paused' | 'cancel';
 
 export const TicketStatus = {
     ISSUED: 'issued' as TicketStatus,

@@ -43,13 +43,14 @@ class TicketsModel {
         }
     }
 
-    hasPermissionToDelete(dto: TicketsResponseDTO): boolean {
+    isPermittedToDelete(dto: TicketsResponseDTO): boolean {
         const deleteRules = [
             { timeRange: 180, apply: (status: TicketStatus) => status === TicketStatus.PAUSED },
             { timeRange: 30, apply: (status: TicketStatus) => status === TicketStatus.CLOSED },
             { timeRange: 0, apply: (status: TicketStatus) => status === TicketStatus.CANCEL }
         ];
-        const days = Math.floor((Utils.now().getTime() - new Date(dto.created_on).getTime()) / (1000 * 3600 * 24));
+        const factorMilSecToDays = 1 / (1000 * 3600 * 24);
+        const days = Math.floor((Utils.now().getTime() - new Date(dto.created_on).getTime()) * factorMilSecToDays);
 
         return deleteRules.find(rule => days >= rule.timeRange)?.apply(dto.status) ?? false;
     }

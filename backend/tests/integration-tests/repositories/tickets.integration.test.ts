@@ -398,7 +398,7 @@ describe('Integration test (repository specific), priority: Tickets', () => {
         test('Repository process fn delete with empty resource_paths, result: "SUCCESS"', async () => {
             const testParam_id = mockId.tickets.valid[1];
             const testResult = true;
-            jest.spyOn(ticketsModel, 'hasPermissionToDelete').mockReturnValue(true);
+            jest.spyOn(ticketsModel, 'isPermittedToDelete').mockReturnValue(true);
 
             await dbTestSetup.addTestData();
             const testResponse = await request(app)
@@ -412,7 +412,7 @@ describe('Integration test (repository specific), priority: Tickets', () => {
             const testParam_id = mockId.tickets.valid[0];
             const testResult = true;
 
-            jest.spyOn(ticketsModel, 'hasPermissionToDelete').mockReturnValue(true);
+            jest.spyOn(ticketsModel, 'isPermittedToDelete').mockReturnValue(true);
             jest.spyOn(ticketsModel, 'handleTicketBeforeDelete').mockImplementation();
             jest.spyOn(CloudService.prototype, 'delete').mockImplementation();
 
