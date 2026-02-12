@@ -7,7 +7,9 @@ export const ErrorStatusCodes: any = {
     DBConnectionException: 535,
     DBEmptyException: 544,
     InvalidPropertiesException: 400,
+    InvalidFilesException: 400,
     MaintenanceException: 598,
     InvalidApiKeyException: 403,
     ExceedMaxEndpointException: 429,
+    PermissionException: 405
 };

@@ -118,10 +118,10 @@ IDeleteRepository
 
     async create(entity: Tickets): Promise<Tickets> {
         const sql = `INSERT INTO ${this.table}
-        (ticket_id, client_id, user_id, status, message, resource_paths, flag, last_modified, created_on)
-        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+        (ticket_id, client_id, user_id, status, option, message, resource_paths, flag, last_modified, created_on)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
         RETURNING *;`;
-        const values = [entity.ticket_id, entity.client_id, entity.user_id, entity.status, entity.message, entity.resource_paths, entity.flag, entity.last_modified, entity.created_on];
+        const values = [entity.ticket_id, entity.client_id, entity.user_id, entity.status, entity.option, entity.message, entity.resource_paths, entity.flag, entity.last_modified, entity.created_on];
         const db = DBConnection.getInstance();
         let client: any;
         try {
@@ -141,11 +141,11 @@ IDeleteRepository
     async update(id: string, dto: Partial<Tickets>): Promise<Tickets | null> {
         const filterColumn = "ticket_id";
         const sql = `UPDATE ${this.table}
-        SET status = $1, message = $2, resource_paths = $3, flag = $4, last_modified = $5
+        SET status = $1, message = $2, option = $3, flag = $4, last_modified = $5
         WHERE ${filterColumn} = $6
         RETURNING *;
         `;
-        const values = [dto.status, dto.message, dto.resource_paths, dto.flag, dto.last_modified, id];
+        const values = [dto.status, dto.message, dto.option, dto.flag, dto.last_modified, id];
         const db = DBConnection.getInstance();
         let client: any;
         try {

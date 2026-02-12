@@ -1,4 +1,5 @@
 import { Flag } from "../../utils/enums/flag.enum";
+import { TicketOption } from "../../utils/enums/ticket-option.enum";
 import { TicketStatus } from "../../utils/enums/ticket-status.enum";
 
 export interface Tickets {
@@ -6,6 +7,7 @@ export interface Tickets {
     client_id: string,
     user_id: string,
     status: TicketStatus,
+    option: TicketOption,
     message: string,
     resource_paths?: string[],
     flag: Flag | null,

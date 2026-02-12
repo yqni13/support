@@ -37,8 +37,8 @@ class TicketsService {
         return !result ? null : Utils.mapArrayTimestamps<TicketsResponseDTO>(result, this.timeMapTargets);
     }
 
-    async createTicket(dto: TicketsCreateDTO): Promise<TicketsResponseDTO> {
-        const ticket = ticketsModel.generateTicket(dto);
+    async createTicket(dto: TicketsCreateDTO, files: Express.Multer.File[] | null): Promise<TicketsResponseDTO> {
+        const ticket = await ticketsModel.generateTicket(dto, files);
         const result = await ticketsRepository.create(ticket);
         return Utils.mapObjTimestamps<TicketsResponseDTO>(result, this.timeMapTargets); 
     }
@@ -50,7 +50,13 @@ class TicketsService {
     }
 
     async deleteTicket(id: string): Promise<boolean> {
-        return await ticketsRepository.delete(id);
+        const ticket = await ticketsRepository.findById(id);
+        if(ticket && ticketsModel.isPermittedToDelete(ticket)) {
+            await ticketsModel.handleTicketBeforeDelete(ticket);
+            return await ticketsRepository.delete(id);
+        } else {
+            return false;
+        }
     }
 }
 

@@ -1,13 +1,13 @@
-import * as CustomValidator from "../../../src/utils/customValidator.utils";
+import * as CommonValidators from "../../../src/validation/common.validation";
 
-describe('CustomValidator test, priority: META', () => {
+describe('CommonValidators test, priority: META', () => {
 
     describe('Testing valid fn calls', () => {
 
         test('fn: validateVersionStructure, params: <context> (main)', () => {
             const mockParam_context = '1.0';
 
-            const testFn = CustomValidator.validateVersionStructure(mockParam_context);
+            const testFn = CommonValidators.validateVersionStructure(mockParam_context);
             const expectResult = true;
 
             expect(testFn).toBe(expectResult);
@@ -16,7 +16,7 @@ describe('CustomValidator test, priority: META', () => {
         test('fn: validateVersionStructure, params: <context> (main)', () => {
             const mockParam_context = '0.1.5';
 
-            const testFn = CustomValidator.validateVersionStructure(mockParam_context);
+            const testFn = CommonValidators.validateVersionStructure(mockParam_context);
             const expectResult = true;
 
             expect(testFn).toBe(expectResult);
@@ -25,7 +25,7 @@ describe('CustomValidator test, priority: META', () => {
         test('fn: validateVersionStructure, params: <context> (pre-release)', () => {
             const mockParam_context = '0.1.5-beta';
 
-            const testFn = CustomValidator.validateVersionStructure(mockParam_context);
+            const testFn = CommonValidators.validateVersionStructure(mockParam_context);
             const expectResult = true;
 
             expect(testFn).toBe(expectResult);
@@ -34,7 +34,7 @@ describe('CustomValidator test, priority: META', () => {
         test('fn: validateVersionStructure, params: <context> (pre-release)', () => {
             const mockParam_context = '0.1.5-beta.7.z';
 
-            const testFn = CustomValidator.validateVersionStructure(mockParam_context);
+            const testFn = CommonValidators.validateVersionStructure(mockParam_context);
             const expectResult = true;
 
             expect(testFn).toBe(expectResult);
@@ -43,7 +43,7 @@ describe('CustomValidator test, priority: META', () => {
         test('fn: validateVersionStructure, params: <context> (pre-release)', () => {
             const mockParam_context = '0.1.5-x.3';
 
-            const testFn = CustomValidator.validateVersionStructure(mockParam_context);
+            const testFn = CommonValidators.validateVersionStructure(mockParam_context);
             const expectResult = true;
 
             expect(testFn).toBe(expectResult);
@@ -58,7 +58,7 @@ describe('CustomValidator test, priority: META', () => {
             const expectResult = 'support-invalid-version';
 
             expect(() => {
-                CustomValidator.validateVersionStructure(mockParam_context);
+                CommonValidators.validateVersionStructure(mockParam_context);
             }).toThrow(expectResult);
         })
 
@@ -68,7 +68,7 @@ describe('CustomValidator test, priority: META', () => {
             const expectResult = 'support-invalid-version';
 
             expect(() => {
-                CustomValidator.validateVersionStructure(mockParam_context);
+                CommonValidators.validateVersionStructure(mockParam_context);
             }).toThrow(expectResult);
         })
 
@@ -78,7 +78,7 @@ describe('CustomValidator test, priority: META', () => {
             const expectResult = 'support-invalid-version';
 
             expect(() => {
-                CustomValidator.validateVersionStructure(mockParam_context);
+                CommonValidators.validateVersionStructure(mockParam_context);
             }).toThrow(expectResult);
         })
 
@@ -88,7 +88,7 @@ describe('CustomValidator test, priority: META', () => {
             const expectResult = 'support-invalid-version';
 
             expect(() => {
-                CustomValidator.validateVersionStructure(mockParam_context);
+                CommonValidators.validateVersionStructure(mockParam_context);
             }).toThrow(expectResult);
         })
 
@@ -98,7 +98,7 @@ describe('CustomValidator test, priority: META', () => {
             const expectResult = 'support-invalid-version';
 
             expect(() => {
-                CustomValidator.validateVersionStructure(mockParam_context);
+                CommonValidators.validateVersionStructure(mockParam_context);
             }).toThrow(expectResult);
         })
     })

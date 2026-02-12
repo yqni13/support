@@ -34,6 +34,10 @@ class Secrets {
     readonly RATELIMITS_USERSDAILYLIMIT: number;
     readonly RATELIMITS_TOTALDAILYLIMIT: number;
     readonly DEMOLIMITS_TOTALDAILYLIMIT: number;
+    readonly CLOUD_BUCKET: string;
+    readonly CLOUD_ENDPOINT: string;
+    readonly CLOUD_ACCESS_KEY_ID: string;
+    readonly CLOUD_SECRET_KEY: string;
 
     private static _instance: Secrets;
 
@@ -68,6 +72,10 @@ class Secrets {
         this.RATELIMITS_USERSDAILYLIMIT = this.setRateLimitsUsersDailyLimit();
         this.RATELIMITS_TOTALDAILYLIMIT = this.setRateLimitsTotalDailyLimit();
         this.DEMOLIMITS_TOTALDAILYLIMIT = this.setDemoLimitsTotalDailyLimit();
+        this.CLOUD_BUCKET = this.setCloudBucket();
+        this.CLOUD_ENDPOINT = this.setCloudEndpoint();
+        this.CLOUD_ACCESS_KEY_ID = this.setCloudAccessKeyId();
+        this.CLOUD_SECRET_KEY = this.setCloudSecretKey();
     }
 
     static get instance(): Secrets {
@@ -295,6 +303,34 @@ class Secrets {
             throw new AuthSecretNotFoundException('secret-404-env#DEMOLIMITS_TOTALDAILYLIMIT');
         }
         return Config.DEMOLIMITS_TOTALDAILYLIMIT;
+    }
+
+    private setCloudBucket() {
+        if(!Config.CLOUD_BUCKET) {
+            throw new AuthSecretNotFoundException('secret-404-env#CLOUD_BUCKET');
+        }
+        return Config.CLOUD_BUCKET;
+    }
+
+    private setCloudEndpoint() {
+        if(!Config.CLOUD_ENDPOINT) {
+            throw new AuthSecretNotFoundException('secret-404-env#CLOUD_ENDPOINT');
+        }
+        return Config.CLOUD_ENDPOINT;
+    }
+
+    private setCloudAccessKeyId() {
+        if(!Config.CLOUD_ACCESS_KEY_ID) {
+            throw new AuthSecretNotFoundException('secret-404-env#CLOUD_ACCESS_KEY_ID');
+        }
+        return Config.CLOUD_ACCESS_KEY_ID;
+    }
+
+    private setCloudSecretKey() {
+        if(!Config.CLOUD_SECRET_KEY) {
+            throw new AuthSecretNotFoundException('secret-404-env#CLOUD_SECRET_KEY');
+        }
+        return Config.CLOUD_SECRET_KEY;
     }
 }
 
