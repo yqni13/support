@@ -11,4 +11,5 @@ export const ErrorStatusCodes: any = {
     MaintenanceException: 598,
     InvalidApiKeyException: 403,
     ExceedMaxEndpointException: 429,
+    PermissionException: 405
 };

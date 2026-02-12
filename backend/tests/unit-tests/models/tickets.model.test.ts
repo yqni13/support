@@ -6,10 +6,12 @@ import { Tickets } from "../../../src/repositories/interfaces/tickets.entity.int
 import ticketsModel from "../../../src/models/tickets.model";
 import { Readable } from 'stream';
 import { FilesService } from "../../../src/services/files.service";
+import { TicketOption } from "../../../src/utils/enums/ticket-option.enum";
+import { PermissionException } from "../../../src/utils/exceptions/auth.exception";
 
 const mockTimestamp = '2025-01-01T14:00:04.000Z';
 
-describe('Model tests, class: <tickets>, priority: generateTicket', () => {
+describe('Model tests, class: <tickets>, priority: <generateTicket>', () => {
 
     let mockFile_pdf: Express.Multer.File;
     let mockFile_webp: Express.Multer.File;
@@ -50,6 +52,7 @@ describe('Model tests, class: <tickets>, priority: generateTicket', () => {
             const mockParam_dto: TicketsCreateDTO = {
                 client_id: 'valid_clients_test_id',
                 user_id: 'valid_users_test_id',
+                option: TicketOption.SUPPORT,
                 message: 'test-message'
             };
             const mockParam_files: Express.Multer.File[] | null = null;
@@ -63,6 +66,7 @@ describe('Model tests, class: <tickets>, priority: generateTicket', () => {
                 client_id: mockParam_dto.client_id,
                 user_id: mockParam_dto.user_id,
                 status: TicketStatus.ISSUED,
+                option: TicketOption.SUPPORT,
                 message: mockParam_dto.message,
                 flag: null,
                 last_modified: mockTimestamp,
@@ -77,6 +81,7 @@ describe('Model tests, class: <tickets>, priority: generateTicket', () => {
             const mockParam_dto: TicketsCreateDTO = {
                 client_id: 'valid_clients_test_id',
                 user_id: 'valid_users_test_id',
+                option: TicketOption.SUPPORT,
                 message: 'test-message'
             };
             const mockParam_files: Express.Multer.File[] | null = [mockFile_pdf];
@@ -94,6 +99,7 @@ describe('Model tests, class: <tickets>, priority: generateTicket', () => {
                 client_id: mockParam_dto.client_id,
                 user_id: mockParam_dto.user_id,
                 status: TicketStatus.ISSUED,
+                option: TicketOption.SUPPORT,
                 message: mockParam_dto.message,
                 resource_paths: mockPaths,
                 flag: null,
@@ -109,6 +115,7 @@ describe('Model tests, class: <tickets>, priority: generateTicket', () => {
             const mockParam_dto: TicketsCreateDTO = {
                 client_id: 'valid_clients_test_id',
                 user_id: 'valid_users_test_id',
+                option: TicketOption.SUPPORT,
                 message: 'test-message'
             };
             const mockParam_files: Express.Multer.File[] | null = [mockFile_pdf, mockFile_webp];
@@ -129,6 +136,7 @@ describe('Model tests, class: <tickets>, priority: generateTicket', () => {
                 client_id: mockParam_dto.client_id,
                 user_id: mockParam_dto.user_id,
                 status: TicketStatus.ISSUED,
+                option: TicketOption.SUPPORT,
                 message: mockParam_dto.message,
                 resource_paths: mockPaths,
                 flag: null,
@@ -149,6 +157,7 @@ describe('Model tests, class: <tickets>, priority: <mapTicketUpdateDto>', () => 
             const mockTimestamp = '2025-01-01T14:00:04.000Z';
             const mockParam_dto: TicketsUpdateDTO = {
                 status: TicketStatus.PAUSED,
+                option: TicketOption.SUPPORT,
                 message: 'test-message',
                 flag: null
             };
@@ -166,7 +175,7 @@ describe('Model tests, class: <tickets>, priority: <mapTicketUpdateDto>', () => 
     })
 })
 
-describe('Model tests, class: <tickets>, priority: handleTicketBeforeDelete', () => {
+describe('Model tests, class: <tickets>, priority: <handleTicketBeforeDelete>', () => {
 
     describe('Testing valid fn calls', () => {
 
@@ -176,6 +185,7 @@ describe('Model tests, class: <tickets>, priority: handleTicketBeforeDelete', ()
                 client_id: mockId.clients.valid[0],
                 user_id: mockId.users.valid[0],
                 status: TicketStatus.ISSUED,
+                option: TicketOption.SUPPORT,
                 message: 'test-message',
                 resource_paths: [`tickets/${mockId.tickets.valid[0]}/0_${mockId.tickets.valid[0]}.jpg`],
                 flag: null,
@@ -198,6 +208,7 @@ describe('Model tests, class: <tickets>, priority: handleTicketBeforeDelete', ()
                 client_id: mockId.clients.valid[0],
                 user_id: mockId.users.valid[0],
                 status: TicketStatus.ISSUED,
+                option: TicketOption.SUPPORT,
                 message: 'test-message-without-resource_paths',
                 flag: null,
                 last_modified: mockTimestamp,
@@ -212,7 +223,7 @@ describe('Model tests, class: <tickets>, priority: handleTicketBeforeDelete', ()
     })
 })
 
-describe('Model tests, class: <tickets>, priority: isPermittedToDelete', () => {
+describe('Model tests, class: <tickets>, priority: <isPermittedToDelete>', () => {
 
     let mockParam_dto: TicketsResponseDTO;
     beforeEach(() => {
@@ -221,6 +232,7 @@ describe('Model tests, class: <tickets>, priority: isPermittedToDelete', () => {
             client_id: mockId.clients.valid[0],
             user_id: mockId.users.valid[0],
             status: TicketStatus.CLOSED,
+            option: TicketOption.SUPPORT,
             message: 'test-message',
             flag: null,
             last_modified: mockTimestamp,
@@ -264,32 +276,32 @@ describe('Model tests, class: <tickets>, priority: isPermittedToDelete', () => {
 
     describe('Testing invalid fn calls', () => {
 
+        const mockErrorMsg = 'support-delete-prohibited';
+
         test('Deny permission to delete, params: timeRange < 30 days, status = "closed"', () => {
             jest.spyOn(Utils, 'now').mockReturnValue(new Date('2025-01-21T20:37:00.000Z'));
-            const testFn = ticketsModel.isPermittedToDelete(mockParam_dto);
-            const expectResult = false;
+            jest.spyOn(Utils, 'logError').mockImplementation();
 
-            expect(testFn).toBe(expectResult);
+            expect(() => ticketsModel.isPermittedToDelete(mockParam_dto))
+                .toThrow(new PermissionException(mockErrorMsg));
         })
 
         test('Deny permission to delete, params: timeRange > 30 days, status = "active"', () => {
             jest.spyOn(Utils, 'now').mockReturnValue(new Date('2025-02-12T11:07:00.000Z'));
             const testParam_dto = structuredClone(mockParam_dto);
             testParam_dto.status = TicketStatus.ACTIVE;
-            const testFn = ticketsModel.isPermittedToDelete(testParam_dto);
-            const expectResult = false;
 
-            expect(testFn).toBe(expectResult);
+            expect(() => ticketsModel.isPermittedToDelete(testParam_dto))
+                .toThrow(new PermissionException(mockErrorMsg));
         })
 
         test('Deny permission to delete, params: timeRange > 180 days, status = "active"', () => {
             jest.spyOn(Utils, 'now').mockReturnValue(new Date('2025-08-01T15:41:00.000Z'));
             const testParam_dto = structuredClone(mockParam_dto);
             testParam_dto.status = TicketStatus.ACTIVE;
-            const testFn = ticketsModel.isPermittedToDelete(testParam_dto);
-            const expectResult = false;
 
-            expect(testFn).toBe(expectResult);
+            expect(() => ticketsModel.isPermittedToDelete(testParam_dto))
+                .toThrow(new PermissionException(mockErrorMsg));
         })
     })
 })
