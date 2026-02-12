@@ -67,6 +67,7 @@ export const postTicketSchema: ValidationChain[] = [
         .trim()
         .notEmpty()
         .withMessage(Message.REQUIRED)
+        .bail()
         .custom((content: string) => CommonValidators.validateEmail(content)),
     body('option')
         .trim()

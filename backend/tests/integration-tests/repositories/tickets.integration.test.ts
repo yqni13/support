@@ -193,6 +193,47 @@ describe('Integration test (repository specific), priority: Tickets', () => {
             expect(testResponse.body).toMatchObject(testResult);
         })
 
+        test('Repository process fn findByFilter, params: <option> result: "SUCCESS"', async () => {
+            const testParam_dto: TicketsFilterDTO = {
+                option: TicketOption.SUPPORT
+            };
+            const testResult: TicketsResponseDTO[] = [
+                {
+                    ticket_id: mockId.tickets.valid[0],
+                    client_id: testValidClientsId,
+                    user_id: testValidUsersId,
+                    status: TicketStatus.ISSUED,
+                    option: TicketOption.SUPPORT,
+                    message: 'test-message',
+                    resource_paths: ['test/path/num0', 'test/path/num1'],
+                    flag: null,
+                    last_modified: testTimestamp,
+                    created_on: testTimestamp
+                },
+                {
+                    ticket_id: mockId.tickets.valid[1],
+                    client_id: testValidClientsId,
+                    user_id: testValidUsersId,
+                    status: TicketStatus.ISSUED,
+                    option: TicketOption.SUPPORT,
+                    message: 'test-message-without-resource_paths',
+                    flag: null,
+                    last_modified: '2025-01-01T14:00:07.000Z',
+                    created_on: '2025-01-01T14:00:07.000Z'
+                }
+            ];
+
+            jest.spyOn(Utils, "getTimestampUTC").mockReturnValue(testTimestamp);
+
+            await dbTestSetup.addTestData();
+            const testResponse = await request(app)
+                .post(`${apiUrl}/search`)
+                .send(testParam_dto);
+
+            expect(testResponse.statusCode).toBe(200);
+            expect(testResponse.body).toMatchObject(testResult);
+        })
+
         test('Repository process fn findByFilter, params: <created_on[]> result: "SUCCESS"', async () => {
             const testParam_dto: TicketsFilterDTO = {
                 created_on: ['2024-12-01T00:00:00.000Z', '2025-01-02T14:00:00.000Z']

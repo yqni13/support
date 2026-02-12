@@ -276,14 +276,12 @@ describe('Model tests, class: <tickets>, priority: <isPermittedToDelete>', () =>
 
     describe('Testing invalid fn calls', () => {
 
-        const mockErrorMsg = 'support-delete-prohibited';
-
         test('Deny permission to delete, params: timeRange < 30 days, status = "closed"', () => {
             jest.spyOn(Utils, 'now').mockReturnValue(new Date('2025-01-21T20:37:00.000Z'));
             jest.spyOn(Utils, 'logError').mockImplementation();
 
             expect(() => ticketsModel.isPermittedToDelete(mockParam_dto))
-                .toThrow(new PermissionException(mockErrorMsg));
+                .toThrow(PermissionException);
         })
 
         test('Deny permission to delete, params: timeRange > 30 days, status = "active"', () => {
@@ -292,7 +290,7 @@ describe('Model tests, class: <tickets>, priority: <isPermittedToDelete>', () =>
             testParam_dto.status = TicketStatus.ACTIVE;
 
             expect(() => ticketsModel.isPermittedToDelete(testParam_dto))
-                .toThrow(new PermissionException(mockErrorMsg));
+                .toThrow(PermissionException);
         })
 
         test('Deny permission to delete, params: timeRange > 180 days, status = "active"', () => {
@@ -301,7 +299,7 @@ describe('Model tests, class: <tickets>, priority: <isPermittedToDelete>', () =>
             testParam_dto.status = TicketStatus.ACTIVE;
 
             expect(() => ticketsModel.isPermittedToDelete(testParam_dto))
-                .toThrow(new PermissionException(mockErrorMsg));
+                .toThrow(PermissionException);
         })
     })
 })

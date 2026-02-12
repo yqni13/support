@@ -100,7 +100,7 @@ Install the packages `@jest/globals`, `@types/jest`, `supertest`, `@testcontaine
 ```sh
 npm install jest @jest/globals @types/jest supertest @testcontainers/postgresql testcontainers --save-dev
 ```
-250+ tests exist currently for models, utils, validators and workflows (integration tests) - see [tests](./backend/tests).<br>
+350+ tests exist currently for models, utils, validators and workflows (integration tests) - see [tests](./backend/tests).<br>
 Run tests on local device by including setup for dotenv/config to provide environment variables:
 ```sh
 set NODE_ENV=test && jest --setupFiles dotenv/config
