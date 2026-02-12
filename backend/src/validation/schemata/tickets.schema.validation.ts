@@ -4,6 +4,7 @@ import { Flag } from '../../utils/enums/flag.enum';
 import { TicketStatus } from '../../utils/enums/ticket-status.enum';
 import { SingleOrArray } from '../../utils/custom-types.utils';
 import { CommonExceptionMessage as Message } from '../../utils/enums/common-exception-messages.enum';
+import { TicketOption } from '../../utils/enums/ticket-option.enum';
 
 export const getTicketSchema: ValidationChain[] = [
     param('id')
@@ -36,6 +37,13 @@ export const postTicketsSearchSchema: ValidationChain[] = [
             return true;
         })
         .optional(),
+    body('option')
+        .custom((content: SingleOrArray<TicketOption>) => {
+            content = Array.isArray(content) ? content : [content];
+            content.forEach((option) => CommonValidators.validateEnum(option, TicketOption, 'ticketOption'))
+            return true;
+        })
+        .optional(),
     body('flag')
         .custom((content: undefined | null | SingleOrArray<Flag>) => {
             // Manual check for undefined/null necessary because null is valid value.
@@ -59,7 +67,14 @@ export const postTicketSchema: ValidationChain[] = [
         .trim()
         .notEmpty()
         .withMessage(Message.REQUIRED)
+        .bail()
         .custom((content: string) => CommonValidators.validateEmail(content)),
+    body('option')
+        .trim()
+        .notEmpty()
+        .withMessage(Message.REQUIRED)
+        .bail()
+        .custom((option: TicketOption) => CommonValidators.validateEnum(option, TicketOption, 'ticketOption')),
     body('message')
         .trim()
         .notEmpty()
@@ -84,6 +99,12 @@ export const patchTicketSchema: ValidationChain[] = [
         .withMessage(Message.REQUIRED)
         .bail()
         .custom((status: TicketStatus) => CommonValidators.validateEnum(status, TicketStatus, 'ticketStatus')),
+    body('option')
+        .trim()
+        .notEmpty()
+        .withMessage(Message.REQUIRED)
+        .bail()
+        .custom((option: TicketOption) => CommonValidators.validateEnum(option, TicketOption, 'ticketOption')),
     body('message')
         .trim()
         .notEmpty()
@@ -91,9 +112,6 @@ export const patchTicketSchema: ValidationChain[] = [
         .bail()
         .isLength({max: 1000})
         .withMessage('support-invalid-max#message!1000'),
-    body('resource_paths')
-        .isEmpty()
-        .withMessage(Message.FORBIDDEN),
     body('flag')
         .trim()
         .custom((flag: string) => CommonValidators.validateEnum(flag, Flag, 'flag'))

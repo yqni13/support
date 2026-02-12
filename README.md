@@ -1,5 +1,5 @@
 # yqni13 | support
-$\texttt{\color{teal}{v1.1.0}}$
+$\texttt{\color{teal}{v1.2.1}}$
 
 
 <br>
@@ -100,7 +100,7 @@ Install the packages `@jest/globals`, `@types/jest`, `supertest`, `@testcontaine
 ```sh
 npm install jest @jest/globals @types/jest supertest @testcontainers/postgresql testcontainers --save-dev
 ```
-250+ tests exist currently for models, utils, validators and workflows (integration tests) - see [tests](./backend/tests).<br>
+350+ tests exist currently for models, utils, validators and workflows (integration tests) - see [tests](./backend/tests).<br>
 Run tests on local device by including setup for dotenv/config to provide environment variables:
 ```sh
 set NODE_ENV=test && jest --setupFiles dotenv/config
@@ -135,8 +135,12 @@ Preventing an unwanted merge with unfinished/failed test run, the project is set
 
 ### $\textsf{\color{forestgreen}last update:}$
 
-$\textsf{[v1.0.0\ =>\ {\textbf{\color{brown}v1.1.0}]}}$ app
-- $\textsf{\color{teal}Addition:}$ Added deletion to file handling + delete-permission check.
+$\textsf{[v1.1.0\ =>\ {\textbf{\color{brown}v1.2.1}]}}$ app<br>
+$\textsf{[v1.5.2\ =>\ {\textbf{\color{brown}v1.5.3}]}}$ database
+- $\textsf{\color{teal}Addition:}$ Added options to select category of support ticket regarding user intention.
+- $\textsf{\color{orange}Patch:}$ Updated:
+  + throw exception when deletion is prohibited instead of returning 'false'
+  + migration to add 'option' to table 'tickets' with default value 'support'
 
 <br>
 

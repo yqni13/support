@@ -3,6 +3,7 @@ import { Tickets } from "../repositories/interfaces/tickets.entity.interface";
 import * as Utils from "../utils/common.utils";
 import { TicketStatus } from "../utils/enums/ticket-status.enum";
 import { FilesService } from "../services/files.service";
+import { PermissionException } from "../utils/exceptions/auth.exception";
 
 class TicketsModel {
     async generateTicket(dto: TicketsCreateDTO, files: Express.Multer.File[] | null): Promise<Tickets> {
@@ -20,6 +21,7 @@ class TicketsModel {
             client_id: dto.client_id,
             user_id: dto.user_id,
             status: TicketStatus.ISSUED,
+            option: dto.option,
             message: dto.message,
             resource_paths: paths ?? dto.resource_paths,
             flag: null,
@@ -51,8 +53,11 @@ class TicketsModel {
         ];
         const factorMilSecToDays = 1 / (1000 * 3600 * 24);
         const days = Math.floor((Utils.now().getTime() - new Date(dto.created_on).getTime()) * factorMilSecToDays);
-
-        return deleteRules.find(rule => days >= rule.timeRange)?.apply(dto.status) ?? false;
+        const isPermitted = deleteRules.find(rule => days >= rule.timeRange)?.apply(dto.status) ?? false
+        if(!isPermitted) {
+            throw new PermissionException('support-delete-prohibited');
+        }
+        return true;
     }
 }
 
