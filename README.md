@@ -1,5 +1,5 @@
 # yqni13 | support
-$\texttt{\color{teal}{v0.12.0}}$
+$\texttt{\color{teal}{v1.2.1}}$
 
 
 <br>
@@ -32,7 +32,7 @@ $\texttt{\color{teal}{v0.12.0}}$
 ## How to
 
 ### Build & Deploy
-This application server will be hosted by <a href="https://render.com/">Render</a> in a Docker container and a PostgreSQL database by Neon. Additionally a <a href="https://console.cron-job.org/">cron-job</a> is set up to keep the service alive on Render due to 15-min inactivity on free tier plan.<br>
+This application server will is hosted by <a href="https://render.com/">Render</a> in a Docker container and a PostgreSQL database hosted by Neon. Additionally a <a href="https://console.cron-job.org/">cron-job</a> is set up to keep the service alive on Render due to 15-min inactivity on free tier plan.<br>
 The development process is structured by the TDD (test driven development) principle.
 
 <br>
@@ -43,6 +43,7 @@ The development process is structured by the TDD (test driven development) princ
 
 <dl>
     <dd>🪲 support/bug-ticket handling including client + user data</dd>
+    <dd>📂 file handling (upload/delete) from requests + cloud storage</dd>
     <dd>:mag: filtered search for ticket + user data (properties + timespan)</dd>
     <dd>:closed_lock_with_key: maintenance mode can en/disable application via single request</dd>
     <dd>:key: request verification by api-keys</dd>
@@ -51,13 +52,23 @@ The development process is structured by the TDD (test driven development) princ
 
 <br>
 
+### $\textsf{\color{teal}File handling}$
+
+User can attach files for any support/bug ticket to provide further information (screenshots, images, ...) on their message. Attachments are limited to upload up to `5` files and each file can be up to `1`mb [see validation](./backend/src/middleware/files/validate.files.middleware.ts). Currently only `images` (webp, jpg, jpeg, png) and `pdf` files are supported, but more will follow. Cloud in use is `Cloudflare` (see Figure 1) using S3Client for api communication and files will be deleted when a ticket is closed, canceled or expired (time check).
+<div align="center">
+    <img src="assets/img/cloudflare_demo.png" alt="&nbsp;Cloudflare upload demo">
+    Figure 1 - Cloudflare upload demo, v1.0.0
+</div>
+
+<br>
+
 ### $\textsf{\color{teal}Logging}$
 
 To monitor errors the logging framework `Winston` is used in combination with Logtail from `Betterstack` as a Singleton: [config](./backend/src/logger/config.logger.ts)
-<br>While working within local (DEV) or test environment, error messages are logged into the consoles. For the deployed environments (STAG/PROD) the logging is set to send logtails to Betterstack (longer storage time than app-hosting service). For easy access and monitoring of error messages, the Betterstack UI client dashboard comes in handy (see Figure 1). 
+<br>While working within local (DEV) or test environment, error messages are logged into the consoles. For the deployed environments (STAG/PROD) the logging is set to send logtails to Betterstack (longer storage time than app-hosting service). For easy access and monitoring of error messages, the Betterstack UI client dashboard comes in handy (see Figure 2). Additional meta data (environment + version numbers) help identifying and assigning errors.
 <div align="center">
     <img src="assets/img/betterstack_logging.png" alt="&nbsp;Betterstack logging dashboard">
-    Figure 1 - Betterstack logging dashboard, v0.9.4
+    Figure 2 - Betterstack logging dashboard, v1.0.0-beta.1
 </div>
 
 <br>
@@ -72,14 +83,14 @@ Testing of the application server can be done automatically via Jest tests (next
 [PAYLOAD] { "demo_mode": "success" }
 ```
 Use `https://support-0hsq.onrender.com` for {{url}} to test on live conditions.<br>
-See Figure 2 for the different use cases & responses (Postman, v11.73.5) - from left to right:
+See Figure 3 for the different use cases & responses (Postman, v11.73.5) - from left to right:
 <br>[PAYLOAD]: { "mode_enum": "success" } => retrieve current version number as request without fail
 <br>[PAYLOAD]: undefined (none) or empty obj/array => retrieve exception for undefined body
 <br>[PAYLOAD]: { "mode_enum": "%§$" } => retrieve exception due to invalid value
 <br>[PAYLOAD]: { "mode_enum": "error" } => retrieve exception for intended failing db query (see data.message: SEL instead of SELECT)
 <div align="center">
     <img src="assets/img/demo_results.png" alt="&nbsp;Betterstack logging dashboard">
-    Figure 2 - /meta/demo responses, v0.9.6
+    Figure 3 - /meta/demo responses, v0.9.6
 </div>
 
 ### $\textsf{\color{teal}Jest}$
@@ -89,7 +100,7 @@ Install the packages `@jest/globals`, `@types/jest`, `supertest`, `@testcontaine
 ```sh
 npm install jest @jest/globals @types/jest supertest @testcontainers/postgresql testcontainers --save-dev
 ```
-250+ tests exist currently for models, utils, validators and workflows (integration tests) - see [tests](./backend/tests).<br>
+350+ tests exist currently for models, utils, validators and workflows (integration tests) - see [tests](./backend/tests).<br>
 Run tests on local device by including setup for dotenv/config to provide environment variables:
 ```sh
 set NODE_ENV=test && jest --setupFiles dotenv/config
@@ -105,16 +116,16 @@ or simply save as script command in `package.json` to run `npm test`:
 <br>
 
 To automatically check tests before merging feature/development branch further up, a `GitHub Action` is set up, see [main.yml](.github/workflows/main.yml).<br>
-Preventing an unwanted merge with unfinished/failed test run, the project is set up to disable merging until all tests have passed (see Figure 3 to Figure 4).
+Preventing an unwanted merge with unfinished/failed test run, the project is set up to disable merging until all tests have passed (see Figure 4 to Figure 5).
 
 <div align="center">
     <img src="assets/img/github-action-jest-processing.png" alt="&nbsp;GitHub processing tests">
-    Figure 3 - processing tests, v0.9.1
+    Figure 4 - processing tests, v0.9.1
 </div>
 <br>
 <div align="center">
     <img src="assets/img/github-action-jest-passed.png" alt="&nbsp;GitHub tests passed">
-    Figure 4 - passing tests, v0.9.1
+    Figure 5 - passing tests, v0.9.1
 </div>
 
 <br>
@@ -124,16 +135,17 @@ Preventing an unwanted merge with unfinished/failed test run, the project is set
 
 ### $\textsf{\color{forestgreen}last update:}$
 
-$\textsf{[v0.11.1\ =>\ {\textbf{\color{brown}v0.12.0}]}}$ app<br>
-$\textsf{[v1.5.0\ =>\ {\textbf{\color{brown}v1.5.1}]}}$ database
-- $\textsf{\color{teal}Addition:}$ Added logic to handle penalties (limit violations only currently).
-- $\textsf{\color{orange}Patch:}$ Added migration to update 'clients' table by adding 'flag' property.v
+$\textsf{[v1.1.0\ =>\ {\textbf{\color{brown}v1.2.1}]}}$ app<br>
+$\textsf{[v1.5.2\ =>\ {\textbf{\color{brown}v1.5.3}]}}$ database
+- $\textsf{\color{teal}Addition:}$ Added options to select category of support ticket regarding user intention.
+- $\textsf{\color{orange}Patch:}$ Updated:
+  + throw exception when deletion is prohibited instead of returning 'false'
+  + migration to add 'option' to table 'tickets' with default value 'support'
 
 <br>
 
 ### Update objectives:
 <dl>
-    <dd>- cloudflare setup</dd>
     <dd>- jenkins setup</dd>
     <dd>- host setup</dd>
     <dd>- mail setup</dd>

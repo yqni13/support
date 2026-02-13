@@ -30,6 +30,13 @@ export class Logger {
 
         this.logger = winston.createLogger({
             level: 'info',
+            defaultMeta: {
+                environment: secrets.ENV_MODE.trim(),
+                app_version: secrets.APP_VERSION.trim(),
+                db_version: secrets.APP_META.db_version.trim(),
+                docker_version: secrets.APP_META.docker_version.trim(),
+                jenkins_version: secrets.APP_META.jenkins_version.trim(),
+            },
             format: winston.format.combine(
                 winston.format.timestamp(),
                 winston.format.json()

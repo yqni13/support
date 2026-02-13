@@ -93,3 +93,9 @@ export class BlockedUsersException extends AuthException {
         super('support-blocked-users', data);
     }
 }
+
+export class PermissionException extends AuthException {
+    constructor(message: string, data?: any) {
+        super(message, data, ErrorStatusCodes.PermissionException);
+    }
+}

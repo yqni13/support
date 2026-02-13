@@ -11,7 +11,7 @@ import {
     patchMetaSchema as updateSchema,
     patchMaintenanceSchema as updateMaintainSchema,
     postDemoSchema as demoSchema
-} from '../middleware/validators/metaValidator.middleware';
+} from '../validation/schemata/meta.schema.validation';
 import { observe } from '../middleware/observe.middleware';
 
 const router = Router();
@@ -57,13 +57,12 @@ router.put(
 
 // updateMaintenance
 router.put(
-    '/maintenance/:name',
+    '/maintenance/:id',
     authAdmin(), requirePayload(),
     updateMaintainSchema,
     factory(metaController.patchMaintenanceMode)
 );
 
-// TODO(yqni13): implement observe-middleware at SUPPORT-25
 // demo
 router.post(
     '/demo',

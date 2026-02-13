@@ -2,33 +2,54 @@ import { UsersFilterDTO } from "../dtos/users.dto";
 import clientsRepository from "../repositories/clients.repository";
 import { Users } from "../repositories/interfaces/users.entity.interface";
 import usersRepository from "../repositories/users.repository";
-import { MalformedApiKeyException } from "./exceptions/auth.exception";
-import { CommonExceptionMessage } from "./enums/common-exception-messages.enum";
+import { CommonExceptionMessage } from "../utils/enums/common-exception-messages.enum";
+import { MalformedApiKeyException } from "../utils/exceptions/auth.exception";
 
-export function validateVersionStructure(version: string, numOfDelimiter: number): boolean {
-    // 1. Check if version has all necessary delimiters.
-    const hasValidDelimiter: boolean = (version.split('.').length - 1) === numOfDelimiter;
-    if(!hasValidDelimiter) {
-        throw new Error('support-invalid-version');
+/**
+ * @description validating version regarding guidelines of Semantic Versioning 2.0.0
+ * @param {string} context Version with acceptable structure see SemVer Specification 9
+ */
+export function validateVersionStructure(context: string): boolean {
+    // 1. Check if context is pre-release version.
+    const isPreRelease = context.includes('-');
+    const delimiter = {
+        main: isPreRelease 
+            ? context.substring(0, context.indexOf('-')).split('.').length - 1
+            : context.split('.').length - 1,
+        preRelease: isPreRelease ? context.substring(context.indexOf('-')).split('.').length - 1 : 0
+    };
+    const version = {
+        main: isPreRelease ? context.substring(0, context.indexOf('-')) : context,
+        preRelease: isPreRelease ? context.substring(context.indexOf('-') + 1) : ''
+    };
+
+    // 2. Check main version to be numbers only [0-9].
+    validateVersionByRegex(version.main, delimiter.main, /^[0-9]*$/g);
+    if(!isPreRelease) {
+        return true;
     }
 
-    // 2. Check if values are numbers (named/combined versions are not supported).
+    // 3. Check pre-release part to be valid numbers and/or characters [0-9A-Za-z].
+    validateVersionByRegex(version.preRelease, delimiter.preRelease, /^[0-9a-zA-Z]*$/g);
+
+    return true;
+}
+
+function validateVersionByRegex(context: string, delimiters: number, regex: any) {
     let searchPos: number = 0;
     let searchEnd: number = 0;
-    for(let i = 0; i <= numOfDelimiter; i++) {
-        if(i === numOfDelimiter) {
-            searchEnd = version.length;
+    for(let i = 0; i <= delimiters; i++) {
+        if(i === delimiters) {
+            searchEnd = context.length;
         } else {
-            searchEnd = version.indexOf('.', searchPos);
+            searchEnd = context.indexOf('.', searchPos);
         }
-        const searchVal = version.substring(searchPos, searchEnd);
-        if(!searchVal.match(/^[0-9]*$/g)) {
+        const searchVal = context.substring(searchPos, searchEnd);
+        if(!searchVal.match(regex) || searchVal.length === 0 || searchVal === '') {
             throw new Error('support-invalid-version');
         }
         searchPos = searchEnd + 1;
     }
-
-    return true;
 }
 
 export function validateEnum(value: unknown, enumObj: any, enumName: string): boolean {

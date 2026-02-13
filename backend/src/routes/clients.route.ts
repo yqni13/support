@@ -7,7 +7,7 @@ import {
     getClientStatusSchema as getStatusSchema,
     postClientSchema as createSchema,
     patchClientStatusSchema as updateStatusSchema
-} from './../middleware/validators/clientsValidator.middleware';
+} from '../validation/schemata/clients.schema.validation';
 import { requirePayload } from '../middleware/require.middleware';
 
 const router = Router();

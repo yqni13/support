@@ -3,6 +3,7 @@ import {
     PenaltyApply,
     PenaltyUsersFlagContext,
     PenaltyContext,
+    PenaltyMaintenanceTrafficContext,
 } from "../interfaces/penalties.interface.middleware";
 import { ClientsFlagUpdateDTO } from "../../dtos/clients.dto";
 import { getNextRankEnumValue } from "../../utils/common.utils";
@@ -11,6 +12,8 @@ import { Violation } from "../../utils/enums/violations.enum";
 import { Flag } from "../../utils/enums/flag.enum";
 import usersService from "../../services/users.service";
 import { UsersFlagUpdateDTO } from "../../dtos/users.dto";
+import { MaintenanceUpdateDTO } from "../../dtos/meta.dto";
+import metaService from "../../services/meta.service";
 
 export class PenaltyHandler{
     constructor(private readonly handlers: Map<Violation, PenaltyApply>) {
@@ -44,5 +47,18 @@ export class UsersFlagPenalty implements PenaltyApply<Extract<PenaltyContext, { 
         const id = context.id;
         const dto: UsersFlagUpdateDTO = { flag: getNextRankEnumValue(Flag, context.penaltyValue) };
         await usersService.updateUserFlag(id, dto);
+        // TODO(yqni13): add mail notification (SUPPORT-49)
+    }
+}
+
+export class MaintenanceTrafficPenalty implements PenaltyApply<Extract<PenaltyContext, 
+{ type: Violation.MAINTENANCE_TRAFFIC }>> {
+    readonly type = Violation.MAINTENANCE_TRAFFIC;
+
+    async apply(context: PenaltyMaintenanceTrafficContext) {
+        const id = context.id;
+        const dto: MaintenanceUpdateDTO = { maintenance_mode: context.penaltyValue }; // MaintenanceMode.T011
+        await metaService.updateMaintenanceMode(id, dto);
+        // TODO(yqni13): add mail notification (SUPPORT-49)
     }
 }
