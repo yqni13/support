@@ -4,12 +4,73 @@
 
 <br>
 
+### $\textsf{\color{skyblue}2026/02/12}$
+
+$\textsf{[v1.1.0\ =>\ {\textbf{\color{brown}v1.2.1}]}}$ app<br>
+$\textsf{[v1.5.2\ =>\ {\textbf{\color{brown}v1.5.3}]}}$ database
+- $\textsf{\color{teal}Addition:}$ Added options to select category of support ticket regarding user intention.
+- $\textsf{\color{orange}Patch:}$ Updated:
+  + throw exception when deletion is prohibited instead of returning 'false'
+  + migration to add 'option' to table 'tickets' with default value 'support'
+
+<br>
+
+### $\textsf{\color{skyblue}2026/02/11}$
+
+$\textsf{[v1.0.0\ =>\ v1.1.0]}$ app
+- $\textsf{\color{teal}Addition:}$ Added deletion to file handling (admin only) + delete-permission check.
+
+<br>
+
+### $\textsf{\color{skyblue}2026/02/09}$
+
+$\textsf{[v1.0.0-beta.3\ =>\ v1.0.0]}$ app
+- $\textsf{\color{teal}Addition:}$ Added file handling (tickets create) + cloud upload.
+
+<br>
+
+### $\textsf{\color{skyblue}2026/02/05}$
+
+$\textsf{[v1.0.0-beta.2\ =>\ v1.0.0-beta.3]}$ app
+- $\textsf{\color{orange}Patch:}$ Refactored and renamed validation files, added basic files validation (not completed) and interfaces.
+
+<br>
+
+### $\textsf{\color{skyblue}2026/02/03}$
+
+$\textsf{[v1.0.0-beta.1\ =>\ v1.0.0-beta.2]}$ app
+- $\textsf{\color{orange}Patch:}$ Updated:
+  + rate-limit rule "TotalDailyLimitRule" by adding penalty
+  + penalties by adding violation for maintenance (context: traffic)
+
+<br>
+
+### $\textsf{\color{skyblue}2026/01/22}$
+
+$\textsf{[v0.12.1\ =>\ v1.0.0-beta.1]}$ app<br>
+$\textsf{[v1.5.1\ =>\ v1.5.2]}$ database
+- $\textsf{\color{teal}Addition:}$ Added version based data to file 'package.json' for main usage (static in-memory) => first official beta version 🎉.
+- $\textsf{\color{orange}Patch:}$ Updated:
+  + logger to use version data in central configuration (defaultMeta).
+  + version validation to enable pre-release structures (SemVer Specification 9).
+  + maintenance mode options (additional mode for blocking by penalty for traffic).
+  + migration to add 'maintenance_mode' to table 'meta' with the new correct default value ('E-000' => 'A-000').
+
+<br>
+
+### $\textsf{\color{skyblue}2025/12/25}$
+
+$\textsf{[v0.12.0\ =>\ v0.12.1]}$ app<br>
+- $\textsf{\color{orange}Patch:}$ Refactored clients response mapping.
+
+<br>
+
 ### $\textsf{\color{skyblue}2025/12/22}$
 
-$\textsf{[v0.11.1\ =>\ {\textbf{\color{brown}v0.12.0}]}}$ app<br>
-$\textsf{[v1.5.0\ =>\ {\textbf{\color{brown}v1.5.1}]}}$ database
+$\textsf{[v0.11.1\ =>\ v0.12.0]}$ app<br>
+$\textsf{[v1.5.0\ =>\ v1.5.1]}$ database
 - $\textsf{\color{teal}Addition:}$ Added logic to handle penalties (limit violations only currently).
-- $\textsf{\color{orange}Patch:}$ Added migration to update 'clients' table by adding 'flag' property.v
+- $\textsf{\color{orange}Patch:}$ Added migration to update 'clients' table by adding 'flag' property.
 
 <br>
 

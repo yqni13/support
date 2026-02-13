@@ -14,6 +14,7 @@ import { TicketStatus } from "../../../../src/utils/enums/ticket-status.enum";
 import rateLimitsService from "../../../../src/services/rate-limits.service";
 import demoLimitsService from "../../../../src/services/demo-limits.service";
 import { Violation } from "../../../../src/utils/enums/violations.enum";
+import { MaintenanceMode } from "../../../../src/utils/enums/maintenance-mode.enum";
 
 // Ensure correct type by converting secret to number via unary + operator.
 import { secrets } from "../../../../src/utils/secrets.utils"
@@ -293,7 +294,12 @@ describe('Middleware tests category <observation|rate_limits>, priority: rules',
 
                 const expectResult: RateLimitsResponse = {
                     msg: 'support-ratelimits-total-daily',
-                    retryAfter: mockRetryAfter
+                    retryAfter: mockRetryAfter,
+                    penalty: {
+                        type: Violation.MAINTENANCE_TRAFFIC,
+                        id: 1,
+                        penaltyValue: MaintenanceMode.T011
+                    }
                 };
                 const testFn = await ruleTDL.check();
 

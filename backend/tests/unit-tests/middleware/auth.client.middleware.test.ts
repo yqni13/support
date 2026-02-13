@@ -4,7 +4,7 @@ import clientsService from "../../../src/services/clients.service";
 import { default as mockId } from "../../mock-data/id.mock-data.json";
 import { secrets } from "../../../src/utils/secrets.utils";
 import { ApiKeyStatus } from "../../../src/utils/enums/api-key-status.enum";
-import * as CustomValidator from "../../../src/utils/customValidator.utils";
+import * as CommonValidators from "../../../src/validation/common.validation";
 import * as Utils from "../../../src/utils/common.utils";
 import { authClient } from "../../../src/middleware/auth.client.middleware";
 import { ErrorStatusCodes } from "../../../src/utils/errorStatusCodes.utils";
@@ -35,7 +35,7 @@ describe('Middleware tests category <auth>, priority: authClient', () => {
             };
             req.header.mockReturnValue(mockApiKey);
 
-            jest.spyOn(CustomValidator, 'validateApiKey').mockImplementation();
+            jest.spyOn(CommonValidators, 'validateApiKey').mockImplementation();
             jest.spyOn(clientsService, 'getClientByActiveKey').mockResolvedValue(mockClient);
             jest.spyOn(clientsService, 'updateClientLastUse').mockImplementation();
 
@@ -43,7 +43,7 @@ describe('Middleware tests category <auth>, priority: authClient', () => {
             const middleware = authClient();
             await middleware(req, res, next);
 
-            expect(CustomValidator.validateApiKey).toHaveBeenCalledWith(mockApiKey);
+            expect(CommonValidators.validateApiKey).toHaveBeenCalledWith(mockApiKey);
             expect(clientsService.getClientByActiveKey).toHaveBeenCalledWith(mockApiKey);
             expect(req.apiClients).toEqual(mockClient);
             expect(clientsService.updateClientLastUse).toHaveBeenCalledWith(mockClient.client_id);
@@ -62,7 +62,7 @@ describe('Middleware tests category <auth>, priority: authClient', () => {
             const middleware = authClient();
             await middleware(req, res, next);
 
-            expect(CustomValidator.validateApiKey).not.toHaveBeenCalledWith();
+            expect(CommonValidators.validateApiKey).not.toHaveBeenCalledWith();
             expect(clientsService.getClientByActiveKey).not.toHaveBeenCalledWith();
             expect(clientsService.updateClientLastUse).not.toHaveBeenCalledWith();
             const errArg = next.mock.calls[0][0];
@@ -75,7 +75,7 @@ describe('Middleware tests category <auth>, priority: authClient', () => {
             const mockClient: Clients | null = null;
             req.header.mockReturnValue(mockApiKey);
 
-            jest.spyOn(CustomValidator, 'validateApiKey').mockImplementation();
+            jest.spyOn(CommonValidators, 'validateApiKey').mockImplementation();
             jest.spyOn(clientsService, 'getClientByActiveKey').mockResolvedValue(mockClient);
 
             const middleware = authClient();

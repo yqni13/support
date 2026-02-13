@@ -10,6 +10,17 @@
             "9e024539-32e8-4317-8007-84a3956e6b57"
         ]
     },
+    "meta": {
+        "invalid": [
+            0
+        ],
+        "new": [
+            2
+        ],
+        "valid": [
+            1
+        ]
+    },
     "rate_limits": {
         "invalid": [
             0
@@ -29,7 +40,8 @@
             "6404a514-602b-43de-b4eb-919c83222645"
         ],
         "valid": [
-            "ae9550fc-16fd-4e9a-8ab5-d6ab55b84cb4"
+            "ae9550fc-16fd-4e9a-8ab5-d6ab55b84cb4",
+            "f62b976d-b69b-42d1-bbc8-6aa81e4674ce"
         ]
     },
     "users": {

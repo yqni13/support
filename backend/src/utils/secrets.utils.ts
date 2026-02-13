@@ -1,8 +1,11 @@
 import { Config } from'../configs/config';
 import { AuthSecretNotFoundException } from'./exceptions/auth.exception';
+import path from 'path';
 import fs from "fs";
 
 class Secrets {
+    readonly APP_VERSION: string;
+    readonly APP_META: Record<string, string>;
     readonly ADMIN_API: string;
     readonly ENV_MODE: string;
     readonly PORT: number;
@@ -31,10 +34,16 @@ class Secrets {
     readonly RATELIMITS_USERSDAILYLIMIT: number;
     readonly RATELIMITS_TOTALDAILYLIMIT: number;
     readonly DEMOLIMITS_TOTALDAILYLIMIT: number;
+    readonly CLOUD_BUCKET: string;
+    readonly CLOUD_ENDPOINT: string;
+    readonly CLOUD_ACCESS_KEY_ID: string;
+    readonly CLOUD_SECRET_KEY: string;
 
     private static _instance: Secrets;
 
     private constructor() {
+        this.APP_VERSION = this.getAppVersion();
+        this.APP_META = this.getAppMeta();
         this.ADMIN_API = this.setAdminApi();
         this.ENV_MODE = this.setEnvMode();
         this.PORT = this.setPort();
@@ -63,6 +72,10 @@ class Secrets {
         this.RATELIMITS_USERSDAILYLIMIT = this.setRateLimitsUsersDailyLimit();
         this.RATELIMITS_TOTALDAILYLIMIT = this.setRateLimitsTotalDailyLimit();
         this.DEMOLIMITS_TOTALDAILYLIMIT = this.setDemoLimitsTotalDailyLimit();
+        this.CLOUD_BUCKET = this.setCloudBucket();
+        this.CLOUD_ENDPOINT = this.setCloudEndpoint();
+        this.CLOUD_ACCESS_KEY_ID = this.setCloudAccessKeyId();
+        this.CLOUD_SECRET_KEY = this.setCloudSecretKey();
     }
 
     static get instance(): Secrets {
@@ -70,6 +83,16 @@ class Secrets {
             Secrets._instance = new Secrets();
         }
         return Secrets._instance;
+    }
+
+    private getAppVersion() {
+        let packageJSON = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../../package.json'), 'utf-8'));
+        return !packageJSON ? '0.0.0' : packageJSON.version;
+    }
+
+    private getAppMeta() {
+        let packageJSON = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../../package.json'), 'utf-8'));
+        return !packageJSON ? null : packageJSON.appMeta;
     }
 
     private setAdminApi() {
@@ -280,6 +303,34 @@ class Secrets {
             throw new AuthSecretNotFoundException('secret-404-env#DEMOLIMITS_TOTALDAILYLIMIT');
         }
         return Config.DEMOLIMITS_TOTALDAILYLIMIT;
+    }
+
+    private setCloudBucket() {
+        if(!Config.CLOUD_BUCKET) {
+            throw new AuthSecretNotFoundException('secret-404-env#CLOUD_BUCKET');
+        }
+        return Config.CLOUD_BUCKET;
+    }
+
+    private setCloudEndpoint() {
+        if(!Config.CLOUD_ENDPOINT) {
+            throw new AuthSecretNotFoundException('secret-404-env#CLOUD_ENDPOINT');
+        }
+        return Config.CLOUD_ENDPOINT;
+    }
+
+    private setCloudAccessKeyId() {
+        if(!Config.CLOUD_ACCESS_KEY_ID) {
+            throw new AuthSecretNotFoundException('secret-404-env#CLOUD_ACCESS_KEY_ID');
+        }
+        return Config.CLOUD_ACCESS_KEY_ID;
+    }
+
+    private setCloudSecretKey() {
+        if(!Config.CLOUD_SECRET_KEY) {
+            throw new AuthSecretNotFoundException('secret-404-env#CLOUD_SECRET_KEY');
+        }
+        return Config.CLOUD_SECRET_KEY;
     }
 }
 

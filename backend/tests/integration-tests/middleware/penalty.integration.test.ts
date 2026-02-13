@@ -8,9 +8,12 @@ import { default as mockId } from "../../mock-data/id.mock-data.json";
 import * as MockUtils from "../../common.test-utils";
 import { runMigrations } from "../../db-migrations.setup";
 import usersService from "../../../src/services/users.service";
+import { MaintenanceMode } from "../../../src/utils/enums/maintenance-mode.enum";
+import metaService from "../../../src/services/meta.service";
 
 jest.setTimeout(60000);
 
+const testValidMetaId = mockId.meta.valid[0];
 const testValidClientsId = mockId.clients.valid[0];
 const testValidUsersId = mockId.users.valid[0];
 
@@ -62,6 +65,21 @@ describe('Middleware tests category <handlers>, priority: PenaltyHandler', () =>
             const testUsersFlagResult = Flag.WARNING;
 
             expect(testFn?.flag).toBe(testUsersFlagResult);
+        })
+
+        test('Params: <PenaltyContext>, type: <Violation.MAINTENANCE_TRAFFIC>, result: "PENALTY"', async () => {
+            const testParam_context: PenaltyContext = {
+                type: Violation.MAINTENANCE_TRAFFIC,
+                id: testValidMetaId,
+                penaltyValue: MaintenanceMode.T011
+            };
+
+            await dbTestSetup.addTestData();
+            const _ = await penaltyHandler.apply(testParam_context);
+            const testFn = await metaService.getMaintenanceMode('support');
+            const testMaintenanceModeResult = MaintenanceMode.T011;
+
+            expect(testFn?.maintenance_mode).toBe(testMaintenanceModeResult);
         })
 
         test('Params: <undefined>, result: null', async () => {

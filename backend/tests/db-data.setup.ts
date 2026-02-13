@@ -42,7 +42,7 @@ export class DBTestData {
         (id, app, author, build_on, environment, app_version, db_version, docker_image, docker_version, jenkins_version, maintenance_mode, created_on, last_modified)
         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13);
         `;
-        const values = [1, 'support', 'yqni13', '2025-01-01T14:00:01.000Z', 'test', '0.0.1', '0.0.2', 'no-image', '0.0.3', '0.0.4', MaintenanceMode.E000, '2025-01-01T14:00:01.000Z', '2025-01-01T14:00:01.000Z'];
+        const values = [1, 'support', 'yqni13', '2025-01-01T14:00:01.000Z', 'test', '0.0.1', '0.0.2', 'no-image', '0.0.3', '0.0.4', MaintenanceMode.A000, '2025-01-01T14:00:01.000Z', '2025-01-01T14:00:01.000Z'];
         return { sql: sql, values: values };
     }
 
@@ -89,5 +89,14 @@ export class DBTestData {
         `;
         const values = ['2025-01-01', 1, '2025-01-01T14:00:06.000Z'];
         return { sql: sql, values: values }; 
+    }
+
+    getTicketsWithoutPathsInsertSql(): BaseQuery {
+        const sql = `INSERT INTO ${this.tableRecord['tickets']}
+        (ticket_id, client_id, user_id, status, message, resource_paths, flag, last_modified, created_on)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9);
+        `;
+        const values = [mockId.tickets.valid[1], mockId.clients.valid[0], mockId.users.valid[0], TicketStatus.ISSUED, 'test-message-without-resource_paths', undefined, null, '2025-01-01T14:00:07.000Z', '2025-01-01T14:00:07.000Z'];
+        return { sql: sql, values: values };
     }
 }
