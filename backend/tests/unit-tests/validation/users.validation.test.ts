@@ -1,10 +1,10 @@
 import * as CommonValidators from '../../../src/validation/common.validation';
 
-describe('CommonValidators tests, priority: users model', () => {
+describe('Unit-tests (validation), priority: synonym CommonValidators on entity Users', () => {
 
     describe('Testing valid fn calls', () => {
 
-        test('fn: validateEmail, params: <email> = user@test.com', () => {
+        test('fn validateEmail(), params: <email> = user@test.com', () => {
             const mockParam_email = 'user@test.com';
             const testFn = CommonValidators.validateEmail(mockParam_email);
             const expectResult = true;
@@ -12,7 +12,7 @@ describe('CommonValidators tests, priority: users model', () => {
             expect(testFn).toBe(expectResult);
         })
 
-        test('fn: validateEmail, params: <email> = user@test.co.at', () => {
+        test('fn validateEmail(), params: <email> = user@test.co.at', () => {
             const mockParam_email = 'user@test.co.at';
             const testFn = CommonValidators.validateEmail(mockParam_email);
             const expectResult = true;
@@ -23,7 +23,7 @@ describe('CommonValidators tests, priority: users model', () => {
 
     describe('Testing invalid fn calls', () => {
 
-        test('fn: validateEmail, params: invalid <email> by number of "@"', () => {
+        test('fn validateEmail(), params: invalid <email> by number of "@"', () => {
             const mockParam_email = 'user@@test.com';
             const expectResult = 'support-invalid-length#email<@>$1';
 
@@ -32,7 +32,7 @@ describe('CommonValidators tests, priority: users model', () => {
             }).toThrow(expectResult);
         })
 
-        test('fn: validateEmailLength, params: invalid <email> by total length (min)', () => {
+        test('fn validateEmailLength(), params: invalid <email> by total length (min)', () => {
             const mockParam_email = 'a@b';
             const mockParam_posATsign = 1;
             const expectResult = 'support-invalid-min#email?6';
@@ -42,7 +42,7 @@ describe('CommonValidators tests, priority: users model', () => {
             }).toThrow(expectResult);
         })
 
-        test('fn: validateEmailLength, params: invalid <email> by total length (max)', () => {
+        test('fn validateEmailLength(), params: invalid <email> by total length (max)', () => {
             const mockParam_email = 'Iam70characterslongAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA@ToExpandOn.TotalOf400CharactersBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB';
             const mockParam_posATsign = 71;
             const expectResult = 'support-invalid-max#email!320';
@@ -52,7 +52,7 @@ describe('CommonValidators tests, priority: users model', () => {
             }).toThrow(expectResult);
         })
 
-        test('fn: validateEmailLength, params: invalid <email> by length of username (min)', () => {
+        test('fn validateEmailLength(), params: invalid <email> by length of username (min)', () => {
             const mockParam_email = '@test.com';
             const mockParam_posATsign = 0;
             const expectResult = 'support-invalid-length#email-username';
@@ -62,7 +62,7 @@ describe('CommonValidators tests, priority: users model', () => {
             }).toThrow(expectResult);
         })
 
-        test('fn: validateEmailLength, params: invalid <email> by length of username (max)', () => {
+        test('fn validateEmailLength(), params: invalid <email> by length of username (max)', () => {
             const mockParam_email = 'Iam70characterslongAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA@test.com';
             const mockParam_posATsign = 71;
             const expectResult = 'support-invalid-length#email-username';
@@ -72,7 +72,7 @@ describe('CommonValidators tests, priority: users model', () => {
             }).toThrow(expectResult);
         })
 
-        test('fn: validateEmailLength, params: invalid <email> by length of domain (min)', () => {
+        test('fn validateEmailLength(), params: invalid <email> by length of domain (min)', () => {
             const mockParam_email = 'user@t.c';
             const mockParam_posATsign = 4;
             const expectResult = 'support-invalid-length#email-domain';
@@ -82,7 +82,7 @@ describe('CommonValidators tests, priority: users model', () => {
             }).toThrow(expectResult);
         })
 
-        test('fn: validateEmailLength, params: invalid <email> by length of domain (max)', () => {
+        test('fn validateEmailLength(), params: invalid <email> by length of domain (max)', () => {
             const mockParam_email = 'user@Iam270characterslong.BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB';
             const mockParam_posATsign = 4;
             const expectResult = 'support-invalid-length#email-domain';
@@ -92,7 +92,7 @@ describe('CommonValidators tests, priority: users model', () => {
             }).toThrow(expectResult);
         })
 
-        test('fn: validateEmailLength, params: invalid <email> by length of top level domain (min)', () => {
+        test('fn validateEmailLength(), params: invalid <email> by length of top level domain (min)', () => {
             const mockParam_email = 'user@test.c';
             const mockParam_posATsign = 4;
             const expectResult = 'support-invalid-length#email-topleveldomain?2';
@@ -102,7 +102,7 @@ describe('CommonValidators tests, priority: users model', () => {
             }).toThrow(expectResult);
         })
 
-        test('fn: validateEmailSyntax, params: invalid <email> by username RegEx', () => {
+        test('fn validateEmailSyntax(), params: invalid <email> by username RegEx', () => {
             const mockParam_email = 'u§er@test.com';
             const mockParam_posATsign = 4;
             const expectResult = 'support-invalid-email#regex-username';
@@ -112,7 +112,7 @@ describe('CommonValidators tests, priority: users model', () => {
             }).toThrow(expectResult);
         })
 
-        test('fn: validateEmailSyntax, params: invalid <email> by domain RegEx', () => {
+        test('fn validateEmailSyntax(), params: invalid <email> by domain RegEx', () => {
             const mockParam_email = 'user@te$t.com';
             const mockParam_posATsign = 4;
             const expectResult = 'support-invalid-email#regex-domain';
@@ -122,7 +122,7 @@ describe('CommonValidators tests, priority: users model', () => {
             }).toThrow(expectResult);
         })
 
-        test('fn: validateEmailSyntax, params: invalid <email> by domain missing "."', () => {
+        test('fn validateEmailSyntax(), params: invalid <email> by domain missing "."', () => {
             const mockParam_email = 'user@testcom';
             const mockParam_posATsign = 4;
             const expectResult = 'support-invalid-email#regex-domain';
@@ -132,7 +132,7 @@ describe('CommonValidators tests, priority: users model', () => {
             }).toThrow(expectResult);
         })
 
-        test('fn: validateEmailSyntax, params: invalid <email> by hyphens positioned before "@"', () => {
+        test('fn validateEmailSyntax(), params: invalid <email> by hyphens positioned before "@"', () => {
             const mockParam_email = 'user-@test.com';
             const mockParam_posATsign = 5;
             const expectResult = 'support-invalid-email#hyphen<@>';
@@ -142,7 +142,7 @@ describe('CommonValidators tests, priority: users model', () => {
             }).toThrow(expectResult);
         })
 
-        test('fn: validateEmailSyntax, params: invalid <email> by hyphens positioned after "@"', () => {
+        test('fn validateEmailSyntax(), params: invalid <email> by hyphens positioned after "@"', () => {
             const mockParam_email = 'user@-test.com';
             const mockParam_posATsign = 4;
             const expectResult = 'support-invalid-email#hyphen<@>';
@@ -152,7 +152,7 @@ describe('CommonValidators tests, priority: users model', () => {
             }).toThrow(expectResult);
         })
 
-        test('fn: validateEmailSyntax, params: invalid <email> by mail server RegEx', () => {
+        test('fn validateEmailSyntax(), params: invalid <email> by mail server RegEx', () => {
             const mockParam_email = 'user@§.com';
             const mockParam_posATsign = 4;
             const expectResult = 'support-invalid-email#mailserver';
@@ -162,7 +162,7 @@ describe('CommonValidators tests, priority: users model', () => {
             }).toThrow(expectResult);
         })
 
-        test('fn: validateEmailSyntax, params: invalid <email> by missing mail server', () => {
+        test('fn validateEmailSyntax(), params: invalid <email> by missing mail server', () => {
             const mockParam_email = 'user@.com';
             const mockParam_posATsign = 4;
             const expectResult = 'support-invalid-email#mailserver';
@@ -172,7 +172,7 @@ describe('CommonValidators tests, priority: users model', () => {
             }).toThrow(expectResult);
         })
 
-        test('fn: validateEmailPolicies, params: invalid <email> by forbidden keyword', () => {
+        test('fn validateEmailPolicies(), params: invalid <email> by forbidden keyword', () => {
             const mockParam_email = 'noreply@test.com';
             const expectResult = 'support-invalid-email#keyword:noreply';
 
@@ -181,7 +181,7 @@ describe('CommonValidators tests, priority: users model', () => {
             }).toThrow(expectResult);
         })
 
-        test('fn: validateEmailPolicies, params: invalid <email> by containing empty spaces', () => {
+        test('fn validateEmailPolicies(), params: invalid <email> by containing empty spaces', () => {
             const mockParam_email = 'my user@test .com';
             const expectResult = 'support-invalid-email#keyword:emptyspaces';
 

@@ -7,14 +7,31 @@ import { UserStatus } from "../../../src/utils/enums/user-status.enum";
 import { Flag } from "../../../src/utils/enums/flag.enum";
 import { CommonExceptionMessage } from "../../../src/utils/enums/common-exception-messages.enum";
 import { DemoMode } from "../../../src/utils/enums/demo-mode.enum";
+import { TicketOption } from "../../../src/utils/enums/ticket-option.enum";
+import { TicketStatus } from "../../../src/utils/enums/ticket-status.enum";
+import { Violation } from "../../../src/utils/enums/violations.enum";
 
-describe('CommonValidators tests, priority: no model specification', () => {
+describe('Unit-tests (validation), priority: synonym CommonValidators', () => {
 
     describe('Testing valid fn calls', () => {
 
-        test('fn: validateEnum, params: <enumObj> = MaintenanceMode', () => {
-            const mockParam_enumObj = MaintenanceMode;
-            const mockParam_enumName = 'maintenanceMode';
+        const enumCollection = [
+            { enumObj: ApiKeyStatus, enumName: 'apiKeyStatus' },
+            { enumObj: CommonExceptionMessage, enumName: 'commonExceptionMessage' },
+            { enumObj: DemoMode, enumName: 'demoMode' },
+            { enumObj: EnvMode, enumName: 'envMode' },
+            { enumObj: Flag, enumName: 'flag' },
+            { enumObj: MailSource, enumName: 'mailSource' },
+            { enumObj: MaintenanceMode, enumName: 'maintenanceMode' },
+            { enumObj: TicketOption, enumName: 'ticketOption' },
+            { enumObj: TicketStatus, enumName: 'ticketStatus' },
+            { enumObj: UserStatus, enumName: 'userStatus' },
+            { enumObj: Violation, enumName: 'violation' }
+        ];
+
+        test.each(enumCollection)('fn validateEnum(), params: <%s>', (entry) => {
+            const mockParam_enumObj = entry.enumObj;
+            const mockParam_enumName = entry.enumName;
             const expectResult = true;
 
             Object.values(mockParam_enumObj).forEach((value) => {
@@ -26,91 +43,7 @@ describe('CommonValidators tests, priority: no model specification', () => {
             })
         })
 
-        test('fn: validateEnum, params: <enumObj> = EnvMode', () => {
-            const mockParam_enumObj = EnvMode;
-            const mockParam_enumName = 'envMode';
-            const expectResult = true;
-
-            Object.values(mockParam_enumObj).forEach((value) => {
-                expect(CommonValidators.validateEnum(
-                    value,
-                    mockParam_enumObj,
-                    mockParam_enumName
-                )).toBe(expectResult);
-            })
-        })
-
-        test('fn: validateEnum, params: <enumObj> = MailSource', () => {
-            const mockParam_enumObj = MailSource;
-            const mockParam_enumName = 'mailSource';
-            const expectResult = true;
-
-            Object.values(mockParam_enumObj).forEach((value) => {
-                expect(CommonValidators.validateEnum(
-                    value,
-                    mockParam_enumObj,
-                    mockParam_enumName
-                )).toBe(expectResult);
-            })
-        })
-
-        test('fn: validateEnum, params: <enumObj> = ApiKeyStatus', () => {
-            const mockParam_enumObj = ApiKeyStatus;
-            const mockParam_enumName = 'apiKeyStatus';
-            const expectResult = true;
-
-            Object.values(mockParam_enumObj).forEach((value) => {
-                expect(CommonValidators.validateEnum(
-                    value,
-                    mockParam_enumObj,
-                    mockParam_enumName
-                )).toBe(expectResult);
-            })
-        })
-
-        test('fn: validateEnum, params <enumObj> = UserStatus', () => {
-            const mockParam_enumObj = UserStatus;
-            const mockParam_enumName = 'userStatus';
-            const expectResult = true;
-
-            Object.values(mockParam_enumObj).forEach((value) => {
-                expect(CommonValidators.validateEnum(
-                    value,
-                    mockParam_enumObj,
-                    mockParam_enumName
-                )).toBe(expectResult);
-            })
-        })
-
-        test('fn: validateEnum, params <enumObj> = Flag', () => {
-            const mockParam_enumObj = Flag;
-            const mockParam_enumName = 'flag';
-            const expectResult = true;
-
-            Object.values(mockParam_enumObj).forEach((value) => {
-                expect(CommonValidators.validateEnum(
-                    value,
-                    mockParam_enumObj,
-                    mockParam_enumName
-                )).toBe(expectResult);
-            })
-        })
-
-        test('fn: validateEnum, params <enumObj> = DemoMode', () => {
-            const mockParam_enumObj = DemoMode;
-            const mockParam_enumName = 'demoMode';
-            const expectResult = true;
-
-            Object.values(mockParam_enumObj).forEach((value) => {
-                expect(CommonValidators.validateEnum(
-                    value,
-                    mockParam_enumObj,
-                    mockParam_enumName
-                )).toBe(expectResult);
-            })
-        })
-
-        test('fn: validatePathParam, params <param> = "valid-test-id"', () => {
+        test('fn validatePathParam(), params: <param> = "valid-test-id"', () => {
             const mockParam_param = 'valid-test-id';
             const testFn = CommonValidators.validatePathParam(mockParam_param);
             const expectResult = true;
@@ -118,7 +51,7 @@ describe('CommonValidators tests, priority: no model specification', () => {
             expect(testFn).toBe(expectResult);
         })
 
-        test('fn: validateTimestamp, params <timestamp> = "2025-01-01T14:00:00.000Z"', () => {
+        test('fn validateTimestamp(), params: valid <timestamp>', () => {
             const mockParam_timestamp = "2025-01-01T14:00:00.000Z";
             const testFn = CommonValidators.validateTimestamp(mockParam_timestamp)
             const expectResult = true;
@@ -126,7 +59,7 @@ describe('CommonValidators tests, priority: no model specification', () => {
             expect(testFn).toBe(expectResult);
         })
 
-        test('fn: validateTimestampFilter, params <timestamps> = ["older", "younger"]', () => {
+        test('fn validateTimestampFilter(), params: <timestamps> = ["older", "younger"]', () => {
             const mockParam_timestamps = ['2025-01-01T14:00:00.000Z', '2025-01-10T13:00:00.000Z'];
             const testFn = CommonValidators.validateTimestampFilter(mockParam_timestamps);
             const expectResult = true;
@@ -137,7 +70,7 @@ describe('CommonValidators tests, priority: no model specification', () => {
 
     describe('Testing invalid fn calls', () => {
 
-        test('fn: validateEnum, params: invalid <value> by value', () => {
+        test('fn validateEnum(), params: invalid <value> by value', () => {
             const mockParam_value = 'invalid-value';
             const mockParam_enumObj = MaintenanceMode;
             const mockParam_enumName = 'maintenanceMode';
@@ -152,7 +85,7 @@ describe('CommonValidators tests, priority: no model specification', () => {
             }).toThrow(expectResult);
         })
 
-        test('fn: validateEnum, params: invalid <language> by key', () => {
+        test('fn validateEnum(), params: invalid <language> by key', () => {
             const mockParam_value = { INVALID: MaintenanceMode.T011 };
             const mockParam_enumObj = MaintenanceMode;
             const mockParam_enumName = 'maintenanceMode';
@@ -167,7 +100,7 @@ describe('CommonValidators tests, priority: no model specification', () => {
             }).toThrow(expectResult);
         })
 
-        test.each([null, undefined, ' ', ':id'])('fn: validatePathParam, params <param> = null', (invalidArg) => {
+        test.each([null, undefined, ' ', ':id'])('fn validatePathParam(), params: <%s> = null', (invalidArg) => {
             const mockParam_arg = invalidArg;
             const expectResult = CommonExceptionMessage.REQUIRED;
 
@@ -176,21 +109,21 @@ describe('CommonValidators tests, priority: no model specification', () => {
             }).toThrow(expectResult);
         })
 
-        test('fn: validateTimestamp, params <timestamp> = "abc"', () => {
+        test('fn validateTimestamp(), params: invalid <timestamp>', () => {
             const mockParam_timestamp = "abc";
             const expectResult = 'support-invalid-entry#timestamp';
 
             expect(() => { CommonValidators.validateTimestamp(mockParam_timestamp) }).toThrow(expectResult);
         })
 
-        test('fn: validateTimestampFilter, params <timestamps> = ["younger", "older"]', () => {
+        test('fn validateTimestampFilter(), params: <timestamps> = ["younger", "older"]', () => {
             const mockParam_timestamps = ['2025-01-10T13:00:00.000Z', '2025-01-01T14:00:00.000Z'];
             const expectResult = 'support-invalid-entry#timestamps';
 
             expect(() => { CommonValidators.validateTimestampFilter(mockParam_timestamps)}).toThrow(expectResult);
         })
 
-        test('fn: validateTimestampFilter, params <timestamps> = ["single_value"]', () => {
+        test('fn validateTimestampFilter(), params: <timestamps> = ["single_value"]', () => {
             const mockParam_timestamps = ['2025-01-01T14:00:00.000Z'];
             const expectResult = 'support-invalid-entry#timestamps';
 

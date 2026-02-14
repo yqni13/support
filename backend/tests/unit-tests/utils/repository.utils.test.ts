@@ -4,11 +4,11 @@ import { Flag } from "../../../src/utils/enums/flag.enum";
 import { TicketStatus } from "../../../src/utils/enums/ticket-status.enum";
 import * as RepoUtils from "../../../src/utils/repository.utils";
 
-describe('Utils tets, priority: repository', () => {
+describe('Unit-tests (utils), priority: synonym RepositoryUtils', () => {
 
     describe('Testing valid fn calls', () => {
 
-        test('fn: mapTimestampFilters, params: <data> = {last_modified[]}, <valueIndex> = 0', () => {
+        test('fn mapTimestampFilters(), params: <data> = {last_modified[]}, <valueIndex> = 0', () => {
             const mockParam_data: TimestampFilters = {
                 last_modified: ['2024-12-31T10:00:00.000Z', '2025-12-05T10:00:00.000Z']
             };
@@ -22,7 +22,7 @@ describe('Utils tets, priority: repository', () => {
             expect(testFn).toMatchObject(mockResult);
         })
 
-        test('fn: mapTimestampFilters, params: <data> = {last_modified[], created_on[]}, <valueIndex> = 0', () => {
+        test('fn mapTimestampFilters(), params: <data> = {last_modified[], created_on[]}, <valueIndex> = 0', () => {
             const mockParam_data: TimestampFilters = {
                 last_modified: ['2024-12-31T10:00:00.000Z', '2025-12-05T10:00:00.000Z'],
                 created_on: ['2024-12-31T10:00:00.000Z', '2025-12-05T10:00:00.000Z']
@@ -37,7 +37,7 @@ describe('Utils tets, priority: repository', () => {
             expect(testFn).toMatchObject(mockResult);
         })
 
-        test('fn: mapFilteredQueryValues, params: <dto> = TicketsFilterDTO without timestamps', () => {
+        test('fn mapFilteredQueryValues(), params: <dto> = TicketsFilterDTO without timestamps', () => {
             const mockParam_dto: TicketsFilterDTO = {
                 status: TicketStatus.ACTIVE,
                 flag: [Flag.ERROR, Flag.WARNING]
@@ -53,7 +53,7 @@ describe('Utils tets, priority: repository', () => {
             expect(testFn).toMatchObject(mockResult);
         })
 
-        test('fn: mapFilteredQueryValues, params: <dto> = TicketsFilterDTO with 1 timestamp', () => {
+        test('fn mapFilteredQueryValues(), params: <dto> = TicketsFilterDTO with 1 timestamp', () => {
             const mockParam_dto: TicketsFilterDTO = {
                 status: TicketStatus.ACTIVE,
                 flag: [Flag.ERROR, Flag.WARNING],
@@ -70,7 +70,7 @@ describe('Utils tets, priority: repository', () => {
             expect(testFn).toMatchObject(mockResult);
         })
 
-        test('fn: mapFilteredQueryValues, params: <dto> = TicketsFilterDTO with 2 timestamps', () => {
+        test('fn mapFilteredQueryValues(), params: <dto> = TicketsFilterDTO with 2 timestamps', () => {
             const mockParam_dto: TicketsFilterDTO = {
                 status: TicketStatus.ACTIVE,
                 flag: [Flag.ERROR, Flag.WARNING],
@@ -88,7 +88,7 @@ describe('Utils tets, priority: repository', () => {
             expect(testFn).toMatchObject(mockResult);
         })
 
-        test('fn: mapFilteredQueryValues, params: <dto> = TicketsFilterDTO with timestamps only', () => {
+        test('fn mapFilteredQueryValues(), params: <dto> = TicketsFilterDTO with timestamps only', () => {
             const mockParam_dto: TicketsFilterDTO = {
                 last_modified: ['2024-12-31T10:00:00.000Z', '2025-12-05T10:00:00.000Z'],
                 created_on: ['2024-12-31T10:00:00.000Z', '2025-12-05T10:00:00.000Z']

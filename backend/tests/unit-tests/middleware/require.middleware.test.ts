@@ -1,8 +1,8 @@
 import { requirePayload } from "../../../src/middleware/require.middleware";
-import * as Utils from "../../../src/utils/common.utils";
+import * as CommonUtils from "../../../src/utils/common.utils";
 import { InvalidPropertiesException } from "../../../src/utils/exceptions/validation.exception";
 
-describe('Middleware tests category <validation>, priority: requirePayload', () => {
+describe('Unit-tests (middleware), priority: fn requirePayload()', () => {
 
     const res: any = {};
     const next = jest.fn();
@@ -28,7 +28,7 @@ describe('Middleware tests category <validation>, priority: requirePayload', () 
         test('Validate req.body, error: InvalidPropertiesException by undefined', async () => {
             const req: any = { header: jest.fn(), body: undefined };
 
-            jest.spyOn(Utils, 'logError').mockImplementation();
+            jest.spyOn(CommonUtils, 'logError').mockImplementation();
 
             const middleware = requirePayload();
             await middleware(req, res, next);
@@ -41,7 +41,7 @@ describe('Middleware tests category <validation>, priority: requirePayload', () 
         test('Validate req.body, error: InvalidPropertiesException by []', async () => {
             const req: any = { header: jest.fn(), body: [] };
 
-            jest.spyOn(Utils, 'logError').mockImplementation();
+            jest.spyOn(CommonUtils, 'logError').mockImplementation();
 
             const middleware = requirePayload();
             await middleware(req, res, next);
@@ -54,7 +54,7 @@ describe('Middleware tests category <validation>, priority: requirePayload', () 
         test('Validate req.body, error: InvalidPropertiesException by {}', async () => {
             const req: any = { header: jest.fn(), body: {} };
 
-            jest.spyOn(Utils, 'logError').mockImplementation();
+            jest.spyOn(CommonUtils, 'logError').mockImplementation();
 
             const middleware = requirePayload();
             await middleware(req, res, next);

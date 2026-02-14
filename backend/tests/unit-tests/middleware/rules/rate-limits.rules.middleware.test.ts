@@ -8,19 +8,19 @@ import {
 } from "../../../../src/middleware/rules/rate-limits.rule.middleware";
 import { TicketsResponseDTO } from "../../../../src/dtos/tickets.dto";
 import { RateLimitsData, RateLimitsResponse } from "../../../../src/middleware/interfaces/rate-limits.interface.middleware";
-import * as Utils from "../../../../src/utils/common.utils";
+import * as CommonUtils from "../../../../src/utils/common.utils";
 import ticketsService from "../../../../src/services/tickets.service";
 import { TicketStatus } from "../../../../src/utils/enums/ticket-status.enum";
 import rateLimitsService from "../../../../src/services/rate-limits.service";
 import demoLimitsService from "../../../../src/services/demo-limits.service";
 import { Violation } from "../../../../src/utils/enums/violations.enum";
 import { MaintenanceMode } from "../../../../src/utils/enums/maintenance-mode.enum";
+import { TicketOption } from "../../../../src/utils/enums/ticket-option.enum";
 
 // Ensure correct type by converting secret to number via unary + operator.
 import { secrets } from "../../../../src/utils/secrets.utils"
-import { TicketOption } from "../../../../src/utils/enums/ticket-option.enum";
 
-describe('Middleware tests category <observation|rate_limits>, priority: rules', () => {
+describe('Unit-tests (middleware), priority: implementation RateLimitsRule', () => {
 
     const mockValidClientsId = 'valid_clients_test_id';
     const mockValidUsersId = 'valid_users_test_id';
@@ -93,7 +93,7 @@ describe('Middleware tests category <observation|rate_limits>, priority: rules',
                 });
 
                 jest.spyOn(ticketsService, 'getTicketsByTimeInterval').mockResolvedValue(mockContext);
-                jest.spyOn(Utils, 'getNextDayUTC').mockReturnValue(mockRetryAfter);
+                jest.spyOn(CommonUtils, 'getNextDayUTC').mockReturnValue(mockRetryAfter);
 
                 const expectResult: RateLimitsResponse = {
                     msg: 'support-ratelimits-clients-burst',
@@ -140,7 +140,7 @@ describe('Middleware tests category <observation|rate_limits>, priority: rules',
                 });
 
                 jest.spyOn(ticketsService, 'getTicketsByTimeInterval').mockResolvedValue(mockContext);
-                jest.spyOn(Utils, 'getNextDayUTC').mockReturnValue(mockRetryAfter);
+                jest.spyOn(CommonUtils, 'getNextDayUTC').mockReturnValue(mockRetryAfter);
 
                 const expectResult: RateLimitsResponse = {
                     msg: 'support-ratelimits-users-burst',
@@ -189,7 +189,7 @@ describe('Middleware tests category <observation|rate_limits>, priority: rules',
                 Object.assign(testParam_data, { clients: { flag: null }});
 
                 jest.spyOn(rateLimitsService, 'getRateLimitCount').mockResolvedValue(mockCount);
-                jest.spyOn(Utils, 'getNextDayUTC').mockReturnValue(mockRetryAfter);
+                jest.spyOn(CommonUtils, 'getNextDayUTC').mockReturnValue(mockRetryAfter);
 
                 const expectResult: RateLimitsResponse = {
                     msg: 'support-ratelimits-clients-daily',
@@ -243,7 +243,7 @@ describe('Middleware tests category <observation|rate_limits>, priority: rules',
                 Object.assign(testParam_data, { users: { flag: null }});
 
                 jest.spyOn(rateLimitsService, 'getRateLimitCount').mockResolvedValue(mockCount);
-                jest.spyOn(Utils, 'getNextDayUTC').mockReturnValue(mockRetryAfter);
+                jest.spyOn(CommonUtils, 'getNextDayUTC').mockReturnValue(mockRetryAfter);
 
                 const expectResult: RateLimitsResponse = {
                     msg: 'support-ratelimits-users-daily',
@@ -295,7 +295,7 @@ describe('Middleware tests category <observation|rate_limits>, priority: rules',
                 const mockCount = +secrets.RATELIMITS_TOTALDAILYLIMIT;
 
                 jest.spyOn(rateLimitsService, 'getRateLimitCount').mockResolvedValue(mockCount);
-                jest.spyOn(Utils, 'getNextDayUTC').mockReturnValue(mockRetryAfter);
+                jest.spyOn(CommonUtils, 'getNextDayUTC').mockReturnValue(mockRetryAfter);
 
                 const expectResult: RateLimitsResponse = {
                     msg: 'support-ratelimits-total-daily',
@@ -347,7 +347,7 @@ describe('Middleware tests category <observation|rate_limits>, priority: rules',
                 const mockCount = +secrets.DEMOLIMITS_TOTALDAILYLIMIT;
 
                 jest.spyOn(demoLimitsService, 'getDemoLimitCount').mockResolvedValue(mockCount);
-                jest.spyOn(Utils, 'getNextDayUTC').mockReturnValue(mockRetryAfter);
+                jest.spyOn(CommonUtils, 'getNextDayUTC').mockReturnValue(mockRetryAfter);
 
                 const expectResult: RateLimitsResponse = {
                     msg: 'support-demolimits-total-daily',

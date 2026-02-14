@@ -1,5 +1,5 @@
 import { default as mockId } from "../../mock-data/id.mock-data.json";
-import * as Utils from "../../../src/utils/common.utils";
+import * as CommonUtils from "../../../src/utils/common.utils";
 import { authUser } from "../../../src/middleware/auth.user.middleware";
 import { Users } from "../../../src/repositories/interfaces/users.entity.interface";
 import { UserStatus } from "../../../src/utils/enums/user-status.enum";
@@ -8,7 +8,7 @@ import { UsersResponseDTO } from "../../../src/dtos/users.dto";
 import { BlockedUsersException, InvalidUsersException } from "../../../src/utils/exceptions/auth.exception";
 import { Flag } from "../../../src/utils/enums/flag.enum";
 
-describe('Middleware tests category <auth>, priority: authUser', () => {
+describe('Unit-tests (middleware), priority: fn authUser()', () => {
 
     const mockTimestamp = '2025-01-01T14:00:00.000Z';
     const res: any = {};
@@ -85,7 +85,7 @@ describe('Middleware tests category <auth>, priority: authUser', () => {
             const req: any = { header: jest.fn(), body: { user_email: mockUserEmail }};
 
             jest.spyOn(usersService, 'getUserByEmail').mockResolvedValue(mockUser);
-            jest.spyOn(Utils, 'logError').mockImplementation();
+            jest.spyOn(CommonUtils, 'logError').mockImplementation();
 
             const middleware = authUser();
             await middleware(req, res, next);
@@ -109,7 +109,7 @@ describe('Middleware tests category <auth>, priority: authUser', () => {
             const req: any = { header: jest.fn(), body: { user_email: mockUserEmail }};
 
             jest.spyOn(usersService, 'getUserByEmail').mockResolvedValue(mockUser);
-            jest.spyOn(Utils, 'logError').mockImplementation();
+            jest.spyOn(CommonUtils, 'logError').mockImplementation();
 
             const middleware = authUser();
             await middleware(req, res, next);
