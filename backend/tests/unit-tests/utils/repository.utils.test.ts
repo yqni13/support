@@ -4,7 +4,7 @@ import { Flag } from "../../../src/utils/enums/flag.enum";
 import { TicketStatus } from "../../../src/utils/enums/ticket-status.enum";
 import * as RepoUtils from "../../../src/utils/repository.utils";
 
-describe('Unit-tests (utils), priority: synonym RepositoryUtils', () => {
+describe('Unit-tests (utils), priority: synonym RepoUtils', () => {
 
     describe('Testing valid fn calls', () => {
 
