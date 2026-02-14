@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import * as Utils from '../../../src/utils/common.utils';
+import * as CommonUtils from '../../../src/utils/common.utils';
 import * as MockUtils from "../../common.test-utils";
 import request from 'supertest';
 import { ErrorStatusCodes } from '../../../src/utils/errorStatusCodes.utils';
@@ -25,7 +25,7 @@ import app from '../../../src/app';
 jest.setTimeout(60000);
 const testTimestamp = '2025-01-01T14:00:03.000Z';
 
-describe('Integration test (repository specific), priority: Users', () => {
+describe('Integration-tests (repository), priority: entity Users', () => {
 
     let dbTestSetup: DBTestSetup;
     let apiUrl: string;
@@ -47,7 +47,7 @@ describe('Integration test (repository specific), priority: Users', () => {
 
     describe('Testing valid fn calls', () => {
 
-        test('Repository process fn findById, result: "SUCCESS"', async () => {
+        test('Repository process fn findById(), result: "SUCCESS"', async () => {
             const testParam_id = mockId.users.valid[0];
             const testResult: UsersResponseDTO = {
                 user_id: testParam_id,
@@ -66,7 +66,7 @@ describe('Integration test (repository specific), priority: Users', () => {
             expect(testResponse.body).toMatchObject(testResult);
         })
 
-        test('Repository process fn findByEmail, result: "SUCCESS"', async () => {
+        test('Repository process fn findByEmail(), result: "SUCCESS"', async () => {
             const testParam_email = 'max.mustermann@yqni13.com';
             const testResult: UsersResponseDTO = {
                 user_id: mockId.users.valid[0],
@@ -85,7 +85,7 @@ describe('Integration test (repository specific), priority: Users', () => {
             expect(testResponse.body).toMatchObject(testResult);
         })
 
-        test('Repository process fn findAll, result: "SUCCESS"', async () => {
+        test('Repository process fn findAll(), result: "SUCCESS"', async () => {
             const testParam_id = mockId.users.valid[0];
             const testResult: Users[] = [{
                 user_id: testParam_id,
@@ -104,7 +104,7 @@ describe('Integration test (repository specific), priority: Users', () => {
             expect(testResponse.body).toMatchObject(testResult);
         })
 
-        test('Repository process fn findByFilter, params: <email> result: null', async () => {
+        test('Repository process fn findByFilter(), params: <email> result: null', async () => {
             const testParam_dto: UsersFilterDTO = {
                 email: 'user@test.com'
             };
@@ -120,7 +120,7 @@ describe('Integration test (repository specific), priority: Users', () => {
             expect(testResponse.body).toBe(testResult);
         })
 
-        test('Repository process fn findByFilter, params: <email[], status> result: "SUCCESS"', async () => {
+        test('Repository process fn findByFilter(), params: <email[], status> result: "SUCCESS"', async () => {
             const testParam_dto: UsersFilterDTO = {
                 email: ['max.mustermann@yqni13.com', 'user@test.com'],
                 status: UserStatus.ACTIVE
@@ -134,7 +134,7 @@ describe('Integration test (repository specific), priority: Users', () => {
                 created_on: testTimestamp
             }];
 
-            jest.spyOn(Utils, "getTimestampUTC").mockReturnValue(testTimestamp);
+            jest.spyOn(CommonUtils, "getTimestampUTC").mockReturnValue(testTimestamp);
 
             await dbTestSetup.addTestData();
             const testResponse = await request(app)
@@ -145,7 +145,7 @@ describe('Integration test (repository specific), priority: Users', () => {
             expect(testResponse.body).toMatchObject(testResult);
         })
 
-        test('Repository process fn findByFilter, params: <flag, last_modified> result: "SUCCESS"', async () => {
+        test('Repository process fn findByFilter(), params: <flag, last_modified> result: "SUCCESS"', async () => {
             const testParam_dto: UsersFilterDTO = {
                 flag: null,
                 last_modified: ['2024-12-01T10:00:00.000Z', '2025-12-01T14:00:00.000Z']
@@ -159,7 +159,7 @@ describe('Integration test (repository specific), priority: Users', () => {
                 created_on: testTimestamp
             }];
 
-            jest.spyOn(Utils, "getTimestampUTC").mockReturnValue(testTimestamp);
+            jest.spyOn(CommonUtils, "getTimestampUTC").mockReturnValue(testTimestamp);
 
             await dbTestSetup.addTestData();
             const testResponse = await request(app)
@@ -170,14 +170,14 @@ describe('Integration test (repository specific), priority: Users', () => {
             expect(testResponse.body).toMatchObject(testResult);
         })
 
-        test('Repository process fn create, result: "SUCCESS"', async () => {
+        test('Repository process fn create(), result: "SUCCESS"', async () => {
             const testParam_id = mockId.users.new[0];
             const testParam_dto: UsersCreateDTO = {
                 email: 'new-user@test.com'
             };
 
-            jest.spyOn(Utils, "generateUUID").mockReturnValue(testParam_id);
-            jest.spyOn(Utils, "getTimestampUTC").mockReturnValue(testTimestamp);
+            jest.spyOn(CommonUtils, "generateUUID").mockReturnValue(testParam_id);
+            jest.spyOn(CommonUtils, "getTimestampUTC").mockReturnValue(testTimestamp);
 
             const testResult: UsersResponseDTO = {
                 ...structuredClone(testParam_dto),
@@ -197,7 +197,7 @@ describe('Integration test (repository specific), priority: Users', () => {
             expect(testResponse.body).toMatchObject(testResult)
         })
 
-        test('Repository process fn update, result: "SUCCESS"', async () => {
+        test('Repository process fn update(), result: "SUCCESS"', async () => {
             const testParam_id = mockId.users.valid[0];
             const testParam_dto: Partial<Users> = {
                 email: 'user@test.com',
@@ -205,7 +205,7 @@ describe('Integration test (repository specific), priority: Users', () => {
                 flag: Flag.WARNING
             };
 
-            jest.spyOn(Utils, "getTimestampUTC").mockReturnValue(testTimestamp);
+            jest.spyOn(CommonUtils, "getTimestampUTC").mockReturnValue(testTimestamp);
 
             const testResult = structuredClone(testParam_dto);
             Object.assign(testResult, {
@@ -223,13 +223,13 @@ describe('Integration test (repository specific), priority: Users', () => {
             expect(testResponse.body).toMatchObject(testResult)
         })
 
-        test('Repository process fn updateFlag, result: "SUCCESS"', async () => {
+        test('Repository process fn updateFlag(), result: "SUCCESS"', async () => {
             const testParam_id = mockId.users.valid[0];
             const testParam_dto: UsersFlagUpdateDTO = {
                 flag: Flag.WARNING
             };
 
-            jest.spyOn(Utils, "getTimestampUTC").mockReturnValue(testTimestamp);
+            jest.spyOn(CommonUtils, "getTimestampUTC").mockReturnValue(testTimestamp);
 
             const testResult: UsersResponseDTO = {
                 user_id: testParam_id,
@@ -339,7 +339,7 @@ describe('Integration test (repository specific), priority: Users', () => {
                 })
             })
 
-            describe('Route: POST/create, priority: validateEmailUniqueness', () => {
+            describe('Route: POST/create, priority: fn validateEmailUniqueness()', () => {
                 
                 test('Params: <email> by existing "max.mustermann@yqni13.com" in db', async () => {
                     const testParam_dto: UsersCreateDTO = {
@@ -378,13 +378,15 @@ describe('Integration test (repository specific), priority: Users', () => {
                 };
             })
 
+            // Route: POST/search => no requirePayload() test for empty body as controller calls findAll() instead.
+
             describe('Route: POST/create', () => {
 
-                test('Params: <UsersCreateDTO>, validator: requirePayload by undefined', async () =>{
+                test('Params: <UsersCreateDTO>, validator: requirePayload() by undefined', async () =>{
                     const testParam_dto = undefined;
                     const testError = structuredClone(mockError);
 
-                    jest.spyOn(Utils, 'logError').mockImplementation();
+                    jest.spyOn(CommonUtils, 'logError').mockImplementation();
 
                     const testResponse = await request(app)
                         .post(`${apiUrl}/create`)
@@ -397,12 +399,12 @@ describe('Integration test (repository specific), priority: Users', () => {
 
             describe('Route: PUT/update/:id', () => {
 
-                test('Params: <UsersUpdateDTO>, validator: requirePayload by undefined', async () =>{
+                test('Params: <UsersUpdateDTO>, validator: requirePayload() by undefined', async () =>{
                     const testParam_id = mockId.users.valid[0];
                     const testParam_dto = undefined;
                     const testError = structuredClone(mockError);
 
-                    jest.spyOn(Utils, 'logError').mockImplementation();
+                    jest.spyOn(CommonUtils, 'logError').mockImplementation();
 
                     const testResponse = await request(app)
                         .put(`${apiUrl}/update/${testParam_id}`)

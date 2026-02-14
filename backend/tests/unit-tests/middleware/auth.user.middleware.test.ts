@@ -72,7 +72,7 @@ describe('Middleware tests category <auth>, priority: authUser', () => {
 
     describe('Testing invalid fn calls', () => {
 
-        test('Verify user, error: BlockedUsersException', async () => {
+        test('Verify user, error: InvalidUsersException', async () => {
             const mockUserEmail = 'valid-user@test.com';
             const mockUser: Users = {
                 user_id: mockId.users.valid[0],
@@ -92,11 +92,11 @@ describe('Middleware tests category <auth>, priority: authUser', () => {
 
             expect(usersService.getUserByEmail).toHaveBeenCalledWith(mockUserEmail);
             const errArg = next.mock.calls[0][0];
-            expect(errArg).toBeInstanceOf(BlockedUsersException);
+            expect(errArg).toBeInstanceOf(InvalidUsersException);
             expect(errArg.status).toBe(401);
         })
 
-        test('Verify user, error: InvalidUsersException', async () => {
+        test('Verify user, error: BlockedUsersException', async () => {
             const mockUserEmail = 'valid-user@test.com';
             const mockUser: Users = {
                 user_id: mockId.users.valid[0],
@@ -116,7 +116,7 @@ describe('Middleware tests category <auth>, priority: authUser', () => {
 
             expect(usersService.getUserByEmail).toHaveBeenCalledWith(mockUserEmail);
             const errArg = next.mock.calls[0][0];
-            expect(errArg).toBeInstanceOf(InvalidUsersException);
+            expect(errArg).toBeInstanceOf(BlockedUsersException);
             expect(errArg.status).toBe(401);
         })
     })

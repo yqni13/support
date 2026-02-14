@@ -6,6 +6,7 @@ import { DBQueryErrorException } from "../../../src/utils/exceptions/db.exceptio
 import { TicketStatus } from "../../../src/utils/enums/ticket-status.enum";
 import ticketsRepository from "../../../src/repositories/tickets.repository";
 import { TicketsFilterDTO, TicketsIntervalDTO, TicketsResponseDTO, TicketsResponseExtendedDTO, TicketsUpdateDTO } from "../../../src/dtos/tickets.dto";
+import { TicketOption } from "../../../src/utils/enums/ticket-option.enum";
 
 jest.mock("../../../src/configs/db", () => {
     return {
@@ -21,6 +22,7 @@ const mockData: Tickets = {
     client_id: 'valid_clients_test_id',
     user_id: 'valid_users_test_id',
     status: TicketStatus.ISSUED,
+    option: TicketOption.SUPPORT,
     message: 'test-message',
     flag: null,
     last_modified: mockTimestamp,
@@ -102,6 +104,7 @@ describe('Database tests table <tickets>, priority: findAll', () => {
                 client_id: 'another_valid_clients_test_id',
                 user_id: 'another_valid_users_test_id',
                 status: TicketStatus.ACTIVE,
+                option: TicketOption.SUPPORT,
                 message: 'another-test-message',
                 flag: null,
                 last_modified: mockTimestamp,
@@ -176,6 +179,7 @@ describe('Database tests table <tickets>, priority: findByTimeInterval', () => {
                     client_id: mockClientId,
                     user_id: 'another_valid_users_id',
                     status: TicketStatus.ACTIVE,
+                    option: TicketOption.SUPPORT,
                     message: 'valid-test-message',
                     flag: null,
                     last_modified: '2025-01-01T13:59:48.000Z',
@@ -210,6 +214,7 @@ describe('Database tests table <tickets>, priority: findByTimeInterval', () => {
                     client_id: 'another_valid_client_id',
                     user_id: mockUserId,
                     status: TicketStatus.ACTIVE,
+                    option: TicketOption.SUPPORT,
                     message: 'valid-test-message',
                     flag: null,
                     last_modified: '2025-01-01T13:59:48.000Z',
@@ -336,6 +341,7 @@ describe('Database tests table <tickets>, priority: create', () => {
         client_id: 'valid_clients_test_id',
         user_id: 'new-valid_users_test_id',
         status: TicketStatus.ISSUED,
+        option: TicketOption.SUPPORT,
         message: 'new-test-message',
         flag: null,
         last_modified: mockTimestamp,
@@ -387,6 +393,7 @@ describe('Database tests table <tickets>, priority: udpate', () => {
         sql = `UPDATE`;
         mockParam_dto = {
             status: TicketStatus.ACTIVE,
+            option: TicketOption.SUPPORT,
             message: 'updated-test-message',
             flag: null,
             last_modified: mockTimestamp

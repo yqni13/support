@@ -18,6 +18,7 @@ import { MaintenanceMode } from "../../../../src/utils/enums/maintenance-mode.en
 
 // Ensure correct type by converting secret to number via unary + operator.
 import { secrets } from "../../../../src/utils/secrets.utils"
+import { TicketOption } from "../../../../src/utils/enums/ticket-option.enum";
 
 describe('Middleware tests category <observation|rate_limits>, priority: rules', () => {
 
@@ -38,6 +39,7 @@ describe('Middleware tests category <observation|rate_limits>, priority: rules',
                 client_id: mockValidClientsId,
                 user_id: mockValidUsersId,
                 status: TicketStatus.ISSUED,
+                option: TicketOption.SUPPORT,
                 message: 'test_message_0',
                 flag: null,
                 last_modified: '2025-01-01T14:00:04.000Z',
@@ -48,6 +50,7 @@ describe('Middleware tests category <observation|rate_limits>, priority: rules',
                 client_id: mockValidClientsId,
                 user_id: mockValidUsersId,
                 status: TicketStatus.ISSUED,
+                option: TicketOption.SUPPORT,
                 message: 'test_message_1',
                 flag: null,
                 last_modified: '2025-01-01T14:00:11.000Z',
@@ -82,6 +85,7 @@ describe('Middleware tests category <observation|rate_limits>, priority: rules',
                     client_id: mockValidClientsId,
                     user_id: mockValidUsersId,
                     status: TicketStatus.ISSUED,
+                    option: TicketOption.SUPPORT,
                     message: 'test_message_2',
                     flag: null,
                     last_modified: '2025-01-01T14:00:23.000Z',
@@ -128,6 +132,7 @@ describe('Middleware tests category <observation|rate_limits>, priority: rules',
                     client_id: mockValidClientsId,
                     user_id: mockValidUsersId,
                     status: TicketStatus.ISSUED,
+                    option: TicketOption.SUPPORT,
                     message: 'test_message_2',
                     flag: null,
                     last_modified: '2025-01-01T14:00:23.000Z',

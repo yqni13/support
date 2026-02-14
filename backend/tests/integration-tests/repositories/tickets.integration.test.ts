@@ -6,7 +6,7 @@ import {
     TicketsResponseExtendedDTO,
     TicketsUpdateDTO
 } from "../../../src/dtos/tickets.dto";
-import * as Utils from '../../../src/utils/common.utils';
+import * as CommonUtils from '../../../src/utils/common.utils';
 import * as MockUtils from "../../common.test-utils";
 import request from 'supertest';
 import { DBTestSetup } from "../../db-container.setup";
@@ -51,7 +51,7 @@ import app from '../../../src/app';
 
 jest.setTimeout(60000);
 
-describe('Integration test (repository specific), priority: Tickets', () => {
+describe('Integration-tests (repository), priority: entity Tickets', () => {
 
     let dbTestSetup: DBTestSetup;
     let apiUrl: string;
@@ -77,7 +77,7 @@ describe('Integration test (repository specific), priority: Tickets', () => {
 
     describe('Testing valid fn calls', () => {
 
-        test('Repository process fn findById, result: "SUCCESS"', async () => {
+        test('Repository process fn findById(), result: "SUCCESS"', async () => {
             const testParam_id = mockId.tickets.valid[0];
             const testResult: TicketsResponseExtendedDTO = {
                 ticket_id: testParam_id,
@@ -101,7 +101,7 @@ describe('Integration test (repository specific), priority: Tickets', () => {
             expect(testResponse.body).toMatchObject(testResult);
         })
 
-        test('Repository process fn findAll, result: "SUCCESS"', async () => {
+        test('Repository process fn findAll(), result: "SUCCESS"', async () => {
             const testResult: TicketsResponseDTO[] = [
                 {
                     ticket_id: mockId.tickets.valid[0],
@@ -136,7 +136,7 @@ describe('Integration test (repository specific), priority: Tickets', () => {
             expect(testResponse.body).toMatchObject(testResult);
         })
 
-        test('Repository process fn findByFilter, params: <client_id> result: null', async () => {
+        test('Repository process fn findByFilter(), params: <client_id> result: null', async () => {
             const testParam_dto: TicketsFilterDTO = {
                 client_id: mockId.tickets.invalid[0]
             };
@@ -151,7 +151,7 @@ describe('Integration test (repository specific), priority: Tickets', () => {
             expect(testResponse.body).toBe(testResult);
         })
 
-        test('Repository process fn findByFilter, params: <user_id[], status> result: "SUCCESS"', async () => {
+        test('Repository process fn findByFilter(), params: <user_id[], status> result: "SUCCESS"', async () => {
             const testParam_dto: TicketsFilterDTO = {
                 user_id: [testValidUsersId, mockId.tickets.invalid[0]],
                 status: TicketStatus.ISSUED
@@ -182,7 +182,7 @@ describe('Integration test (repository specific), priority: Tickets', () => {
                 }
             ];
 
-            jest.spyOn(Utils, "getTimestampUTC").mockReturnValue(testTimestamp);
+            jest.spyOn(CommonUtils, "getTimestampUTC").mockReturnValue(testTimestamp);
 
             await dbTestSetup.addTestData();
             const testResponse = await request(app)
@@ -193,7 +193,7 @@ describe('Integration test (repository specific), priority: Tickets', () => {
             expect(testResponse.body).toMatchObject(testResult);
         })
 
-        test('Repository process fn findByFilter, params: <option> result: "SUCCESS"', async () => {
+        test('Repository process fn findByFilter(), params: <option> result: "SUCCESS"', async () => {
             const testParam_dto: TicketsFilterDTO = {
                 option: TicketOption.SUPPORT
             };
@@ -223,7 +223,7 @@ describe('Integration test (repository specific), priority: Tickets', () => {
                 }
             ];
 
-            jest.spyOn(Utils, "getTimestampUTC").mockReturnValue(testTimestamp);
+            jest.spyOn(CommonUtils, "getTimestampUTC").mockReturnValue(testTimestamp);
 
             await dbTestSetup.addTestData();
             const testResponse = await request(app)
@@ -234,7 +234,7 @@ describe('Integration test (repository specific), priority: Tickets', () => {
             expect(testResponse.body).toMatchObject(testResult);
         })
 
-        test('Repository process fn findByFilter, params: <created_on[]> result: "SUCCESS"', async () => {
+        test('Repository process fn findByFilter(), params: <created_on[]> result: "SUCCESS"', async () => {
             const testParam_dto: TicketsFilterDTO = {
                 created_on: ['2024-12-01T00:00:00.000Z', '2025-01-02T14:00:00.000Z']
             };
@@ -264,7 +264,7 @@ describe('Integration test (repository specific), priority: Tickets', () => {
                 }
             ];
 
-            jest.spyOn(Utils, "getTimestampUTC").mockReturnValue(testTimestamp);
+            jest.spyOn(CommonUtils, "getTimestampUTC").mockReturnValue(testTimestamp);
 
             await dbTestSetup.addTestData();
             const testResponse = await request(app)
@@ -275,13 +275,13 @@ describe('Integration test (repository specific), priority: Tickets', () => {
             expect(testResponse.body).toMatchObject(testResult);
         })
 
-        test('Repository process fn findByFilter, params: <flag> result: null', async () => {
+        test('Repository process fn findByFilter(), params: <flag> result: null', async () => {
             const testParam_dto: TicketsFilterDTO = {
                 flag: Flag.ERROR
             };
             const testResult: TicketsResponseDTO[] | null = null;
 
-            jest.spyOn(Utils, "getTimestampUTC").mockReturnValue(testTimestamp);
+            jest.spyOn(CommonUtils, "getTimestampUTC").mockReturnValue(testTimestamp);
 
             await dbTestSetup.addTestData();
             const testResponse = await request(app)
@@ -292,7 +292,7 @@ describe('Integration test (repository specific), priority: Tickets', () => {
             expect(testResponse.body).toBe(testResult);
         })
 
-        test('Repository process fn create, priority: without files, result: "SUCCESS"', async () => {
+        test('Repository process fn create(), priority: without files, result: "SUCCESS"', async () => {
             // TicketsCreateRequestDTO interface necessary to mock auth middleware (data for client_id & user_id).
             const testParam_dto: TicketsRequestCreateDTO = {
                 user_email: 'new-user0@test.com',
@@ -300,8 +300,8 @@ describe('Integration test (repository specific), priority: Tickets', () => {
                 message: 'new-test-message0',
             };
 
-            jest.spyOn(Utils, "generateUUID").mockReturnValue(testNewParam_ticket_id);
-            jest.spyOn(Utils, "getTimestampUTC").mockReturnValue(testTimestamp);
+            jest.spyOn(CommonUtils, "generateUUID").mockReturnValue(testNewParam_ticket_id);
+            jest.spyOn(CommonUtils, "getTimestampUTC").mockReturnValue(testTimestamp);
 
             const testResult: TicketsResponseDTO = {
                 ticket_id: testNewParam_ticket_id,
@@ -324,7 +324,7 @@ describe('Integration test (repository specific), priority: Tickets', () => {
             expect(testResponse.body).toMatchObject(testResult)
         })
 
-        test('Repository process fn create, priority: with single file, result: "SUCCESS"', async () => {
+        test('Repository process fn create(), priority: with single file, result: "SUCCESS"', async () => {
             const testParam_dto: TicketsRequestCreateDTO = {
                 user_email: 'new-user1@test.com',
                 option: TicketOption.SUPPORT,
@@ -336,8 +336,8 @@ describe('Integration test (repository specific), priority: Tickets', () => {
             };
             const mockPaths = [`tickets/${testNewParam_ticket_id}/0_${testNewParam_ticket_id}.webp`];
 
-            jest.spyOn(Utils, "generateUUID").mockReturnValue(testNewParam_ticket_id);
-            jest.spyOn(Utils, "getTimestampUTC").mockReturnValue(testTimestamp);
+            jest.spyOn(CommonUtils, "generateUUID").mockReturnValue(testNewParam_ticket_id);
+            jest.spyOn(CommonUtils, "getTimestampUTC").mockReturnValue(testTimestamp);
             jest.spyOn(FilesService.prototype, 'transformFiles').mockImplementation();
             jest.spyOn(FilesService.prototype, 'uploadFiles').mockImplementation();
             jest.spyOn(FilesService.prototype, 'getResourcePaths').mockReturnValue(mockPaths);
@@ -370,7 +370,7 @@ describe('Integration test (repository specific), priority: Tickets', () => {
             expect(testResponse.body).toMatchObject(testResult)
         })
 
-        test('Repository process fn create, priority: with multiple files, result: "SUCCESS"', async () => {
+        test('Repository process fn create(), priority: with multiple files, result: "SUCCESS"', async () => {
             const testParam_dto: TicketsRequestCreateDTO = {
                 user_email: 'new-user2@test.com',
                 option: TicketOption.SUPPORT,
@@ -391,8 +391,8 @@ describe('Integration test (repository specific), priority: Tickets', () => {
                 `tickets/${testNewParam_ticket_id}/1_${testNewParam_ticket_id}.webp`
             ];
 
-            jest.spyOn(Utils, "generateUUID").mockReturnValue(testNewParam_ticket_id);
-            jest.spyOn(Utils, "getTimestampUTC").mockReturnValue(testTimestamp);
+            jest.spyOn(CommonUtils, "generateUUID").mockReturnValue(testNewParam_ticket_id);
+            jest.spyOn(CommonUtils, "getTimestampUTC").mockReturnValue(testTimestamp);
             jest.spyOn(FilesService.prototype, 'transformFiles').mockImplementation();
             jest.spyOn(FilesService.prototype, 'uploadFiles').mockImplementation();
             jest.spyOn(FilesService.prototype, 'getResourcePaths').mockReturnValue(mockPaths);
@@ -424,7 +424,7 @@ describe('Integration test (repository specific), priority: Tickets', () => {
             expect(testResponse.body).toMatchObject(testResult)
         })
 
-        test('Repository process fn update without resource_paths, result: "SUCCESS"', async () => {
+        test('Repository process fn update() without resource_paths, result: "SUCCESS"', async () => {
             const testParam_id = mockId.tickets.valid[1];
             const testParam_dto: TicketsUpdateDTO = {
                 status: TicketStatus.ACTIVE,
@@ -434,7 +434,7 @@ describe('Integration test (repository specific), priority: Tickets', () => {
             };
 
             const mockTimestampNoPaths = '2025-01-01T14:00:07.000Z';
-            jest.spyOn(Utils, "getTimestampUTC").mockReturnValue(mockTimestampNoPaths);
+            jest.spyOn(CommonUtils, "getTimestampUTC").mockReturnValue(mockTimestampNoPaths);
 
             const testResult: TicketsResponseDTO = {
                 ...structuredClone(testParam_dto),
@@ -454,7 +454,7 @@ describe('Integration test (repository specific), priority: Tickets', () => {
             expect(testResponse.body).toMatchObject(testResult)
         })
 
-        test('Repository process fn update with resource_paths, result: "SUCCESS"', async () => {
+        test('Repository process fn update() with resource_paths, result: "SUCCESS"', async () => {
             const testParam_id = mockId.tickets.valid[0];
             const testParam_dto: TicketsUpdateDTO = {
                 status: TicketStatus.ACTIVE,
@@ -463,7 +463,7 @@ describe('Integration test (repository specific), priority: Tickets', () => {
                 flag: null
             };
 
-            jest.spyOn(Utils, "getTimestampUTC").mockReturnValue(testTimestamp);
+            jest.spyOn(CommonUtils, "getTimestampUTC").mockReturnValue(testTimestamp);
 
             const testResult: TicketsResponseDTO = {
                 ...structuredClone(testParam_dto),
@@ -484,7 +484,7 @@ describe('Integration test (repository specific), priority: Tickets', () => {
             expect(testResponse.body).toMatchObject(testResult)
         })
 
-        test('Repository process fn delete with empty resource_paths, result: "SUCCESS"', async () => {
+        test('Repository process fn delete() with empty resource_paths, result: "SUCCESS"', async () => {
             const testParam_id = mockId.tickets.valid[1];
             const testResult = true;
             jest.spyOn(ticketsModel, 'isPermittedToDelete').mockReturnValue(true);
@@ -497,7 +497,7 @@ describe('Integration test (repository specific), priority: Tickets', () => {
             expect(testResponse.body).toBe(testResult);
         })
 
-        test('Repository process fn delete with existing data for resource_paths, result: "SUCCESS"', async () => {
+        test('Repository process fn delete() with existing data for resource_paths, result: "SUCCESS"', async () => {
             const testParam_id = mockId.tickets.valid[0];
             const testResult = true;
 
@@ -513,7 +513,7 @@ describe('Integration test (repository specific), priority: Tickets', () => {
             expect(testResponse.body).toBe(testResult);
         })
 
-        test('Repository process fn delete, result: "NOT-FOUND-ENTRY"', async () => {
+        test('Repository process fn delete(), result: "NOT-FOUND-ENTRY"', async () => {
             const testParam_id = mockId.tickets.invalid[0];
             const testResult = false;
 
@@ -570,7 +570,7 @@ describe('Integration test (repository specific), priority: Tickets', () => {
                     ];
                     const errorMsg = 'support-invalid-max#files!5';
 
-                    jest.spyOn(Utils, 'logError').mockImplementation();
+                    jest.spyOn(CommonUtils, 'logError').mockImplementation();
 
                     const testResponse = await request(app)
                         .post(`${apiUrl}/create`)
@@ -594,7 +594,7 @@ describe('Integration test (repository specific), priority: Tickets', () => {
                     };
                     const errorMsg = 'support-files-invalid-name';
 
-                    jest.spyOn(Utils, 'logError').mockImplementation();
+                    jest.spyOn(CommonUtils, 'logError').mockImplementation();
 
                     const testResponse = await request(app)
                         .post(`${apiUrl}/create`)
@@ -613,7 +613,7 @@ describe('Integration test (repository specific), priority: Tickets', () => {
                     };
                     const errorMsg = 'support-files-mimetype';
 
-                    jest.spyOn(Utils, 'logError').mockImplementation();
+                    jest.spyOn(CommonUtils, 'logError').mockImplementation();
 
                     const testResponse = await request(app)
                         .post(`${apiUrl}/create`)
@@ -632,7 +632,7 @@ describe('Integration test (repository specific), priority: Tickets', () => {
                     };
                     const errorMsg = 'support-files-size-each';
 
-                    jest.spyOn(Utils, 'logError').mockImplementation();
+                    jest.spyOn(CommonUtils, 'logError').mockImplementation();
 
                     const testResponse = await request(app)
                         .post(`${apiUrl}/create`)
@@ -937,12 +937,14 @@ describe('Integration test (repository specific), priority: Tickets', () => {
                 };
             })
 
+            // Route: POST/search => no requirePayload() test for empty body as controller calls findAll() instead.
+
             describe('Route: POST/create', () => {
 
                 test('Params: <TicketsCreateDTO>, validator: requirePayload by undefined', async () =>{
                     const testParam_dto = undefined;
 
-                    jest.spyOn(Utils, 'logError').mockImplementation();
+                    jest.spyOn(CommonUtils, 'logError').mockImplementation();
 
                     const testResponse = await request(app)
                         .post(`${apiUrl}/create`)
@@ -959,7 +961,7 @@ describe('Integration test (repository specific), priority: Tickets', () => {
                     const testParam_id = mockId.tickets.valid[0];
                     const testParam_dto = undefined;
 
-                    jest.spyOn(Utils, 'logError').mockImplementation();
+                    jest.spyOn(CommonUtils, 'logError').mockImplementation();
 
                     const testResponse = await request(app)
                         .put(`${apiUrl}/update/${testParam_id}`)

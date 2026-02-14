@@ -25,9 +25,9 @@ export function authUser() {
             }
 
             if(user.status === UserStatus.BLACKLISTED.trim()) {
-                throw new InvalidUsersException();
-            } else if(user.flag === Flag.ERROR.trim()) {
                 throw new BlockedUsersException();
+            } else if(user.flag === Flag.ERROR.trim()) {
+                throw new InvalidUsersException();
             }
 
             req.apiUsers = user;
