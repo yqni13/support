@@ -4,9 +4,16 @@
 
 <br>
 
+### $\textsf{\color{skyblue}2026/02/14}$
+
+$\textsf{[v1.2.1\ =>\ {\textbf{\color{brown}v1.2.2}]}}$ app
+- $\textsf{\color{orange}Patch:}$ Refactored test files (describe/test texts, consistent ID-usage, sum single tests in test.each loop).
+
+<br>
+
 ### $\textsf{\color{skyblue}2026/02/12}$
 
-$\textsf{[v1.1.0\ =>\ {\textbf{\color{brown}v1.2.1}]}}$ app<br>
+$\textsf{[v1.1.0\ =>\ v1.2.1]}$ app<br>
 $\textsf{[v1.5.2\ =>\ {\textbf{\color{brown}v1.5.3}]}}$ database
 - $\textsf{\color{teal}Addition:}$ Added options to select category of support ticket regarding user intention.
 - $\textsf{\color{orange}Patch:}$ Updated:

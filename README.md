@@ -1,5 +1,5 @@
 # yqni13 | support
-$\texttt{\color{teal}{v1.2.1}}$
+$\texttt{\color{teal}{v1.2.2}}$
 
 
 <br>
@@ -135,12 +135,8 @@ Preventing an unwanted merge with unfinished/failed test run, the project is set
 
 ### $\textsf{\color{forestgreen}last update:}$
 
-$\textsf{[v1.1.0\ =>\ {\textbf{\color{brown}v1.2.1}]}}$ app<br>
-$\textsf{[v1.5.2\ =>\ {\textbf{\color{brown}v1.5.3}]}}$ database
-- $\textsf{\color{teal}Addition:}$ Added options to select category of support ticket regarding user intention.
-- $\textsf{\color{orange}Patch:}$ Updated:
-  + throw exception when deletion is prohibited instead of returning 'false'
-  + migration to add 'option' to table 'tickets' with default value 'support'
+$\textsf{[v1.2.1\ =>\ {\textbf{\color{brown}v1.2.2}]}}$ app
+- $\textsf{\color{orange}Patch:}$ Refactored test files (describe/test texts, consistent ID-usage, sum single tests in test.each loop).
 
 <br>
 
