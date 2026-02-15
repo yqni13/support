@@ -250,7 +250,7 @@ describe('Unit-tests (repository), priority: entity RateLimits', () => {
         })
     })
 
-    describe('Route: /meta/demo', () => {
+    describe('Route: /test/demo', () => {
 
         describe('Database tests table <demo_limits>, priority: fn count()', () => {
 

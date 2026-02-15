@@ -4,9 +4,17 @@
 
 <br>
 
+### $\textsf{\color{skyblue}2026/02/15}$
+
+$\textsf{[v1.2.2\ =>\ {\textbf{\color{brown}v1.3.1}]}}$ app
+- $\textsf{\color{teal}Addition:}$ Added test route to manually trigger exceptions for testing and UI translation checks.
+- $\textsf{\color{orange}Patch:}$ Moved /demo requests from 'meta' route to new 'test' route.
+
+<br>
+
 ### $\textsf{\color{skyblue}2026/02/14}$
 
-$\textsf{[v1.2.1\ =>\ {\textbf{\color{brown}v1.2.2}]}}$ app
+$\textsf{[v1.2.1\ =>\ v1.2.2]}$ app
 - $\textsf{\color{orange}Patch:}$ Refactored test files (describe/test texts, consistent ID-usage, sum single tests in test.each loop).
 
 <br>

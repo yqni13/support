@@ -132,7 +132,7 @@ describe('Integration-tests (repository), priority: entity RateLimits', () => {
         })
     })
 
-    describe('Testing valid fn calls, route: /meta/demo', () => {
+    describe('Testing valid fn calls, route: /test/demo', () => {
 
         test('Repository process fn getDemoLimitCount(), params: <day>, result: "SUCCESS"', async () => {
             const dto: DemoLimitsCountDTO = {

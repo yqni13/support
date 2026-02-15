@@ -1,5 +1,5 @@
 # yqni13 | support
-$\texttt{\color{teal}{v1.2.2}}$
+$\texttt{\color{teal}{v1.3.1}}$
 
 
 <br>
@@ -42,10 +42,10 @@ The development process is structured by the TDD (test driven development) princ
 ### $\textsf{\color{teal}Features}$
 
 <dl>
-    <dd>🪲 support/bug-ticket handling including client + user data</dd>
+    <dd>🪲 support/bug/feedback-ticket handling including client + user data</dd>
     <dd>📂 file handling (upload/delete) from requests + cloud storage</dd>
     <dd>:mag: filtered search for ticket + user data (properties + timespan)</dd>
-    <dd>:closed_lock_with_key: maintenance mode can en/disable application via single request</dd>
+    <dd>:closed_lock_with_key: en/disable application (maintenance mode) triggered by request/logic</dd>
     <dd>:key: request verification by api-keys</dd>
     <dd>🕵️ request rate limiting + violation handling</dd>
 </dl>
@@ -77,10 +77,10 @@ To monitor errors the logging framework `Winston` is used in combination with Lo
 
 ### $\textsf{\color{teal}Demo}$
 
-Testing of the application server can be done automatically via Jest tests (next chapter) or manually by a separate demonstration route.<br>POST: `/meta/demo`<br>using the body payload to control the response - use the demo route to get exceptions, info message or the current application version number. With the implemented observation middleware, the demo route will be limited to 20 daily requests. As the demo route is not authenticated, you only need the following data:
+Testing of the application server can be done automatically via Jest tests (next chapter) or manually by a separate demonstration route.<br>POST: `/test/demo`<br>using the body payload to control the response - use the demo route to get exceptions, info message or the current application version number. With the implemented observation middleware, the demo route will be limited to 20 daily requests. As the demo route is not authenticated, you only need the following data:
 ```sh
-[ROUTE] {{url}}/api/v1/meta/demo
-[PAYLOAD] { "demo_mode": "success" }
+[ROUTE] {{url}}/api/v1/test/demo
+[PAYLOAD] { "demo_mode": string }
 ```
 Use `https://support-0hsq.onrender.com` for {{url}} to test on live conditions.<br>
 See Figure 3 for the different use cases & responses (Postman, v11.73.5) - from left to right:
@@ -90,8 +90,20 @@ See Figure 3 for the different use cases & responses (Postman, v11.73.5) - from 
 <br>[PAYLOAD]: { "mode_enum": "error" } => retrieve exception for intended failing db query (see data.message: SEL instead of SELECT)
 <div align="center">
     <img src="assets/img/demo_results.png" alt="&nbsp;Betterstack logging dashboard">
-    Figure 3 - /meta/demo responses, v0.9.6
+    Figure 3 - /test/demo responses, v1.3.1
 </div>
+
+<br>
+
+POST: `/test/error`<br>
+Additionally, the /test route includes a request to manually throw existing exceptions selected by the payload.<br>This route is intended for testing purposes only like UI translations. Therefore, `error` property targets the exception and the optional `errorMsg` controls the message output on certain exceptions.
+```sh
+[ROUTE] {{url}}/api/v1/test/error
+[PAYLOAD] { "error": string, "errorMsg"?: string }
+```
+
+
+<br>
 
 ### $\textsf{\color{teal}Jest}$
 
@@ -135,8 +147,9 @@ Preventing an unwanted merge with unfinished/failed test run, the project is set
 
 ### $\textsf{\color{forestgreen}last update:}$
 
-$\textsf{[v1.2.1\ =>\ {\textbf{\color{brown}v1.2.2}]}}$ app
-- $\textsf{\color{orange}Patch:}$ Refactored test files (describe/test texts, consistent ID-usage, sum single tests in test.each loop).
+$\textsf{[v1.2.2\ =>\ {\textbf{\color{brown}v1.3.1}]}}$ app
+- $\textsf{\color{teal}Addition:}$ Added test route to manually trigger exceptions for testing and UI translation checks.
+- $\textsf{\color{orange}Patch:}$ Moved /demo requests from 'meta' route to new 'test' route.
 
 <br>
 

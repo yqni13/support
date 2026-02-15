@@ -57,7 +57,7 @@ describe('Unit-tests (middleware), priority: fn observe()', () => {
             expect(next).toHaveBeenCalledWith();
         })
 
-        test('Validate caller origin, route: /meta/demo, result: "SUCCESS"', async () => {
+        test('Validate caller origin, route: /test/demo, result: "SUCCESS"', async () => {
             const mockRateLimits: RateLimitsResponse | null = null;
 
             jest.spyOn(RateLimitsEngine.prototype, 'process').mockResolvedValue(mockRateLimits);
@@ -90,7 +90,7 @@ describe('Unit-tests (middleware), priority: fn observe()', () => {
             expect(errArg.status).toBe(429);
         })
 
-        test('Validate caller origin, route: /meta/demo, error: ExceedMaxEndpointException', async () => {
+        test('Validate caller origin, route: /test/demo, error: ExceedMaxEndpointException', async () => {
             const mockRateLimits: RateLimitsResponse | null = {
                 msg: 'support-demolimits-total-daily',
                 retryAfter: '2025-01-02T00.00.01.000Z'
