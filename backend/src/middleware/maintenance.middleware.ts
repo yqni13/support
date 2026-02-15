@@ -4,7 +4,7 @@ import metaService from "../services/meta.service";
 import { MaintenanceResponseDTO } from "../dtos/meta.dto";
 import { MaintenanceMode } from "../utils/enums/maintenance-mode.enum";
 import { logError } from "../utils/common.utils";
-import * as Utils from "../utils/common.utils";
+import * as CommonUtils from "../utils/common.utils";
 
 export function maintain() {
     return async function (req: Request, res: Response, next: NextFunction) {
@@ -33,8 +33,8 @@ export function maintain() {
 
 export async function updateTrafficError(maintenanceData: MaintenanceResponseDTO)
 : Promise<MaintenanceResponseDTO | null> {
-    const nextDay = new Date(Utils.getNextDayUTC(new Date(maintenanceData.last_modified)));
-    if(Utils.now() >= nextDay) {
+    const nextDay = new Date(CommonUtils.getNextDayUTC(new Date(maintenanceData.last_modified)));
+    if(CommonUtils.now() >= nextDay) {
         return await metaService.updateMaintenanceMode(maintenanceData.id, {maintenance_mode: MaintenanceMode.A000});
     }
     return maintenanceData;

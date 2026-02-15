@@ -32,11 +32,7 @@ export class FilesService {
     }
 
     getResourcePaths(): string[] {
-        let paths: string[] = [];
-        this._files.forEach((file: Express.Multer.File) => {
-            paths.push(file.path);
-        })
-        return paths;
+        return this._files.map((file: Express.Multer.File) => file.path);
     }
 
     async uploadFiles() {
@@ -53,10 +49,7 @@ export class FilesService {
     }
 
     async deleteFiles(paths: string[]) {
-        const keyArr: Record<'Key', string>[] = [];
-        paths.forEach((path: string) => {
-            keyArr.push({ Key: path });
-        });
+        const keyArr: Record<'Key', string>[] = paths.map((path: string) => ({ Key: path }));
         const params: CloudDeleteContext = {
             bucket: secrets.CLOUD_BUCKET,
             keys: keyArr

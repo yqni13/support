@@ -3,7 +3,7 @@ import { NextFunction, Request, Response } from "express";
 import { DBTestSetup } from "../../db-container.setup";
 import { runMigrations } from '../../db-migrations.setup';
 import request from 'supertest';
-import * as Utils from '../../../src/utils/common.utils';
+import * as CommonUtils from '../../../src/utils/common.utils';
 import * as MockUtils from "../../common.test-utils";
 import { ErrorStatusCodes } from '../../../src/utils/errorStatusCodes.utils';
 import { MaintenanceMode } from '../../../src/utils/enums/maintenance-mode.enum';
@@ -25,7 +25,7 @@ import app from '../../../src/app';
 jest.setTimeout(60000);
 const testTimestamp = '2025-01-01T14:00:01.000Z';
 
-describe('Integration test (repository specific), priority: Meta', () => {
+describe('Integration-tests (repository), priority: entity Meta', () => {
 
     let dbTestSetup: DBTestSetup;
     let apiUrl: string;
@@ -64,7 +64,7 @@ describe('Integration test (repository specific), priority: Meta', () => {
             await dbTestSetup.shutdown();
         });
 
-        test('Repository process fn findById, result: "SUCCESS"', async () => {
+        test('Repository process fn findById(), result: "SUCCESS"', async () => {
             const testParam_id = 1;
             const testResult: Meta = {
                 id: testParam_id,
@@ -90,7 +90,7 @@ describe('Integration test (repository specific), priority: Meta', () => {
             expect(testResponse.body).toMatchObject(testResult)
         })
 
-        test('Repository process fn findByName, result: "SUCCESS"', async () => {
+        test('Repository process fn findByName(), result: "SUCCESS"', async () => {
             const testParam_name = "support";
             const testResult: Meta = {
                 id: 1,
@@ -116,7 +116,7 @@ describe('Integration test (repository specific), priority: Meta', () => {
             expect(testResponse.body).toMatchObject(testResult)
         })
 
-        test('Repository process fn findAll, result: "SUCCESS"', async () => {
+        test('Repository process fn findAll(), result: "SUCCESS"', async () => {
             const testResult: Meta[] = [{
                 id: 1,
                 app: "support",
@@ -141,7 +141,7 @@ describe('Integration test (repository specific), priority: Meta', () => {
             expect(testResponse.body).toMatchObject(testResult);
         })
 
-        test('Repository process fn update, result: "SUCCESS"', async () => {
+        test('Repository process fn update(), result: "SUCCESS"', async () => {
             const testParam_id = 1;
             const testParam_dto: MetaUpdateDTO = {
                 app: 'support',
@@ -156,7 +156,7 @@ describe('Integration test (repository specific), priority: Meta', () => {
             };
 
             // Mock Utils generated timeStamp for easy comparison.
-            jest.spyOn(Utils, "getTimestampUTC").mockReturnValue(testTimestamp);
+            jest.spyOn(CommonUtils, "getTimestampUTC").mockReturnValue(testTimestamp);
 
             const testResult = structuredClone(mockResult);
             testResult['id'] = testParam_id;
@@ -173,7 +173,7 @@ describe('Integration test (repository specific), priority: Meta', () => {
             expect(testResponse.body).toMatchObject(testResult)
         })
 
-        test('Repository process fn findMaintenance, result: "Success"', async () => {
+        test('Repository process fn findMaintenance(), result: "SUCCESS"', async () => {
             const testParam_name = 'support';
             const testResult: Maintenance = {
                 id: mockResult.id,
@@ -192,12 +192,12 @@ describe('Integration test (repository specific), priority: Meta', () => {
             expect(testResponse.body).toMatchObject(testResult)
         })
 
-        test('Repository process fn updateMaintenance, result: "Success"', async () => {
+        test('Repository process fn updateMaintenance(), result: "SUCCESS"', async () => {
             const testParam_id = mockId.meta.valid[0];
             const testParam_data = { maintenance_mode: MaintenanceMode.E013 };
 
             // Mock Utils generated timeStamp for easy comparison.
-            jest.spyOn(Utils, "getTimestampUTC").mockReturnValue(testTimestamp);
+            jest.spyOn(CommonUtils, "getTimestampUTC").mockReturnValue(testTimestamp);
 
             const testResult: Maintenance = {
                 id: mockResult.id,
@@ -219,7 +219,7 @@ describe('Integration test (repository specific), priority: Meta', () => {
 
         describe('Testing results from demo route', () => {
 
-            test('Service process fn searchDemoByPayload, result: "Success"', async () =>{
+            test('Service process fn searchDemoByPayload(), result: "SUCCESS"', async () =>{
                 const testParam_dto = { demo_mode: DemoMode.SUCCESS };
 
                 const testResult = { app_version: '0.0.1' };
@@ -233,11 +233,11 @@ describe('Integration test (repository specific), priority: Meta', () => {
                 expect(testResponse.body).toMatchObject(testResult);
             })
 
-            test('Service process fn searchDemoByPayload, result: "DBQueryErrorException"', async () =>{
+            test('Service process fn searchDemoByPayload(), result: "DBQueryErrorException"', async () =>{
                 const testParam_dto = { demo_mode: DemoMode.ERROR };
                 const testResultExceptionMessage = 'support-dbquery-error';
 
-                jest.spyOn(Utils, 'logError').mockImplementation();
+                jest.spyOn(CommonUtils, 'logError').mockImplementation();
 
                 await dbTestSetup.addTestData();
                 const testResponse = await request(app)
@@ -256,7 +256,7 @@ describe('Integration test (repository specific), priority: Meta', () => {
 
             describe('Route: GET/by-id:id', () => {
 
-                test('Params: <id>, validator: isInt by string', async () => {
+                test('Params: <id>, validator: fn isInt() by string', async () => {
                     const testParam_id = 'invalid_test_id';
                     const testError = {
                         type: 'field',
@@ -276,7 +276,7 @@ describe('Integration test (repository specific), priority: Meta', () => {
 
             describe('Route: PUT/info/:id', () => {
 
-                test('Params: <id>, validator: isInt by string', async () => {
+                test('Params: <id>, validator: fn isInt() by string', async () => {
                     const testParam_id = 'invalid_test_id';
                     const testVersion = '0.0.0';
                     const testParam_dto: MetaUpdateDTO = {
@@ -310,7 +310,7 @@ describe('Integration test (repository specific), priority: Meta', () => {
 
             describe('Route: PUT/maintenance/:id', () => {
 
-                test('Params: <id>, validator: isInt by string', async () => {
+                test('Params: <id>, validator: fn isInt() by string', async () => {
                     const testParam_id = 'invalid_test_id';
                     const testParam_dto: MaintenanceUpdateDTO = {
                         maintenance_mode: MaintenanceMode.M008
@@ -364,7 +364,7 @@ describe('Integration test (repository specific), priority: Meta', () => {
                 // "keyof typeof mockData" creates Union-Types of keys to ensure all properties are valid.
                 const testedParams = Object.keys(testData) as (keyof typeof testData)[];
 
-                test.each(testedParams)('Params: <%s>, validator: notEmpty() by undefined', async (invalidParam) => {
+                test.each(testedParams)('Params: <%s>, validator: fn notEmpty() by undefined', async (invalidParam) => {
                     const testParam_id = 1;
                     let mockParam_dto = structuredClone(testData);
                     delete mockParam_dto[invalidParam];
@@ -396,12 +396,12 @@ describe('Integration test (repository specific), priority: Meta', () => {
 
             describe('Route: PUT/info/:id', () => {
 
-                test('Params: <MetaUpdateDTO>, validator: requirePayload by undefined', async () =>{
+                test('Params: <MetaUpdateDTO>, validator: fn requirePayload() by undefined', async () =>{
                     const testParam_id = 1;
                     const testParam_dto = undefined;
                     const testError = structuredClone(mockError);
 
-                    jest.spyOn(Utils, 'logError').mockImplementation();
+                    jest.spyOn(CommonUtils, 'logError').mockImplementation();
 
                     const testResponse = await request(app)
                         .put(`${apiUrl}/info/${testParam_id}`)
@@ -412,14 +412,14 @@ describe('Integration test (repository specific), priority: Meta', () => {
                 })
             })
 
-            describe('Route: PUT/maintenance/:name', () => {
+            describe('Route: PUT/maintenance/:id', () => {
 
-                test('Params: <MaintenanceUpdateDTO>, validator: requirePayload by undefined', async () =>{
+                test('Params: <MaintenanceUpdateDTO>, validator: fn requirePayload() by undefined', async () =>{
                     const testParam_id = mockId.meta.valid[0];
                     const testParam_dto = undefined;
                     const testError = structuredClone(mockError);
 
-                    jest.spyOn(Utils, 'logError').mockImplementation();
+                    jest.spyOn(CommonUtils, 'logError').mockImplementation();
 
                     const testResponse = await request(app)
                         .put(`${apiUrl}/maintenance/${testParam_id}`)
@@ -432,11 +432,11 @@ describe('Integration test (repository specific), priority: Meta', () => {
 
             describe('Route: POST/demo', () => {
 
-                test('Params: <MetaDemoDTO>, validator: requirePayload by undefined', async () =>{
+                test('Params: <MetaDemoDTO>, validator: fn requirePayload() by undefined', async () =>{
                     const testParam_dto = undefined;
                     const testError = structuredClone(mockError);
 
-                    jest.spyOn(Utils, 'logError').mockImplementation();
+                    jest.spyOn(CommonUtils, 'logError').mockImplementation();
 
                     const testResponse = await request(app)
                         .post(`${apiUrl}/demo`)

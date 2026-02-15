@@ -17,7 +17,7 @@ const testValidMetaId = mockId.meta.valid[0];
 const testValidClientsId = mockId.clients.valid[0];
 const testValidUsersId = mockId.users.valid[0];
 
-describe('Middleware tests category <handlers>, priority: PenaltyHandler', () => {
+describe('Integration-tests (middleware), priority: class PenaltyHandler', () => {
 
     let dbTestSetup: DBTestSetup;
     beforeAll(async () => {
@@ -37,7 +37,7 @@ describe('Middleware tests category <handlers>, priority: PenaltyHandler', () =>
 
     describe('Testing valid fn calls', () => {
 
-        test('Params: <PenaltyContext>, type: <Violation.CLIENTSFLAG>, result: "PENALTY"', async () => {
+        test('Params: <PenaltyContext> has Violation.CLIENTSFLAG, result: "PENALTY"', async () => {
             const testParam_context: PenaltyContext = {
                 type: Violation.CLIENTSFLAG,
                 id: testValidClientsId,
@@ -52,7 +52,7 @@ describe('Middleware tests category <handlers>, priority: PenaltyHandler', () =>
             expect(testFn?.flag).toBe(testClientsFlagResult);
         })
 
-        test('Params: <PenaltyContext>, type: <Violation.USERSFLAG>, result: "PENALTY"', async () => {
+        test('Params: <PenaltyContext> has Violation.USERSFLAG, result: "PENALTY"', async () => {
             const testParam_context: PenaltyContext = {
                 type: Violation.USERSFLAG,
                 id: testValidUsersId,
@@ -67,7 +67,7 @@ describe('Middleware tests category <handlers>, priority: PenaltyHandler', () =>
             expect(testFn?.flag).toBe(testUsersFlagResult);
         })
 
-        test('Params: <PenaltyContext>, type: <Violation.MAINTENANCE_TRAFFIC>, result: "PENALTY"', async () => {
+        test('Params: <PenaltyContext> has Violation.MAINTENANCE_TRAFFIC, result: "PENALTY"', async () => {
             const testParam_context: PenaltyContext = {
                 type: Violation.MAINTENANCE_TRAFFIC,
                 id: testValidMetaId,

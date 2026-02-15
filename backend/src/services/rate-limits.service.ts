@@ -7,7 +7,7 @@ import {
 import rateLimitsModel from "../models/rate-limits.model";
 import { RateLimits } from "../repositories/interfaces/rate-limits.entity.interface";
 import rateLimitsRepository from "../repositories/rate-limits.repository";
-import * as Utils from "../utils/common.utils";
+import * as CommonUtils from "../utils/common.utils";
 
 class RateLimitsService {
     private timeMapTargets: string[];
@@ -24,15 +24,15 @@ class RateLimitsService {
     async createRateLimit(dto: RateLimitsCreateDTO): Promise<RateLimitsResponseDTO> {
         const entity: Partial<RateLimits> = rateLimitsModel.mapNewEntity(dto);
         const result = await rateLimitsRepository.create(entity);
-        return Utils.mapObjTimestamps<RateLimitsResponseDTO>(result, this.timeMapTargets);
+        return CommonUtils.mapObjTimestamps<RateLimitsResponseDTO>(result, this.timeMapTargets);
     }
 
     async updateRateLimit(dto: RateLimitsUpdateDTO): Promise<RateLimitsResponseDTO | null> {
         const timestamp = new Date();
-        dto['day'] = Utils.getDateUTC(timestamp);
-        dto['last_modified'] = Utils.getTimestampUTC(timestamp);
+        dto['day'] = CommonUtils.getDateUTC(timestamp);
+        dto['last_modified'] = CommonUtils.getTimestampUTC(timestamp);
         const result = await rateLimitsRepository.update(dto);
-        return !result ? null : Utils.mapObjTimestamps<RateLimitsResponseDTO>(result, this.timeMapTargets);
+        return !result ? null : CommonUtils.mapObjTimestamps<RateLimitsResponseDTO>(result, this.timeMapTargets);
     }
 }
 

@@ -8,7 +8,7 @@ import {
     ClientsFlagUpdateDTO,
     ClientsExistResponseDTO
 } from "../../../src/dtos/clients.dto";
-import * as Utils from '../../../src/utils/common.utils';
+import * as CommonUtils from '../../../src/utils/common.utils';
 import * as MockUtils from "../../common.test-utils";
 import request from 'supertest';
 import { ErrorStatusCodes } from '../../../src/utils/errorStatusCodes.utils';
@@ -35,7 +35,7 @@ import app from '../../../src/app';
 jest.setTimeout(60000);
 const testTimestamp = '2025-01-01T14:00:02.000Z';
 
-describe('Integration test (repository specific), priority: Clients', () => {
+describe('Integration-tests (repository), priority: entity Clients', () => {
 
     let dbTestSetup: DBTestSetup;
     let apiUrl: string;
@@ -58,7 +58,7 @@ describe('Integration test (repository specific), priority: Clients', () => {
 
     describe('Testing valid fn calls', () => {
 
-        test('Repository process fn findById, result: "SUCCESS"', async () => {
+        test('Repository process fn findById(), result: "SUCCESS"', async () => {
             const testParam_id = mockId.clients.valid[0];
             const testResult: ClientsExistResponseDTO | null = {
                 client_id: mockId.clients.valid[0],
@@ -77,7 +77,7 @@ describe('Integration test (repository specific), priority: Clients', () => {
             expect(testResponse).toMatchObject(testResult);
         })
 
-        test('Repository process fn findStatusByName, result: "SUCCESS"', async () => {
+        test('Repository process fn findStatusByName(), result: "SUCCESS"', async () => {
             const testParam_name = 'TESTCLIENT';
             const testResult: ClientsStatusResponseDTO = {
                 client_id: mockId.clients.valid[0],
@@ -96,7 +96,7 @@ describe('Integration test (repository specific), priority: Clients', () => {
             expect(testResponse.body).toMatchObject(testResult);
         })
 
-        test('Repository process fn findStatusByName, result: "NO-ENTRY-FOUND"', async () => {
+        test('Repository process fn findStatusByName(), result: "NO-ENTRY-FOUND"', async () => {
             const testParam_name = 'non-existing-client';
             const testResult = null;
 
@@ -108,13 +108,13 @@ describe('Integration test (repository specific), priority: Clients', () => {
             expect(testResponse.body).toBe(testResult);
         })
 
-        test('Repository process fn create, result: "SUCCESS"', async () => {
+        test('Repository process fn create(), result: "SUCCESS"', async () => {
             const testParam_client_id = mockId.clients.new[0];
             const testParam_dto = { name: 'testclient_test_create' };
 
-            jest.spyOn(Utils, 'generateUUID').mockReturnValue(testParam_client_id);
+            jest.spyOn(CommonUtils, 'generateUUID').mockReturnValue(testParam_client_id);
             jest.spyOn(clientsModel, '_generateApiKeyObj').mockReturnValue(testVar_apiKey);
-            jest.spyOn(Utils, "getTimestampUTC").mockReturnValue(testTimestamp);
+            jest.spyOn(CommonUtils, "getTimestampUTC").mockReturnValue(testTimestamp);
 
             const testResult: ClientsCreateResponseDTO = {
                 client_id: testParam_client_id,
@@ -136,13 +136,13 @@ describe('Integration test (repository specific), priority: Clients', () => {
             expect(testResponse.body).toMatchObject(testResult);
         })
 
-        test('Repository process fn updateFlag, result: "SUCCESS"', async () => {
+        test('Repository process fn updateFlag(), result: "SUCCESS"', async () => {
             const testParam_id = mockId.clients.valid[0];
             const testParam_dto: ClientsFlagUpdateDTO = {
                 flag: Flag.WARNING
             };
 
-            jest.spyOn(Utils, "getTimestampUTC").mockReturnValue(testTimestamp);
+            jest.spyOn(CommonUtils, "getTimestampUTC").mockReturnValue(testTimestamp);
 
             const testResult: ClientsFlagResponseDTO | null = {
                 client_id: testParam_id,
@@ -158,13 +158,13 @@ describe('Integration test (repository specific), priority: Clients', () => {
             expect(testResponse).toMatchObject(testResult);
         })
 
-        test('Repository process fn updateFlag, result: null', async () => {
+        test('Repository process fn updateFlag(), result: null', async () => {
             const testParam_id = mockId.clients.invalid[0];
             const testParam_dto: ClientsFlagUpdateDTO = {
                 flag: Flag.WARNING
             };
 
-            jest.spyOn(Utils, "getTimestampUTC").mockReturnValue(testTimestamp);
+            jest.spyOn(CommonUtils, "getTimestampUTC").mockReturnValue(testTimestamp);
 
             const testResult: ClientsFlagResponseDTO | null = null;
 
@@ -174,13 +174,13 @@ describe('Integration test (repository specific), priority: Clients', () => {
             expect(testResponse).toBe(testResult);
         })
 
-        test('Repository process fn updateStatus, result: "SUCCESS"', async () => {
+        test('Repository process fn updateStatus(), result: "SUCCESS"', async () => {
             const testParam_id = mockId.clients.valid[0];
             const testParam_data: Partial<Clients> = {
                 status: ApiKeyStatus.DISABLED
             };
 
-            jest.spyOn(Utils, "getTimestampUTC").mockReturnValue(testTimestamp);
+            jest.spyOn(CommonUtils, "getTimestampUTC").mockReturnValue(testTimestamp);
 
             const testResult: ClientsStatusResponseDTO = {
                 client_id: testParam_id,
@@ -207,7 +207,7 @@ describe('Integration test (repository specific), priority: Clients', () => {
 
             describe('Route: PUT/status/:id', () => {
 
-                test('Params: <id>, validator: isUUID() by invalid id', async () => {
+                test('Params: <id>, validator: fn isUUID() by invalid id', async () => {
                     const testParam_id = 'invalid-id';
                     const testParam_dto: ClientsStatusUpdateDTO = {
                         status: ApiKeyStatus.EXPIRED
@@ -243,9 +243,9 @@ describe('Integration test (repository specific), priority: Clients', () => {
                 };
             });
 
-            describe('Route: POST/create, priority: validateClientUniqueness', () => {
+            describe('Route: POST/create', () => {
 
-                test('Params: <name> by existing "TESTCLIENT" in db', async () => {
+                test('Params: <name>, validator: fn validateClientUniqueness() by existing client in db', async () => {
                     const testParam_dto: ClientsCreateDTO = {
                         name: 'TESTCLIENT'
                     };
@@ -267,6 +267,8 @@ describe('Integration test (repository specific), priority: Clients', () => {
                     expect(testResponse.body.headers.data).toStrictEqual(testError);
                 })
             })
+
+            // Route: PUT/status/:id no test for notEmpty() => single property in dto => requirePayload() catches {}
         })
 
         describe('All routes, priority: require middleware, location: <body>', () => {
@@ -284,11 +286,11 @@ describe('Integration test (repository specific), priority: Clients', () => {
 
             describe('Route: POST/create/:id', () => {
 
-                test('Params: <ClientsCreateDTO>, validator: requirePayload by undefined', async () =>{
+                test('Params: <ClientsCreateDTO>, validator: fn requirePayload() by undefined', async () =>{
                     const testParam_dto = undefined;
                     const testError = structuredClone(mockError);
 
-                    jest.spyOn(Utils, 'logError').mockImplementation();
+                    jest.spyOn(CommonUtils, 'logError').mockImplementation();
 
                     const testResponse = await request(app)
                         .post(`${apiUrl}/create`)
@@ -301,12 +303,12 @@ describe('Integration test (repository specific), priority: Clients', () => {
 
             describe('Route: PUT/status/:id', () => {
 
-                test('Params: <ClientsStatusUpdateDTO>, validator: requirePayload by undefined', async () =>{
+                test('Params: <ClientsStatusUpdateDTO>, validator: fn requirePayload() by undefined', async () =>{
                     const testParam_id = mockId.clients.valid[0];
                     const testParam_dto = undefined;
                     const testError = structuredClone(mockError);
 
-                    jest.spyOn(Utils, 'logError').mockImplementation();
+                    jest.spyOn(CommonUtils, 'logError').mockImplementation();
 
                     const testResponse = await request(app)
                         .put(`${apiUrl}/status/${testParam_id}`)

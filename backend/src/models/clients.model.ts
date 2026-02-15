@@ -4,7 +4,7 @@ import {
 } from "../dtos/clients.dto";
 import { Clients } from "../repositories/interfaces/clients.entity.interface";
 import crypto from 'crypto';
-import * as Utils from "../utils/common.utils";
+import * as CommonUtils from "../utils/common.utils";
 import { ApiKeyStatus } from "../utils/enums/api-key-status.enum";
 
 class ClientsModel {
@@ -15,7 +15,7 @@ class ClientsModel {
     }
 
     mapToCreateResponseDTO(data: Clients, apiKey: string): ClientsCreateResponseDTO {
-        data = Utils.mapObjTimestamps(data, this.timeMapTargets);
+        data = CommonUtils.mapObjTimestamps(data, this.timeMapTargets);
         return {
             client_id: data.client_id,
             name: data.name,
@@ -43,9 +43,9 @@ class ClientsModel {
     }
 
     generateClientsCreateObj(dto: ClientsCreateDTO): { client: Clients, keyRaw: string } {
-        const id = Utils.generateUUID();
+        const id = CommonUtils.generateUUID();
         const keyObj = this._generateApiKeyObj();
-        const timestamp = Utils.getTimestampUTC();
+        const timestamp = CommonUtils.getTimestampUTC();
         const client: Clients = {
             client_id: id,
             name: dto.name,

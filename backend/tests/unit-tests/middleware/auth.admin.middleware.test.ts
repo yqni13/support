@@ -1,9 +1,9 @@
 import { InvalidCredentialsException, MissingApiKeyException } from './../../../src/utils/exceptions/auth.exception';
 import { authAdmin } from '../../../src/middleware/auth.admin.middleware';
-import * as Utils from "../../../src/utils/common.utils";
+import * as CommonUtils from "../../../src/utils/common.utils";
 import { secrets } from "../../../src/utils/secrets.utils";
 
-describe('Middleware tests category <auth>, priority: authAdmin', () => {
+describe('Unit-tests (middleware), priority: fn authAdmin()', () => {
 
     const req: any = { header: jest.fn() };
     const res: any = {};
@@ -31,7 +31,7 @@ describe('Middleware tests category <auth>, priority: authAdmin', () => {
         test('Verify admin, error: MissingApiKeyException', async () => {
             req.header.mockReturnValue(undefined);
 
-            jest.spyOn(Utils, 'logError').mockImplementation();
+            jest.spyOn(CommonUtils, 'logError').mockImplementation();
 
             const middleware = authAdmin();
             await middleware(req, res, next);
@@ -45,7 +45,7 @@ describe('Middleware tests category <auth>, priority: authAdmin', () => {
             const mockApiKey = 'invalid_api_key';
             req.header.mockReturnValue(mockApiKey);
 
-            jest.spyOn(Utils, 'logError').mockImplementation();
+            jest.spyOn(CommonUtils, 'logError').mockImplementation();
 
             const middleware = authAdmin();
             await middleware(req, res, next);

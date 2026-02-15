@@ -5,11 +5,11 @@ import { default as mockId } from "../../mock-data/id.mock-data.json";
 import { secrets } from "../../../src/utils/secrets.utils";
 import { ApiKeyStatus } from "../../../src/utils/enums/api-key-status.enum";
 import * as CommonValidators from "../../../src/validation/common.validation";
-import * as Utils from "../../../src/utils/common.utils";
+import * as CommonUtils from "../../../src/utils/common.utils";
 import { authClient } from "../../../src/middleware/auth.client.middleware";
 import { ErrorStatusCodes } from "../../../src/utils/errorStatusCodes.utils";
 
-describe('Middleware tests category <auth>, priority: authClient', () => {
+describe('Unit-tests (middleware), priority: fn authClient()', () => {
 
     const mockTimestamp = '2025-01-01T14:00:00.000Z';
     const req: any = { header: jest.fn() };
@@ -57,7 +57,7 @@ describe('Middleware tests category <auth>, priority: authClient', () => {
         test('Verify client, error: MissingApiKeyException', async () => {
             req.header.mockReturnValue(undefined);
 
-            jest.spyOn(Utils, 'logError').mockImplementation();
+            jest.spyOn(CommonUtils, 'logError').mockImplementation();
 
             const middleware = authClient();
             await middleware(req, res, next);

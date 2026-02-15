@@ -8,18 +8,19 @@ import {
 } from "../../../../src/middleware/rules/rate-limits.rule.middleware";
 import { TicketsResponseDTO } from "../../../../src/dtos/tickets.dto";
 import { RateLimitsData, RateLimitsResponse } from "../../../../src/middleware/interfaces/rate-limits.interface.middleware";
-import * as Utils from "../../../../src/utils/common.utils";
+import * as CommonUtils from "../../../../src/utils/common.utils";
 import ticketsService from "../../../../src/services/tickets.service";
 import { TicketStatus } from "../../../../src/utils/enums/ticket-status.enum";
 import rateLimitsService from "../../../../src/services/rate-limits.service";
 import demoLimitsService from "../../../../src/services/demo-limits.service";
 import { Violation } from "../../../../src/utils/enums/violations.enum";
 import { MaintenanceMode } from "../../../../src/utils/enums/maintenance-mode.enum";
+import { TicketOption } from "../../../../src/utils/enums/ticket-option.enum";
 
 // Ensure correct type by converting secret to number via unary + operator.
 import { secrets } from "../../../../src/utils/secrets.utils"
 
-describe('Middleware tests category <observation|rate_limits>, priority: rules', () => {
+describe('Unit-tests (middleware), priority: implementation RateLimitsRule', () => {
 
     const mockValidClientsId = 'valid_clients_test_id';
     const mockValidUsersId = 'valid_users_test_id';
@@ -38,6 +39,7 @@ describe('Middleware tests category <observation|rate_limits>, priority: rules',
                 client_id: mockValidClientsId,
                 user_id: mockValidUsersId,
                 status: TicketStatus.ISSUED,
+                option: TicketOption.SUPPORT,
                 message: 'test_message_0',
                 flag: null,
                 last_modified: '2025-01-01T14:00:04.000Z',
@@ -48,6 +50,7 @@ describe('Middleware tests category <observation|rate_limits>, priority: rules',
                 client_id: mockValidClientsId,
                 user_id: mockValidUsersId,
                 status: TicketStatus.ISSUED,
+                option: TicketOption.SUPPORT,
                 message: 'test_message_1',
                 flag: null,
                 last_modified: '2025-01-01T14:00:11.000Z',
@@ -60,7 +63,7 @@ describe('Middleware tests category <observation|rate_limits>, priority: rules',
 
         describe('Testing valid context calls', () => {
 
-            test('Param: <RateLimitContext> with valid number of client calls', async () => {
+            test('Params: <RateLimitContext> with valid number of client calls', async () => {
                 const ruleCBL = new ClientsBurstLimitRule(3);
                 const mockContext = structuredClone(mockBurstContext);
 
@@ -74,7 +77,7 @@ describe('Middleware tests category <observation|rate_limits>, priority: rules',
 
         describe('Testing invalid context calls', () => {
 
-            test('Param: <RateLimitContext> with max client calls', async () => {
+            test('Params: <RateLimitContext> with max client calls', async () => {
                 const ruleCBL = new ClientsBurstLimitRule(3);
                 const mockContext = structuredClone(mockBurstContext);
                 mockContext.push({
@@ -82,6 +85,7 @@ describe('Middleware tests category <observation|rate_limits>, priority: rules',
                     client_id: mockValidClientsId,
                     user_id: mockValidUsersId,
                     status: TicketStatus.ISSUED,
+                    option: TicketOption.SUPPORT,
                     message: 'test_message_2',
                     flag: null,
                     last_modified: '2025-01-01T14:00:23.000Z',
@@ -89,7 +93,7 @@ describe('Middleware tests category <observation|rate_limits>, priority: rules',
                 });
 
                 jest.spyOn(ticketsService, 'getTicketsByTimeInterval').mockResolvedValue(mockContext);
-                jest.spyOn(Utils, 'getNextDayUTC').mockReturnValue(mockRetryAfter);
+                jest.spyOn(CommonUtils, 'getNextDayUTC').mockReturnValue(mockRetryAfter);
 
                 const expectResult: RateLimitsResponse = {
                     msg: 'support-ratelimits-clients-burst',
@@ -106,7 +110,7 @@ describe('Middleware tests category <observation|rate_limits>, priority: rules',
 
         describe('Testing valid context calls', () => {
 
-            test('Param: <RateLimitContext> with valid number of user calls', async () => {
+            test('Params: <RateLimitContext> with valid number of user calls', async () => {
                 const ruleUBL = new UsersBurstLimitRule(3);
                 const mockContext = structuredClone(mockBurstContext);
 
@@ -120,7 +124,7 @@ describe('Middleware tests category <observation|rate_limits>, priority: rules',
 
         describe('Testing invalid context calls', () => {
 
-            test('Param: <RateLimitContext> with max user calls', async () => {
+            test('Params: <RateLimitContext> with max user calls', async () => {
                 const ruleUBL = new UsersBurstLimitRule(3);
                 const mockContext = structuredClone(mockBurstContext);
                 mockContext.push({
@@ -128,6 +132,7 @@ describe('Middleware tests category <observation|rate_limits>, priority: rules',
                     client_id: mockValidClientsId,
                     user_id: mockValidUsersId,
                     status: TicketStatus.ISSUED,
+                    option: TicketOption.SUPPORT,
                     message: 'test_message_2',
                     flag: null,
                     last_modified: '2025-01-01T14:00:23.000Z',
@@ -135,7 +140,7 @@ describe('Middleware tests category <observation|rate_limits>, priority: rules',
                 });
 
                 jest.spyOn(ticketsService, 'getTicketsByTimeInterval').mockResolvedValue(mockContext);
-                jest.spyOn(Utils, 'getNextDayUTC').mockReturnValue(mockRetryAfter);
+                jest.spyOn(CommonUtils, 'getNextDayUTC').mockReturnValue(mockRetryAfter);
 
                 const expectResult: RateLimitsResponse = {
                     msg: 'support-ratelimits-users-burst',
@@ -152,7 +157,7 @@ describe('Middleware tests category <observation|rate_limits>, priority: rules',
 
         describe('Testing valid context calls', () => {
 
-            test('Param: <RateLimitContext> number of calls within daily limit', async () => {
+            test('Params: <RateLimitContext> number of calls within daily limit', async () => {
                 const ruleCDL = new ClientsDailyLimitRule(+secrets.RATELIMITS_CLIENTSDAILYLIMIT);
                 const mockCount = +(secrets.RATELIMITS_CLIENTSDAILYLIMIT) - 1;
 
@@ -163,7 +168,7 @@ describe('Middleware tests category <observation|rate_limits>, priority: rules',
                 expect(testFn).toBe(expectResult);
             })
 
-            test('Param: <RateLimitContext> no existing entry', async () => {
+            test('Params: <RateLimitContext> no existing entry', async () => {
                 const ruleCDL = new ClientsDailyLimitRule(+secrets.RATELIMITS_CLIENTSDAILYLIMIT);
                 const mockCount = 0;
 
@@ -177,14 +182,14 @@ describe('Middleware tests category <observation|rate_limits>, priority: rules',
 
         describe('Testing invalid context calls', () => {
 
-            test('Param: <RateLimitContext> number of calls beyond daily limit', async () => {
+            test('Params: <RateLimitContext> number of calls beyond daily limit', async () => {
                 const ruleCDL = new ClientsDailyLimitRule(+secrets.RATELIMITS_CLIENTSDAILYLIMIT);
                 const mockCount = +secrets.RATELIMITS_CLIENTSDAILYLIMIT;
                 const testParam_data = structuredClone(mockParam_data);
                 Object.assign(testParam_data, { clients: { flag: null }});
 
                 jest.spyOn(rateLimitsService, 'getRateLimitCount').mockResolvedValue(mockCount);
-                jest.spyOn(Utils, 'getNextDayUTC').mockReturnValue(mockRetryAfter);
+                jest.spyOn(CommonUtils, 'getNextDayUTC').mockReturnValue(mockRetryAfter);
 
                 const expectResult: RateLimitsResponse = {
                     msg: 'support-ratelimits-clients-daily',
@@ -206,7 +211,7 @@ describe('Middleware tests category <observation|rate_limits>, priority: rules',
 
         describe('Testing valid context calls', () => {
 
-            test('Param: <RateLimitContext> number of calls within daily limit', async () => {
+            test('Params: <RateLimitContext> number of calls within daily limit', async () => {
                 const ruleUDL = new UsersDailyLimitRule(+secrets.RATELIMITS_USERSDAILYLIMIT);
                 const mockCount = +(secrets.RATELIMITS_USERSDAILYLIMIT) - 1;
 
@@ -217,7 +222,7 @@ describe('Middleware tests category <observation|rate_limits>, priority: rules',
                 expect(testFn).toBe(expectResult);
             })
 
-            test('Param: <RateLimitContext> no existing entry', async () => {
+            test('Params: <RateLimitContext> no existing entry', async () => {
                 const ruleUDL = new UsersDailyLimitRule(+secrets.RATELIMITS_USERSDAILYLIMIT);
                 const mockCount = 0;
 
@@ -231,14 +236,14 @@ describe('Middleware tests category <observation|rate_limits>, priority: rules',
 
         describe('Testing invalid context calls', () => {
 
-            test('Param: <RateLimitContext> number of calls beyond daily limit', async () => {
+            test('Params: <RateLimitContext> number of calls beyond daily limit', async () => {
                 const ruleUDL = new UsersDailyLimitRule(+secrets.RATELIMITS_USERSDAILYLIMIT);
                 const mockCount = +secrets.RATELIMITS_USERSDAILYLIMIT;
                 const testParam_data = structuredClone(mockParam_data);
                 Object.assign(testParam_data, { users: { flag: null }});
 
                 jest.spyOn(rateLimitsService, 'getRateLimitCount').mockResolvedValue(mockCount);
-                jest.spyOn(Utils, 'getNextDayUTC').mockReturnValue(mockRetryAfter);
+                jest.spyOn(CommonUtils, 'getNextDayUTC').mockReturnValue(mockRetryAfter);
 
                 const expectResult: RateLimitsResponse = {
                     msg: 'support-ratelimits-users-daily',
@@ -260,7 +265,7 @@ describe('Middleware tests category <observation|rate_limits>, priority: rules',
 
         describe('Testing valid context calls', () => {
 
-            test('Param: <RateLimitContext> number of calls within daily limit', async () => {
+            test('Params: <RateLimitContext> number of calls within daily limit', async () => {
                 const ruleTDL = new TotalDailyLimitRule(+secrets.RATELIMITS_TOTALDAILYLIMIT);
                 const mockCount = +(secrets.RATELIMITS_TOTALDAILYLIMIT) - 1;
 
@@ -271,7 +276,7 @@ describe('Middleware tests category <observation|rate_limits>, priority: rules',
                 expect(testFn).toBe(expectResult);
             })
 
-            test('Param: <RateLimitContext> no existing entry', async () => {
+            test('Params: <RateLimitContext> no existing entry', async () => {
                 const ruleTDL = new TotalDailyLimitRule(+secrets.RATELIMITS_TOTALDAILYLIMIT);
                 const mockCount = 0;
 
@@ -285,12 +290,12 @@ describe('Middleware tests category <observation|rate_limits>, priority: rules',
 
         describe('Testing invalid context calls', () => {
 
-            test('Param: <RateLimitContext> number of calls beyond daily limit', async () => {
+            test('Params: <RateLimitContext> number of calls beyond daily limit', async () => {
                 const ruleTDL = new TotalDailyLimitRule(+secrets.RATELIMITS_TOTALDAILYLIMIT);
                 const mockCount = +secrets.RATELIMITS_TOTALDAILYLIMIT;
 
                 jest.spyOn(rateLimitsService, 'getRateLimitCount').mockResolvedValue(mockCount);
-                jest.spyOn(Utils, 'getNextDayUTC').mockReturnValue(mockRetryAfter);
+                jest.spyOn(CommonUtils, 'getNextDayUTC').mockReturnValue(mockRetryAfter);
 
                 const expectResult: RateLimitsResponse = {
                     msg: 'support-ratelimits-total-daily',
@@ -312,7 +317,7 @@ describe('Middleware tests category <observation|rate_limits>, priority: rules',
 
         describe('Testing valid context calls', () => {
 
-            test('Param: <RateLimitContext> number of calls within daily limit', async () => {
+            test('Params: <RateLimitContext> number of calls within daily limit', async () => {
                 const ruleDDL = new DemoDailyLimitRule(+secrets.DEMOLIMITS_TOTALDAILYLIMIT);
                 const mockCount = +(secrets.DEMOLIMITS_TOTALDAILYLIMIT) - 1;
 
@@ -323,7 +328,7 @@ describe('Middleware tests category <observation|rate_limits>, priority: rules',
                 expect(testFn).toBe(expectResult);
             })
 
-            test('Param: <RateLimitContext> no existing entry', async () => {
+            test('Params: <RateLimitContext> no existing entry', async () => {
                 const ruleDDL = new DemoDailyLimitRule(+secrets.DEMOLIMITS_TOTALDAILYLIMIT);
                 const mockCount = 0;
 
@@ -337,12 +342,12 @@ describe('Middleware tests category <observation|rate_limits>, priority: rules',
 
         describe('Testing invalid context calls', () => {
 
-            test('Param: <RateLimitContext> number of calls beyond daily limit', async () => {
+            test('Params: <RateLimitContext> number of calls beyond daily limit', async () => {
                 const ruleDDL = new DemoDailyLimitRule(+secrets.DEMOLIMITS_TOTALDAILYLIMIT);
                 const mockCount = +secrets.DEMOLIMITS_TOTALDAILYLIMIT;
 
                 jest.spyOn(demoLimitsService, 'getDemoLimitCount').mockResolvedValue(mockCount);
-                jest.spyOn(Utils, 'getNextDayUTC').mockReturnValue(mockRetryAfter);
+                jest.spyOn(CommonUtils, 'getNextDayUTC').mockReturnValue(mockRetryAfter);
 
                 const expectResult: RateLimitsResponse = {
                     msg: 'support-demolimits-total-daily',

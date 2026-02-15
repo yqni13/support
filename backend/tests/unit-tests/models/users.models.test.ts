@@ -1,35 +1,39 @@
 import { Users } from "../../../src/repositories/interfaces/users.entity.interface";
 import { UsersCreateDTO } from "../../../src/dtos/users.dto";
 import usersModel from "../../../src/models/users.model";
-import * as Utils from "../../../src/utils/common.utils";
+import * as CommonUtils from "../../../src/utils/common.utils";
+import { default as mockId } from "../../mock-data/id.mock-data.json";
 import { UserStatus } from "../../../src/utils/enums/user-status.enum";
 
 const mockTimestamp = '2025-01-03T14:00:03.000Z';
 
-describe('Model tests, class: <users>, priority: generateUser', () => {
+describe('Unit-tests (model), priority: entity Users', () => {
 
-    describe('Testing valid fn calls', () => {
+    describe('Priority: fn generateUser()', () => {
 
-        test('Generate new user object, entity: <Users>', () => {
-            const mockParam_id = 'valid_users_test_id';
-            const mockParam_dto: UsersCreateDTO = {
-                email: 'valid.user@test.com'
-            };
+        describe('Testing valid fn calls', () => {
 
-            jest.spyOn(Utils, "generateUUID").mockReturnValue(mockParam_id);
-            jest.spyOn(Utils, "getTimestampUTC").mockReturnValue(mockTimestamp);
+            test('Generate new user object, params: valid <id, dto>', () => {
+                const mockParam_id = mockId.users.valid[0];
+                const mockParam_dto: UsersCreateDTO = {
+                    email: 'valid.user@test.com'
+                };
 
-            const testFn = usersModel.generateUser(mockParam_dto);
-            const expectResult: Users = {
-                user_id: mockParam_id,
-                email: mockParam_dto.email,
-                status: UserStatus.ACTIVE,
-                flag: null,
-                last_modified: mockTimestamp,
-                created_on: mockTimestamp
-            };
+                jest.spyOn(CommonUtils, "generateUUID").mockReturnValue(mockParam_id);
+                jest.spyOn(CommonUtils, "getTimestampUTC").mockReturnValue(mockTimestamp);
 
-            expect(testFn).toEqual(expectResult);
+                const testFn = usersModel.generateUser(mockParam_dto);
+                const expectResult: Users = {
+                    user_id: mockParam_id,
+                    email: mockParam_dto.email,
+                    status: UserStatus.ACTIVE,
+                    flag: null,
+                    last_modified: mockTimestamp,
+                    created_on: mockTimestamp
+                };
+
+                expect(testFn).toEqual(expectResult);
+            })
         })
     })
 })
