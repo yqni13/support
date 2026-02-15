@@ -255,7 +255,7 @@ describe('Integration-tests (repository), priority: entity Users', () => {
 
             describe('Route: GET/by-id/:id', () => {
 
-                test('Params: <id>, validator: isUUID() by invalid id', async () => {
+                test('Params: <id>, validator: fn isUUID() by invalid id', async () => {
                     const testParam_id = 'invalid-id';
                     const testError = {
                         type: 'field',
@@ -275,7 +275,7 @@ describe('Integration-tests (repository), priority: entity Users', () => {
 
             describe('Route: PUT/update/:id', () => {
 
-                test('Params: <id>, validator: isUUID() by invalid id', async () => {
+                test('Params: <id>, validator: fn isUUID() by invalid id', async () => {
                     const testParam_id = 'invalid-id';
                     const testParam_dto: UsersUpdateDTO = {
                         email: 'new-user@test.com',
@@ -322,7 +322,7 @@ describe('Integration-tests (repository), priority: entity Users', () => {
 
                 const testedParams = Object.keys(testData) as (keyof typeof testData)[];
 
-                test.each(testedParams)('Params: <%s>, validator: notEmpty() by undefined', async (invalidParam) => {
+                test.each(testedParams)('Params: <%s>, validator: fn notEmpty() by undefined', async (invalidParam) => {
                     const testParam_id = mockId.users.valid[0];
                     let mockParam_dto = structuredClone(testData);
                     delete mockParam_dto[invalidParam];
@@ -382,7 +382,7 @@ describe('Integration-tests (repository), priority: entity Users', () => {
 
             describe('Route: POST/create', () => {
 
-                test('Params: <UsersCreateDTO>, validator: requirePayload() by undefined', async () =>{
+                test('Params: <UsersCreateDTO>, validator: fn requirePayload() by undefined', async () =>{
                     const testParam_dto = undefined;
                     const testError = structuredClone(mockError);
 
@@ -399,7 +399,7 @@ describe('Integration-tests (repository), priority: entity Users', () => {
 
             describe('Route: PUT/update/:id', () => {
 
-                test('Params: <UsersUpdateDTO>, validator: requirePayload() by undefined', async () =>{
+                test('Params: <UsersUpdateDTO>, validator: fn requirePayload() by undefined', async () =>{
                     const testParam_id = mockId.users.valid[0];
                     const testParam_dto = undefined;
                     const testError = structuredClone(mockError);

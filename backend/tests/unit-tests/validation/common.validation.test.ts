@@ -29,7 +29,7 @@ describe('Unit-tests (validation), priority: synonym CommonValidators', () => {
             { enumObj: Violation, enumName: 'violation' }
         ];
 
-        test.each(enumCollection)('fn validateEnum(), params: <%s>', (entry) => {
+        test.each(enumCollection)('Fn validateEnum(), params: <%s>', (entry) => {
             const mockParam_enumObj = entry.enumObj;
             const mockParam_enumName = entry.enumName;
             const expectResult = true;
@@ -43,15 +43,15 @@ describe('Unit-tests (validation), priority: synonym CommonValidators', () => {
             })
         })
 
-        test('fn validatePathParam(), params: <param> = "valid-test-id"', () => {
-            const mockParam_param = 'valid-test-id';
-            const testFn = CommonValidators.validatePathParam(mockParam_param);
+        test('Fn validateRequestRouteParam(), params: <param> = "valid-test-param"', () => {
+            const mockParam_param = 'valid-test-param';
+            const testFn = CommonValidators.validateRequestRouteParam(mockParam_param);
             const expectResult = true;
 
             expect(testFn).toBe(expectResult);
         })
 
-        test('fn validateTimestamp(), params: valid <timestamp>', () => {
+        test('Fn validateTimestamp(), params: valid <timestamp>', () => {
             const mockParam_timestamp = "2025-01-01T14:00:00.000Z";
             const testFn = CommonValidators.validateTimestamp(mockParam_timestamp)
             const expectResult = true;
@@ -59,7 +59,7 @@ describe('Unit-tests (validation), priority: synonym CommonValidators', () => {
             expect(testFn).toBe(expectResult);
         })
 
-        test('fn validateTimestampFilter(), params: <timestamps> = ["older", "younger"]', () => {
+        test('Fn validateTimestampFilter(), params: <timestamps> = ["older", "younger"]', () => {
             const mockParam_timestamps = ['2025-01-01T14:00:00.000Z', '2025-01-10T13:00:00.000Z'];
             const testFn = CommonValidators.validateTimestampFilter(mockParam_timestamps);
             const expectResult = true;
@@ -70,7 +70,7 @@ describe('Unit-tests (validation), priority: synonym CommonValidators', () => {
 
     describe('Testing invalid fn calls', () => {
 
-        test('fn validateEnum(), params: invalid <value> by value', () => {
+        test('Fn validateEnum(), params: invalid <value> by value', () => {
             const mockParam_value = 'invalid-value';
             const mockParam_enumObj = MaintenanceMode;
             const mockParam_enumName = 'maintenanceMode';
@@ -85,7 +85,7 @@ describe('Unit-tests (validation), priority: synonym CommonValidators', () => {
             }).toThrow(expectResult);
         })
 
-        test('fn validateEnum(), params: invalid <language> by key', () => {
+        test('Fn validateEnum(), params: invalid <language> by key', () => {
             const mockParam_value = { INVALID: MaintenanceMode.T011 };
             const mockParam_enumObj = MaintenanceMode;
             const mockParam_enumName = 'maintenanceMode';
@@ -100,30 +100,30 @@ describe('Unit-tests (validation), priority: synonym CommonValidators', () => {
             }).toThrow(expectResult);
         })
 
-        test.each([null, undefined, ' ', ':id'])('fn validatePathParam(), params: <%s> = null', (invalidArg) => {
+        test.each([null, undefined, ' ', ':id'])('Fn validateRequestRouteParam(), params: <%s>', (invalidArg) => {
             const mockParam_arg = invalidArg;
             const expectResult = CommonExceptionMessage.REQUIRED;
 
             expect(() => {
-                CommonValidators.validatePathParam(mockParam_arg);
+                CommonValidators.validateRequestRouteParam(mockParam_arg);
             }).toThrow(expectResult);
         })
 
-        test('fn validateTimestamp(), params: invalid <timestamp>', () => {
+        test('Fn validateTimestamp(), params: invalid <timestamp>', () => {
             const mockParam_timestamp = "abc";
             const expectResult = 'support-invalid-entry#timestamp';
 
             expect(() => { CommonValidators.validateTimestamp(mockParam_timestamp) }).toThrow(expectResult);
         })
 
-        test('fn validateTimestampFilter(), params: <timestamps> = ["younger", "older"]', () => {
+        test('Fn validateTimestampFilter(), params: <timestamps> = ["younger", "older"]', () => {
             const mockParam_timestamps = ['2025-01-10T13:00:00.000Z', '2025-01-01T14:00:00.000Z'];
             const expectResult = 'support-invalid-entry#timestamps';
 
             expect(() => { CommonValidators.validateTimestampFilter(mockParam_timestamps)}).toThrow(expectResult);
         })
 
-        test('fn validateTimestampFilter(), params: <timestamps> = ["single_value"]', () => {
+        test('Fn validateTimestampFilter(), params: <timestamps> = ["single_value"]', () => {
             const mockParam_timestamps = ['2025-01-01T14:00:00.000Z'];
             const expectResult = 'support-invalid-entry#timestamps';
 

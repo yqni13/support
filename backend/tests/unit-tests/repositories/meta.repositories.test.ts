@@ -267,10 +267,7 @@ describe('Unit-tests (repository), priority: entity Meta', () => {
 
             test('Return data of changed entry, params: valid <id>', async () => {
                 const mockParam_id = mockId.meta.valid[0];
-                let mockValues: any[] = [];
-                Object.values(mockParam_dto).forEach((val) => {
-                    mockValues.push(val);
-                });
+                const mockValues: any[] = Object.values(mockParam_dto).map(value => value);
                 mockValues.push(mockParam_id);
                 const mockResult: Meta = structuredClone(mockData);
 
@@ -289,10 +286,7 @@ describe('Unit-tests (repository), priority: entity Meta', () => {
 
             test('Return null for non-existing entry, params: invalid <id>', async () => {
                 const mockParam_id = mockId.meta.invalid[0];
-                let mockValues: any[] = [];
-                Object.values(mockParam_dto).forEach((val) => {
-                    mockValues.push(val);
-                });
+                const mockValues: any[] = Object.values(mockParam_dto).map(value => value);
                 mockValues.push(mockParam_id);
 
                 const mockResult = null;

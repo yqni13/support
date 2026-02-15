@@ -6,7 +6,7 @@ import { DemoMode } from '../../utils/enums/demo-mode.enum';
 
 export const getMetaByIdSchema: ValidationChain[] = [
     param('id')
-        .custom((content: string) => CommonValidators.validatePathParam(content))
+        .custom((content: string) => CommonValidators.validateRequestRouteParam(content))
         .bail()
         .isInt()
         .withMessage('support-invalid-entry#meta_id')
@@ -14,12 +14,12 @@ export const getMetaByIdSchema: ValidationChain[] = [
 
 export const getMetaByNameSchema: ValidationChain[] = [
     param('name')
-        .custom((content: string) => CommonValidators.validatePathParam(content))
+        .custom((content: string) => CommonValidators.validateRequestRouteParam(content))
 ];
 
 export const patchMetaSchema: ValidationChain[] = [
     param('id')
-        .custom((content: string) => CommonValidators.validatePathParam(content))
+        .custom((content: string) => CommonValidators.validateRequestRouteParam(content))
         .bail()
         .isInt()
         .withMessage('support-invalid-entry#meta_id'),
@@ -74,12 +74,12 @@ export const patchMetaSchema: ValidationChain[] = [
 
 export const getMaintenanceSchema: ValidationChain[] = [
     param('name')
-        .custom((content: string) => CommonValidators.validatePathParam(content))
+        .custom((content: string) => CommonValidators.validateRequestRouteParam(content))
 ];
 
 export const patchMaintenanceSchema: ValidationChain[] = [
     param('id')
-        .custom((content: string) => CommonValidators.validatePathParam(content))
+        .custom((content: string) => CommonValidators.validateRequestRouteParam(content))
         .bail()
         .isInt()
         .withMessage('support-invalid-entry#meta_id'),

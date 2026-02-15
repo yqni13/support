@@ -24,8 +24,8 @@ jest.mock("../../../src/configs/db", () => {
 
 const mockTimestamp = '2025-01-01T14:00:05.000Z';
 const mockDate = '2025-01-01';
-const mockValidClientsId = 'valid_clients_test_id';
-const mockValidUsersId = 'valid_users_test_id';
+const mockValidClientsId = mockId.clients.valid[0];
+const mockValidUsersId = mockId.users.valid[0];
 const expectExceptionResult = DBQueryErrorException;
 const mockBoolean = false;
 
@@ -38,7 +38,7 @@ describe('Unit-tests (repository), priority: entity RateLimits', () => {
             let mockParam_dto_countById: RateLimitsCountDTO;
             let mockParam_dto_countByDate: RateLimitsCountDTO;
             beforeEach(() => {
-                mockParam_dto_countById = { client_id: mockId.clients.valid[0], day: '2025-01-01' };
+                mockParam_dto_countById = { client_id: mockValidClientsId, day: '2025-01-01' };
                 mockParam_dto_countByDate = { day: '2025-02-05' };
             })
 
@@ -48,8 +48,8 @@ describe('Unit-tests (repository), priority: entity RateLimits', () => {
                     const mockResult: RateLimits[] = [ 
                         {
                             rate_limit_id: mockId.rate_limits.valid[0],
-                            client_id: mockId.clients.valid[0],
-                            user_id: mockId.users.valid[0],
+                            client_id: mockValidClientsId,
+                            user_id: mockValidUsersId,
                             day: '2025-01-01',
                             count: 3,
                             last_modified: '2025-01-01T14:00:05.000Z'
@@ -74,16 +74,16 @@ describe('Unit-tests (repository), priority: entity RateLimits', () => {
                     const mockResult: RateLimits[] = [ 
                         {
                             rate_limit_id: mockId.rate_limits.new[0],
-                            client_id: mockId.clients.valid[0],
-                            user_id: mockId.users.valid[0],
+                            client_id: mockValidClientsId,
+                            user_id: mockValidUsersId,
                             day: '2025-02-05',
                             count: 1,
                             last_modified: '2025-02-05T04:17:05.000Z'
                         },
                         {
                             rate_limit_id: mockId.rate_limits.new[1],
-                            client_id: mockId.clients.valid[0],
-                            user_id: mockId.users.valid[0],
+                            client_id: mockValidClientsId,
+                            user_id: mockValidUsersId,
                             day: '2025-02-05',
                             count: 1,
                             last_modified: '2025-02-05T04:38:05.000Z'
@@ -124,8 +124,8 @@ describe('Unit-tests (repository), priority: entity RateLimits', () => {
             let mockParam_entity: Partial<RateLimits>;
             beforeEach(() => {
                 mockParam_entity = {
-                    client_id: mockId.clients.valid[0],
-                    user_id: mockId.users.valid[0],
+                    client_id: mockValidClientsId,
+                    user_id: mockValidUsersId,
                     day: mockDate,
                     count: 1,
                     last_modified: mockTimestamp
@@ -143,11 +143,7 @@ describe('Unit-tests (repository), priority: entity RateLimits', () => {
                         count: 1,
                         last_modified: mockTimestamp
                     };
-                    const mockValues: string[] = [];
-                    Object.values(mockParam_entity).forEach((value: any) => {
-                        mockValues.push(value);
-                    })
-
+                    const mockValues: any[] = Object.values(mockParam_entity).map(value => value);
                     const mockClient = MockUtils.mapMockDbClient(mockResult);
                     const testFn = await rateLimitsRepository.create(mockParam_entity);
 
@@ -183,8 +179,8 @@ describe('Unit-tests (repository), priority: entity RateLimits', () => {
                 beforeEach(() => {
                     sql = 'UPDATE';
                     mockParam_dto = {
-                        client_id: mockId.clients.valid[0],
-                        user_id: mockId.users.valid[0],
+                        client_id: mockValidClientsId,
+                        user_id: mockValidUsersId,
                         day: '2025-01-01',
                         last_modified: mockTimestamp
                     };
@@ -213,8 +209,8 @@ describe('Unit-tests (repository), priority: entity RateLimits', () => {
 
                 test('Return null for non-existing entry, params: invalid <client_id, user_id>', async () => {
                     const mockParam_dto_null: RateLimitsUpdateDTO = {
-                        client_id: mockId.clients.invalid[0],
-                        user_id: mockId.users.invalid[0],
+                        client_id: mockValidClientsId,
+                        user_id: mockValidUsersId,
                         day: '2025-01-01',
                         last_modified: mockTimestamp
                     };
@@ -275,7 +271,6 @@ describe('Unit-tests (repository), priority: entity RateLimits', () => {
                         }
                     ];
                     const mockValues: string[] = [mockParam_dto.day];
-
                     const mockErrorMsg = undefined;
                     const mockExpectArray = true;
                     const mockClient = MockUtils.mapMockDbClient(mockResult, mockBoolean, mockErrorMsg, mockExpectArray);
@@ -324,11 +319,7 @@ describe('Unit-tests (repository), priority: entity RateLimits', () => {
                         count: 1,
                         last_modified: mockTimestamp
                     };
-                    const mockValues: any[] = [];
-                    Object.values(mockParam_entity).forEach((value) => {
-                        mockValues.push(value);
-                    })
-
+                    const mockValues: any[] = Object.values(mockParam_entity).map((value: string | number) => value as any);
                     const mockClient = MockUtils.mapMockDbClient(mockResult);
                     const testFn = await demoLimitsRepository.create(mockParam_entity);
 

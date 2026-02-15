@@ -74,7 +74,7 @@ describe('Unit-tests (validation), priority: synonym FileValidators', () => {
         jest.restoreAllMocks();
     });
 
-    describe('fn validateFilesMaxNumber()', () => {
+    describe('Fn validateFilesMaxNumber()', () => {
 
         describe('Testing valid fn calls', () => {
 
@@ -108,7 +108,7 @@ describe('Unit-tests (validation), priority: synonym FileValidators', () => {
         })
     })
 
-    describe('fn validateFilesNames()', () => {
+    describe('Fn validateFilesNames()', () => {
 
         describe('Testing valid fn calls', () => {
 
@@ -146,7 +146,7 @@ describe('Unit-tests (validation), priority: synonym FileValidators', () => {
         })
     })
 
-    describe('fn validateFilesType()', () => {
+    describe('Fn validateFilesType()', () => {
 
         let mockParam_validTypes: string[];
         beforeEach(() => {
@@ -195,7 +195,7 @@ describe('Unit-tests (validation), priority: synonym FileValidators', () => {
         })
     })
 
-    describe('fn validateFilesSizeEach()', () => {
+    describe('Fn validateFilesSizeEach()', () => {
 
         describe('Testing valid fn calls', () => {
 

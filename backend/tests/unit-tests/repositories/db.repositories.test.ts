@@ -42,7 +42,7 @@ describe('Unit-tests (repository), class DBConnection', () => {
 
     describe('Testing valid fn calls', () => {
 
-        test('Fn: _getConnectionString(), environment: development', () => {
+        test('Fn _getConnectionString(), environment: development', () => {
             const mockParam_env = 'development';
             const testFn = mockDb._getConnectionString(mockParam_env);
             const expectUser = 'postgres';
@@ -50,7 +50,7 @@ describe('Unit-tests (repository), class DBConnection', () => {
             expect(testFn).toContain(expectUser);
         })
 
-        test('Fn: _getConnectionString(), environment: test', () => {
+        test('Fn _getConnectionString(), environment: test', () => {
             const mockParam_env = 'test';
             const testFn = mockDb._getConnectionString(mockParam_env);
             const expectUser = 'testuser';
@@ -58,20 +58,20 @@ describe('Unit-tests (repository), class DBConnection', () => {
             expect(testFn).toContain(expectUser);
         })
 
-        test('Fn: connect()', async () => {
+        test('Fn connect()', async () => {
             const testFn = await mockDb.connect();
 
             expect(_mockConnect).toHaveBeenCalled();
             expect(testFn).toBe(_mockClient);
         })
 
-        test('Fn: close()', async () => {
+        test('Fn close()', async () => {
             await mockDb.close(_mockClient);
 
             expect(_mockRelease).toHaveBeenCalled();
         })
 
-        test('Fn: init(), result: db loaded, HAS data rows', async () => {
+        test('Fn init(), result: db loaded, HAS data rows', async () => {
             mockClient_init.query.mockResolvedValue({rowCount: 1});
             await expect(mockDbInit.init()).resolves.not.toThrow();
             const mockQuery = 'SELECT * FROM meta;';
@@ -83,13 +83,13 @@ describe('Unit-tests (repository), class DBConnection', () => {
 
     describe('Testing invalid fn calls', () => {
 
-        test('Fn: init(), result: db loaded, HAS NO data rows', async () => {
+        test('Fn init(), result: db loaded, HAS NO data rows', async () => {
             jest.spyOn(CommonUtils, 'logError').mockImplementation();
             mockClient_init.query.mockResolvedValue({rowCount: 0});
             await expect(mockDbInit.init()).rejects.toBeInstanceOf(DBEmptyException);
         })
 
-        test('Fn: init(), result: db NOT loaded', async () => {
+        test('Fn init(), result: db NOT loaded', async () => {
             jest.spyOn(CommonUtils, 'logError').mockImplementation();
             mockClient_init.query.mockRejectedValue(new Error('connection failed'));
             await expect(mockDbInit.init()).rejects.toBeInstanceOf(DBConnectionException);

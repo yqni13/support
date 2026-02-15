@@ -18,7 +18,7 @@ jest.setTimeout(60000);
 const testValidClientsId = mockId.clients.valid[0];
 const testValidUsersId = mockId.users.valid[0];
 
-describe('Integration-tests (middleware), priority: class RateLimits', () => {
+describe('Integration-tests (repository), priority: entity RateLimits', () => {
 
     let dbTestSetup: DBTestSetup;
     beforeAll(async () => {
@@ -38,7 +38,7 @@ describe('Integration-tests (middleware), priority: class RateLimits', () => {
 
     describe('Testing valid fn calls, route: /tickets/create', () => {
 
-        test('Repository process (count), params: <client_id, day>, result: "SUCCESS"', async () => {
+        test('Repository process fn getRateLimitCount(), params: <client_id, day>, result: "SUCCESS"', async () => {
             const dto: RateLimitsCountDTO = {
                 client_id: mockId.clients.valid[0],
                 day: '2025-01-01'
@@ -51,7 +51,7 @@ describe('Integration-tests (middleware), priority: class RateLimits', () => {
             expect(testResponse).toBe(mockResponse);
         })
 
-        test('Repository process (count), params: <day>, result: "SUCCESS"', async () => {
+        test('Repository process fn getRateLimitCount(), params: <day>, result: "SUCCESS"', async () => {
             const dto: RateLimitsCountDTO = {
                 day: '2025-01-01'
             };
@@ -63,7 +63,7 @@ describe('Integration-tests (middleware), priority: class RateLimits', () => {
             expect(testResponse).toBe(mockResponse);
         })
 
-        test('Repository process (create), result: "SUCCESS"', async () => {
+        test('Repository process fn createRateLimit(), result: "SUCCESS"', async () => {
             const testTimestamp = '2025-01-02T14:00:05.000Z';
             const mockParam_dto: RateLimitsCreateDTO = {
                 client_id: testValidClientsId,
@@ -89,7 +89,7 @@ describe('Integration-tests (middleware), priority: class RateLimits', () => {
             expect(testResponse).toMatchObject(mockResponse);
         })
 
-        test('Repository process (update), result: "SUCCESS"', async () => {
+        test('Repository process fn updateRateLimit(), result: "SUCCESS"', async () => {
             const testTimestamp = '2025-01-01T22:22:22.000Z';
             const dto: RateLimitsUpdateDTO = {
                 client_id: testValidClientsId,
@@ -114,7 +114,7 @@ describe('Integration-tests (middleware), priority: class RateLimits', () => {
             expect(testResponse).toMatchObject(mockResponse);
         })
 
-        test('Repository process (update), result: null', async () => {
+        test('Repository process fn updateRateLimit(), result: null', async () => {
             const testTimestamp = '2025-01-02T22:22:22.000Z';
             const dto: RateLimitsUpdateDTO = {
                 client_id: testValidClientsId,
@@ -134,7 +134,7 @@ describe('Integration-tests (middleware), priority: class RateLimits', () => {
 
     describe('Testing valid fn calls, route: /meta/demo', () => {
 
-        test('Repository process (count), params: <day>, result: "SUCCESS"', async () => {
+        test('Repository process fn getDemoLimitCount(), params: <day>, result: "SUCCESS"', async () => {
             const dto: DemoLimitsCountDTO = {
                 day: '2025-01-01'
             };
@@ -146,7 +146,7 @@ describe('Integration-tests (middleware), priority: class RateLimits', () => {
             expect(testResponse).toBe(mockResponse);
         })
 
-        test('Repository process (create), result: "SUCCESS"', async () => {
+        test('Repository process fn createDemoLimit(), result: "SUCCESS"', async () => {
             const testTimestamp = '2025-01-02T14:00:05.000Z';
             const dateUTC = CommonUtils.getDateUTC(new Date(testTimestamp));
             
@@ -166,7 +166,7 @@ describe('Integration-tests (middleware), priority: class RateLimits', () => {
             expect(testResponse).toMatchObject(mockResponse);
         })
 
-        test('Repository process (update), result: "SUCCESS"', async () => {
+        test('Repository process fn updateDemoLimit(), result: "SUCCESS"', async () => {
             const testTimestamp = '2025-01-01T22:22:22.000Z';
 
             jest.spyOn(CommonUtils, 'getDateUTC').mockReturnValue(testTimestamp);
@@ -185,7 +185,7 @@ describe('Integration-tests (middleware), priority: class RateLimits', () => {
             expect(testResponse).toMatchObject(mockResponse);
         })
 
-        test('Repository process (update), result: null', async () => {
+        test('Repository process fn updateDemoLimit(), result: null', async () => {
             const testTimestamp = '2025-01-02T22:22:22.000Z';
 
             jest.spyOn(CommonUtils, 'getDateUTC').mockReturnValue(testTimestamp);

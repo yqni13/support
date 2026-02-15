@@ -166,8 +166,8 @@ describe('Unit-tests (repository), priority: entity Tickets', () => {
             beforeEach(() => {
                 sql = `SELECT`;
                 mockTimestamp_now = new Date('2025-01-01T14:01:50.000Z');
-                mockClientId = 'valid_clients_test_id';
-                mockUserId = 'valid_users_test_id';
+                mockClientId = mockId.clients.valid[0];
+                mockUserId = mockId.users.valid[0];
             });
 
             test('Return data for existing entry, params: <client_id>', async () => {
@@ -355,11 +355,7 @@ describe('Unit-tests (repository), priority: entity Tickets', () => {
 
             test('Return data for created entry, params: <message> = "new-test-message"', async () => {
                 const sql = `INSERT`;
-                let mockValues: any[] = [];
-                Object.values(mockParam_entity).forEach((value) => {
-                    mockValues.push(value);
-                });
-
+                const mockValues: any[] = Object.values(mockParam_entity).map(value => value);
                 const mockResult: Tickets = structuredClone(mockParam_entity);
                 const mockClient = MockUtils.mapMockDbClient(mockResult);
                 const testFn = await ticketsRepository.create(mockParam_entity);
@@ -391,7 +387,6 @@ describe('Unit-tests (repository), priority: entity Tickets', () => {
 
         let sql: string;
         let mockParam_dto: TicketsUpdateDTO;
-        let mockValues: any[];
         beforeEach(() => {
             sql = `UPDATE`;
             mockParam_dto = {
@@ -401,18 +396,14 @@ describe('Unit-tests (repository), priority: entity Tickets', () => {
                 flag: null,
                 last_modified: mockTimestamp
             };
-            mockValues = [];
         });
 
         describe('Testing valid fn calls', () => {
 
             test('Return data of changed entry, params: valid <id>', async () => {
                 const mockParam_id = mockData.user_id;
-                Object.values(mockParam_dto).forEach((val) => {
-                    mockValues.push(val);
-                });
+                const mockValues: any[] = Object.values(mockParam_dto).map(value => value);
                 mockValues.push(mockParam_id);
-
                 const mockResult: Tickets = structuredClone(mockData);
                 mockResult['status'] = TicketStatus.ACTIVE;
 
@@ -429,9 +420,7 @@ describe('Unit-tests (repository), priority: entity Tickets', () => {
 
             test('Return null for non-existing entry, params: invalid <id>', async () => {
                 const mockParam_id = mockId.tickets.invalid[0];
-                Object.values(mockParam_dto).forEach((val) => {
-                    mockValues.push(val);
-                });
+                const mockValues: any[] = Object.values(mockParam_dto).map(value => value);
                 mockValues.push(mockParam_id);
 
                 const mockResult = null;

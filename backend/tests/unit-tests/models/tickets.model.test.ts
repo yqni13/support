@@ -181,7 +181,7 @@ describe('Unit-tests (model), priority: entity Tickets', () => {
 
         describe('Testing valid fn calls', () => {
 
-            test('Check for file deletion => call FilesService.deleteFiles(), param: <dto>', async () => {
+            test('Check for file deletion => call FilesService.deleteFiles(), params: <dto>', async () => {
                 const mockParam_dto: TicketsResponseDTO = {
                     ticket_id: mockId.tickets.valid[0],
                     client_id: mockId.clients.valid[0],
@@ -204,7 +204,7 @@ describe('Unit-tests (model), priority: entity Tickets', () => {
 
         describe('Testing invalid fn calls', () => {
 
-            test('Check for file deletion => does NOT call FilesService.deleteFiles(), param: <dto>', async () => {
+            test('Check for file deletion => does NOT call FilesService.deleteFiles(), params: <dto>', async () => {
                 const mockParam_dto: TicketsResponseDTO = {
                     ticket_id: mockId.tickets.valid[1],
                     client_id: mockId.clients.valid[0],

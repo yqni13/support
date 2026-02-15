@@ -256,7 +256,7 @@ describe('Integration-tests (repository), priority: entity Meta', () => {
 
             describe('Route: GET/by-id:id', () => {
 
-                test('Params: <id>, validator: isInt() by string', async () => {
+                test('Params: <id>, validator: fn isInt() by string', async () => {
                     const testParam_id = 'invalid_test_id';
                     const testError = {
                         type: 'field',
@@ -276,7 +276,7 @@ describe('Integration-tests (repository), priority: entity Meta', () => {
 
             describe('Route: PUT/info/:id', () => {
 
-                test('Params: <id>, validator: isInt() by string', async () => {
+                test('Params: <id>, validator: fn isInt() by string', async () => {
                     const testParam_id = 'invalid_test_id';
                     const testVersion = '0.0.0';
                     const testParam_dto: MetaUpdateDTO = {
@@ -310,7 +310,7 @@ describe('Integration-tests (repository), priority: entity Meta', () => {
 
             describe('Route: PUT/maintenance/:id', () => {
 
-                test('Params: <id>, validator: isInt() by string', async () => {
+                test('Params: <id>, validator: fn isInt() by string', async () => {
                     const testParam_id = 'invalid_test_id';
                     const testParam_dto: MaintenanceUpdateDTO = {
                         maintenance_mode: MaintenanceMode.M008
@@ -364,7 +364,7 @@ describe('Integration-tests (repository), priority: entity Meta', () => {
                 // "keyof typeof mockData" creates Union-Types of keys to ensure all properties are valid.
                 const testedParams = Object.keys(testData) as (keyof typeof testData)[];
 
-                test.each(testedParams)('Params: <%s>, validator: notEmpty() by undefined', async (invalidParam) => {
+                test.each(testedParams)('Params: <%s>, validator: fn notEmpty() by undefined', async (invalidParam) => {
                     const testParam_id = 1;
                     let mockParam_dto = structuredClone(testData);
                     delete mockParam_dto[invalidParam];
@@ -396,7 +396,7 @@ describe('Integration-tests (repository), priority: entity Meta', () => {
 
             describe('Route: PUT/info/:id', () => {
 
-                test('Params: <MetaUpdateDTO>, validator: requirePayload() by undefined', async () =>{
+                test('Params: <MetaUpdateDTO>, validator: fn requirePayload() by undefined', async () =>{
                     const testParam_id = 1;
                     const testParam_dto = undefined;
                     const testError = structuredClone(mockError);
@@ -414,7 +414,7 @@ describe('Integration-tests (repository), priority: entity Meta', () => {
 
             describe('Route: PUT/maintenance/:id', () => {
 
-                test('Params: <MaintenanceUpdateDTO>, validator: requirePayload() by undefined', async () =>{
+                test('Params: <MaintenanceUpdateDTO>, validator: fn requirePayload() by undefined', async () =>{
                     const testParam_id = mockId.meta.valid[0];
                     const testParam_dto = undefined;
                     const testError = structuredClone(mockError);
@@ -432,7 +432,7 @@ describe('Integration-tests (repository), priority: entity Meta', () => {
 
             describe('Route: POST/demo', () => {
 
-                test('Params: <MetaDemoDTO>, validator: requirePayload() by undefined', async () =>{
+                test('Params: <MetaDemoDTO>, validator: fn requirePayload() by undefined', async () =>{
                     const testParam_dto = undefined;
                     const testError = structuredClone(mockError);
 

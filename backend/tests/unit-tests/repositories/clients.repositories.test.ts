@@ -233,11 +233,7 @@ describe('Unit-tests (repository), priority: entity Clients', () => {
         describe('Testing valid fn calls', () => {
 
             test('Return data for created entry, params: <name> = "valid_clients_test_name"', async () => {
-                const mockValues: string[] = [];
-                Object.values(mockParam_entity).forEach((value) => {
-                    mockValues.push(value);
-                })
-
+                const mockValues: any[] = Object.values(mockParam_entity).map(value => value);
                 const mockResult: Clients = structuredClone(mockParam_entity);
                 const mockClient = MockUtils.mapMockDbClient(mockResult);
                 const testFn = await clientsRepository.create(mockParam_entity);

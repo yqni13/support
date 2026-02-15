@@ -8,7 +8,7 @@ import { TicketOption } from '../../utils/enums/ticket-option.enum';
 
 export const getTicketSchema: ValidationChain[] = [
     param('id')
-        .custom((content: string) => CommonValidators.validatePathParam(content))
+        .custom((content: string) => CommonValidators.validateRequestRouteParam(content))
         .bail()
         .isUUID(4)
         .withMessage('support-invalid-entry#ticket_id')
@@ -89,7 +89,7 @@ export const postTicketSchema: ValidationChain[] = [
 
 export const patchTicketSchema: ValidationChain[] = [
     param('id')
-        .custom((content: string) => CommonValidators.validatePathParam(content))
+        .custom((content: string) => CommonValidators.validateRequestRouteParam(content))
         .bail()
         .isUUID(4)
         .withMessage('support-invalid-entry#ticket_id'),
@@ -123,7 +123,7 @@ export const patchTicketSchema: ValidationChain[] = [
 
 export const deleteTicketSchema: ValidationChain[] = [
     param('id')
-        .custom((content: string) => CommonValidators.validatePathParam(content))
+        .custom((content: string) => CommonValidators.validateRequestRouteParam(content))
         .bail()
         .isUUID(4)
         .withMessage('support-invalid-entry#ticket_id')

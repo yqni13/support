@@ -541,7 +541,7 @@ describe('Integration-tests (repository), priority: entity Tickets', () => {
                     };
                 })
 
-                test('Files: invalid number of files, validator: validateFilesMaxNumber', async () =>{
+                test('Files: invalid number of files, validator: fn validateFilesMaxNumber()', async () =>{
                     const mockFiles = [
                         {
                             filename: 'test-file0.webp',
@@ -587,7 +587,7 @@ describe('Integration-tests (repository), priority: entity Tickets', () => {
                     expect(testResponse.body.headers.message).toEqual(errorMsg);
                 })
 
-                test('Files: 1x invalid name, validator: validateFilesNames', async () =>{
+                test('Files: 1x invalid name, validator: fn validateFilesNames()', async () =>{
                     const mockFile = {
                         filename: 'test-file-no-type',
                         buffer: Buffer.alloc(1024 * 1024 * 0.5, 0) // 500kb
@@ -606,7 +606,7 @@ describe('Integration-tests (repository), priority: entity Tickets', () => {
                     expect(testResponse.body.headers.message).toEqual(errorMsg);
                 })
 
-                test('Files: 1x invalid type, validator: validateFilesType', async () =>{
+                test('Files: 1x invalid type, validator: fn validateFilesType()', async () =>{
                     const mockFile = {
                         filename: 'test-file.doxc', // Multer gets type from filename.
                         buffer: Buffer.alloc(1024 * 1024 * 0.1, 0) // 100kb
@@ -625,7 +625,7 @@ describe('Integration-tests (repository), priority: entity Tickets', () => {
                     expect(testResponse.body.headers.message).toEqual(errorMsg);
                 })
 
-                test('Files: 1x invalid size, validator: validateFilesSizeEach', async () =>{
+                test('Files: 1x invalid size, validator: fn validateFilesSizeEach()', async () =>{
                     const mockFile = {
                         filename: 'test-file.webp',
                         buffer: Buffer.alloc(1024 * 1024 * 1.5, 0) // 1.5mb
@@ -661,7 +661,7 @@ describe('Integration-tests (repository), priority: entity Tickets', () => {
 
             describe('Route: GET/by-id/:id', () => {
 
-                test('Params: <id>, validator: isUUID() by invalid id', async () => {
+                test('Params: <id>, validator: fn isUUID() by invalid id', async () => {
                     const testParam_id = 'invalid-id';
                     const testError = structuredClone(mockError);
                     testError['value'] = testParam_id;
@@ -676,7 +676,7 @@ describe('Integration-tests (repository), priority: entity Tickets', () => {
 
             describe('Route: PUT/update/:id', () => {
 
-                test('Params: <id>, validator: isUUID() by invalid id', async () => {
+                test('Params: <id>, validator: fn isUUID() by invalid id', async () => {
                     const testParam_id = 'invalid-id';
                     const testParam_dto: TicketsUpdateDTO = {
                         status: TicketStatus.ACTIVE,
@@ -698,7 +698,7 @@ describe('Integration-tests (repository), priority: entity Tickets', () => {
 
             describe('Route: DELETE/delete/:id', () => {
 
-                test('Params: <id>, validator: isUUID() by invalid id', async () => {
+                test('Params: <id>, validator: fn isUUID() by invalid id', async () => {
                     const testParam_id = 'invalid-id';
                     const testError = structuredClone(mockError);
                     testError['value'] = testParam_id;
@@ -727,7 +727,7 @@ describe('Integration-tests (repository), priority: entity Tickets', () => {
 
             describe('Route: POST/search', () => {
 
-                test('Params: <client_id>, validator: isUUID() by invalid value', async () => {
+                test('Params: <client_id>, validator: fn isUUID() by invalid value', async () => {
                     let testParam_dto: TicketsFilterDTO = {
                         client_id: [mockId.clients.valid[0], 'invalid-id']
                     }
@@ -747,7 +747,7 @@ describe('Integration-tests (repository), priority: entity Tickets', () => {
                     expect(testResponse.body.headers.data).toEqual(testError);
                 })
 
-                test('Params: <user_id>, validator: isUUID() by invalid value', async () => {
+                test('Params: <user_id>, validator: fn isUUID() by invalid value', async () => {
                     let testParam_dto: TicketsFilterDTO = {
                         user_id: ['invalid-id-0', mockId.clients.valid[0], 'invalid-id-1']
                     }
@@ -787,7 +787,7 @@ describe('Integration-tests (repository), priority: entity Tickets', () => {
 
                 const notEmptyParams = Object.keys(testData) as (keyof typeof testData)[];
 
-                test.each(notEmptyParams)('Params: <%s>, validator: notEmpty() by undefined', async (invalidParam) => {
+                test.each(notEmptyParams)('Params: <%s>, validator: fn notEmpty() by undefined', async (invalidParam) => {
                     const testParam_dto = structuredClone(testData);
                     delete testParam_dto[invalidParam];
                     const mockError = structuredClone(testError);
@@ -801,7 +801,7 @@ describe('Integration-tests (repository), priority: entity Tickets', () => {
                     expect(testResponse.body.headers.data).toContainEqual(mockError);
                 })
 
-                test('Params: <message>, validator: isLength() by max > 1000 chars', async () => {
+                test('Params: <message>, validator: fn isLength() by max > 1000 chars', async () => {
                     let mockParam_dto = {
                         message: `This-message-contains-more-than-1000-characters-throwing-<support-invalid-max#message!1000>This-message-contains-more-than-1000-characters-throwing-<support-invalid-max#message!1000>This-message-contains-more-than-1000-characters-throwing-<support-invalid-max#message!1000>This-message-contains-more-than-1000-characters-throwing-<support-invalid-max#message!1000>This-message-contains-more-than-1000-characters-throwing-<support-invalid-max#message!1000>This-message-contains-more-than-1000-characters-throwing-<support-invalid-max#message!1000>This-message-contains-more-than-1000-characters-throwing-<support-invalid-max#message!1000>This-message-contains-more-than-1000-characters-throwing-<support-invalid-max#message!1000>This-message-contains-more-than-1000-characters-throwing-<support-invalid-max#message!1000>This-message-contains-more-than-1000-characters-throwing-<support-invalid-max#message!1000>This-message-contains-more-than-1000-characters-throwing-<support-invalid-max#message!1000>`,
                     };
@@ -822,7 +822,7 @@ describe('Integration-tests (repository), priority: entity Tickets', () => {
                     expect(testResponse.body.headers.data).toContainEqual(testError);
                 })
 
-                test('Params: <resource_paths>, validator: isEmpty() by defined value', async () => {
+                test('Params: <resource_paths>, validator: fn isEmpty() by defined value', async () => {
                     const testParam_dto = {
                         message: 'test-message',
                         resource_paths: ['test/path/img_0.webp']
@@ -856,7 +856,7 @@ describe('Integration-tests (repository), priority: entity Tickets', () => {
 
                 const notEmptyParams = ['status', 'option', 'message'] as (keyof typeof testData)[];
 
-                test.each(notEmptyParams)('Params: <%s>, validator: notEmpty() by undefined', async (invalidParam) => {
+                test.each(notEmptyParams)('Params: <%s>, validator: fn notEmpty() by undefined', async (invalidParam) => {
                     const testParam_id = mockId.tickets.invalid[0];
                     const testParam_dto = structuredClone(testData);
                     delete testParam_dto[invalidParam];
@@ -871,7 +871,7 @@ describe('Integration-tests (repository), priority: entity Tickets', () => {
                     expect(testResponse.body.headers.data).toContainEqual(mockError);
                 })
 
-                test('Params: <message>, validator: isLength() by max > 1000 chars', async () => {
+                test('Params: <message>, validator: fn isLength() by max > 1000 chars', async () => {
                     const testParam_id = mockId.tickets.invalid[0];
                     const testParam_dto: TicketsUpdateDTO = {
                         status: TicketStatus.ACTIVE,
@@ -896,7 +896,7 @@ describe('Integration-tests (repository), priority: entity Tickets', () => {
                     expect(testResponse.body.headers.data).toContainEqual(testError);
                 })
 
-                test('Params: <last_modified>, validator: isEmpty() by defined value', async () => {
+                test('Params: <last_modified>, validator: fn isEmpty() by defined value', async () => {
                     const testParam_id = mockId.tickets.valid[0];
                     const testParam_dto: TicketsUpdateDTO = {
                         status: TicketStatus.ACTIVE,
@@ -941,7 +941,7 @@ describe('Integration-tests (repository), priority: entity Tickets', () => {
 
             describe('Route: POST/create', () => {
 
-                test('Params: <TicketsCreateDTO>, validator: requirePayload by undefined', async () =>{
+                test('Params: <TicketsCreateDTO>, validator: fn requirePayload() by undefined', async () =>{
                     const testParam_dto = undefined;
 
                     jest.spyOn(CommonUtils, 'logError').mockImplementation();
@@ -957,7 +957,7 @@ describe('Integration-tests (repository), priority: entity Tickets', () => {
 
             describe('Route: PUT/update/:id', () => {
 
-                test('Params: <TicketsUpdateDTO>, validator: hasBodyPayload by undefined', async () =>{
+                test('Params: <TicketsUpdateDTO>, validator: fn hasBodyPayload() by undefined', async () =>{
                     const testParam_id = mockId.tickets.valid[0];
                     const testParam_dto = undefined;
 

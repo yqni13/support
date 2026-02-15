@@ -207,7 +207,7 @@ describe('Integration-tests (repository), priority: entity Clients', () => {
 
             describe('Route: PUT/status/:id', () => {
 
-                test('Params: <id>, validator: isUUID() by invalid id', async () => {
+                test('Params: <id>, validator: fn isUUID() by invalid id', async () => {
                     const testParam_id = 'invalid-id';
                     const testParam_dto: ClientsStatusUpdateDTO = {
                         status: ApiKeyStatus.EXPIRED
@@ -245,7 +245,7 @@ describe('Integration-tests (repository), priority: entity Clients', () => {
 
             describe('Route: POST/create', () => {
 
-                test('Params: <name>, validator: validateClientUniqueness() by existing client in db', async () => {
+                test('Params: <name>, validator: fn validateClientUniqueness() by existing client in db', async () => {
                     const testParam_dto: ClientsCreateDTO = {
                         name: 'TESTCLIENT'
                     };
@@ -286,7 +286,7 @@ describe('Integration-tests (repository), priority: entity Clients', () => {
 
             describe('Route: POST/create/:id', () => {
 
-                test('Params: <ClientsCreateDTO>, validator: requirePayload() by undefined', async () =>{
+                test('Params: <ClientsCreateDTO>, validator: fn requirePayload() by undefined', async () =>{
                     const testParam_dto = undefined;
                     const testError = structuredClone(mockError);
 
@@ -303,7 +303,7 @@ describe('Integration-tests (repository), priority: entity Clients', () => {
 
             describe('Route: PUT/status/:id', () => {
 
-                test('Params: <ClientsStatusUpdateDTO>, validator: requirePayload() by undefined', async () =>{
+                test('Params: <ClientsStatusUpdateDTO>, validator: fn requirePayload() by undefined', async () =>{
                     const testParam_id = mockId.clients.valid[0];
                     const testParam_dto = undefined;
                     const testError = structuredClone(mockError);

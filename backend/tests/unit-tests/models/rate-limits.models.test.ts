@@ -12,7 +12,7 @@ describe('Unit-tests (model), priority: entity RateLimits', () => {
 
         describe('Testing valid fn calls', () => {
 
-            test('Sum up count of entries, param: <RateLimits>[].length === 2', () => {
+            test('Sum up count of entries, params: <RateLimits>[].length === 2', () => {
                 const mockParam_data: RateLimits[] = [
                     {
                         rate_limit_id: mockId.rate_limits.valid[0],
@@ -23,7 +23,7 @@ describe('Unit-tests (model), priority: entity RateLimits', () => {
                         last_modified: '2025-01-01T14:00:05.000Z'
                     },
                     {
-                        rate_limit_id: 2,
+                        rate_limit_id: mockId.rate_limits.valid[1],
                         client_id: mockId.clients.valid[0],
                         user_id: 'another_valid_users_test_id',
                         day: '2025-01-01',
@@ -38,7 +38,7 @@ describe('Unit-tests (model), priority: entity RateLimits', () => {
                 expect(testFn).toBe(mockReturn);
             })
 
-            test('Sum up count of entries, param: <RateLimits>[].length === 1', () => {
+            test('Sum up count of entries, params: <RateLimits>[].length === 1', () => {
                 const mockParam_data: RateLimits[] = [
                     {
                         rate_limit_id: mockId.rate_limits.valid[0],
@@ -56,7 +56,7 @@ describe('Unit-tests (model), priority: entity RateLimits', () => {
                 expect(testFn).toBe(mockReturn);
             })
 
-            test('Sum up count of entries, param: <null>', () => {
+            test('Sum up count of entries, params: <null>', () => {
                 const mockParam_data: RateLimits[] | null = null;
 
                 const mockReturn = 0;
@@ -103,7 +103,7 @@ describe('Unit-tests (model), priority: entity DemoLimits', () => {
 
         describe('Testing valid fn calls', () => {
 
-            test('Sum up count of entries, param: <DemoLimits>[].length === 1', () => {
+            test('Sum up count of entries, params: <DemoLimits>[].length === 1', () => {
                 const mockParam_data: DemoLimits[] = [
                     {
                         demo_limit_id: 1,
@@ -119,7 +119,7 @@ describe('Unit-tests (model), priority: entity DemoLimits', () => {
                 expect(testFn).toBe(mockReturn);
             })
 
-            test('Sum up count of entries, param: <null>', () => {
+            test('Sum up count of entries, params: <null>', () => {
                 const mockParam_data: DemoLimits[] | null = null;
 
                 const mockReturn = 0;

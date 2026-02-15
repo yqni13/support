@@ -11,7 +11,7 @@ describe('Unit-tests (utils), priority: synonym CommonUtils', () => {
 
     describe('Testing valid fn calls', () => {
 
-        test('fn mapKeyToHash()', () => {
+        test('Fn mapKeyToHash()', () => {
             const mockParam_key: string = secrets.TEST_APIKEY_RAW;
 
             const testFn = CommonUtils.mapKeyToHash(mockParam_key);
@@ -20,7 +20,7 @@ describe('Unit-tests (utils), priority: synonym CommonUtils', () => {
             expect(testFn).toEqual(expectResult);
         })
 
-        test('fn getTimestampUTC(), params: <timestamp>', () => {
+        test('Fn getTimestampUTC(), params: <timestamp>', () => {
             const mockParam_timestamp = new Date('2025-01-01 14:00:00.000+00');
             const testFn = CommonUtils.getTimestampUTC(mockParam_timestamp);
             const expectResult: string = '2025-01-01T14:00:00.000Z';
@@ -28,7 +28,7 @@ describe('Unit-tests (utils), priority: synonym CommonUtils', () => {
             expect(testFn).toBe(expectResult);
         })
 
-        test('fn getDateUTC(), params: <timestamp>', () => {
+        test('Fn getDateUTC(), params: <timestamp>', () => {
             const mockParam_timestamp = new Date('2025-01-01T00:00:01.000Z');
             const testFn = CommonUtils.getDateUTC(mockParam_timestamp);
             const expectResult: string = '2025-01-01';
@@ -36,7 +36,7 @@ describe('Unit-tests (utils), priority: synonym CommonUtils', () => {
             expect(testFn).toBe(expectResult);
         })
 
-        test('fn getNextDayUTC(), params: <timestamp>', () => {
+        test('Fn getNextDayUTC(), params: <timestamp>', () => {
             const mockParam_timestamp = new Date('2025-01-31T14:00:00.000Z');
             const testFn = CommonUtils.getNextDayUTC(mockParam_timestamp);
             const expectResult: string = '2025-02-01T00:00:01.000Z';
@@ -44,7 +44,7 @@ describe('Unit-tests (utils), priority: synonym CommonUtils', () => {
             expect(testFn).toBe(expectResult);
         })
 
-        test('fn isEmptyObj()', () => {
+        test('Fn isEmptyObj()', () => {
             const mockParam_obj = {};
             const testFn = CommonUtils.isEmptyObj(mockParam_obj);
             const expectResult = true;
@@ -52,7 +52,7 @@ describe('Unit-tests (utils), priority: synonym CommonUtils', () => {
             expect(testFn).toBe(expectResult);
         })
 
-        test('fn mapObjTimestamps()', () => {
+        test('Fn mapObjTimestamps()', () => {
             const mockParam_data: Users = {
                 user_id: mockId.users.valid[0],
                 email: 'user@test.com',
@@ -76,7 +76,7 @@ describe('Unit-tests (utils), priority: synonym CommonUtils', () => {
             expect(testFn).toStrictEqual(expectResult);
         })
 
-        test('fn mapArrayTimestamps()', () => {
+        test('Fn mapArrayTimestamps()', () => {
             const mockParam_data: Users[] = [
                 {
                     user_id: mockId.users.valid[0],
@@ -120,7 +120,7 @@ describe('Unit-tests (utils), priority: synonym CommonUtils', () => {
             expect(testFn).toStrictEqual(expectResult);
         })
 
-        test('fn getNextRankEnumValue(), params: <Flag>, get FIRST in order', () => {
+        test('Fn getNextRankEnumValue(), params: <Flag>, get FIRST in order', () => {
             const mockParam_enumObj = Flag;
             const mockParam_value = null;
 
@@ -130,7 +130,7 @@ describe('Unit-tests (utils), priority: synonym CommonUtils', () => {
             expect(testFn).toBe(mockResult);
         })
 
-        test('fn getNextRankEnumValue(), params: <Violation> get NEXT in order', () => {
+        test('Fn getNextRankEnumValue(), params: <Violation> get NEXT in order', () => {
             const mockParam_enumObj = Violation;
             const mockParam_value = Violation.USERSFLAG;
 
@@ -140,7 +140,7 @@ describe('Unit-tests (utils), priority: synonym CommonUtils', () => {
             expect(testFn).toBe(mockResult);
         })
 
-        test('fn getNextRankEnumValue(), params: <TicketStatus>, get LAST in order (same value)', () => {
+        test('Fn getNextRankEnumValue(), params: <TicketStatus>, get LAST in order (same value)', () => {
             const mockParam_enumObj = TicketStatus;
             const mockParam_value = TicketStatus.CANCEL;
 
@@ -150,7 +150,7 @@ describe('Unit-tests (utils), priority: synonym CommonUtils', () => {
             expect(testFn).toBe(mockResult);
         })
 
-        test('fn getPreCharString(), params: <text> = "demo-text", <endChar> = "-"', () => {
+        test('Fn getPreCharString(), params: <text> = "demo-text", <endChar> = "-"', () => {
             const mockParam_text = 'demo-text';
             const mockParam_endChar = '-';
             const mockResult = 'demo';
@@ -158,7 +158,7 @@ describe('Unit-tests (utils), priority: synonym CommonUtils', () => {
             expect(testFn).toBe(mockResult);
         })
 
-        test('fn getPreCharString(), params: <text> = "demo-text", <endChar> = "."', () => {
+        test('Fn getPreCharString(), params: <text> = "demo-text", <endChar> = "."', () => {
             const mockParam_text = 'demo-text';
             const mockParam_endChar = '.';
             const mockResult = '';
@@ -166,7 +166,7 @@ describe('Unit-tests (utils), priority: synonym CommonUtils', () => {
             expect(testFn).toBe(mockResult);
         })
 
-        test('fn getPostCharString(), params: <text> = "demotext-", <startChar> = "-"', () => {
+        test('Fn getPostCharString(), params: <text> = "demotext-", <startChar> = "-"', () => {
             const mockParam_text = 'demotext-';
             const mockParam_startChar = '-';
             const mockResult = '';
@@ -174,7 +174,7 @@ describe('Unit-tests (utils), priority: synonym CommonUtils', () => {
             expect(testFn).toBe(mockResult);
         })
 
-        test('fn getPostCharString(), params: <text> = "-demotext", <startChar> = "-"', () => {
+        test('Fn getPostCharString(), params: <text> = "-demotext", <startChar> = "-"', () => {
             const mockParam_text = '-demotext';
             const mockParam_startChar = '-';
             const mockResult = 'demotext';
@@ -185,7 +185,7 @@ describe('Unit-tests (utils), priority: synonym CommonUtils', () => {
 
     describe('Testing invalid fn calls', () => {
 
-        test('fn isEmptyObj(), result: null', () => {
+        test('Fn isEmptyObj(), result: null', () => {
             const mockParam_obj = null;
             const testFn = CommonUtils.isEmptyObj(mockParam_obj);
             const expectResult = false;
@@ -193,7 +193,7 @@ describe('Unit-tests (utils), priority: synonym CommonUtils', () => {
             expect(testFn).toBe(expectResult);
         })
 
-        test('fn isEmptyObj(), result: undefined', () => {
+        test('Fn isEmptyObj(), result: undefined', () => {
             const mockParam_obj = undefined;
             const testFn = CommonUtils.isEmptyObj(mockParam_obj);
             const expectResult = false;
@@ -201,7 +201,7 @@ describe('Unit-tests (utils), priority: synonym CommonUtils', () => {
             expect(testFn).toBe(expectResult);
         })
 
-        test('fn isEmptyObj(), result: filled obj', () => {
+        test('Fn isEmptyObj(), result: filled obj', () => {
             const mockParam_obj = { test: 'test' };
             const testFn = CommonUtils.isEmptyObj(mockParam_obj);
             const expectResult = false;
@@ -209,7 +209,7 @@ describe('Unit-tests (utils), priority: synonym CommonUtils', () => {
             expect(testFn).toBe(expectResult);
         })
 
-        test('fn isEmptyObj(), result: empty array', () => {
+        test('Fn isEmptyObj(), result: empty array', () => {
             const mockParam_obj: any[] = [];
             const testFn = CommonUtils.isEmptyObj(mockParam_obj);
             const expectResult = false;
@@ -217,7 +217,7 @@ describe('Unit-tests (utils), priority: synonym CommonUtils', () => {
             expect(testFn).toBe(expectResult);
         })
 
-        test('fn isEmptyObj(), result: array with empty obj', () => {
+        test('Fn isEmptyObj(), result: array with empty obj', () => {
             const mockParam_obj = [{}];
             const testFn = CommonUtils.isEmptyObj(mockParam_obj);
             const expectResult = false;
@@ -225,7 +225,7 @@ describe('Unit-tests (utils), priority: synonym CommonUtils', () => {
             expect(testFn).toBe(expectResult);
         })
 
-        test('fn isEmptyObj(), result: array with filled obj', () => {
+        test('Fn isEmptyObj(), result: array with filled obj', () => {
             const mockParam_obj = [ { test: 'test' } ];
             const testFn = CommonUtils.isEmptyObj(mockParam_obj);
             const expectResult = false;

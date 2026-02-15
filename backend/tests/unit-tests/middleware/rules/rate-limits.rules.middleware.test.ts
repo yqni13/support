@@ -63,7 +63,7 @@ describe('Unit-tests (middleware), priority: implementation RateLimitsRule', () 
 
         describe('Testing valid context calls', () => {
 
-            test('Param: <RateLimitContext> with valid number of client calls', async () => {
+            test('Params: <RateLimitContext> with valid number of client calls', async () => {
                 const ruleCBL = new ClientsBurstLimitRule(3);
                 const mockContext = structuredClone(mockBurstContext);
 
@@ -77,7 +77,7 @@ describe('Unit-tests (middleware), priority: implementation RateLimitsRule', () 
 
         describe('Testing invalid context calls', () => {
 
-            test('Param: <RateLimitContext> with max client calls', async () => {
+            test('Params: <RateLimitContext> with max client calls', async () => {
                 const ruleCBL = new ClientsBurstLimitRule(3);
                 const mockContext = structuredClone(mockBurstContext);
                 mockContext.push({
@@ -110,7 +110,7 @@ describe('Unit-tests (middleware), priority: implementation RateLimitsRule', () 
 
         describe('Testing valid context calls', () => {
 
-            test('Param: <RateLimitContext> with valid number of user calls', async () => {
+            test('Params: <RateLimitContext> with valid number of user calls', async () => {
                 const ruleUBL = new UsersBurstLimitRule(3);
                 const mockContext = structuredClone(mockBurstContext);
 
@@ -124,7 +124,7 @@ describe('Unit-tests (middleware), priority: implementation RateLimitsRule', () 
 
         describe('Testing invalid context calls', () => {
 
-            test('Param: <RateLimitContext> with max user calls', async () => {
+            test('Params: <RateLimitContext> with max user calls', async () => {
                 const ruleUBL = new UsersBurstLimitRule(3);
                 const mockContext = structuredClone(mockBurstContext);
                 mockContext.push({
@@ -157,7 +157,7 @@ describe('Unit-tests (middleware), priority: implementation RateLimitsRule', () 
 
         describe('Testing valid context calls', () => {
 
-            test('Param: <RateLimitContext> number of calls within daily limit', async () => {
+            test('Params: <RateLimitContext> number of calls within daily limit', async () => {
                 const ruleCDL = new ClientsDailyLimitRule(+secrets.RATELIMITS_CLIENTSDAILYLIMIT);
                 const mockCount = +(secrets.RATELIMITS_CLIENTSDAILYLIMIT) - 1;
 
@@ -168,7 +168,7 @@ describe('Unit-tests (middleware), priority: implementation RateLimitsRule', () 
                 expect(testFn).toBe(expectResult);
             })
 
-            test('Param: <RateLimitContext> no existing entry', async () => {
+            test('Params: <RateLimitContext> no existing entry', async () => {
                 const ruleCDL = new ClientsDailyLimitRule(+secrets.RATELIMITS_CLIENTSDAILYLIMIT);
                 const mockCount = 0;
 
@@ -182,7 +182,7 @@ describe('Unit-tests (middleware), priority: implementation RateLimitsRule', () 
 
         describe('Testing invalid context calls', () => {
 
-            test('Param: <RateLimitContext> number of calls beyond daily limit', async () => {
+            test('Params: <RateLimitContext> number of calls beyond daily limit', async () => {
                 const ruleCDL = new ClientsDailyLimitRule(+secrets.RATELIMITS_CLIENTSDAILYLIMIT);
                 const mockCount = +secrets.RATELIMITS_CLIENTSDAILYLIMIT;
                 const testParam_data = structuredClone(mockParam_data);
@@ -211,7 +211,7 @@ describe('Unit-tests (middleware), priority: implementation RateLimitsRule', () 
 
         describe('Testing valid context calls', () => {
 
-            test('Param: <RateLimitContext> number of calls within daily limit', async () => {
+            test('Params: <RateLimitContext> number of calls within daily limit', async () => {
                 const ruleUDL = new UsersDailyLimitRule(+secrets.RATELIMITS_USERSDAILYLIMIT);
                 const mockCount = +(secrets.RATELIMITS_USERSDAILYLIMIT) - 1;
 
@@ -222,7 +222,7 @@ describe('Unit-tests (middleware), priority: implementation RateLimitsRule', () 
                 expect(testFn).toBe(expectResult);
             })
 
-            test('Param: <RateLimitContext> no existing entry', async () => {
+            test('Params: <RateLimitContext> no existing entry', async () => {
                 const ruleUDL = new UsersDailyLimitRule(+secrets.RATELIMITS_USERSDAILYLIMIT);
                 const mockCount = 0;
 
@@ -236,7 +236,7 @@ describe('Unit-tests (middleware), priority: implementation RateLimitsRule', () 
 
         describe('Testing invalid context calls', () => {
 
-            test('Param: <RateLimitContext> number of calls beyond daily limit', async () => {
+            test('Params: <RateLimitContext> number of calls beyond daily limit', async () => {
                 const ruleUDL = new UsersDailyLimitRule(+secrets.RATELIMITS_USERSDAILYLIMIT);
                 const mockCount = +secrets.RATELIMITS_USERSDAILYLIMIT;
                 const testParam_data = structuredClone(mockParam_data);
@@ -265,7 +265,7 @@ describe('Unit-tests (middleware), priority: implementation RateLimitsRule', () 
 
         describe('Testing valid context calls', () => {
 
-            test('Param: <RateLimitContext> number of calls within daily limit', async () => {
+            test('Params: <RateLimitContext> number of calls within daily limit', async () => {
                 const ruleTDL = new TotalDailyLimitRule(+secrets.RATELIMITS_TOTALDAILYLIMIT);
                 const mockCount = +(secrets.RATELIMITS_TOTALDAILYLIMIT) - 1;
 
@@ -276,7 +276,7 @@ describe('Unit-tests (middleware), priority: implementation RateLimitsRule', () 
                 expect(testFn).toBe(expectResult);
             })
 
-            test('Param: <RateLimitContext> no existing entry', async () => {
+            test('Params: <RateLimitContext> no existing entry', async () => {
                 const ruleTDL = new TotalDailyLimitRule(+secrets.RATELIMITS_TOTALDAILYLIMIT);
                 const mockCount = 0;
 
@@ -290,7 +290,7 @@ describe('Unit-tests (middleware), priority: implementation RateLimitsRule', () 
 
         describe('Testing invalid context calls', () => {
 
-            test('Param: <RateLimitContext> number of calls beyond daily limit', async () => {
+            test('Params: <RateLimitContext> number of calls beyond daily limit', async () => {
                 const ruleTDL = new TotalDailyLimitRule(+secrets.RATELIMITS_TOTALDAILYLIMIT);
                 const mockCount = +secrets.RATELIMITS_TOTALDAILYLIMIT;
 
@@ -317,7 +317,7 @@ describe('Unit-tests (middleware), priority: implementation RateLimitsRule', () 
 
         describe('Testing valid context calls', () => {
 
-            test('Param: <RateLimitContext> number of calls within daily limit', async () => {
+            test('Params: <RateLimitContext> number of calls within daily limit', async () => {
                 const ruleDDL = new DemoDailyLimitRule(+secrets.DEMOLIMITS_TOTALDAILYLIMIT);
                 const mockCount = +(secrets.DEMOLIMITS_TOTALDAILYLIMIT) - 1;
 
@@ -328,7 +328,7 @@ describe('Unit-tests (middleware), priority: implementation RateLimitsRule', () 
                 expect(testFn).toBe(expectResult);
             })
 
-            test('Param: <RateLimitContext> no existing entry', async () => {
+            test('Params: <RateLimitContext> no existing entry', async () => {
                 const ruleDDL = new DemoDailyLimitRule(+secrets.DEMOLIMITS_TOTALDAILYLIMIT);
                 const mockCount = 0;
 
@@ -342,7 +342,7 @@ describe('Unit-tests (middleware), priority: implementation RateLimitsRule', () 
 
         describe('Testing invalid context calls', () => {
 
-            test('Param: <RateLimitContext> number of calls beyond daily limit', async () => {
+            test('Params: <RateLimitContext> number of calls beyond daily limit', async () => {
                 const ruleDDL = new DemoDailyLimitRule(+secrets.DEMOLIMITS_TOTALDAILYLIMIT);
                 const mockCount = +secrets.DEMOLIMITS_TOTALDAILYLIMIT;
 

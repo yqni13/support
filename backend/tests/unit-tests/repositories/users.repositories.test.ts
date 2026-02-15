@@ -31,7 +31,7 @@ const mockBoolean = false;
 
 describe('Unit-tests (repository), priority: entity Users', () => {
 
-    describe('Database tests table <users>, priority: findById', () => {
+    describe('Database tests table <users>, priority: fn findById()', () => {
 
         describe('Testing valid fn calls', () => {
 
@@ -87,7 +87,7 @@ describe('Unit-tests (repository), priority: entity Users', () => {
         })
     })
 
-    describe('Database tests table <users>, priority: findByEmail', () => {
+    describe('Database tests table <users>, priority: fn findByEmail()', () => {
 
         describe('Testing valid fn calls', () => {
 
@@ -140,7 +140,7 @@ describe('Unit-tests (repository), priority: entity Users', () => {
         })
     })
 
-    describe('Database tests table <users>, priority: findAll', () => {
+    describe('Database tests table <users>, priority: fn findAll()', () => {
 
         describe('Testing valid fn calls', () => {
 
@@ -192,7 +192,7 @@ describe('Unit-tests (repository), priority: entity Users', () => {
         })
     })
 
-    describe('Database tests table <users>, priority: findByFilter', () => {
+    describe('Database tests table <users>, priority: fn findByFilter()', () => {
 
         describe('Testing valid fn calls', () => {
 
@@ -251,7 +251,7 @@ describe('Unit-tests (repository), priority: entity Users', () => {
         })
     })
 
-    describe('Database tests table <users>, priority: create', () => {
+    describe('Database tests table <users>, priority: fn create()', () => {
 
         let sql: string;
         let mockParam_entity: Users;
@@ -270,11 +270,7 @@ describe('Unit-tests (repository), priority: entity Users', () => {
         describe('Testing valid fn calls', () => {
 
             test('Return data for created entry, params: <name> = "testclient"', async () => {
-                let mockValues: any[] = [];
-                Object.values(mockParam_entity).forEach((value) => {
-                    mockValues.push(value);
-                });
-
+                const mockValues: any[] = Object.values(mockParam_entity).map((value: string) => value);
                 const mockResult: Users = structuredClone(mockParam_entity);
                 const mockClient = MockUtils.mapMockDbClient(mockResult);
                 const testFn = await usersRepository.create(mockParam_entity);
@@ -302,11 +298,10 @@ describe('Unit-tests (repository), priority: entity Users', () => {
         })
     })
 
-    describe('Database tests table <users>, priority: udpate', () => {
+    describe('Database tests table <users>, priority: fn udpate()', () => {
 
         let sql: string;
         let mockParam_dto: UsersUpdateDTO;
-        let mockValues: any[];
         beforeEach(() => {
             sql = `UPDATE`;
             mockParam_dto = {
@@ -315,16 +310,13 @@ describe('Unit-tests (repository), priority: entity Users', () => {
                 flag: null,
                 last_modified: mockTimestamp
             };
-            mockValues = [];
         });
 
         describe('Testing valid fn calls', () => {
 
             test('Return data of changed entry, params: valid <id>', async () => {
                 const mockParam_id = mockId.users.valid[0];
-                Object.values(mockParam_dto).forEach((val) => {
-                    mockValues.push(val);
-                });
+                const mockValues = Object.values(mockParam_dto).map(value => value);
                 mockValues.push(mockParam_id);
                 const mockResult: Users = structuredClone(mockData);
                 mockResult['status'] = UserStatus.BLACKLISTED;
@@ -342,9 +334,7 @@ describe('Unit-tests (repository), priority: entity Users', () => {
 
             test('Return null for no entries, params: non-existing <id>', async () => {
                 const mockParam_id = mockId.users.invalid[0];
-                Object.values(mockParam_dto).forEach((val) => {
-                    mockValues.push(val);
-                });
+                const mockValues = Object.values(mockParam_dto).map(value => value);
                 mockValues.push(mockParam_id);
 
                 const mockResult = null;
@@ -376,7 +366,7 @@ describe('Unit-tests (repository), priority: entity Users', () => {
         })
     })
 
-    describe('Database tests table <users>, priority: udpateFlag', () => {
+    describe('Database tests table <users>, priority: fn udpateFlag()', () => {
 
         let sql: string;
         let mockParam_dto: UsersFlagUpdateDTO;
