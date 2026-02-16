@@ -1,4 +1,4 @@
-import { ErrorDTO } from "../dtos/test.dto";
+import { TestErrorDTO } from "../dtos/test.dto";
 import { ExceedMaxEndpointException, InvalidEndpointException, UnexpectedApiResponseException, UnimplementedException } from "../utils/exceptions/api.exception";
 import { AuthenticationEmailException, AuthenticationStandardException, AuthSecretNotFoundException, BlockedUsersException, InvalidApiKeyException, InvalidCredentialsException, InvalidTokenException, InvalidUsersException, JWTExpirationException, MalformedApiKeyException, MissingApiKeyException, PermissionException, TokenMissingException } from "../utils/exceptions/auth.exception";
 import { InternalServerException, InvalidSourceException, MaintenanceException, RequestExceedMaxException, UnexpectedException } from "../utils/exceptions/common.exception";
@@ -8,7 +8,7 @@ import { InvalidFilesException, InvalidPropertiesException } from "../utils/exce
 class TestModel {
     private substitutionMsg = 'YOU_FORGOT_THE_REQUIRED_ERROR_MSG';
 
-    throwExceptionOnTestPurpose(dto: ErrorDTO) {
+    throwExceptionOnTestPurpose(dto: TestErrorDTO) {
         switch(dto.error) {
             // AuthException
             case('AuthenticationStandardException'):

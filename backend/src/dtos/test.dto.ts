@@ -1,10 +1,10 @@
 import { DemoMode } from "../utils/enums/demo-mode.enum";
 
-export interface ErrorDTO {
+export interface TestErrorDTO {
     error: string,
     errorMsg?: string
 }
 
-export interface DemoDTO {
+export interface TestDemoDTO {
     demo_mode?: DemoMode
 }

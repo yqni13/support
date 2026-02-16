@@ -80,7 +80,7 @@ To monitor errors the logging framework `Winston` is used in combination with Lo
 Testing of the application server can be done automatically via Jest tests (next chapter) or manually by a separate demonstration route.<br>POST: `/test/demo`<br>using the body payload to control the response - use the demo route to get exceptions, info message or the current application version number. With the implemented observation middleware, the demo route will be limited to 20 daily requests. As the demo route is not authenticated, you only need the following data:
 ```sh
 [ROUTE] {{url}}/api/v1/test/demo
-[PAYLOAD] { "demo_mode": string }
+[PAYLOAD] { "demo_mode": DemoMode }
 ```
 Use `https://support-0hsq.onrender.com` for {{url}} to test on live conditions.<br>
 See Figure 3 for the different use cases & responses (Postman, v11.73.5) - from left to right:

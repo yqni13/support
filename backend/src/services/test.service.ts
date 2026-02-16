@@ -1,15 +1,15 @@
 import { MetaResponseDTO } from '../dtos/meta.dto';
-import { DemoDTO, ErrorDTO } from '../dtos/test.dto';
+import { TestDemoDTO, TestErrorDTO } from '../dtos/test.dto';
 import testModel from '../models/test.model';
 import metaRepository from '../repositories/meta.repository';
 import { DemoMode } from '../utils/enums/demo-mode.enum';
 
 class TestService {
-    async searchExceptionThrow(dto: ErrorDTO) {
+    async searchExceptionThrow(dto: TestErrorDTO) {
         testModel.throwExceptionOnTestPurpose(dto);
     }
 
-    async searchDemoByPayload(dto: DemoDTO): Promise<Record<string, string>> {
+    async searchDemoByPayload(dto: TestDemoDTO): Promise<Record<string, string>> {
         let result: any;
         switch(dto.demo_mode) {
             case(DemoMode.SUCCESS): {
