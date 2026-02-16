@@ -226,7 +226,7 @@ describe('Integration-tests (repository), priority: entity Meta', () => {
 
                 await dbTestSetup.addTestData();
                 const testResponse = await request(app)
-                    .post(`${apiUrl}/demo`)
+                    .post('/api/v1/test/demo')
                     .send(testParam_dto);
 
                 expect(testResponse.statusCode).toBe(200);
@@ -241,7 +241,7 @@ describe('Integration-tests (repository), priority: entity Meta', () => {
 
                 await dbTestSetup.addTestData();
                 const testResponse = await request(app)
-                    .post(`${apiUrl}/demo`)
+                    .post('/api/v1/test/demo')
                     .send(testParam_dto);
 
                 expect(testResponse.statusCode).toBe(500);
@@ -439,7 +439,7 @@ describe('Integration-tests (repository), priority: entity Meta', () => {
                     jest.spyOn(CommonUtils, 'logError').mockImplementation();
 
                     const testResponse = await request(app)
-                        .post(`${apiUrl}/demo`)
+                        .post('/api/v1/test/demo')
                         .send(testParam_dto);
 
                     expect(testResponse.statusCode).toBe(ErrorStatusCodes.InvalidPropertiesException);

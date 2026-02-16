@@ -785,9 +785,9 @@ describe('Integration-tests (repository), priority: entity Tickets', () => {
                     message: 'test-message',
                 };
 
-                const notEmptyParams = Object.keys(testData) as (keyof typeof testData)[];
+                const emptyParams = Object.keys(testData) as (keyof typeof testData)[];
 
-                test.each(notEmptyParams)('Params: <%s>, validator: fn notEmpty() by undefined', async (invalidParam) => {
+                test.each(emptyParams)('Params: <%s>, validator: fn notEmpty() by undefined', async (invalidParam) => {
                     const testParam_dto = structuredClone(testData);
                     delete testParam_dto[invalidParam];
                     const mockError = structuredClone(testError);
@@ -854,9 +854,9 @@ describe('Integration-tests (repository), priority: entity Tickets', () => {
                     flag: null
                 };
 
-                const notEmptyParams = ['status', 'option', 'message'] as (keyof typeof testData)[];
+                const emptyParams = ['status', 'option', 'message'] as (keyof typeof testData)[];
 
-                test.each(notEmptyParams)('Params: <%s>, validator: fn notEmpty() by undefined', async (invalidParam) => {
+                test.each(emptyParams)('Params: <%s>, validator: fn notEmpty() by undefined', async (invalidParam) => {
                     const testParam_id = mockId.tickets.invalid[0];
                     const testParam_dto = structuredClone(testData);
                     delete testParam_dto[invalidParam];

@@ -75,7 +75,7 @@ describe('Unit-tests (middleware), priority: class RateLimitsEngine', () => {
             })
         })
 
-        describe('Route: /meta/demo', () => {
+        describe('Route: /test/demo', () => {
 
             test('Params: <DemoDailyLimitRule>, result: null', async () => {
                 const mockResult_updateDemoLimit: DemoLimitsResponseDTO | null = null;
