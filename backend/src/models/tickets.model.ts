@@ -1,14 +1,14 @@
 import { TicketsCreateDTO, TicketsResponseDTO, TicketsUpdateDTO } from "../dtos/tickets.dto";
 import { Tickets } from "../repositories/interfaces/tickets.entity.interface";
-import * as Utils from "../utils/common.utils";
+import * as CommonUtils from "../utils/common.utils";
 import { TicketStatus } from "../utils/enums/ticket-status.enum";
 import { FilesService } from "../services/files.service";
 import { PermissionException } from "../utils/exceptions/auth.exception";
 
 class TicketsModel {
     async generateTicket(dto: TicketsCreateDTO, files: Express.Multer.File[] | null): Promise<Tickets> {
-        const timestamp = Utils.getTimestampUTC();
-        const newId = Utils.generateUUID();
+        const timestamp = CommonUtils.getTimestampUTC();
+        const newId = CommonUtils.generateUUID();
         let paths: string[] | null = null;
         if(files) {
             const filesService = new FilesService(files, 'tickets');
@@ -31,7 +31,7 @@ class TicketsModel {
     }
 
     mapTicketUpdateDto(dto: TicketsUpdateDTO): TicketsUpdateDTO {
-        const timestamp = Utils.getTimestampUTC();
+        const timestamp = CommonUtils.getTimestampUTC();
         return {
             ...dto,
             last_modified: timestamp
@@ -52,7 +52,7 @@ class TicketsModel {
             { timeRange: 0, apply: (status: TicketStatus) => status === TicketStatus.CANCEL }
         ];
         const factorMilSecToDays = 1 / (1000 * 3600 * 24);
-        const days = Math.floor((Utils.now().getTime() - new Date(dto.created_on).getTime()) * factorMilSecToDays);
+        const days = Math.floor((CommonUtils.now().getTime() - new Date(dto.created_on).getTime()) * factorMilSecToDays);
         const isPermitted = deleteRules.find(rule => days >= rule.timeRange)?.apply(dto.status) ?? false
         if(!isPermitted) {
             throw new PermissionException('support-delete-prohibited');

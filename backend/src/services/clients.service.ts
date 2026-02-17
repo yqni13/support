@@ -10,7 +10,7 @@ import {
     ClientsStatusUpdateDTO
 } from "../dtos/clients.dto";
 import clientsModel from '../models/clients.model';
-import * as Utils from '../utils/common.utils';
+import * as CommonUtils from '../utils/common.utils';
 import clientsRepository from '../repositories/clients.repository';
 import { Clients } from "../repositories/interfaces/clients.entity.interface";
 
@@ -26,21 +26,21 @@ class ClientsService {
      */
     async getClientById(id: string): Promise<ClientsExistResponseDTO | null> {
         const result = await clientsRepository.findById(id);
-        return !result ? null : Utils.mapObjTimestamps<ClientsExistResponseDTO>(result, this.timeMapTargets);
+        return !result ? null : CommonUtils.mapObjTimestamps<ClientsExistResponseDTO>(result, this.timeMapTargets);
     }
 
     /**
      * @description Usage for apikey authentication in auth.middleware.ts.
      */
     async getClientByActiveKey(key: string): Promise<ClientsExistResponseDTO | null> {
-        const hash = Utils.mapKeyToHash(key);
+        const hash = CommonUtils.mapKeyToHash(key);
         const result = await clientsRepository.findByActiveKey(hash);
-        return !result ? null : Utils.mapObjTimestamps<ClientsExistResponseDTO>(result, this.timeMapTargets);
+        return !result ? null : CommonUtils.mapObjTimestamps<ClientsExistResponseDTO>(result, this.timeMapTargets);
     }
 
     async getClientStatusByName(name: string): Promise<ClientsStatusResponseDTO | null> {
         const result = await clientsRepository.findStatusByName(name);
-        return !result ? null : Utils.mapObjTimestamps<ClientsStatusResponseDTO>(result, this.timeMapTargets);
+        return !result ? null : CommonUtils.mapObjTimestamps<ClientsStatusResponseDTO>(result, this.timeMapTargets);
     }
 
     async createClient(dto: ClientsCreateDTO): Promise<ClientsCreateResponseDTO> {
@@ -50,21 +50,21 @@ class ClientsService {
     }
 
     async updateClientFlag(id: string, dto: ClientsFlagUpdateDTO): Promise<ClientsFlagResponseDTO | null> {
-        dto.last_modified = Utils.getTimestampUTC();
+        dto.last_modified = CommonUtils.getTimestampUTC();
         const result = await clientsRepository.updateFlag(id, dto);
-        return !result ? null : Utils.mapObjTimestamps<ClientsFlagResponseDTO>(result, this.timeMapTargets);
+        return !result ? null : CommonUtils.mapObjTimestamps<ClientsFlagResponseDTO>(result, this.timeMapTargets);
     }
 
     async updateClientStatus(id: string, dto: ClientsStatusUpdateDTO): Promise<ClientsStatusResponseDTO | null> {
-        dto.last_modified = Utils.getTimestampUTC();
+        dto.last_modified = CommonUtils.getTimestampUTC();
         const result = await clientsRepository.updateStatus(id, dto);
-        return !result ? null : Utils.mapObjTimestamps<ClientsStatusResponseDTO>(result, this.timeMapTargets);
+        return !result ? null : CommonUtils.mapObjTimestamps<ClientsStatusResponseDTO>(result, this.timeMapTargets);
     }
 
     async updateClientLastUse(id: string): Promise<ClientsLastUseResponseDTO | null> {
-        const dto: ClientsLastUseUpdateDTO = { last_use: Utils.getTimestampUTC() };
+        const dto: ClientsLastUseUpdateDTO = { last_use: CommonUtils.getTimestampUTC() };
         const result = await clientsRepository.updateLastUse(id, dto);
-        return !result ? null : Utils.mapObjTimestamps<ClientsLastUseResponseDTO>(result, this.timeMapTargets);
+        return !result ? null : CommonUtils.mapObjTimestamps<ClientsLastUseResponseDTO>(result, this.timeMapTargets);
     }
 }
 

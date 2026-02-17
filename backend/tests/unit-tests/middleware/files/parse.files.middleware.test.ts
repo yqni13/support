@@ -4,7 +4,7 @@ import { parseFiles } from '../../../../src/middleware/files/parse.files.middlew
 
 jest.mock('multer'); 
 // Tests including multer parsing mocked files => tickets.integration.test.ts
-describe('Middleware tests category <files>, priority: parseFiles', () => {
+describe('Unit-tests (middleware), priority: fn parseFiles()', () => {
 
     const req: any = {};
     const res: any = {};

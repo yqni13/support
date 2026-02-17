@@ -8,10 +8,10 @@ import { default as mockId } from "./mock-data/id.mock-data.json";
 
 export class DBTestData {
     private static instance: DBTestData;
-    private tableRecord: Record<string, string>;
+    private tableRecords: Record<string, string>;
 
     constructor() {
-        this.tableRecord = {
+        this.tableRecords = {
             meta: 'meta',
             clients: 'clients',
             users: 'users',
@@ -29,16 +29,12 @@ export class DBTestData {
     }
 
     getDatabaseTables(): string[] {
-        let tables: string[] = [];
-        Object.values(this.tableRecord).forEach((table) => {
-            tables.push(table);
-        })
-        return tables;
+        return Object.values(this.tableRecords).map((table: string) => table);
     }
 
     getMetaInsertSql(): BaseQuery {
         // No need for id (serial) control because of no testing with INSERT or DELETE.
-        const sql = `INSERT INTO ${this.tableRecord['meta']}
+        const sql = `INSERT INTO ${this.tableRecords['meta']}
         (id, app, author, build_on, environment, app_version, db_version, docker_image, docker_version, jenkins_version, maintenance_mode, created_on, last_modified)
         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13);
         `;
@@ -47,7 +43,7 @@ export class DBTestData {
     }
 
     getClientsInsertSql(): BaseQuery {
-        const sql = `INSERT INTO ${this.tableRecord['clients']}
+        const sql = `INSERT INTO ${this.tableRecords['clients']}
         (client_id, name, api_key_hash, status, flag, last_use, last_modified, created_on)
         VALUES ($1, $2, $3, $4, $5, $6, $7, $8);
         `;
@@ -56,7 +52,7 @@ export class DBTestData {
     }
 
     getUsersInsertSql(): BaseQuery {
-        const sql = `INSERT INTO ${this.tableRecord['users']}
+        const sql = `INSERT INTO ${this.tableRecords['users']}
         (user_id, email, status, flag, last_modified, created_on)
         VALUES ($1, $2, $3, $4, $5, $6);
         `;
@@ -65,7 +61,7 @@ export class DBTestData {
     }
 
     getTicketsInsertSql(): BaseQuery {
-        const sql = `INSERT INTO ${this.tableRecord['tickets']}
+        const sql = `INSERT INTO ${this.tableRecords['tickets']}
         (ticket_id, client_id, user_id, status, message, resource_paths, flag, last_modified, created_on)
         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9);
         `;
@@ -74,7 +70,7 @@ export class DBTestData {
     }
 
     getRateLimitsInsertSql(): BaseQuery {
-        const sql = `INSERT INTO ${this.tableRecord['rateLimits']}
+        const sql = `INSERT INTO ${this.tableRecords['rateLimits']}
         (client_id, user_id, day, count, last_modified)
         VALUES ($1, $2, $3, $4, $5);
         `;
@@ -83,7 +79,7 @@ export class DBTestData {
     }
 
     getDemoLimitsInsertSql(): BaseQuery {
-        const sql = `INSERT INTO ${this.tableRecord['demoLimits']}
+        const sql = `INSERT INTO ${this.tableRecords['demoLimits']}
         (day, count, last_modified)
         VALUES ($1, $2, $3);
         `;
@@ -92,7 +88,7 @@ export class DBTestData {
     }
 
     getTicketsWithoutPathsInsertSql(): BaseQuery {
-        const sql = `INSERT INTO ${this.tableRecord['tickets']}
+        const sql = `INSERT INTO ${this.tableRecords['tickets']}
         (ticket_id, client_id, user_id, status, message, resource_paths, flag, last_modified, created_on)
         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9);
         `;
