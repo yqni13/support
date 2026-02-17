@@ -3,7 +3,7 @@ import { Readable } from 'stream';
 import { validateFiles } from '../../../../src/middleware/files/validate.files.middleware';
 import { ErrorStatusCodes } from '../../../../src/utils/errorStatusCodes.utils';
 
-describe('Middleware tests category <files>, priority: validateFiles', () => {
+describe('Unit-tests (middleware), priority: fn validateFiles()', () => {
 
     const req: any = {};
     const res: any = {};

@@ -2,11 +2,10 @@ import { body, param, ValidationChain } from 'express-validator';
 import * as CommonValidators from '../common.validation';
 import { MaintenanceMode } from '../../utils/enums/maintenance-mode.enum';
 import { CommonExceptionMessage as Message } from '../../utils/enums/common-exception-messages.enum';
-import { DemoMode } from '../../utils/enums/demo-mode.enum';
 
 export const getMetaByIdSchema: ValidationChain[] = [
     param('id')
-        .custom((content: string) => CommonValidators.validatePathParam(content))
+        .custom((content: string) => CommonValidators.validateRequestRouteParam(content))
         .bail()
         .isInt()
         .withMessage('support-invalid-entry#meta_id')
@@ -14,12 +13,12 @@ export const getMetaByIdSchema: ValidationChain[] = [
 
 export const getMetaByNameSchema: ValidationChain[] = [
     param('name')
-        .custom((content: string) => CommonValidators.validatePathParam(content))
+        .custom((content: string) => CommonValidators.validateRequestRouteParam(content))
 ];
 
 export const patchMetaSchema: ValidationChain[] = [
     param('id')
-        .custom((content: string) => CommonValidators.validatePathParam(content))
+        .custom((content: string) => CommonValidators.validateRequestRouteParam(content))
         .bail()
         .isInt()
         .withMessage('support-invalid-entry#meta_id'),
@@ -74,12 +73,12 @@ export const patchMetaSchema: ValidationChain[] = [
 
 export const getMaintenanceSchema: ValidationChain[] = [
     param('name')
-        .custom((content: string) => CommonValidators.validatePathParam(content))
+        .custom((content: string) => CommonValidators.validateRequestRouteParam(content))
 ];
 
 export const patchMaintenanceSchema: ValidationChain[] = [
     param('id')
-        .custom((content: string) => CommonValidators.validatePathParam(content))
+        .custom((content: string) => CommonValidators.validateRequestRouteParam(content))
         .bail()
         .isInt()
         .withMessage('support-invalid-entry#meta_id'),
@@ -93,10 +92,3 @@ export const patchMaintenanceSchema: ValidationChain[] = [
         .isEmpty()
         .withMessage(Message.FORBIDDEN)
 ];
-
-export const postDemoSchema: ValidationChain[] = [
-    body('demo_mode')
-        .trim()
-        .custom((mode: DemoMode) => CommonValidators.validateEnum(mode, DemoMode, 'demoMode'))
-        .optional() // Accept {} as payload.
-]

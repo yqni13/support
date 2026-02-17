@@ -7,11 +7,12 @@ import { ClientsDailyLimitRule, DemoDailyLimitRule } from "../../../src/middlewa
 import demoLimitsService from "../../../src/services/demo-limits.service";
 import rateLimitsService from "../../../src/services/rate-limits.service";
 import { Violation } from "../../../src/utils/enums/violations.enum";
+import { default as mockId } from "../../mock-data/id.mock-data.json";
 
 // Ensure correct type by converting secret to number via unary + operator.
 import { secrets } from "../../../src/utils/secrets.utils";
 
-describe('Middleware tests category <engines>, priority: RateLimitsEngine', () => {
+describe('Unit-tests (middleware), priority: class RateLimitsEngine', () => {
 
     describe('Testing valid fn calls', () => {
 
@@ -19,8 +20,8 @@ describe('Middleware tests category <engines>, priority: RateLimitsEngine', () =
         let mockValidUsersId: string;
         let mockParam_data: RateLimitsData;
         beforeEach(() => {
-            mockValidClientsId = 'valid_clients_test_id',
-            mockValidUsersId = 'valid_users_test_id';
+            mockValidClientsId = mockId.clients.valid[0],
+            mockValidUsersId = mockId.users.valid[0];
             mockParam_data = {
                 client_id: mockValidClientsId,
                 user_id: mockValidUsersId
@@ -74,7 +75,7 @@ describe('Middleware tests category <engines>, priority: RateLimitsEngine', () =
             })
         })
 
-        describe('Route: /meta/demo', () => {
+        describe('Route: /test/demo', () => {
 
             test('Params: <DemoDailyLimitRule>, result: null', async () => {
                 const mockResult_updateDemoLimit: DemoLimitsResponseDTO | null = null;

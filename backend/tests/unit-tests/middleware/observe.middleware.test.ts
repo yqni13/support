@@ -1,5 +1,5 @@
 import { observe } from "../../../src/middleware/observe.middleware";
-import * as Utils from "../../../src/utils/common.utils";
+import * as CommonUtils from "../../../src/utils/common.utils";
 import { default as mockId } from "../../mock-data/id.mock-data.json";
 import { ApiKeyStatus } from "../../../src/utils/enums/api-key-status.enum";
 import { UserStatus } from "../../../src/utils/enums/user-status.enum";
@@ -8,7 +8,7 @@ import { RateLimitsResponse } from "../../../src/middleware/interfaces/rate-limi
 import { ExceedMaxEndpointException } from "../../../src/utils/exceptions/api.exception";
 import { penaltyHandler } from "../../../src/middleware/container/penalty.container.middleware";
 
-describe('Middleware tests category <security>, priority: observe', () => {
+describe('Unit-tests (middleware), priority: fn observe()', () => {
 
     const res: any = {};
     const next = jest.fn();
@@ -57,7 +57,7 @@ describe('Middleware tests category <security>, priority: observe', () => {
             expect(next).toHaveBeenCalledWith();
         })
 
-        test('Validate caller origin, route: /meta/demo, result: "SUCCESS"', async () => {
+        test('Validate caller origin, route: /test/demo, result: "SUCCESS"', async () => {
             const mockRateLimits: RateLimitsResponse | null = null;
 
             jest.spyOn(RateLimitsEngine.prototype, 'process').mockResolvedValue(mockRateLimits);
@@ -80,7 +80,7 @@ describe('Middleware tests category <security>, priority: observe', () => {
 
             jest.spyOn(RateLimitsEngine.prototype, 'process').mockResolvedValue(mockRateLimits);
             jest.spyOn(penaltyHandler, 'apply').mockImplementation();
-            jest.spyOn(Utils, 'logError').mockImplementation();
+            jest.spyOn(CommonUtils, 'logError').mockImplementation();
 
             const middleware = observe();
             await middleware(req, res, next);
@@ -90,7 +90,7 @@ describe('Middleware tests category <security>, priority: observe', () => {
             expect(errArg.status).toBe(429);
         })
 
-        test('Validate caller origin, route: /meta/demo, error: ExceedMaxEndpointException', async () => {
+        test('Validate caller origin, route: /test/demo, error: ExceedMaxEndpointException', async () => {
             const mockRateLimits: RateLimitsResponse | null = {
                 msg: 'support-demolimits-total-daily',
                 retryAfter: '2025-01-02T00.00.01.000Z'
@@ -98,7 +98,7 @@ describe('Middleware tests category <security>, priority: observe', () => {
 
             jest.spyOn(RateLimitsEngine.prototype, 'process').mockResolvedValue(mockRateLimits);
             jest.spyOn(penaltyHandler, 'apply').mockImplementation();
-            jest.spyOn(Utils, 'logError').mockImplementation();
+            jest.spyOn(CommonUtils, 'logError').mockImplementation();
 
             const middleware = observe(true);
             await middleware(req, res, next);

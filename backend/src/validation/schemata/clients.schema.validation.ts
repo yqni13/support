@@ -5,7 +5,7 @@ import { CommonExceptionMessage as Message } from '../../utils/enums/common-exce
 
 export const getClientStatusSchema: ValidationChain[] = [
     param('name')
-        .custom((content: string) => CommonValidators.validatePathParam(content))
+        .custom((content: string) => CommonValidators.validateRequestRouteParam(content))
 ];
 
 export const postClientSchema: ValidationChain[] = [
@@ -19,7 +19,7 @@ export const postClientSchema: ValidationChain[] = [
 
 export const patchClientStatusSchema: ValidationChain[] = [
     param('id')
-        .custom((content: string) => CommonValidators.validatePathParam(content))
+        .custom((content: string) => CommonValidators.validateRequestRouteParam(content))
         .bail()
         .isUUID(4)
         .withMessage('support-invalid-entry#client_id'),

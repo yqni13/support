@@ -164,7 +164,7 @@ export async function validateClientUniqueness(name: string): Promise<boolean> {
     return true;
 }
 
-export function validatePathParam(arg: string | null | undefined): boolean {
+export function validateRequestRouteParam(arg: string | null | undefined): boolean {
     if(arg === null || arg === undefined || arg === ' ' || arg[0] === ':') {
         throw new Error(CommonExceptionMessage.REQUIRED);
     }
