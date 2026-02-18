@@ -1,7 +1,7 @@
 import { TestErrorDTO } from "../dtos/test.dto";
-import { ExceedMaxEndpointException, InvalidEndpointException, UnexpectedApiResponseException, UnimplementedException } from "../utils/exceptions/api.exception";
-import { AuthenticationEmailException, AuthenticationStandardException, AuthSecretNotFoundException, BlockedUsersException, InvalidApiKeyException, InvalidCredentialsException, InvalidTokenException, InvalidUsersException, JWTExpirationException, MalformedApiKeyException, MissingApiKeyException, PermissionException, TokenMissingException } from "../utils/exceptions/auth.exception";
-import { InternalServerException, InvalidSourceException, MaintenanceException, RequestExceedMaxException, UnexpectedException } from "../utils/exceptions/common.exception";
+import { ExceedMaxEndpointException, UnexpectedApiResponseException, UnimplementedException } from "../utils/exceptions/api.exception";
+import { AuthSecretNotFoundException, BlockedUsersException, InvalidApiKeyException, InvalidCredentialsException, InvalidUsersException, MalformedApiKeyException, MissingApiKeyException, PermissionException } from "../utils/exceptions/auth.exception";
+import { InternalServerException, InvalidSourceException, MaintenanceException, RequestExceedMaxException } from "../utils/exceptions/common.exception";
 import { DBConnectionException, DBEmptyException, DBQueryErrorException } from "../utils/exceptions/db.exception";
 import { InvalidFilesException, InvalidPropertiesException } from "../utils/exceptions/validation.exception";
 
@@ -11,18 +11,8 @@ class TestModel {
     throwExceptionOnTestPurpose(dto: TestErrorDTO) {
         switch(dto.error) {
             // AuthException
-            case('AuthenticationStandardException'):
-                throw new AuthenticationStandardException(dto.errorMsg ?? this.substitutionMsg);
-            case('AuthenticationEmailException'):
-                throw new AuthenticationEmailException(dto.errorMsg ?? this.substitutionMsg);
-            case('JWTExpirationException'):
-                throw new JWTExpirationException();
-            case('TokenMissingException'):
-                throw new TokenMissingException();
             case('InvalidCredentialsException'):
                 throw new InvalidCredentialsException(dto.errorMsg ?? this.substitutionMsg);
-            case('InvalidTokenException'):
-                throw new InvalidTokenException(dto.errorMsg ?? this.substitutionMsg);
             case('MissingApiKeyException'):
                 throw new MissingApiKeyException();
             case('InvalidApiKeyException'):
@@ -44,8 +34,6 @@ class TestModel {
                 throw new RequestExceedMaxException();
             case('InvalidSourceException'):
                 throw new InvalidSourceException();
-            case('UnexpectedException'):
-                throw new UnexpectedException(dto.errorMsg ?? this.substitutionMsg);
             case('MaintenanceException'):
                 throw new MaintenanceException(dto.errorMsg ?? this.substitutionMsg);
             // DBConnectionException
@@ -71,8 +59,6 @@ class TestModel {
             case('InvalidFilesException'):
                 throw new InvalidFilesException(dto.errorMsg ?? this.substitutionMsg);
             // ApiException
-            case('InvalidEndpointException'):
-                throw new InvalidEndpointException(dto.errorMsg ?? this.substitutionMsg);
             case('UnimplementedException'):
                 throw new UnimplementedException();
             case('ExceedMaxEndpointException'):
