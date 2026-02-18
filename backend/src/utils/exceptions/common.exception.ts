@@ -29,20 +29,16 @@ export class InternalServerException extends CommonException {
 }
 
 export class RequestExceedMaxException extends CommonException {
+    // TODO(yqni13): remove? (SUPPORT-6) as user should not get emails from us, this exception should never reach them
     constructor(message: string = 'support-max-email', data?: any) {
         super(message, data);
     }
 }
 
 export class InvalidSourceException extends CommonException {
+    // TODO(yqni13): remove? (SUPPORT-6) in combination with no usage for additional encryption?
     constructor(message: string = 'support-invalid-source', data?: any) {
         super(message, data);
-    }
-}
-
-export class UnexpectedException extends CommonException {
-    constructor(message: string, data?: any) {
-        super(message, data, ErrorStatusCodes.UnexpectedException);
     }
 }
 

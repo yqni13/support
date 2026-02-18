@@ -4,7 +4,7 @@ import { TicketsIntervalDTO } from "../../dtos/tickets.dto";
 import demoLimitsService from "../../services/demo-limits.service";
 import rateLimitsService from "../../services/rate-limits.service";
 import ticketsService from "../../services/tickets.service";
-import * as Utils from "../../utils/common.utils";
+import * as CommonUtils from "../../utils/common.utils";
 import { MaintenanceMode } from "../../utils/enums/maintenance-mode.enum";
 import { Violation } from "../../utils/enums/violations.enum";
 import { RateLimitsData, RateLimitsResponse, RateLimitsRule } from "../interfaces/rate-limits.interface.middleware";
@@ -19,7 +19,7 @@ export class ClientsBurstLimitRule implements RateLimitsRule {
         const dto: TicketsIntervalDTO = { client_id: data.client_id, intervalTime: '1 minute' };
         const tickets = await ticketsService.getTicketsByTimeInterval(dto);
         if(tickets && tickets.length >= this.requestLimit) {
-            return { msg: 'support-ratelimits-clients-burst', retryAfter: Utils.getNextDayUTC() };
+            return { msg: 'support-ratelimits-clients-burst', retryAfter: CommonUtils.getNextDayUTC() };
         }
 
         return null;
@@ -36,7 +36,7 @@ export class UsersBurstLimitRule implements RateLimitsRule {
         const dto: TicketsIntervalDTO = { user_id: data.user_id, intervalTime: '1 minute' };
         const tickets = await ticketsService.getTicketsByTimeInterval(dto);
         if(tickets && tickets.length >= this.requestLimit) {
-            return { msg: 'support-ratelimits-users-burst', retryAfter: Utils.getNextDayUTC() };
+            return { msg: 'support-ratelimits-users-burst', retryAfter: CommonUtils.getNextDayUTC() };
         }
 
         return null;
@@ -50,12 +50,12 @@ export class ClientsDailyLimitRule implements RateLimitsRule {
     }
 
     async check(data: RateLimitsData): Promise<RateLimitsResponse | null> {
-        const dto: RateLimitsCountDTO = { client_id: data.client_id, day: Utils.getDateUTC() };
+        const dto: RateLimitsCountDTO = { client_id: data.client_id, day: CommonUtils.getDateUTC() };
         const count: number = await rateLimitsService.getRateLimitCount(dto);
         if(count >= this.requestLimit) {
             return {
                 msg: 'support-ratelimits-clients-daily',
-                retryAfter: Utils.getNextDayUTC(),
+                retryAfter: CommonUtils.getNextDayUTC(),
                 penalty: {
                     type: Violation.CLIENTSFLAG,
                     id: data.client_id,
@@ -75,12 +75,12 @@ export class UsersDailyLimitRule implements RateLimitsRule {
     }
 
     async check(data: RateLimitsData): Promise<RateLimitsResponse | null> {
-        const dto: RateLimitsCountDTO = { user_id: data.user_id, day: Utils.getDateUTC() };
+        const dto: RateLimitsCountDTO = { user_id: data.user_id, day: CommonUtils.getDateUTC() };
         const count: number = await rateLimitsService.getRateLimitCount(dto);
         if(count >= this.requestLimit) {
             return {
                 msg: 'support-ratelimits-users-daily',
-                retryAfter: Utils.getNextDayUTC(),
+                retryAfter: CommonUtils.getNextDayUTC(),
                 penalty: {
                     type: Violation.USERSFLAG,
                     id: data.user_id,
@@ -100,12 +100,12 @@ export class TotalDailyLimitRule implements RateLimitsRule {
     }
 
     async check(): Promise<RateLimitsResponse | null> {
-        const dto: RateLimitsCountDTO = { day: Utils.getDateUTC() };
+        const dto: RateLimitsCountDTO = { day: CommonUtils.getDateUTC() };
         const count: number = await rateLimitsService.getRateLimitCount(dto);
         if(count >= this.requestLimit) {
             return { 
                 msg: 'support-ratelimits-total-daily', 
-                retryAfter: Utils.getNextDayUTC(),
+                retryAfter: CommonUtils.getNextDayUTC(),
                 penalty: {
                     type: Violation.MAINTENANCE_TRAFFIC,
                     id: 1,
@@ -125,10 +125,10 @@ export class DemoDailyLimitRule implements RateLimitsRule {
     }
 
     async check(): Promise<RateLimitsResponse | null> {
-        const dto: DemoLimitsCountDTO = { day: Utils.getDateUTC() };
+        const dto: DemoLimitsCountDTO = { day: CommonUtils.getDateUTC() };
         const count: number = await demoLimitsService.getDemoLimitCount(dto);
         if(count >= this.requestLimit) {
-            return { msg: 'support-demolimits-total-daily', retryAfter: Utils.getNextDayUTC() };
+            return { msg: 'support-demolimits-total-daily', retryAfter: CommonUtils.getNextDayUTC() };
         }
 
         return null;

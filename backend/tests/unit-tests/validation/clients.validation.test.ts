@@ -1,11 +1,11 @@
 import * as CommonValidators from '../../../src/validation/common.validation';
 import { MalformedApiKeyException } from '../../../src/utils/exceptions/auth.exception';
 
-describe('CommonValidators tests, priority: clients model', () => {
+describe('Unit-tests (validation), priority: synonym CommonValidators on entity Clients', () => {
 
     describe('Testing valid fn calls', () => {
 
-        test('fn: validateApiKey, params: <key>', () => {
+        test('Fn validateApiKey(), params: <key>', () => {
             const mockParam_key = 'h6O6rPDkVkAvyYTHLlcL2viGlp5sWmfCbUZx9MdnOU';
             const testFn = CommonValidators.validateApiKey(mockParam_key);
             const expectResult = true;
@@ -16,7 +16,7 @@ describe('CommonValidators tests, priority: clients model', () => {
 
     describe('Testing invalid fn calls', () => {
 
-        test('fn: validateApiKey, params: <key>, error: invalid length', () => {
+        test('Fn validateApiKey(), params: <key>, error: invalid length', () => {
             const mockParam_key = 'h6O6rPD';
             const expectResult = MalformedApiKeyException;
 
@@ -24,7 +24,7 @@ describe('CommonValidators tests, priority: clients model', () => {
                 .toThrow(expectResult);
         })
 
-        test('fn: validateApiKey, params: <key>, error: invalid charset', () => {
+        test('Fn validateApiKey(), params: <key>, error: invalid charset', () => {
             const mockParam_key = 'h6O6rPDkVkAvyYTHLlc-+-+-lp5sWmfCbUZx9MdnOU';
             const expectResult = MalformedApiKeyException;
 

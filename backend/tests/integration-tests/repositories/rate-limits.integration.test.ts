@@ -8,7 +8,7 @@ import { default as mockId } from "../../mock-data/id.mock-data.json";
 import { DBTestSetup } from "../../db-container.setup";
 import { runMigrations } from '../../db-migrations.setup';
 import * as MockUtils from "../../common.test-utils";
-import * as Utils from '../../../src/utils/common.utils';
+import * as CommonUtils from '../../../src/utils/common.utils';
 import rateLimitsService from "../../../src/services/rate-limits.service";
 import demoLimitsService from "../../../src/services/demo-limits.service";
 import { DemoLimitsCountDTO, DemoLimitsResponseDTO } from "../../../src/dtos/demo-limits.dto";
@@ -18,7 +18,7 @@ jest.setTimeout(60000);
 const testValidClientsId = mockId.clients.valid[0];
 const testValidUsersId = mockId.users.valid[0];
 
-describe('Integration test (repository specific without Route/Controller), priority: RateLimits', () => {
+describe('Integration-tests (repository), priority: entity RateLimits', () => {
 
     let dbTestSetup: DBTestSetup;
     beforeAll(async () => {
@@ -38,7 +38,7 @@ describe('Integration test (repository specific without Route/Controller), prior
 
     describe('Testing valid fn calls, route: /tickets/create', () => {
 
-        test('Repository process fn count, params: <client_id, day>, result: "SUCCESS"', async () => {
+        test('Repository process fn getRateLimitCount(), params: <client_id, day>, result: "SUCCESS"', async () => {
             const dto: RateLimitsCountDTO = {
                 client_id: mockId.clients.valid[0],
                 day: '2025-01-01'
@@ -51,7 +51,7 @@ describe('Integration test (repository specific without Route/Controller), prior
             expect(testResponse).toBe(mockResponse);
         })
 
-        test('Repository process fn count, params: <day>, result: "SUCCESS"', async () => {
+        test('Repository process fn getRateLimitCount(), params: <day>, result: "SUCCESS"', async () => {
             const dto: RateLimitsCountDTO = {
                 day: '2025-01-01'
             };
@@ -63,16 +63,16 @@ describe('Integration test (repository specific without Route/Controller), prior
             expect(testResponse).toBe(mockResponse);
         })
 
-        test('Repository process fn create, result: "SUCCESS"', async () => {
+        test('Repository process fn createRateLimit(), result: "SUCCESS"', async () => {
             const testTimestamp = '2025-01-02T14:00:05.000Z';
             const mockParam_dto: RateLimitsCreateDTO = {
                 client_id: testValidClientsId,
                 user_id: testValidUsersId
             };
-            const dateUTC = Utils.getDateUTC(new Date(testTimestamp));
+            const dateUTC = CommonUtils.getDateUTC(new Date(testTimestamp));
             
-            jest.spyOn(Utils, 'getDateUTC').mockReturnValue(dateUTC);
-            jest.spyOn(Utils, 'getTimestampUTC').mockReturnValue(testTimestamp);
+            jest.spyOn(CommonUtils, 'getDateUTC').mockReturnValue(dateUTC);
+            jest.spyOn(CommonUtils, 'getTimestampUTC').mockReturnValue(testTimestamp);
 
             await dbTestSetup.addTestData();
             const testResponse = await rateLimitsService.createRateLimit(mockParam_dto);
@@ -89,15 +89,15 @@ describe('Integration test (repository specific without Route/Controller), prior
             expect(testResponse).toMatchObject(mockResponse);
         })
 
-        test('Repository process fn update, result: "SUCCESS"', async () => {
+        test('Repository process fn updateRateLimit(), result: "SUCCESS"', async () => {
             const testTimestamp = '2025-01-01T22:22:22.000Z';
             const dto: RateLimitsUpdateDTO = {
                 client_id: testValidClientsId,
                 user_id: testValidUsersId
             };
 
-            jest.spyOn(Utils, 'getDateUTC').mockReturnValue(testTimestamp);
-            jest.spyOn(Utils, 'getTimestampUTC').mockReturnValue(testTimestamp);
+            jest.spyOn(CommonUtils, 'getDateUTC').mockReturnValue(testTimestamp);
+            jest.spyOn(CommonUtils, 'getTimestampUTC').mockReturnValue(testTimestamp);
 
             await dbTestSetup.addTestData();
             const testResponse = await rateLimitsService.updateRateLimit(dto);
@@ -114,15 +114,15 @@ describe('Integration test (repository specific without Route/Controller), prior
             expect(testResponse).toMatchObject(mockResponse);
         })
 
-        test('Repository process fn update, result: null', async () => {
+        test('Repository process fn updateRateLimit(), result: null', async () => {
             const testTimestamp = '2025-01-02T22:22:22.000Z';
             const dto: RateLimitsUpdateDTO = {
                 client_id: testValidClientsId,
                 user_id: testValidUsersId
             };
 
-            jest.spyOn(Utils, 'getDateUTC').mockReturnValue(testTimestamp);
-            jest.spyOn(Utils, 'getTimestampUTC').mockReturnValue(testTimestamp);
+            jest.spyOn(CommonUtils, 'getDateUTC').mockReturnValue(testTimestamp);
+            jest.spyOn(CommonUtils, 'getTimestampUTC').mockReturnValue(testTimestamp);
 
             await dbTestSetup.addTestData();
             const testResponse = await rateLimitsService.updateRateLimit(dto);
@@ -132,9 +132,9 @@ describe('Integration test (repository specific without Route/Controller), prior
         })
     })
 
-    describe('Testing valid fn calls, route: /meta/demo', () => {
+    describe('Testing valid fn calls, route: /test/demo', () => {
 
-        test('Repository process fn count, params: <day>, result: "SUCCESS"', async () => {
+        test('Repository process fn getDemoLimitCount(), params: <day>, result: "SUCCESS"', async () => {
             const dto: DemoLimitsCountDTO = {
                 day: '2025-01-01'
             };
@@ -146,12 +146,12 @@ describe('Integration test (repository specific without Route/Controller), prior
             expect(testResponse).toBe(mockResponse);
         })
 
-        test('Repository process fn create, result: "SUCCESS"', async () => {
+        test('Repository process fn createDemoLimit(), result: "SUCCESS"', async () => {
             const testTimestamp = '2025-01-02T14:00:05.000Z';
-            const dateUTC = Utils.getDateUTC(new Date(testTimestamp));
+            const dateUTC = CommonUtils.getDateUTC(new Date(testTimestamp));
             
-            jest.spyOn(Utils, 'getDateUTC').mockReturnValue(dateUTC);
-            jest.spyOn(Utils, 'getTimestampUTC').mockReturnValue(testTimestamp);
+            jest.spyOn(CommonUtils, 'getDateUTC').mockReturnValue(dateUTC);
+            jest.spyOn(CommonUtils, 'getTimestampUTC').mockReturnValue(testTimestamp);
 
             await dbTestSetup.addTestData();
             const testResponse = await demoLimitsService.createDemoLimit();
@@ -166,11 +166,11 @@ describe('Integration test (repository specific without Route/Controller), prior
             expect(testResponse).toMatchObject(mockResponse);
         })
 
-        test('Repository process fn update, result: "SUCCESS"', async () => {
+        test('Repository process fn updateDemoLimit(), result: "SUCCESS"', async () => {
             const testTimestamp = '2025-01-01T22:22:22.000Z';
 
-            jest.spyOn(Utils, 'getDateUTC').mockReturnValue(testTimestamp);
-            jest.spyOn(Utils, 'getTimestampUTC').mockReturnValue(testTimestamp);
+            jest.spyOn(CommonUtils, 'getDateUTC').mockReturnValue(testTimestamp);
+            jest.spyOn(CommonUtils, 'getTimestampUTC').mockReturnValue(testTimestamp);
 
             await dbTestSetup.addTestData();
             const testResponse = await demoLimitsService.updateDemoLimit();
@@ -185,11 +185,11 @@ describe('Integration test (repository specific without Route/Controller), prior
             expect(testResponse).toMatchObject(mockResponse);
         })
 
-        test('Repository process fn update, result: null', async () => {
+        test('Repository process fn updateDemoLimit(), result: null', async () => {
             const testTimestamp = '2025-01-02T22:22:22.000Z';
 
-            jest.spyOn(Utils, 'getDateUTC').mockReturnValue(testTimestamp);
-            jest.spyOn(Utils, 'getTimestampUTC').mockReturnValue(testTimestamp);
+            jest.spyOn(CommonUtils, 'getDateUTC').mockReturnValue(testTimestamp);
+            jest.spyOn(CommonUtils, 'getTimestampUTC').mockReturnValue(testTimestamp);
 
             await dbTestSetup.addTestData();
             const testResponse = await demoLimitsService.updateDemoLimit();

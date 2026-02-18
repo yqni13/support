@@ -3,16 +3,13 @@ import { awaitHandlerFactory as factory } from '../middleware/awaitHandlerFactor
 import metaController from '../controllers/meta.controller';
 import { requirePayload } from '../middleware/require.middleware';
 import { authAdmin } from '../middleware/auth.admin.middleware';
-import { maintain } from '../middleware/maintenance.middleware';
 import {
     getMetaByIdSchema as byIdSchema,
     getMetaByNameSchema as byNameSchema,
     getMaintenanceSchema as getMaintainSchema,
     patchMetaSchema as updateSchema,
     patchMaintenanceSchema as updateMaintainSchema,
-    postDemoSchema as demoSchema
 } from '../validation/schemata/meta.schema.validation';
-import { observe } from '../middleware/observe.middleware';
 
 const router = Router();
 
@@ -61,14 +58,6 @@ router.put(
     authAdmin(), requirePayload(),
     updateMaintainSchema,
     factory(metaController.patchMaintenanceMode)
-);
-
-// demo
-router.post(
-    '/demo',
-    maintain(), requirePayload(), observe(true),
-    demoSchema,
-    factory(metaController.postDemo)
 );
 
 export default router;

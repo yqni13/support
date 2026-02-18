@@ -4,9 +4,32 @@
 
 <br>
 
+### $\textsf{\color{skyblue}2026/02/18}$
+
+$\textsf{[v1.3.1\ =>\ {\textbf{\color{brown}v1.3.3}]}}$ app
+- $\textsf{\color{orange}Patch:}$ Removed unused exceptions.
+- $\textsf{\color{red}Bugfix:}$ Extracting meta data from package.json works now as expected. [Before: Extracting data from file needs to get its path first and this path was read via "fs.readFileSync(path.resolve(__dirname, '../file')" which works only when root doesn't change, which happens in env:prod => use process.cwd() to search path dynamically.]
+
+<br>
+
+### $\textsf{\color{skyblue}2026/02/15}$
+
+$\textsf{[v1.2.2\ =>\ v1.3.1]}$ app
+- $\textsf{\color{teal}Addition:}$ Added test route to manually trigger exceptions for testing and UI translation checks.
+- $\textsf{\color{orange}Patch:}$ Moved /demo requests from 'meta' route to new 'test' route.
+
+<br>
+
+### $\textsf{\color{skyblue}2026/02/14}$
+
+$\textsf{[v1.2.1\ =>\ v1.2.2]}$ app
+- $\textsf{\color{orange}Patch:}$ Refactored test files (describe/test texts, consistent ID-usage, sum single tests in test.each loop).
+
+<br>
+
 ### $\textsf{\color{skyblue}2026/02/12}$
 
-$\textsf{[v1.1.0\ =>\ {\textbf{\color{brown}v1.2.1}]}}$ app<br>
+$\textsf{[v1.1.0\ =>\ v1.2.1]}$ app<br>
 $\textsf{[v1.5.2\ =>\ {\textbf{\color{brown}v1.5.3}]}}$ database
 - $\textsf{\color{teal}Addition:}$ Added options to select category of support ticket regarding user intention.
 - $\textsf{\color{orange}Patch:}$ Updated:

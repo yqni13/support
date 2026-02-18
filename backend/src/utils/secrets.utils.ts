@@ -86,13 +86,15 @@ class Secrets {
     }
 
     private getAppVersion() {
-        let packageJSON = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../../package.json'), 'utf-8'));
-        return !packageJSON ? '0.0.0' : packageJSON.version;
+        const packageJsonPath = path.resolve(process.cwd(), 'package.json');
+        let packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf-8'));
+        return !packageJson ? '0.0.0' : packageJson.version;
     }
 
     private getAppMeta() {
-        let packageJSON = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../../package.json'), 'utf-8'));
-        return !packageJSON ? null : packageJSON.appMeta;
+        const packageJsonPath = path.resolve(process.cwd(), 'package.json');
+        let packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf-8'));
+        return !packageJson ? null : packageJson.appMeta;
     }
 
     private setAdminApi() {

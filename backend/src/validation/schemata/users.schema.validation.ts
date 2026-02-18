@@ -7,7 +7,7 @@ import { CommonExceptionMessage as Message } from '../../utils/enums/common-exce
 
 export const getUserByIdSchema: ValidationChain[] = [
     param('id')
-        .custom((content: string) => CommonValidators.validatePathParam(content))
+        .custom((content: string) => CommonValidators.validateRequestRouteParam(content))
         .bail()
         .isUUID(4)
         .withMessage('support-invalid-entry#user_id')
@@ -15,7 +15,7 @@ export const getUserByIdSchema: ValidationChain[] = [
 
 export const getUserByEmailSchema: ValidationChain[] = [
     param('email')
-        .custom((content: string) => CommonValidators.validatePathParam(content))
+        .custom((content: string) => CommonValidators.validateRequestRouteParam(content))
         .bail()
         .custom((content: string) => CommonValidators.validateEmail(content))
 ];
@@ -67,7 +67,7 @@ export const postUserSchema: ValidationChain[] = [
 
 export const patchUserSchema: ValidationChain[] = [
     param('id')
-        .custom((content: string) => CommonValidators.validatePathParam(content))
+        .custom((content: string) => CommonValidators.validateRequestRouteParam(content))
         .bail()
         .isUUID(4)
         .withMessage('support-invalid-entry#user_id'),

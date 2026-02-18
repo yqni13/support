@@ -1,7 +1,7 @@
 import * as FileValidators from '../../../src/validation/files.validation';
 import { Readable } from 'stream';
 
-describe('FileValidators tests, priority: no model specification', () => {
+describe('Unit-tests (validation), priority: synonym FileValidators', () => {
 
     let mockFile_pdf: Express.Multer.File;
     let mockFile_webp: Express.Multer.File;
@@ -74,7 +74,7 @@ describe('FileValidators tests, priority: no model specification', () => {
         jest.restoreAllMocks();
     });
 
-    describe('Priority: <validateFilesMaxNumber>', () => {
+    describe('Fn validateFilesMaxNumber()', () => {
 
         describe('Testing valid fn calls', () => {
 
@@ -108,7 +108,7 @@ describe('FileValidators tests, priority: no model specification', () => {
         })
     })
 
-    describe('Priority: <validateFilesNames>', () => {
+    describe('Fn validateFilesNames()', () => {
 
         describe('Testing valid fn calls', () => {
 
@@ -146,7 +146,7 @@ describe('FileValidators tests, priority: no model specification', () => {
         })
     })
 
-    describe('Priority: <validateFilesType>', () => {
+    describe('Fn validateFilesType()', () => {
 
         let mockParam_validTypes: string[];
         beforeEach(() => {
@@ -195,7 +195,7 @@ describe('FileValidators tests, priority: no model specification', () => {
         })
     })
 
-    describe('Priority: <validateFilesSizeEach>', () => {
+    describe('Fn validateFilesSizeEach()', () => {
 
         describe('Testing valid fn calls', () => {
 

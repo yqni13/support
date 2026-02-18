@@ -26,14 +26,8 @@ export class ApiException extends Error {
 }
 
 export class UnexpectedApiResponseException extends ApiException {
-    constructor(data?: any) {
-        super('support-invalid-api', data, ErrorStatusCodes.UnexpectedApiResponseException)
-    }
-}
-
-export class InvalidEndpointException extends ApiException {
-    constructor(message: string, data?: any) {
-        super(message, data);
+    constructor(message = 'support-invalid-api', data?: any) {
+        super(message, data, ErrorStatusCodes.UnexpectedApiResponseException)
     }
 }
 

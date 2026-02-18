@@ -1,7 +1,7 @@
 import { DemoLimitsCountDTO, DemoLimitsResponseDTO, DemoLimitsUpdateDTO } from "../dtos/demo-limits.dto";
 import demoLimitsModel from "../models/demo-limits.model";
 import demoLimitsRepository from "../repositories/demo-limits.repository";
-import * as Utils from "../utils/common.utils";
+import * as CommonUtils from "../utils/common.utils";
 
 class DemoLimitsService {
     private timeMapTargets: string[];
@@ -18,22 +18,22 @@ class DemoLimitsService {
     async createDemoLimit(): Promise<DemoLimitsResponseDTO> {
         const timestamp = new Date();
         const entity = {
-            day: Utils.getDateUTC(timestamp),
+            day: CommonUtils.getDateUTC(timestamp),
             count: 1,
-            last_modified: Utils.getTimestampUTC(timestamp)
+            last_modified: CommonUtils.getTimestampUTC(timestamp)
         };
         const result = await demoLimitsRepository.create(entity);
-        return Utils.mapObjTimestamps<DemoLimitsResponseDTO>(result, this.timeMapTargets);
+        return CommonUtils.mapObjTimestamps<DemoLimitsResponseDTO>(result, this.timeMapTargets);
     }
 
     async updateDemoLimit(): Promise<DemoLimitsResponseDTO | null> {
         const timestamp = new Date();
         const dto: DemoLimitsUpdateDTO = {
-            day: Utils.getDateUTC(timestamp),
-            last_modified: Utils.getTimestampUTC(timestamp)
+            day: CommonUtils.getDateUTC(timestamp),
+            last_modified: CommonUtils.getTimestampUTC(timestamp)
         };
         const result = await demoLimitsRepository.update(dto);
-        return !result ? null : Utils.mapObjTimestamps<DemoLimitsResponseDTO>(result, this.timeMapTargets);
+        return !result ? null : CommonUtils.mapObjTimestamps<DemoLimitsResponseDTO>(result, this.timeMapTargets);
     }
 }
 
