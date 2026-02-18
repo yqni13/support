@@ -31,12 +31,6 @@ export class UnexpectedApiResponseException extends ApiException {
     }
 }
 
-export class InvalidEndpointException extends ApiException {
-    constructor(message: string, data?: any) {
-        super(message, data);
-    }
-}
-
 export class UnimplementedException extends ApiException {
     constructor(data?: any) {
         super('support-unimplemented', data, ErrorStatusCodes.UnimplementedException);

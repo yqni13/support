@@ -1,5 +1,5 @@
 # yqni13 | support
-$\texttt{\color{teal}{v1.3.1}}$
+$\texttt{\color{teal}{v1.3.3}}$
 
 
 <br>
@@ -147,9 +147,9 @@ Preventing an unwanted merge with unfinished/failed test run, the project is set
 
 ### $\textsf{\color{forestgreen}last update:}$
 
-$\textsf{[v1.2.2\ =>\ {\textbf{\color{brown}v1.3.1}]}}$ app
-- $\textsf{\color{teal}Addition:}$ Added test route to manually trigger exceptions for testing and UI translation checks.
-- $\textsf{\color{orange}Patch:}$ Moved /demo requests from 'meta' route to new 'test' route.
+$\textsf{[v1.3.1\ =>\ {\textbf{\color{brown}v1.3.3}]}}$ app
+- $\textsf{\color{orange}Patch:}$ Removed unused exceptions.
+- $\textsf{\color{red}Bugfix:}$ Extracting meta data from package.json works now as expected. [Before: Extracting data from file needs to get its path first and this path was read via "fs.readFileSync(path.resolve(__dirname, '../file')" which works only when root doesn't change, which happens in env:prod => use process.cwd() to search path dynamically.]
 
 <br>
 
