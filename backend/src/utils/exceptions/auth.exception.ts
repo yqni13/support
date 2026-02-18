@@ -22,38 +22,8 @@ export class AuthException extends Error {
     }
 }
 
-export class AuthenticationStandardException extends AuthException {
-    constructor(message: string, data?: any) {
-        super(message, data);
-    }
-}
-
-export class AuthenticationEmailException extends AuthException {
-    constructor(message: string, data?: any) {
-        super(message, data, ErrorStatusCodes.AuthenticationException);
-    }
-}
-
-export class JWTExpirationException extends AuthException {
-    constructor(message: string = 'auth-jwt-expiration', data?: any){
-        super(message, data);
-    }
-}
-
-export class TokenMissingException extends AuthException {
-    constructor(message: string = 'auth-jwt-missing', data?: any){
-        super(message, data);
-    }
-}
-
 export class InvalidCredentialsException extends AuthException {
     constructor(message: string, data?: any){
-        super(message, data);
-    }
-}
-
-export class InvalidTokenException extends AuthException {
-    constructor(message: string, data?: any) {
         super(message, data);
     }
 }
