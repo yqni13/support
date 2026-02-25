@@ -1,4 +1,4 @@
-import { InvalidApiKeyException, MissingApiKeyException } from './../../../src/utils/exceptions/auth.exception';
+import { ForbiddenApiKeyException, MissingApiKeyException } from './../../../src/utils/exceptions/auth.exception';
 import { Clients } from "../../../src/repositories/interfaces/clients.entity.interface";
 import clientsService from "../../../src/services/clients.service";
 import { default as mockId } from "../../mock-data/id.mock-data.json";
@@ -70,7 +70,7 @@ describe('Unit-tests (middleware), priority: fn authClient()', () => {
             expect(errArg.status).toBe(401);
         })
 
-        test('Verify client, error: InvalidApiKeyException', async () => {
+        test('Verify client, error: ForbiddenApiKeyException', async () => {
             const mockApiKey = 'invalid_api_key';
             const mockClient: Clients | null = null;
             req.header.mockReturnValue(mockApiKey);
@@ -82,8 +82,8 @@ describe('Unit-tests (middleware), priority: fn authClient()', () => {
             await middleware(req, res, next);
 
             const errArg = next.mock.calls[0][0];
-            expect(errArg).toBeInstanceOf(InvalidApiKeyException);
-            expect(errArg.status).toBe(ErrorStatusCodes.InvalidApiKeyException);
+            expect(errArg).toBeInstanceOf(ForbiddenApiKeyException);
+            expect(errArg.status).toBe(ErrorStatusCodes.ForbiddenApiKeyException);
         })
     })
 })

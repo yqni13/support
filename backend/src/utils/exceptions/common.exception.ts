@@ -1,3 +1,4 @@
+import { MaintenanceMode } from '../enums/maintenance-mode.enum';
 import { ErrorStatusCodes } from '../errorStatusCodes.utils';
 
 export class CommonException extends Error {
@@ -43,7 +44,7 @@ export class InvalidSourceException extends CommonException {
 }
 
 export class MaintenanceException extends CommonException {
-    constructor(message: string, data?: any) {
-        super(message, data, ErrorStatusCodes.MaintenanceException);
+    constructor(message: MaintenanceMode, data?: any) {
+        super(`support-maintenance-${message}`, data, ErrorStatusCodes.MaintenanceException);
     }
 }

@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { InvalidApiKeyException, MissingApiKeyException } from "../utils/exceptions/auth.exception";
+import { ForbiddenApiKeyException, MissingApiKeyException } from "../utils/exceptions/auth.exception";
 import { validateApiKey } from "../validation/common.validation";
 import clientsService from "../services/clients.service";
 import { Clients } from "../repositories/interfaces/clients.entity.interface";
@@ -16,14 +16,14 @@ export function authClient() {
             const key = req.header('Support-Api-Key');
 
             if(!key) {
-                throw new MissingApiKeyException();
+                throw new MissingApiKeyException('support-missing-clients-auth');
             }
 
             validateApiKey(key);
 
             let clientData = await clientsService.getClientByActiveKey(key);
             if(!clientData) {
-                throw new InvalidApiKeyException()
+                throw new ForbiddenApiKeyException('support-forbidden-clients-auth')
             }
 
             clientData = clientData as Clients;
