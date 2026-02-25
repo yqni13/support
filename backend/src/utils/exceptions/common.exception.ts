@@ -44,6 +44,6 @@ export class InvalidSourceException extends CommonException {
 
 export class MaintenanceException extends CommonException {
     constructor(message: string, data?: any) {
-        super(message, data, ErrorStatusCodes.MaintenanceException);
+        super(`support-maintenance-${message}`, data, ErrorStatusCodes.MaintenanceException);
     }
 }

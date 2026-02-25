@@ -1,4 +1,4 @@
-import { InvalidCredentialsException, MissingApiKeyException } from './../../../src/utils/exceptions/auth.exception';
+import { InvalidApiKeyException, MissingApiKeyException } from './../../../src/utils/exceptions/auth.exception';
 import { authAdmin } from '../../../src/middleware/auth.admin.middleware';
 import * as CommonUtils from "../../../src/utils/common.utils";
 import { secrets } from "../../../src/utils/secrets.utils";
@@ -41,7 +41,7 @@ describe('Unit-tests (middleware), priority: fn authAdmin()', () => {
             expect(errArg.status).toBe(401);
         })
 
-        test('Verify admin, error: InvalidCredentialsException', async () => {
+        test('Verify admin, error: InvalidApiKeyException', async () => {
             const mockApiKey = 'invalid_api_key';
             req.header.mockReturnValue(mockApiKey);
 
@@ -51,7 +51,7 @@ describe('Unit-tests (middleware), priority: fn authAdmin()', () => {
             await middleware(req, res, next);
 
             const errArg = next.mock.calls[0][0];
-            expect(errArg).toBeInstanceOf(InvalidCredentialsException);
+            expect(errArg).toBeInstanceOf(InvalidApiKeyException);
             expect(errArg.status).toBe(401);
         })
     })

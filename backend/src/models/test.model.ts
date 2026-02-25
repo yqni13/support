@@ -1,6 +1,6 @@
 import { TestErrorDTO } from "../dtos/test.dto";
 import { ExceedMaxEndpointException, UnexpectedApiResponseException, UnimplementedException } from "../utils/exceptions/api.exception";
-import { AuthSecretNotFoundException, BlockedUsersException, InvalidApiKeyException, InvalidCredentialsException, InvalidUsersException, MalformedApiKeyException, MissingApiKeyException, PermissionException } from "../utils/exceptions/auth.exception";
+import { AuthSecretNotFoundException, BlockedUsersException, ForbiddenApiKeyException, InvalidApiKeyException, InvalidUsersException, MalformedApiKeyException, MissingApiKeyException, PermissionException } from "../utils/exceptions/auth.exception";
 import { InternalServerException, InvalidSourceException, MaintenanceException, RequestExceedMaxException } from "../utils/exceptions/common.exception";
 import { DBConnectionException, DBEmptyException, DBQueryErrorException } from "../utils/exceptions/db.exception";
 import { InvalidFilesException, InvalidPropertiesException } from "../utils/exceptions/validation.exception";
@@ -11,12 +11,12 @@ class TestModel {
     throwExceptionOnTestPurpose(dto: TestErrorDTO) {
         switch(dto.error) {
             // AuthException
-            case('InvalidCredentialsException'):
-                throw new InvalidCredentialsException(dto.errorMsg ?? this.substitutionMsg);
             case('MissingApiKeyException'):
                 throw new MissingApiKeyException();
             case('InvalidApiKeyException'):
                 throw new InvalidApiKeyException();
+            case('ForbiddenApiKeyException'):
+                throw new ForbiddenApiKeyException(dto.errorMsg ?? this.substitutionMsg);
             case('MalformedApiKeyException'):
                 throw new MalformedApiKeyException();
             case('AuthSecretNotFoundException'):

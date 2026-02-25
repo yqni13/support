@@ -9,7 +9,7 @@ export const ErrorStatusCodes: any = {
     InvalidPropertiesException: 400,
     InvalidFilesException: 400,
     MaintenanceException: 598,
-    InvalidApiKeyException: 403,
     ExceedMaxEndpointException: 429,
-    PermissionException: 405
+    PermissionException: 405,
+    ForbiddenApiKeyException: 403,
 };

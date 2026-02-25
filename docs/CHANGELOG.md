@@ -4,9 +4,16 @@
 
 <br>
 
+### $\textsf{\color{skyblue}2026/02/25}$
+
+$\textsf{[v1.3.3\ =>\ {\textbf{\color{brown}v1.3.4}]}}$ app
+- $\textsf{\color{orange}Patch:}$ Updated exceptions for auth class and adapted auth middleware exception handling.
+
+<br>
+
 ### $\textsf{\color{skyblue}2026/02/18}$
 
-$\textsf{[v1.3.1\ =>\ {\textbf{\color{brown}v1.3.3}]}}$ app
+$\textsf{[v1.3.1\ =>\ v1.3.3]}$ app
 - $\textsf{\color{orange}Patch:}$ Removed unused exceptions.
 - $\textsf{\color{red}Bugfix:}$ Extracting meta data from package.json works now as expected. [Before: Extracting data from file needs to get its path first and this path was read via "fs.readFileSync(path.resolve(__dirname, '../file')" which works only when root doesn't change, which happens in env:prod => use process.cwd() to search path dynamically.]
 

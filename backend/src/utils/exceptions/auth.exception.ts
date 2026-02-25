@@ -22,21 +22,21 @@ export class AuthException extends Error {
     }
 }
 
-export class InvalidCredentialsException extends AuthException {
-    constructor(message: string, data?: any){
-        super(message, data);
-    }
-}
-
 export class MissingApiKeyException extends AuthException {
     constructor(message: string = 'support-missing-apikey', data?: any) {
         super(message, data);
     }
 }
 
-export class InvalidApiKeyException extends AuthException {
+export class InvalidApiKeyException extends AuthException { // Access key is invalid
     constructor(message: string = 'support-invalid-apikey', data?: any) {
-        super(message, data, ErrorStatusCodes.InvalidApiKeyException);
+        super(message, data);
+    }
+}
+
+export class ForbiddenApiKeyException extends AuthException { // Access key disabled/expired
+    constructor(message: string, data?: any) {
+        super(message, data, ErrorStatusCodes.ForbiddenApiKeyException);
     }
 }
 
