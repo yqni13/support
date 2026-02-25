@@ -22,9 +22,13 @@ class TicketsModel {
             user_id: dto.user_id,
             status: TicketStatus.ISSUED,
             option: dto.option,
+            title: dto.title,
             message: dto.message,
             resource_paths: paths ?? dto.resource_paths,
             flag: null,
+            info_browser: dto.info_browser,
+            info_os: dto.info_os,
+            info_device: dto.info_device,
             last_modified: timestamp,
             created_on: timestamp
         };

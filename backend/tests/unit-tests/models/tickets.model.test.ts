@@ -55,6 +55,7 @@ describe('Unit-tests (model), priority: entity Tickets', () => {
                     client_id: mockId.clients.valid[0],
                     user_id: mockId.users.valid[0],
                     option: TicketOption.SUPPORT,
+                    title: 'test-title',
                     message: 'test-message'
                 };
                 const mockParam_files: Express.Multer.File[] | null = null;
@@ -69,6 +70,7 @@ describe('Unit-tests (model), priority: entity Tickets', () => {
                     user_id: mockParam_dto.user_id,
                     status: TicketStatus.ISSUED,
                     option: TicketOption.SUPPORT,
+                    title: mockParam_dto.title,
                     message: mockParam_dto.message,
                     flag: null,
                     last_modified: mockTimestamp,
@@ -84,6 +86,7 @@ describe('Unit-tests (model), priority: entity Tickets', () => {
                     client_id: mockId.clients.valid[0],
                     user_id: mockId.users.valid[0],
                     option: TicketOption.SUPPORT,
+                    title: 'test-title',
                     message: 'test-message'
                 };
                 const mockParam_files: Express.Multer.File[] | null = [mockFile_pdf];
@@ -102,6 +105,7 @@ describe('Unit-tests (model), priority: entity Tickets', () => {
                     user_id: mockParam_dto.user_id,
                     status: TicketStatus.ISSUED,
                     option: TicketOption.SUPPORT,
+                    title: mockParam_dto.title,
                     message: mockParam_dto.message,
                     resource_paths: mockPaths,
                     flag: null,
@@ -118,6 +122,7 @@ describe('Unit-tests (model), priority: entity Tickets', () => {
                     client_id: mockId.clients.valid[0],
                     user_id: mockId.users.valid[0],
                     option: TicketOption.SUPPORT,
+                    title: 'test-title',
                     message: 'test-message'
                 };
                 const mockParam_files: Express.Multer.File[] | null = [mockFile_pdf, mockFile_webp];
@@ -139,6 +144,7 @@ describe('Unit-tests (model), priority: entity Tickets', () => {
                     user_id: mockParam_dto.user_id,
                     status: TicketStatus.ISSUED,
                     option: TicketOption.SUPPORT,
+                    title: mockParam_dto.title,
                     message: mockParam_dto.message,
                     resource_paths: mockPaths,
                     flag: null,
@@ -160,6 +166,7 @@ describe('Unit-tests (model), priority: entity Tickets', () => {
                 const mockParam_dto: TicketsUpdateDTO = {
                     status: TicketStatus.PAUSED,
                     option: TicketOption.SUPPORT,
+                    title: 'test-title',
                     message: 'test-message',
                     flag: null
                 };
@@ -188,6 +195,7 @@ describe('Unit-tests (model), priority: entity Tickets', () => {
                     user_id: mockId.users.valid[0],
                     status: TicketStatus.ISSUED,
                     option: TicketOption.SUPPORT,
+                    title: 'test-title',
                     message: 'test-message',
                     resource_paths: [`tickets/${mockId.tickets.valid[0]}/0_${mockId.tickets.valid[0]}.jpg`],
                     flag: null,
@@ -211,6 +219,7 @@ describe('Unit-tests (model), priority: entity Tickets', () => {
                     user_id: mockId.users.valid[0],
                     status: TicketStatus.ISSUED,
                     option: TicketOption.SUPPORT,
+                    title: 'test-title-without-resource_paths',
                     message: 'test-message-without-resource_paths',
                     flag: null,
                     last_modified: mockTimestamp,
@@ -235,6 +244,7 @@ describe('Unit-tests (model), priority: entity Tickets', () => {
                 user_id: mockId.users.valid[0],
                 status: TicketStatus.CLOSED,
                 option: TicketOption.SUPPORT,
+                title: 'test-title',
                 message: 'test-message',
                 flag: null,
                 last_modified: mockTimestamp,

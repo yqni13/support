@@ -118,10 +118,10 @@ IDeleteRepository
 
     async create(entity: Tickets): Promise<Tickets> {
         const sql = `INSERT INTO ${this.table}
-        (ticket_id, client_id, user_id, status, option, message, resource_paths, flag, last_modified, created_on)
-        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+        (ticket_id, client_id, user_id, status, option, title, message, resource_paths, flag, info_browser, info_os, info_device, last_modified, created_on)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)
         RETURNING *;`;
-        const values = [entity.ticket_id, entity.client_id, entity.user_id, entity.status, entity.option, entity.message, entity.resource_paths, entity.flag, entity.last_modified, entity.created_on];
+        const values = [entity.ticket_id, entity.client_id, entity.user_id, entity.status, entity.option, entity.title, entity.message, entity.resource_paths, entity.flag, entity.info_browser, entity.info_os, entity.info_device, entity.last_modified, entity.created_on];
         const db = DBConnection.getInstance();
         let client: any;
         try {
@@ -141,11 +141,12 @@ IDeleteRepository
     async update(id: string, dto: Partial<Tickets>): Promise<Tickets | null> {
         const filterColumn = "ticket_id";
         const sql = `UPDATE ${this.table}
-        SET status = $1, message = $2, option = $3, flag = $4, last_modified = $5
-        WHERE ${filterColumn} = $6
+        SET status = $1, title = $2, message = $3, option = $4, flag = $5, info_browser = $6, info_os = $7,
+        info_device = $8, last_modified = $9
+        WHERE ${filterColumn} = $10
         RETURNING *;
         `;
-        const values = [dto.status, dto.message, dto.option, dto.flag, dto.last_modified, id];
+        const values = [dto.status, dto.title, dto.message, dto.option, dto.flag, dto.info_browser, dto.info_os, dto.info_device, dto.last_modified, id];
         const db = DBConnection.getInstance();
         let client: any;
         try {

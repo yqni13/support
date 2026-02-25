@@ -48,6 +48,7 @@ jest.mock('../../../src/middleware/observe.middleware.ts', () => ({
 }))
 
 import app from '../../../src/app';
+import { DeviceOption } from "../../../src/utils/enums/device-option.enum";
 
 jest.setTimeout(60000);
 
@@ -87,8 +88,13 @@ describe('Integration-tests (repository), priority: entity Tickets', () => {
                 user_email: testUsersEmail,
                 status: TicketStatus.ISSUED,
                 option: TicketOption.SUPPORT,
+                title: 'test-title',
                 message: 'test-message',
+                resource_paths: ['test/path/num0', 'test/path/num1'],
                 flag: null,
+                info_browser: 'Brave 1.87.190 (Official Build) (64-Bit)',
+                info_os: 'Windows 11',
+                info_device: DeviceOption.COMPUTER,
                 last_modified: testTimestamp,
                 created_on: testTimestamp
             };
@@ -109,9 +115,13 @@ describe('Integration-tests (repository), priority: entity Tickets', () => {
                     user_id: testValidUsersId,
                     status: TicketStatus.ISSUED,
                     option: TicketOption.SUPPORT,
+                    title: 'test-title',
                     message: 'test-message',
                     resource_paths: ['test/path/num0', 'test/path/num1'],
                     flag: null,
+                    info_browser: 'Brave 1.87.190 (Official Build) (64-Bit)',
+                    info_os: 'Windows 11',
+                    info_device: DeviceOption.COMPUTER,
                     last_modified: testTimestamp,
                     created_on: testTimestamp
                 },
@@ -121,8 +131,12 @@ describe('Integration-tests (repository), priority: entity Tickets', () => {
                     user_id: testValidUsersId,
                     status: TicketStatus.ISSUED,
                     option: TicketOption.SUPPORT,
+                    title: 'test-title',
                     message: 'test-message-without-resource_paths',
                     flag: null,
+                    info_browser: 'Brave 1.87.190 (Official Build) (64-Bit)',
+                    info_os: 'Android 15',
+                    info_device: DeviceOption.MOBILE,
                     last_modified: '2025-01-01T14:00:07.000Z',
                     created_on: '2025-01-01T14:00:07.000Z'
                 }
@@ -163,9 +177,13 @@ describe('Integration-tests (repository), priority: entity Tickets', () => {
                     user_id: testValidUsersId,
                     status: TicketStatus.ISSUED,
                     option: TicketOption.SUPPORT,
+                    title: 'test-title',
                     message: 'test-message',
                     resource_paths: ['test/path/num0', 'test/path/num1'],
                     flag: null,
+                    info_browser: 'Brave 1.87.190 (Official Build) (64-Bit)',
+                    info_os: 'Windows 11',
+                    info_device: DeviceOption.COMPUTER,
                     last_modified: testTimestamp,
                     created_on: testTimestamp
                 },
@@ -175,8 +193,61 @@ describe('Integration-tests (repository), priority: entity Tickets', () => {
                     user_id: testValidUsersId,
                     status: TicketStatus.ISSUED,
                     option: TicketOption.SUPPORT,
+                    title: 'test-title',
                     message: 'test-message-without-resource_paths',
                     flag: null,
+                    info_browser: 'Brave 1.87.190 (Official Build) (64-Bit)',
+                    info_os: 'Android 15',
+                    info_device: DeviceOption.MOBILE,
+                    last_modified: '2025-01-01T14:00:07.000Z',
+                    created_on: '2025-01-01T14:00:07.000Z'
+                }
+            ];
+
+            jest.spyOn(CommonUtils, "getTimestampUTC").mockReturnValue(testTimestamp);
+
+            await dbTestSetup.addTestData();
+            const testResponse = await request(app)
+                .post(`${apiUrl}/search`)
+                .send(testParam_dto);
+
+            expect(testResponse.statusCode).toBe(200);
+            expect(testResponse.body).toMatchObject(testResult);
+        })
+
+        test('Repository process fn findByFilter(), params: <title> result: "SUCCESS"', async () => {
+            const testParam_dto: TicketsFilterDTO = {
+                title: 'test-title'
+            };
+            const testResult: TicketsResponseDTO[] = [
+                {
+                    ticket_id: mockId.tickets.valid[0],
+                    client_id: testValidClientsId,
+                    user_id: testValidUsersId,
+                    status: TicketStatus.ISSUED,
+                    option: TicketOption.SUPPORT,
+                    title: 'test-title',
+                    message: 'test-message',
+                    resource_paths: ['test/path/num0', 'test/path/num1'],
+                    flag: null,
+                    info_browser: 'Brave 1.87.190 (Official Build) (64-Bit)',
+                    info_os: 'Windows 11',
+                    info_device: DeviceOption.COMPUTER,
+                    last_modified: testTimestamp,
+                    created_on: testTimestamp
+                },
+                {
+                    ticket_id: mockId.tickets.valid[1],
+                    client_id: testValidClientsId,
+                    user_id: testValidUsersId,
+                    status: TicketStatus.ISSUED,
+                    option: TicketOption.SUPPORT,
+                    title: 'test-title',
+                    message: 'test-message-without-resource_paths',
+                    flag: null,
+                    info_browser: 'Brave 1.87.190 (Official Build) (64-Bit)',
+                    info_os: 'Android 15',
+                    info_device: DeviceOption.MOBILE,
                     last_modified: '2025-01-01T14:00:07.000Z',
                     created_on: '2025-01-01T14:00:07.000Z'
                 }
@@ -204,9 +275,13 @@ describe('Integration-tests (repository), priority: entity Tickets', () => {
                     user_id: testValidUsersId,
                     status: TicketStatus.ISSUED,
                     option: TicketOption.SUPPORT,
+                    title: 'test-title',
                     message: 'test-message',
                     resource_paths: ['test/path/num0', 'test/path/num1'],
                     flag: null,
+                    info_browser: 'Brave 1.87.190 (Official Build) (64-Bit)',
+                    info_os: 'Windows 11',
+                    info_device: DeviceOption.COMPUTER,
                     last_modified: testTimestamp,
                     created_on: testTimestamp
                 },
@@ -216,8 +291,12 @@ describe('Integration-tests (repository), priority: entity Tickets', () => {
                     user_id: testValidUsersId,
                     status: TicketStatus.ISSUED,
                     option: TicketOption.SUPPORT,
+                    title: 'test-title',
                     message: 'test-message-without-resource_paths',
                     flag: null,
+                    info_browser: 'Brave 1.87.190 (Official Build) (64-Bit)',
+                    info_os: 'Android 15',
+                    info_device: DeviceOption.MOBILE,
                     last_modified: '2025-01-01T14:00:07.000Z',
                     created_on: '2025-01-01T14:00:07.000Z'
                 }
@@ -245,9 +324,13 @@ describe('Integration-tests (repository), priority: entity Tickets', () => {
                     user_id: testValidUsersId,
                     status: TicketStatus.ISSUED,
                     option: TicketOption.SUPPORT,
+                    title: 'test-title',
                     message: 'test-message',
                     resource_paths: ['test/path/num0', 'test/path/num1'],
                     flag: null,
+                    info_browser: 'Brave 1.87.190 (Official Build) (64-Bit)',
+                    info_os: 'Windows 11',
+                    info_device: DeviceOption.COMPUTER,
                     last_modified: testTimestamp,
                     created_on: testTimestamp
                 },
@@ -257,8 +340,12 @@ describe('Integration-tests (repository), priority: entity Tickets', () => {
                     user_id: testValidUsersId,
                     status: TicketStatus.ISSUED,
                     option: TicketOption.SUPPORT,
+                    title: 'test-title',
                     message: 'test-message-without-resource_paths',
                     flag: null,
+                    info_browser: 'Brave 1.87.190 (Official Build) (64-Bit)',
+                    info_os: 'Android 15',
+                    info_device: DeviceOption.MOBILE,
                     last_modified: '2025-01-01T14:00:07.000Z',
                     created_on: '2025-01-01T14:00:07.000Z'
                 }
@@ -297,6 +384,7 @@ describe('Integration-tests (repository), priority: entity Tickets', () => {
             const testParam_dto: TicketsRequestCreateDTO = {
                 user_email: 'new-user0@test.com',
                 option: TicketOption.SUPPORT,
+                title: 'new-test-title0',
                 message: 'new-test-message0',
             };
 
@@ -309,6 +397,7 @@ describe('Integration-tests (repository), priority: entity Tickets', () => {
                 user_id: testValidUsersId,
                 status: TicketStatus.ISSUED,
                 option: TicketOption.SUPPORT,
+                title: testParam_dto.title,
                 message: testParam_dto.message,
                 flag: null,
                 last_modified: testTimestamp,
@@ -328,6 +417,7 @@ describe('Integration-tests (repository), priority: entity Tickets', () => {
             const testParam_dto: TicketsRequestCreateDTO = {
                 user_email: 'new-user1@test.com',
                 option: TicketOption.SUPPORT,
+                title: 'new-test-title1',
                 message: 'new-test-message1',
             };
             const mockFile = {
@@ -348,6 +438,7 @@ describe('Integration-tests (repository), priority: entity Tickets', () => {
                 user_id: testValidUsersId,
                 status: TicketStatus.ISSUED,
                 option: TicketOption.SUPPORT,
+                title: testParam_dto.title,
                 message: testParam_dto.message,
                 resource_paths: mockPaths,
                 flag: null,
@@ -364,6 +455,7 @@ describe('Integration-tests (repository), priority: entity Tickets', () => {
                 .attach('attachment', mockFile.buffer, mockFile.filename)
                 .field('user_email', testParam_dto.user_email)
                 .field('option', testParam_dto.option)
+                .field('title', testParam_dto.title)
                 .field('message', testParam_dto.message);
 
             expect(testResponse.statusCode).toBe(200);
@@ -374,6 +466,7 @@ describe('Integration-tests (repository), priority: entity Tickets', () => {
             const testParam_dto: TicketsRequestCreateDTO = {
                 user_email: 'new-user2@test.com',
                 option: TicketOption.SUPPORT,
+                title: 'new-test-title2',
                 message: 'new-test-message2',
             };
             const mockFiles = [
@@ -403,6 +496,7 @@ describe('Integration-tests (repository), priority: entity Tickets', () => {
                 user_id: testValidUsersId,
                 status: TicketStatus.ISSUED,
                 option: TicketOption.SUPPORT,
+                title: testParam_dto.title,
                 message: testParam_dto.message,
                 resource_paths: mockPaths,
                 flag: null,
@@ -418,6 +512,7 @@ describe('Integration-tests (repository), priority: entity Tickets', () => {
                 .attach('attachment', mockFiles[1].buffer, mockFiles[1].filename)
                 .field('user_email', testParam_dto.user_email)
                 .field('option', testParam_dto.option)
+                .field('title', testParam_dto.title)
                 .field('message', testParam_dto.message);
 
             expect(testResponse.statusCode).toBe(200);
@@ -429,8 +524,12 @@ describe('Integration-tests (repository), priority: entity Tickets', () => {
             const testParam_dto: TicketsUpdateDTO = {
                 status: TicketStatus.ACTIVE,
                 option: TicketOption.SUPPORT,
+                title: 'updated-test-title-without-resource_paths',
                 message: 'updated-test-message-without-resource_paths',
-                flag: null
+                flag: null,
+                info_browser: 'Brave 1.87.190 (Official Build) (64-Bit)',
+                info_os: 'Android 15',
+                info_device: DeviceOption.MOBILE,
             };
 
             const mockTimestampNoPaths = '2025-01-01T14:00:07.000Z';
@@ -438,6 +537,9 @@ describe('Integration-tests (repository), priority: entity Tickets', () => {
 
             const testResult: TicketsResponseDTO = {
                 ...structuredClone(testParam_dto),
+                info_browser: 'Brave 1.87.190 (Official Build) (64-Bit)',
+                info_os: 'Android 15',
+                info_device: DeviceOption.MOBILE,
                 ticket_id: testParam_id,
                 client_id: testValidClientsId,
                 user_id: testValidUsersId,
@@ -459,8 +561,12 @@ describe('Integration-tests (repository), priority: entity Tickets', () => {
             const testParam_dto: TicketsUpdateDTO = {
                 status: TicketStatus.ACTIVE,
                 option: TicketOption.BUG,
+                title: 'updated-test-title',
                 message: 'updated-test-message',
-                flag: null
+                flag: null,
+                info_browser: 'Brave 1.87.190 (Official Build) (64-Bit)',
+                info_os: 'Windows 11',
+                info_device: DeviceOption.COMPUTER,
             };
 
             jest.spyOn(CommonUtils, "getTimestampUTC").mockReturnValue(testTimestamp);
@@ -468,6 +574,9 @@ describe('Integration-tests (repository), priority: entity Tickets', () => {
             const testResult: TicketsResponseDTO = {
                 ...structuredClone(testParam_dto),
                 resource_paths: ['test/path/num0', 'test/path/num1'],
+                info_browser: 'Brave 1.87.190 (Official Build) (64-Bit)',
+                info_os: 'Windows 11',
+                info_device: DeviceOption.COMPUTER,
                 ticket_id: testParam_id,
                 client_id: testValidClientsId,
                 user_id: testValidUsersId,
@@ -537,6 +646,7 @@ describe('Integration-tests (repository), priority: entity Tickets', () => {
                     testParam_dto = {
                         user_email: 'invalid-new-user@test.com',
                         option: TicketOption.SUPPORT,
+                        title: 'invalid-new-test-title',
                         message: 'invalid-new-test-message',
                     };
                 })
@@ -681,6 +791,7 @@ describe('Integration-tests (repository), priority: entity Tickets', () => {
                     const testParam_dto: TicketsUpdateDTO = {
                         status: TicketStatus.ACTIVE,
                         option: TicketOption.SUPPORT,
+                        title: 'test-title',
                         message: 'test-message',
                         flag: null
                     }
@@ -779,13 +890,17 @@ describe('Integration-tests (repository), priority: entity Tickets', () => {
             
             describe('Route: POST/create', () => {
 
-                const testData: Partial<TicketsRequestCreateDTO> = {
-                    user_email: 'invalid-demo-user@test.com',
-                    option: TicketOption.SUPPORT,
-                    message: 'test-message',
-                };
+                let testData: Partial<TicketsRequestCreateDTO>;
+                beforeEach(() => {
+                    testData = {
+                        user_email: 'invalid-demo-user@test.com',
+                        option: TicketOption.SUPPORT,
+                        title: 'test-title',
+                        message: 'test-message',
+                    };
+                })
 
-                const emptyParams = Object.keys(testData) as (keyof typeof testData)[];
+                const emptyParams = ['user_email', 'option', 'title', 'message'] as (keyof typeof testData)[];
 
                 test.each(emptyParams)('Params: <%s>, validator: fn notEmpty() by undefined', async (invalidParam) => {
                     const testParam_dto = structuredClone(testData);
@@ -801,15 +916,32 @@ describe('Integration-tests (repository), priority: entity Tickets', () => {
                     expect(testResponse.body.headers.data).toContainEqual(mockError);
                 })
 
-                test('Params: <message>, validator: fn isLength() by max > 1000 chars', async () => {
-                    let mockParam_dto = {
-                        message: `This-message-contains-more-than-1000-characters-throwing-<support-invalid-max#message!1000>This-message-contains-more-than-1000-characters-throwing-<support-invalid-max#message!1000>This-message-contains-more-than-1000-characters-throwing-<support-invalid-max#message!1000>This-message-contains-more-than-1000-characters-throwing-<support-invalid-max#message!1000>This-message-contains-more-than-1000-characters-throwing-<support-invalid-max#message!1000>This-message-contains-more-than-1000-characters-throwing-<support-invalid-max#message!1000>This-message-contains-more-than-1000-characters-throwing-<support-invalid-max#message!1000>This-message-contains-more-than-1000-characters-throwing-<support-invalid-max#message!1000>This-message-contains-more-than-1000-characters-throwing-<support-invalid-max#message!1000>This-message-contains-more-than-1000-characters-throwing-<support-invalid-max#message!1000>This-message-contains-more-than-1000-characters-throwing-<support-invalid-max#message!1000>`,
+                test('Params: <title>, validator: fn isLength() by max > 100 chars', async () => {
+                    const mockParam_dto = structuredClone(testData);
+                    mockParam_dto.title = `[#######This-title-contains-more-than-100-characters-throwing-<support-invalid-max#title!100>#######]`;
+                    const testError = {
+                        type: 'field',
+                        value: mockParam_dto.title,
+                        msg: 'support-invalid-max#title!100',
+                        path: 'title',
+                        location: 'body'
                     };
 
+                    const testResponse = await request(app)
+                        .post(`${apiUrl}/create`)
+                        .send(mockParam_dto);
+
+                    expect(testResponse.statusCode).toBe(ErrorStatusCodes.InvalidPropertiesException);
+                    expect(testResponse.body.headers.data).toContainEqual(testError);
+                })
+
+                test('Params: <message>, validator: fn isLength() by max > 5000 chars', async () => {
+                    const mockParam_dto = structuredClone(testData);
+                    mockParam_dto.message = String('').padStart(5001, 'test');
                     const testError = {
                         type: 'field',
                         value: mockParam_dto.message,
-                        msg: 'support-invalid-max#message!1000',
+                        msg: 'support-invalid-max#message!5000',
                         path: 'message',
                         location: 'body'
                     };
@@ -843,18 +975,81 @@ describe('Integration-tests (repository), priority: entity Tickets', () => {
                     expect(testResponse.statusCode).toBe(ErrorStatusCodes.InvalidPropertiesException);
                     expect(testResponse.body.headers.data).toContainEqual(testError);
                 })
+
+                test('Params: <info_browser>, validator: fn isLength() by max > 100 chars', async () => {
+                    const mockParam_dto = structuredClone(testData);
+                    mockParam_dto.info_browser = `This-browser-information-contains-more-than-100-characters-throwing-<support-invalid-max#info_browser!100>`;
+                    const testError = {
+                        type: 'field',
+                        value: mockParam_dto.info_browser,
+                        msg: 'support-invalid-max#info_browser!100',
+                        path: 'info_browser',
+                        location: 'body'
+                    };
+
+                    const testResponse = await request(app)
+                        .post(`${apiUrl}/create`)
+                        .send(mockParam_dto);
+
+                    expect(testResponse.statusCode).toBe(ErrorStatusCodes.InvalidPropertiesException);
+                    expect(testResponse.body.headers.data).toContainEqual(testError);
+                })
+
+                test('Params: <info_os>, validator: fn isLength() by max > 100 chars', async () => {
+                    const mockParam_dto = structuredClone(testData);
+                    mockParam_dto.info_os = `###This-os-information-contains-more-than-100-characters-throwing-<support-invalid-max#info_os!100>###`;
+                    const testError = {
+                        type: 'field',
+                        value: mockParam_dto.info_os,
+                        msg: 'support-invalid-max#info_os!100',
+                        path: 'info_os',
+                        location: 'body'
+                    };
+
+                    const testResponse = await request(app)
+                        .post(`${apiUrl}/create`)
+                        .send(mockParam_dto);
+
+                    expect(testResponse.statusCode).toBe(ErrorStatusCodes.InvalidPropertiesException);
+                    expect(testResponse.body.headers.data).toContainEqual(testError);
+                })
+
+                test('Params: <info_device>, validator: fn isLength() by max > 50 chars', async () => {
+                    const mockParam_dto = structuredClone(testData);
+                    mockParam_dto.info_device = `This-device-option-contains-more-than-50-characters-throwing-<support-invalid-max#info_device!50>` as DeviceOption;
+                    const testError = {
+                        type: 'field',
+                        value: mockParam_dto.info_device,
+                        msg: 'support-invalid-max#info_device!50',
+                        path: 'info_device',
+                        location: 'body'
+                    };
+
+                    const testResponse = await request(app)
+                        .post(`${apiUrl}/create`)
+                        .send(mockParam_dto);
+
+                    expect(testResponse.statusCode).toBe(ErrorStatusCodes.InvalidPropertiesException);
+                    expect(testResponse.body.headers.data).toContainEqual(testError);
+                })
             })
 
             describe('Route: PUT/update/:id', () => {
 
-                const testData: Partial<TicketsUpdateDTO> = {
-                    status: TicketStatus.ACTIVE,
-                    option: TicketOption.SUPPORT,
-                    message: 'test-message-express-validation-notEmpty',
-                    flag: null
-                };
+                let testId: string;
+                let testData: Partial<TicketsUpdateDTO>;
+                beforeEach(() => {
+                    testId = mockId.tickets.invalid[0];
+                    testData = {
+                        status: TicketStatus.ACTIVE,
+                        option: TicketOption.SUPPORT,
+                        title: 'test-title-express-validation-notEmpty',
+                        message: 'test-message-express-validation-notEmpty',
+                        flag: null
+                    };
+                })
 
-                const emptyParams = ['status', 'option', 'message'] as (keyof typeof testData)[];
+                const emptyParams = ['status', 'option', 'title', 'message'] as (keyof typeof testData)[];
 
                 test.each(emptyParams)('Params: <%s>, validator: fn notEmpty() by undefined', async (invalidParam) => {
                     const testParam_id = mockId.tickets.invalid[0];
@@ -871,25 +1066,96 @@ describe('Integration-tests (repository), priority: entity Tickets', () => {
                     expect(testResponse.body.headers.data).toContainEqual(mockError);
                 })
 
-                test('Params: <message>, validator: fn isLength() by max > 1000 chars', async () => {
-                    const testParam_id = mockId.tickets.invalid[0];
-                    const testParam_dto: TicketsUpdateDTO = {
-                        status: TicketStatus.ACTIVE,
-                        option: TicketOption.SUPPORT,
-                        message: `This-message-contains-more-than-1000-characters-throwing-<support-invalid-max#message!1000>This-message-contains-more-than-1000-characters-throwing-<support-invalid-max#message!1000>This-message-contains-more-than-1000-characters-throwing-<support-invalid-max#message!1000>This-message-contains-more-than-1000-characters-throwing-<support-invalid-max#message!1000>This-message-contains-more-than-1000-characters-throwing-<support-invalid-max#message!1000>This-message-contains-more-than-1000-characters-throwing-<support-invalid-max#message!1000>This-message-contains-more-than-1000-characters-throwing-<support-invalid-max#message!1000>This-message-contains-more-than-1000-characters-throwing-<support-invalid-max#message!1000>This-message-contains-more-than-1000-characters-throwing-<support-invalid-max#message!1000>This-message-contains-more-than-1000-characters-throwing-<support-invalid-max#message!1000>This-message-contains-more-than-1000-characters-throwing-<support-invalid-max#message!1000>`,
-                        flag: null
+                test('Params: <title>, validator: fn isLength() by max > 100 chars', async () => {
+                    const testParam_dto = structuredClone(testData);
+                    testParam_dto.title = `[#######This-title-contains-more-than-100-characters-throwing-<support-invalid-max#title!100>#######]`;
+                    const testError = {
+                        type: 'field',
+                        value: testParam_dto.title,
+                        msg: 'support-invalid-max#title!100',
+                        path: 'title',
+                        location: 'body'
                     };
+
+                    const testResponse = await request(app)
+                        .put(`${apiUrl}/update/${testId}`)
+                        .send(testParam_dto);
+
+                    expect(testResponse.statusCode).toBe(ErrorStatusCodes.InvalidPropertiesException);
+                    expect(testResponse.body.headers.data).toContainEqual(testError);
+                })
+
+                test('Params: <message>, validator: fn isLength() by max > 5000 chars', async () => {
+                    const testParam_dto = structuredClone(testData);
+                    testParam_dto.message = String('').padStart(5001, 'test');
 
                     const testError = {
                         type: 'field',
                         value: testParam_dto.message,
-                        msg: 'support-invalid-max#message!1000',
+                        msg: 'support-invalid-max#message!5000',
                         path: 'message',
                         location: 'body'
                     };
 
                     const testResponse = await request(app)
-                        .put(`${apiUrl}/update/${testParam_id}`)
+                        .put(`${apiUrl}/update/${testId}`)
+                        .send(testParam_dto);
+
+                    expect(testResponse.statusCode).toBe(ErrorStatusCodes.InvalidPropertiesException);
+                    expect(testResponse.body.headers.data).toContainEqual(testError);
+                })
+
+                test('Params: <info_browser>, validator: fn isLength() by max > 100 chars', async () => {
+                    const testParam_dto = structuredClone(testData);
+                    testParam_dto.info_browser = `This-browser-information-contains-more-than-100-characters-throwing-<support-invalid-max#info_browser!100>`;
+                    const testError = {
+                        type: 'field',
+                        value: testParam_dto.info_browser,
+                        msg: 'support-invalid-max#info_browser!100',
+                        path: 'info_browser',
+                        location: 'body'
+                    };
+
+                    const testResponse = await request(app)
+                        .put(`${apiUrl}/update/${testId}`)
+                        .send(testParam_dto);
+
+                    expect(testResponse.statusCode).toBe(ErrorStatusCodes.InvalidPropertiesException);
+                    expect(testResponse.body.headers.data).toContainEqual(testError);
+                })
+
+                test('Params: <info_os>, validator: fn isLength() by max > 100 chars', async () => {
+                    const testParam_dto = structuredClone(testData);
+                    testParam_dto.info_os = `###This-os-information-contains-more-than-100-characters-throwing-<support-invalid-max#info_os!100>###`;
+                    const testError = {
+                        type: 'field',
+                        value: testParam_dto.info_os,
+                        msg: 'support-invalid-max#info_os!100',
+                        path: 'info_os',
+                        location: 'body'
+                    };
+
+                    const testResponse = await request(app)
+                        .put(`${apiUrl}/update/${testId}`)
+                        .send(testParam_dto);
+
+                    expect(testResponse.statusCode).toBe(ErrorStatusCodes.InvalidPropertiesException);
+                    expect(testResponse.body.headers.data).toContainEqual(testError);
+                })
+
+                test('Params: <info_device>, validator: fn isLength() by max > 50 chars', async () => {
+                    const testParam_dto = structuredClone(testData);
+                    testParam_dto.info_device = `This-device-option-contains-more-than-50-characters-throwing-<support-invalid-max#info_device!50>` as DeviceOption;
+                    const testError = {
+                        type: 'field',
+                        value: testParam_dto.info_device,
+                        msg: 'support-invalid-max#info_device!50',
+                        path: 'info_device',
+                        location: 'body'
+                    };
+
+                    const testResponse = await request(app)
+                        .put(`${apiUrl}/update/${testId}`)
                         .send(testParam_dto);
 
                     expect(testResponse.statusCode).toBe(ErrorStatusCodes.InvalidPropertiesException);
@@ -897,14 +1163,8 @@ describe('Integration-tests (repository), priority: entity Tickets', () => {
                 })
 
                 test('Params: <last_modified>, validator: fn isEmpty() by defined value', async () => {
-                    const testParam_id = mockId.tickets.valid[0];
-                    const testParam_dto: TicketsUpdateDTO = {
-                        status: TicketStatus.ACTIVE,
-                        option: TicketOption.SUPPORT,
-                        message: 'modified-test-message',
-                        flag: null,
-                        last_modified: testTimestamp
-                    };
+                    const testParam_dto = structuredClone(testData);
+                    testParam_dto.last_modified = testTimestamp;
 
                     const testError = {
                         type: 'field',
@@ -915,7 +1175,7 @@ describe('Integration-tests (repository), priority: entity Tickets', () => {
                     };
 
                     const testResponse = await request(app)
-                        .put(`${apiUrl}/update/${testParam_id}`)
+                        .put(`${apiUrl}/update/${testId}`)
                         .send(testParam_dto);
 
                     expect(testResponse.statusCode).toBe(ErrorStatusCodes.InvalidPropertiesException);
