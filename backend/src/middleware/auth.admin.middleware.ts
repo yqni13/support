@@ -19,7 +19,7 @@ export function authAdmin() {
 
             const hasValidKey = adminKey.trim() === secrets.ADMIN_API.trim();
             if(!hasValidKey) {
-                throw new InvalidApiKeyException('support-invalid-admin-auth')
+                throw new InvalidApiKeyException('support-invalid-admin-auth');
             }
             next();
         } catch(err: any) {

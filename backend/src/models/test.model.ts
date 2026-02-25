@@ -1,4 +1,5 @@
 import { TestErrorDTO } from "../dtos/test.dto";
+import { MaintenanceMode } from "../utils/enums/maintenance-mode.enum";
 import { ExceedMaxEndpointException, UnexpectedApiResponseException, UnimplementedException } from "../utils/exceptions/api.exception";
 import { AuthSecretNotFoundException, BlockedUsersException, ForbiddenApiKeyException, InvalidApiKeyException, InvalidUsersException, MalformedApiKeyException, MissingApiKeyException, PermissionException } from "../utils/exceptions/auth.exception";
 import { InternalServerException, InvalidSourceException, MaintenanceException, RequestExceedMaxException } from "../utils/exceptions/common.exception";
@@ -35,7 +36,7 @@ class TestModel {
             case('InvalidSourceException'):
                 throw new InvalidSourceException();
             case('MaintenanceException'):
-                throw new MaintenanceException(dto.errorMsg ?? this.substitutionMsg);
+                throw new MaintenanceException(dto.errorMsg as MaintenanceMode ?? MaintenanceMode.E013);
             // DBConnectionException
             case('DBConnectionException'):
                 throw new DBConnectionException();
