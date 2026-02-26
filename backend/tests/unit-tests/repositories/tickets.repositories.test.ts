@@ -8,6 +8,7 @@ import { TicketStatus } from "../../../src/utils/enums/ticket-status.enum";
 import ticketsRepository from "../../../src/repositories/tickets.repository";
 import { TicketsFilterDTO, TicketsIntervalDTO, TicketsResponseDTO, TicketsResponseExtendedDTO, TicketsUpdateDTO } from "../../../src/dtos/tickets.dto";
 import { TicketOption } from "../../../src/utils/enums/ticket-option.enum";
+import { DeviceOption } from "../../../src/utils/enums/device-option.enum";
 
 jest.mock("../../../src/configs/db", () => {
     return {
@@ -24,8 +25,12 @@ const mockData: Tickets = {
     user_id: mockId.users.valid[0],
     status: TicketStatus.ISSUED,
     option: TicketOption.SUPPORT,
+    title: 'test-title',
     message: 'test-message',
     flag: null,
+    info_browser: 'Brave 1.87.190 (Official Build) (64-Bit)',
+    info_os: 'Windows 11',
+    info_device: DeviceOption.COMPUTER,
     last_modified: mockTimestamp,
     created_on: mockTimestamp
 };
@@ -108,8 +113,12 @@ describe('Unit-tests (repository), priority: entity Tickets', () => {
                     user_id: 'another_valid_users_test_id',
                     status: TicketStatus.ACTIVE,
                     option: TicketOption.SUPPORT,
+                    title: 'another-test-title',
                     message: 'another-test-message',
                     flag: null,
+                    info_browser: 'Brave 1.87.190 (Official Build) (64-Bit)',
+                    info_os: 'Windows 11',
+                    info_device: DeviceOption.COMPUTER,
                     last_modified: mockTimestamp,
                     created_on: mockTimestamp
                 };
@@ -183,6 +192,7 @@ describe('Unit-tests (repository), priority: entity Tickets', () => {
                         user_id: 'another_valid_users_id',
                         status: TicketStatus.ACTIVE,
                         option: TicketOption.SUPPORT,
+                        title: 'valid-test-title',
                         message: 'valid-test-message',
                         flag: null,
                         last_modified: '2025-01-01T13:59:48.000Z',
@@ -218,6 +228,7 @@ describe('Unit-tests (repository), priority: entity Tickets', () => {
                         user_id: mockUserId,
                         status: TicketStatus.ACTIVE,
                         option: TicketOption.SUPPORT,
+                        title: 'valid-test-title',
                         message: 'valid-test-message',
                         flag: null,
                         last_modified: '2025-01-01T13:59:48.000Z',
@@ -345,8 +356,12 @@ describe('Unit-tests (repository), priority: entity Tickets', () => {
             user_id: mockId.users.valid[0],
             status: TicketStatus.ISSUED,
             option: TicketOption.SUPPORT,
+            title: 'new-test-title',
             message: 'new-test-message',
             flag: null,
+            info_browser: 'Brave 1.87.190 (Official Build) (64-Bit)',
+            info_os: 'Windows 11',
+            info_device: DeviceOption.COMPUTER,
             last_modified: mockTimestamp,
             created_on: mockTimestamp
         }
@@ -392,8 +407,12 @@ describe('Unit-tests (repository), priority: entity Tickets', () => {
             mockParam_dto = {
                 status: TicketStatus.ACTIVE,
                 option: TicketOption.SUPPORT,
+                title: 'updated-test-title',
                 message: 'updated-test-message',
                 flag: null,
+                info_browser: 'Brave 1.87.190 (Official Build) (64-Bit)',
+                info_os: 'Windows 11',
+                info_device: DeviceOption.COMPUTER,
                 last_modified: mockTimestamp
             };
         });

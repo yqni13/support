@@ -268,7 +268,7 @@ describe('Integration-tests (repository), priority: entity Clients', () => {
                 })
             })
 
-            // Route: PUT/status/:id no test for notEmpty() => single property in dto => requirePayload() catches {}
+            // (Route: PUT/status/:id) No test for notEmpty() => single property in dto => requirePayload() catches {}
         })
 
         describe('All routes, priority: require middleware, location: <body>', () => {

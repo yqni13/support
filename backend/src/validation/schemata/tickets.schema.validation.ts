@@ -30,6 +30,11 @@ export const postTicketsSearchSchema: ValidationChain[] = [
     body('user_id.*')
         .isUUID(4)
         .withMessage('support-invalid-entry#user_id'),
+    body('title')
+        .trim()
+        .isLength({max: 100})
+        .withMessage('support-invalid-max#title!100')
+        .optional(),
     body('status')
         .custom((content: SingleOrArray<TicketStatus>) => {
             content = Array.isArray(content) ? content : [content];
@@ -75,16 +80,38 @@ export const postTicketSchema: ValidationChain[] = [
         .withMessage(Message.REQUIRED)
         .bail()
         .custom((option: TicketOption) => CommonValidators.validateEnum(option, TicketOption, 'ticketOption')),
+    body('title')
+        .trim()
+        .notEmpty()
+        .withMessage(Message.REQUIRED)
+        .bail()
+        .isLength({max: 100})
+        .withMessage('support-invalid-max#title!100'),
     body('message')
         .trim()
         .notEmpty()
         .withMessage(Message.REQUIRED)
         .bail()
-        .isLength({max: 1000})
-        .withMessage('support-invalid-max#message!1000'),
+        .isLength({max: 5000})
+        .withMessage('support-invalid-max#message!5000'),
     body('resource_paths')
         .isEmpty()
-        .withMessage(Message.FORBIDDEN)
+        .withMessage(Message.FORBIDDEN),
+    body('info_browser')
+        .trim()
+        .isLength({max: 100})
+        .withMessage('support-invalid-max#info_browser!100')
+        .optional(),
+    body('info_os')
+        .trim()
+        .isLength({max: 100})
+        .withMessage('support-invalid-max#info_os!100')
+        .optional(),
+    body('info_device')
+        .trim()
+        .isLength({max: 50})
+        .withMessage('support-invalid-max#info_device!50')
+        .optional()
 ];
 
 export const patchTicketSchema: ValidationChain[] = [
@@ -105,17 +132,39 @@ export const patchTicketSchema: ValidationChain[] = [
         .withMessage(Message.REQUIRED)
         .bail()
         .custom((option: TicketOption) => CommonValidators.validateEnum(option, TicketOption, 'ticketOption')),
+    body('title')
+        .trim()
+        .notEmpty()
+        .withMessage(Message.REQUIRED)
+        .bail()
+        .isLength({max: 100})
+        .withMessage('support-invalid-max#title!100'),
     body('message')
         .trim()
         .notEmpty()
         .withMessage(Message.REQUIRED)
         .bail()
-        .isLength({max: 1000})
-        .withMessage('support-invalid-max#message!1000'),
+        .isLength({max: 5000})
+        .withMessage('support-invalid-max#message!5000'),
     body('flag')
         .trim()
         .custom((flag: string) => CommonValidators.validateEnum(flag, Flag, 'flag'))
         .optional({values: 'null'}),
+    body('info_browser')
+        .trim()
+        .isLength({max: 100})
+        .withMessage('support-invalid-max#info_browser!100')
+        .optional(),
+    body('info_os')
+        .trim()
+        .isLength({max: 100})
+        .withMessage('support-invalid-max#info_os!100')
+        .optional(),
+    body('info_device')
+        .trim()
+        .isLength({max: 50})
+        .withMessage('support-invalid-max#info_device!50')
+        .optional(),
     body('last_modified')
         .isEmpty()
         .withMessage(Message.FORBIDDEN)

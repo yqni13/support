@@ -1,5 +1,5 @@
 # yqni13 | support
-$\texttt{\color{teal}{v1.3.4}}$
+$\texttt{\color{teal}{v1.3.5}}$
 
 
 <br>
@@ -49,6 +49,12 @@ The development process is structured by the TDD (test driven development) princ
     <dd>:key: request verification by api-keys</dd>
     <dd>🕵️ request rate limiting + violation handling</dd>
 </dl>
+
+<br>
+
+### $\textsf{\color{teal}Tickets}$
+
+Documentation follows with finished feedback handling (task: SUPPORT-64).
 
 <br>
 
@@ -147,14 +153,16 @@ Preventing an unwanted merge with unfinished/failed test run, the project is set
 
 ### $\textsf{\color{forestgreen}last update:}$
 
-$\textsf{[v1.3.3\ =>\ {\textbf{\color{brown}v1.3.4}]}}$ app
-- $\textsf{\color{orange}Patch:}$ Updated exceptions for auth class and adapted auth middleware exception handling.
+$\textsf{[v1.3.4\ =>\ {\textbf{\color{brown}v1.3.5}]}}$ app<br>
+$\textsf{[v1.5.3\ =>\ {\textbf{\color{brown}v1.5.4}]}}$ database
+- $\textsf{\color{orange}Patch:}$ Updated:
+  +  new migration to add properties 'info_browser', 'info_os' and 'info_device' as well as property 'title' with default value 'support_ticket' to table 'tickets' and increased max length of property 'message' up to 5000 characters
+  +  ticket validation/handling/tests to inlcude new & changed properties
 
 <br>
 
 ### Update objectives:
 <dl>
     <dd>- jenkins setup</dd>
-    <dd>- host setup</dd>
     <dd>- mail setup</dd>
 </dl>
