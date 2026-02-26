@@ -11,7 +11,7 @@ async function up(pgm) {
         title: {
             type: 'varchar(100)',
             notNull: true,
-            default: 'support_ticket'
+            default: 'support_ticket_title'
         },
         info_browser: {
             type: 'varchar(100)',
@@ -28,7 +28,8 @@ async function up(pgm) {
     });
     pgm.alterColumn('tickets', 'message', {
         type: 'text',
-        notNull: true
+        notNull: true,
+        default: 'support_ticket_message'
     });
 }
 

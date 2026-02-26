@@ -15,7 +15,7 @@ export interface Tickets {
     flag: Flag | null,
     info_browser?: string,
     info_os?: string,
-    info_device?: DeviceOption
+    info_device?: DeviceOption,
     last_modified: string,
     created_on: string
 }

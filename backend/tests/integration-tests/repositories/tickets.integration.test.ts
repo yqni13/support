@@ -918,7 +918,7 @@ describe('Integration-tests (repository), priority: entity Tickets', () => {
 
                 test('Params: <title>, validator: fn isLength() by max > 100 chars', async () => {
                     const mockParam_dto = structuredClone(testData);
-                    mockParam_dto.title = `[#######This-title-contains-more-than-100-characters-throwing-<support-invalid-max#title!100>#######]`;
+                    mockParam_dto.title = String('').padStart(101, 'test');
                     const testError = {
                         type: 'field',
                         value: mockParam_dto.title,
@@ -978,7 +978,7 @@ describe('Integration-tests (repository), priority: entity Tickets', () => {
 
                 test('Params: <info_browser>, validator: fn isLength() by max > 100 chars', async () => {
                     const mockParam_dto = structuredClone(testData);
-                    mockParam_dto.info_browser = `This-browser-information-contains-more-than-100-characters-throwing-<support-invalid-max#info_browser!100>`;
+                    mockParam_dto.info_browser = String('').padStart(101, 'test');
                     const testError = {
                         type: 'field',
                         value: mockParam_dto.info_browser,
@@ -997,7 +997,7 @@ describe('Integration-tests (repository), priority: entity Tickets', () => {
 
                 test('Params: <info_os>, validator: fn isLength() by max > 100 chars', async () => {
                     const mockParam_dto = structuredClone(testData);
-                    mockParam_dto.info_os = `###This-os-information-contains-more-than-100-characters-throwing-<support-invalid-max#info_os!100>###`;
+                    mockParam_dto.info_os = String('').padStart(101, 'test');
                     const testError = {
                         type: 'field',
                         value: mockParam_dto.info_os,
@@ -1016,7 +1016,7 @@ describe('Integration-tests (repository), priority: entity Tickets', () => {
 
                 test('Params: <info_device>, validator: fn isLength() by max > 50 chars', async () => {
                     const mockParam_dto = structuredClone(testData);
-                    mockParam_dto.info_device = `This-device-option-contains-more-than-50-characters-throwing-<support-invalid-max#info_device!50>` as DeviceOption;
+                    mockParam_dto.info_device = String('').padStart(51, 'test') as DeviceOption;
                     const testError = {
                         type: 'field',
                         value: mockParam_dto.info_device,
@@ -1036,10 +1036,10 @@ describe('Integration-tests (repository), priority: entity Tickets', () => {
 
             describe('Route: PUT/update/:id', () => {
 
-                let testId: string;
+                let testParam_id: string;
                 let testData: Partial<TicketsUpdateDTO>;
                 beforeEach(() => {
-                    testId = mockId.tickets.invalid[0];
+                    testParam_id = mockId.tickets.invalid[0];
                     testData = {
                         status: TicketStatus.ACTIVE,
                         option: TicketOption.SUPPORT,
@@ -1068,7 +1068,7 @@ describe('Integration-tests (repository), priority: entity Tickets', () => {
 
                 test('Params: <title>, validator: fn isLength() by max > 100 chars', async () => {
                     const testParam_dto = structuredClone(testData);
-                    testParam_dto.title = `[#######This-title-contains-more-than-100-characters-throwing-<support-invalid-max#title!100>#######]`;
+                    testParam_dto.title = String('').padStart(101, 'test');
                     const testError = {
                         type: 'field',
                         value: testParam_dto.title,
@@ -1078,7 +1078,7 @@ describe('Integration-tests (repository), priority: entity Tickets', () => {
                     };
 
                     const testResponse = await request(app)
-                        .put(`${apiUrl}/update/${testId}`)
+                        .put(`${apiUrl}/update/${testParam_id}`)
                         .send(testParam_dto);
 
                     expect(testResponse.statusCode).toBe(ErrorStatusCodes.InvalidPropertiesException);
@@ -1098,7 +1098,7 @@ describe('Integration-tests (repository), priority: entity Tickets', () => {
                     };
 
                     const testResponse = await request(app)
-                        .put(`${apiUrl}/update/${testId}`)
+                        .put(`${apiUrl}/update/${testParam_id}`)
                         .send(testParam_dto);
 
                     expect(testResponse.statusCode).toBe(ErrorStatusCodes.InvalidPropertiesException);
@@ -1107,7 +1107,7 @@ describe('Integration-tests (repository), priority: entity Tickets', () => {
 
                 test('Params: <info_browser>, validator: fn isLength() by max > 100 chars', async () => {
                     const testParam_dto = structuredClone(testData);
-                    testParam_dto.info_browser = `This-browser-information-contains-more-than-100-characters-throwing-<support-invalid-max#info_browser!100>`;
+                    testParam_dto.info_browser = String('').padStart(101, 'test');
                     const testError = {
                         type: 'field',
                         value: testParam_dto.info_browser,
@@ -1117,7 +1117,7 @@ describe('Integration-tests (repository), priority: entity Tickets', () => {
                     };
 
                     const testResponse = await request(app)
-                        .put(`${apiUrl}/update/${testId}`)
+                        .put(`${apiUrl}/update/${testParam_id}`)
                         .send(testParam_dto);
 
                     expect(testResponse.statusCode).toBe(ErrorStatusCodes.InvalidPropertiesException);
@@ -1126,7 +1126,7 @@ describe('Integration-tests (repository), priority: entity Tickets', () => {
 
                 test('Params: <info_os>, validator: fn isLength() by max > 100 chars', async () => {
                     const testParam_dto = structuredClone(testData);
-                    testParam_dto.info_os = `###This-os-information-contains-more-than-100-characters-throwing-<support-invalid-max#info_os!100>###`;
+                    testParam_dto.info_os = String('').padStart(101, 'test');
                     const testError = {
                         type: 'field',
                         value: testParam_dto.info_os,
@@ -1136,7 +1136,7 @@ describe('Integration-tests (repository), priority: entity Tickets', () => {
                     };
 
                     const testResponse = await request(app)
-                        .put(`${apiUrl}/update/${testId}`)
+                        .put(`${apiUrl}/update/${testParam_id}`)
                         .send(testParam_dto);
 
                     expect(testResponse.statusCode).toBe(ErrorStatusCodes.InvalidPropertiesException);
@@ -1145,7 +1145,7 @@ describe('Integration-tests (repository), priority: entity Tickets', () => {
 
                 test('Params: <info_device>, validator: fn isLength() by max > 50 chars', async () => {
                     const testParam_dto = structuredClone(testData);
-                    testParam_dto.info_device = `This-device-option-contains-more-than-50-characters-throwing-<support-invalid-max#info_device!50>` as DeviceOption;
+                    testParam_dto.info_device = String('').padStart(51, 'test') as DeviceOption;
                     const testError = {
                         type: 'field',
                         value: testParam_dto.info_device,
@@ -1155,7 +1155,7 @@ describe('Integration-tests (repository), priority: entity Tickets', () => {
                     };
 
                     const testResponse = await request(app)
-                        .put(`${apiUrl}/update/${testId}`)
+                        .put(`${apiUrl}/update/${testParam_id}`)
                         .send(testParam_dto);
 
                     expect(testResponse.statusCode).toBe(ErrorStatusCodes.InvalidPropertiesException);
@@ -1175,7 +1175,7 @@ describe('Integration-tests (repository), priority: entity Tickets', () => {
                     };
 
                     const testResponse = await request(app)
-                        .put(`${apiUrl}/update/${testId}`)
+                        .put(`${apiUrl}/update/${testParam_id}`)
                         .send(testParam_dto);
 
                     expect(testResponse.statusCode).toBe(ErrorStatusCodes.InvalidPropertiesException);
