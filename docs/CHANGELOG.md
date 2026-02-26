@@ -4,9 +4,19 @@
 
 <br>
 
+### $\textsf{\color{skyblue}2026/02/26}$
+
+$\textsf{[v1.3.4\ =>\ {\textbf{\color{brown}v1.3.5}]}}$ app<br>
+$\textsf{[v1.5.3\ =>\ {\textbf{\color{brown}v1.5.4}]}}$ database
+- $\textsf{\color{orange}Patch:}$ Updated:
+  +  new migration to add properties 'info_browser', 'info_os' and 'info_device' as well as property 'title' with default value 'support_ticket' to table 'tickets' and increased max length of property 'message' up to 5000 characters
+  +  ticket validation/handling/tests to inlcude new & changed properties
+
+<br>
+
 ### $\textsf{\color{skyblue}2026/02/25}$
 
-$\textsf{[v1.3.3\ =>\ {\textbf{\color{brown}v1.3.4}]}}$ app
+$\textsf{[v1.3.3\ =>\ v1.3.4]}$ app
 - $\textsf{\color{orange}Patch:}$ Updated exceptions for auth class and adapted auth middleware exception handling.
 
 <br>
@@ -37,7 +47,7 @@ $\textsf{[v1.2.1\ =>\ v1.2.2]}$ app
 ### $\textsf{\color{skyblue}2026/02/12}$
 
 $\textsf{[v1.1.0\ =>\ v1.2.1]}$ app<br>
-$\textsf{[v1.5.2\ =>\ {\textbf{\color{brown}v1.5.3}]}}$ database
+$\textsf{[v1.5.2\ =>\ v1.5.3]}$ database
 - $\textsf{\color{teal}Addition:}$ Added options to select category of support ticket regarding user intention.
 - $\textsf{\color{orange}Patch:}$ Updated:
   + throw exception when deletion is prohibited instead of returning 'false'
