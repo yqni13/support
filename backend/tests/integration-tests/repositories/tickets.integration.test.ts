@@ -20,6 +20,7 @@ import { FilesService } from "../../../src/services/files.service";
 import ticketsModel from "../../../src/models/tickets.model";
 import { CloudService } from "../../../src/services/cloud.service";
 import { TicketOption } from "../../../src/utils/enums/ticket-option.enum";
+import { DeviceOption } from "../../../src/utils/enums/device-option.enum";
 
 const testValidClientsId = mockId.clients.valid[0];
 const testValidUsersId = mockId.users.valid[0];
@@ -48,7 +49,6 @@ jest.mock('../../../src/middleware/observe.middleware.ts', () => ({
 }))
 
 import app from '../../../src/app';
-import { DeviceOption } from "../../../src/utils/enums/device-option.enum";
 
 jest.setTimeout(60000);
 
@@ -402,7 +402,7 @@ describe('Integration-tests (repository), priority: entity Tickets', () => {
                 flag: null,
                 last_modified: testTimestamp,
                 created_on: testTimestamp
-            }
+            };
 
             await dbTestSetup.addTestData();
             const testResponse = await request(app)

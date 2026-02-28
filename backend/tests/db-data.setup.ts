@@ -19,7 +19,9 @@ export class DBTestData {
             users: 'users',
             tickets: 'tickets',
             rateLimits: 'rate_limits',
-            demoLimits: 'demo_limits'
+            demoLimits: 'demo_limits',
+            feedback: 'feedback_entries',
+            feedbackRating: 'feedback_ratings'
         };
     }
 
@@ -50,6 +52,15 @@ export class DBTestData {
         VALUES ($1, $2, $3, $4, $5, $6, $7, $8);
         `;
         const values = [mockId.clients.valid[0], 'TESTCLIENT', secrets.TEST_APIKEY_HASH, ApiKeyStatus.ACTIVE, null, '2025-01-01T14:00:02.000Z', '2025-01-01T14:00:02.000Z', '2025-01-01T14:00:02.000Z'];
+        return { sql: sql, values: values };
+    }
+
+    getAdditionalClientsInsertSql(): BaseQuery {
+        const sql = `INSERT INTO ${this.tableRecords['clients']}
+        (client_id, name, api_key_hash, status, flag, last_use, last_modified, created_on)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8);
+        `;
+        const values = [mockId.clients.valid[1], 'ANOTHER-TESTCLIENT', secrets.TEST_APIKEY_HASH, ApiKeyStatus.ACTIVE, null, '2025-01-01T14:00:02.000Z', '2025-01-01T14:00:02.000Z', '2025-01-01T14:00:02.000Z'];
         return { sql: sql, values: values };
     }
 
@@ -95,6 +106,24 @@ export class DBTestData {
         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14);
         `;
         const values = [mockId.tickets.valid[1], mockId.clients.valid[0], mockId.users.valid[0], TicketStatus.ISSUED, TicketOption.SUPPORT, 'test-title', 'test-message-without-resource_paths', undefined, null, 'Brave 1.87.190 (Official Build) (64-Bit)', 'Android 15', DeviceOption.MOBILE, '2025-01-01T14:00:07.000Z', '2025-01-01T14:00:07.000Z'];
+        return { sql: sql, values: values };
+    }
+
+    getFeedbackInsertSql(): BaseQuery {
+        const sql = `INSERT INTO ${this.tableRecords['feedback']}
+        (feedback_id, client_id, user_id, rating, term_accepted, message, reviewed_on, last_modified, created_on)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9);
+        `;
+        const values = [mockId.feedback.valid[0], mockId.clients.valid[0], mockId.users.valid[0], 5, true, 'test-feedback-message', '2025-01-01T14:00:08.000Z', '2025-01-01T14:00:08.000Z', '2025-01-01T14:00:08.000Z'];
+        return { sql: sql, values: values };
+    }
+
+    getFeedbackRatingInsertSql(): BaseQuery {
+        const sql = `INSERT INTO ${this.tableRecords['feedbackRating']}
+        (client_id, count, rating_sum, last_modified, created_on)
+        VALUES ($1, $2, $3, $4, $5);
+        `;
+        const values = [mockId.clients.valid[0], 16, 67, '2025-01-01T14:00:09.000Z', '2025-01-01T14:00:09.000Z'];
         return { sql: sql, values: values };
     }
 }
