@@ -64,14 +64,12 @@ export class DBTestSetup {
 
     async addTestData() {
         const dbTestData = DBTestData.getInstance();
-        await this.client.query('BEGIN');
         try {
+            await this.client.query('BEGIN');
             const metaData = dbTestData.getMetaInsertSql();
             await this.client.query(metaData.sql, metaData.values);
             const clientData = dbTestData.getClientsInsertSql();
             await this.client.query(clientData.sql, clientData.values);
-            const clientAdditionalData = dbTestData.getAdditionalClientsInsertSql();
-            await this.client.query(clientAdditionalData.sql, clientAdditionalData.values);
             const userData = dbTestData.getUsersInsertSql();
             await this.client.query(userData.sql, userData.values);
             const ticketData = dbTestData.getTicketsInsertSql();
@@ -80,8 +78,6 @@ export class DBTestSetup {
             await this.client.query(rateLimitData.sql, rateLimitData.values);
             const demoLimitData = dbTestData.getDemoLimitsInsertSql();
             await this.client.query(demoLimitData.sql, demoLimitData.values);
-            const ticketDataNoPaths = dbTestData.getTicketsWithoutPathsInsertSql();
-            await this.client.query(ticketDataNoPaths.sql, ticketDataNoPaths.values);
             const feedbackData = dbTestData.getFeedbackInsertSql();
             await this.client.query(feedbackData.sql, feedbackData.values);
             const feedbackRatingData = dbTestData.getFeedbackRatingInsertSql();

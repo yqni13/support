@@ -53,6 +53,7 @@ async function up(pgm) {
             notNull: true,
         }
     });
+    pgm.sql(`ALTER SEQUENCE feedback_entries_feedback_id_seq RESTART WITH 1;`);
     pgm.createTable('feedback_ratings', {
         client_id: {
             type: 'uuid',
