@@ -3,12 +3,12 @@ import { FeedbackRatingCreateDTO, FeedbackRatingExtendedResponseDTO, FeedbackRat
 import { FeedbackRating } from "../repositories/interfaces/feedback-rating.entity.interface";
 
 class FeedbackRatingModel {
-    generateFeedbackRating(dto: FeedbackRatingCreateDTO): FeedbackRating {
+    generateFeedbackRatingEntity(dto: FeedbackRatingCreateDTO): FeedbackRating {
         const timestamp = CommonUtils.getTimestampUTC();
         return {
             ...dto,
-            count: 0,
-            rating_sum: 0,
+            count: dto.count ?? 0,
+            rating_sum: dto.rating_sum ?? 0,
             last_modified: timestamp,
             created_on: timestamp
         };
@@ -16,8 +16,10 @@ class FeedbackRatingModel {
 
     mapFeedbackRatingUpdateDTO(dto: FeedbackRatingUpdateDTO): FeedbackRatingUpdateDTO {
         const timestamp = CommonUtils.getTimestampUTC();
+        // In case of an updated feedback, rating_average gets updated => no increase of count (0).
         return {
-            ...dto,
+            count: dto.count ?? 0,
+            rating: dto.rating,
             last_modified: timestamp
         };
     }
