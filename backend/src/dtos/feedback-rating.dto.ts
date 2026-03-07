@@ -1,8 +1,11 @@
 export interface FeedbackRatingCreateDTO {
-    client_id: string
+    client_id: string,
+    count?: number,
+    rating_sum?: number
 }
 
 export interface FeedbackRatingUpdateDTO {
+    count?: number,
     rating: number,
     last_modified?: string
 }

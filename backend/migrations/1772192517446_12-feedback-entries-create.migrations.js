@@ -46,13 +46,20 @@ async function up(pgm) {
         },
         last_modified: {
             type: 'TIMESTAMP WITH TIME ZONE',
-            notNull: true
+            notNull: true,
+            default: 'NOW()'
         },
         created_on: {
             type: 'TIMESTAMP WITH TIME ZONE',
             notNull: true,
+            default: 'NOW()'
         }
     });
+    pgm.addConstraint(
+        'feedback_entries',
+        'feedback_entries_unique_clients_users',
+        { unique: ['client_id', 'user_id'] }
+    );
     pgm.sql(`ALTER SEQUENCE feedback_entries_feedback_id_seq RESTART WITH 1;`);
     pgm.createTable('feedback_ratings', {
         client_id: {

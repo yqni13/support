@@ -87,14 +87,24 @@ describe('Integration-tests (repository), priority: entity Users', () => {
 
         test('Repository process fn findAll(), result: "SUCCESS"', async () => {
             const testParam_id = mockId.users.valid[0];
-            const testResult: Users[] = [{
-                user_id: testParam_id,
-                email: 'max.mustermann@yqni13.com',
-                status: UserStatus.ACTIVE,
-                flag: null,
-                last_modified: testTimestamp,
-                created_on: testTimestamp
-            }];
+            const testResult: Users[] = [
+                {
+                    user_id: mockId.users.valid[1],
+                    email: 'aurora.otsuki@yqni13.com',
+                    status: UserStatus.ACTIVE,
+                    flag: null,
+                    last_modified: '2026-01-01T14:00:03.000Z',
+                    created_on: '2026-01-01T14:00:03.000Z'
+                },
+                {
+                    user_id: testParam_id,
+                    email: 'max.mustermann@yqni13.com',
+                    status: UserStatus.ACTIVE,
+                    flag: null,
+                    last_modified: testTimestamp,
+                    created_on: testTimestamp
+                }
+            ];
 
             await dbTestSetup.addTestData();
             const testResponse = await request(app)

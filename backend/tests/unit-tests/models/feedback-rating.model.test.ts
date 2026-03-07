@@ -8,21 +8,41 @@ const mockTimestamp = '2025-01-01T14:00:09.000Z';
 
 describe('Unit-tests (model), priority: entity FeedbackRating', () => {
 
-    describe('Priority: fn generateFeedbackRating()', () =>{
+    describe('Priority: fn generateFeedbackRatingEntity()', () =>{
 
         describe('Testing valid fn calls', () => {
 
-            test('Generate new object', () => {
+            test('Generate new object, params: <count, rating_sum> are undefined', () => {
                 const mockParam_dto: FeedbackRatingCreateDTO = {
                     client_id: mockId.clients.valid[0]
                 };
                 jest.spyOn(CommonUtils, "getTimestampUTC").mockReturnValue(mockTimestamp);
 
-                const testFn = feedbackRatingModel.generateFeedbackRating(mockParam_dto);
+                const testFn = feedbackRatingModel.generateFeedbackRatingEntity(mockParam_dto);
                 const expectResult: FeedbackRating = {
                     client_id: mockParam_dto.client_id,
                     count: 0,
                     rating_sum: 0,
+                    last_modified: mockTimestamp,
+                    created_on: mockTimestamp
+                };
+
+                expect(testFn).toEqual(expectResult);
+            })
+
+            test('Generate new object, params: <count, rating_sum> have values', () => {
+                const mockParam_dto: FeedbackRatingCreateDTO = {
+                    client_id: mockId.clients.valid[0],
+                    count: 1,
+                    rating_sum: 5
+                };
+                jest.spyOn(CommonUtils, "getTimestampUTC").mockReturnValue(mockTimestamp);
+
+                const testFn = feedbackRatingModel.generateFeedbackRatingEntity(mockParam_dto);
+                const expectResult: FeedbackRating = {
+                    client_id: mockParam_dto.client_id,
+                    count: 1,
+                    rating_sum: 5,
                     last_modified: mockTimestamp,
                     created_on: mockTimestamp
                 };
@@ -37,7 +57,7 @@ describe('Unit-tests (model), priority: entity FeedbackRating', () => {
         describe('Testing valid fn calls', () => {
 
             test('Map timestamp value to DTO, result: dto FeedbackRatingUpdateDTO', () => {
-                const mockParam_dto: FeedbackRatingUpdateDTO = { rating: 3 };
+                const mockParam_dto: FeedbackRatingUpdateDTO = { count: 1, rating: 3 };
                 const mockNewTimestamp = '2026-01-01T14:00:09.000Z';
                 jest.spyOn(CommonUtils, "getTimestampUTC").mockReturnValue(mockNewTimestamp);
 

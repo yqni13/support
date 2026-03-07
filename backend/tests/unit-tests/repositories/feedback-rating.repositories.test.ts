@@ -215,7 +215,7 @@ describe('Unit-tests (repository), priority: entity FeedbackRating', () => {
                 const mockValues: any[] = Object.values(mockParam_entity).map(value => value);
                 const mockResult: FeedbackRating = structuredClone(mockParam_entity);
                 const mockClient = MockUtils.mapMockDbClient(mockResult);
-                const testFn = await feedbackRatingRepository.create(mockParam_entity);
+                const testFn = await feedbackRatingRepository.create((mockClient as any), mockParam_entity);
 
                 expect(testFn).toEqual(mockResult);
                 expect(DBConnection.getInstance).toHaveBeenCalled();
@@ -226,18 +226,7 @@ describe('Unit-tests (repository), priority: entity FeedbackRating', () => {
             })
         })
         
-        describe('Testing invalid fn calls', () => {
-
-            test('Throw DBQueryErrorException by catch-block', async () => {
-                const mockErrorMsg = "DB ERROR ON INSERT QUERY";
-                const mockResult = null;
-                jest.spyOn(CommonUtils, "logError").mockReturnValue();
-                const _ = MockUtils.mapMockDbClient(mockResult, mockBoolean, mockErrorMsg);
-
-                await expect(() => feedbackRatingRepository.create(mockParam_entity))
-                    .rejects.toThrow(expectExceptionResult);
-            })
-        })
+        // Testing invalid fn call is tested in feedback.integration.test.ts file.
     })
 
     describe('Database tests table <feedback_ratings>, priority fn update()', () => {
@@ -265,7 +254,7 @@ describe('Unit-tests (repository), priority: entity FeedbackRating', () => {
                 };
 
                 const mockClient = MockUtils.mapMockDbClient(mockResult);
-                const testFn = await feedbackRatingRepository.update(mockParam_id, mockParam_dto);
+                const testFn = await feedbackRatingRepository.update((mockClient as any), mockParam_id, mockParam_dto);
 
                 expect(testFn).toEqual(mockResult);
                 expect(DBConnection.getInstance).toHaveBeenCalled();
@@ -281,7 +270,7 @@ describe('Unit-tests (repository), priority: entity FeedbackRating', () => {
                 const mockResult: FeedbackRating | null = null;
 
                 const mockClient = MockUtils.mapMockDbClient(mockResult);
-                const testFn = await feedbackRatingRepository.update(mockParam_id, mockParam_dto);
+                const testFn = await feedbackRatingRepository.update((mockClient as any), mockParam_id, mockParam_dto);
 
                 expect(testFn).toEqual(mockResult);
                 expect(DBConnection.getInstance).toHaveBeenCalled();
@@ -292,18 +281,6 @@ describe('Unit-tests (repository), priority: entity FeedbackRating', () => {
             })
         })
         
-        describe('Testing invalid fn calls', () => {
-
-            test('Throw DBQueryErrorException by catch-block', async () => {
-                const mockParam_id = mockId.clients.invalid[0];
-                const mockErrorMsg = "DB ERROR ON UPDATE QUERY";
-                const mockResult = null;
-                jest.spyOn(CommonUtils, "logError").mockReturnValue();
-                const _ = MockUtils.mapMockDbClient(mockResult, mockBoolean, mockErrorMsg);
-
-                await expect(() => feedbackRatingRepository.update(mockParam_id, mockParam_dto))
-                    .rejects.toThrow(expectExceptionResult);
-            })
-        })
+        // Testing invalid fn call is tested in feedback.integration.test.ts file.
     })
 })
