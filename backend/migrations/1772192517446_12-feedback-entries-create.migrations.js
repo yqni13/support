@@ -29,7 +29,7 @@ async function up(pgm) {
         rating: {
             type: 'smallint',
             notNull: true,
-            default: 0
+            default: 5
         },
         term_accepted: {
             type: 'boolean',
@@ -81,11 +81,13 @@ async function up(pgm) {
         },
         last_modified: {
             type: 'TIMESTAMP WITH TIME ZONE',
-            notNull: true
+            notNull: true,
+            default: 'NOW()'
         },
         created_on: {
             type: 'TIMESTAMP WITH TIME ZONE',
             notNull: true,
+            default: 'NOW()'
         }
     });
 };

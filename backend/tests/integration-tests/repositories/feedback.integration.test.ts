@@ -1,4 +1,3 @@
-import { DBQueryErrorException } from './../../../src/utils/exceptions/db.exception';
 import * as CommonUtils from '../../../src/utils/common.utils';
 import * as MockUtils from "../../common.test-utils";
 import { createTestApp } from '../../test-app.setup';
@@ -15,6 +14,7 @@ import router from '../../../src/routes/feedback.route';
 import feedbackRatingService from '../../../src/services/feedback-rating.service';
 import feedbackRepository from '../../../src/repositories/feedback.repository';
 import feedbackService from '../../../src/services/feedback.service';
+import { DBQueryErrorException } from '../../../src/utils/exceptions/db.exception';
 import feedbackRatingRepository from '../../../src/repositories/feedback-rating.repository';
 
 const testValidClientsId = mockId.clients.valid[0];
@@ -43,10 +43,14 @@ describe('Integration-tests (repository), priority: entity Feedback', () => {
 
     let dbTestSetup: DBTestSetup;
     let dbTestData: DBTestData;
+    let dbData_Feedback: any[];
+    let dbData_FeedbackRating: any[];
     let apiUrl: string;
     beforeAll(async () => {
         dbTestSetup = new DBTestSetup();
         dbTestData = DBTestData.getInstance();
+        dbData_Feedback = dbTestData.getFeedbackInsertSql().values;
+        dbData_FeedbackRating = dbTestData.getFeedbackRatingInsertSql().values;
         await dbTestSetup.init();
         MockUtils.disableConsoleMessages(); // Surpress multiple messages (migration progress etc). Disable to debug.
         await runMigrations('feedback.integration.test.ts');
@@ -71,16 +75,16 @@ describe('Integration-tests (repository), priority: entity Feedback', () => {
                 feedback_id: testParam_id,
                 client_id: testValidClientsId,
                 user_id: testValidUsersId,
-                rating: 5,
-                term_accepted: true,
-                message: 'test-feedback-message',
+                rating: dbData_Feedback[2],
+                term_accepted: dbData_Feedback[3],
+                message: dbData_Feedback[4],
                 last_modified: testTimestamp,
                 created_on: testTimestamp
             };
 
             await dbTestSetup.addTestData();
             const testResponse = await request(app)
-                .get(`${apiUrl}/find/id/${testParam_id}`);
+                .get(`${apiUrl}/id/${testParam_id}`);
 
             expect(testResponse.statusCode).toBe(200);
             expect(testResponse.body).toMatchObject(testResult);
@@ -89,7 +93,6 @@ describe('Integration-tests (repository), priority: entity Feedback', () => {
         test('Repository process fn findByFilter(), result: "SUCCESS"', async () => {
             const app = createTestApp([], router, apiUrl);
             const testParam_dto: FeedbackFilterDTO = {
-                // rating: 4
                 term_accepted: false
             };
             const testResult: FeedbackResponseDTO[] | null = null;
@@ -103,10 +106,10 @@ describe('Integration-tests (repository), priority: entity Feedback', () => {
             expect(testResponse.body).toBe(testResult);
         })
 
-        test('Repository process fn upsert(), result: new Feedback on existing FeedbackRating', async () => {
+        test('Repository process fn upsertInTa(), result: new Feedback on existing FeedbackRating', async () => {
             const app = createTestApp([
-                    MockUtils.injectTestClient(mockId.clients.valid[0]),
-                    MockUtils.injectTestUser(mockId.users.valid[1])
+                    MockUtils.injectTestClientId(mockId.clients.valid[0]),
+                    MockUtils.injectTestUserId(mockId.users.valid[1])
                 ], router, apiUrl);
             const email = dbTestData.getUsersInsertSql().values[7]; // name, 2nd insert-row
             const testParam_dto: FeedbackRequestCreateDTO = {
@@ -114,8 +117,6 @@ describe('Integration-tests (repository), priority: entity Feedback', () => {
                 rating: 4,
                 term_accepted: false,
             };
-            // Test data FeedbackRating => position (count): [1], position (rating_sum): [2]
-            const dbData_FeedbackRating = dbTestData.getFeedbackRatingInsertSql().values;
             const mockResult_average_rating = 
                 Number(((dbData_FeedbackRating[2] + testParam_dto.rating) / (dbData_FeedbackRating[1] + 1)).toFixed(1));
 
@@ -125,9 +126,9 @@ describe('Integration-tests (repository), priority: entity Feedback', () => {
                 feedback_id: mockId.feedback.new[0],
                 client_id: testValidClientsId,
                 user_id: mockId.users.valid[1],
-                rating: 4,
+                rating: testParam_dto.rating,
                 rating_average_new: mockResult_average_rating,
-                term_accepted: false,
+                term_accepted: testParam_dto.term_accepted,
                 last_modified: testTimestamp,
                 created_on: testTimestamp
             };
@@ -141,10 +142,10 @@ describe('Integration-tests (repository), priority: entity Feedback', () => {
             expect(testResponse.body).toMatchObject(testResult)
         })
 
-        test('Repository process fn upsert(), result: new Feedback & FeedbackRating', async () => {
+        test('Repository process fn upsertInTa(), result: new Feedback & FeedbackRating', async () => {
             const app = createTestApp([
-                    MockUtils.injectTestClient(mockId.clients.valid[1]),
-                    MockUtils.injectTestUser(mockId.users.valid[0])
+                    MockUtils.injectTestClientId(mockId.clients.valid[1]),
+                    MockUtils.injectTestUserId(mockId.users.valid[0])
                 ], router, apiUrl);
             const email = dbTestData.getUsersInsertSql().values[7];
             const testParam_dto: FeedbackRequestCreateDTO = {
@@ -181,10 +182,10 @@ describe('Integration-tests (repository), priority: entity Feedback', () => {
             expect(testResponse_FeedbackRating?.rating_sum).toBe(testParam_dto.rating);
         })
 
-        test('Repository process fn upsert(), result: update existing Feedback & FeedbackRating', async () => {
+        test('Repository process fn upsertInTa(), result: update existing Feedback & FeedbackRating', async () => {
             const app = createTestApp([
-                MockUtils.injectTestClient(mockId.clients.valid[0]),
-                MockUtils.injectTestUser(mockId.users.valid[0])
+                MockUtils.injectTestClientId(mockId.clients.valid[0]),
+                MockUtils.injectTestUserId(mockId.users.valid[0])
             ], router, apiUrl);
             const email = dbTestData.getUsersInsertSql().values[1];
             const testParam_dto: FeedbackRequestCreateDTO = {
@@ -194,7 +195,6 @@ describe('Integration-tests (repository), priority: entity Feedback', () => {
                 message: 'test-feedback-message-updated-client[0]'
             };
             // Test data FeedbackRating => position (count): [1], position (rating_sum): [2]
-            const dbData_FeedbackRating = dbTestData.getFeedbackRatingInsertSql().values;
             const ratingDifference = testParam_dto.rating - dbTestData.getFeedbackInsertSql().values[2];
             const mockResult_rating_sum = dbData_FeedbackRating[2] + ratingDifference;
             const mockResult_average_rating = Number((mockResult_rating_sum / (dbData_FeedbackRating[1])).toFixed(1));
@@ -211,7 +211,7 @@ describe('Integration-tests (repository), priority: entity Feedback', () => {
                 term_accepted: testParam_dto.term_accepted,
                 message: testParam_dto.message,
                 last_modified: testTimestamp_update,
-                created_on: testTimestamp_update
+                created_on: testTimestamp
             };
 
             await dbTestSetup.addTestData();
@@ -228,7 +228,7 @@ describe('Integration-tests (repository), priority: entity Feedback', () => {
             expect(testResponse_FeedbackRating?.rating_sum).toBe(mockResult_rating_sum);
         })
 
-        test('Repository process fn upsert(), result: Exception on Feedback + Rollback', async () => {
+        test('Repository process fn upsertInTa(), result: Exception on Feedback + Rollback', async () => {
             const testParam_dto: FeedbackCreateDTO = {
                 client_id: mockId.clients.valid[1],
                 user_id: mockId.users.valid[0],
@@ -240,11 +240,11 @@ describe('Integration-tests (repository), priority: entity Feedback', () => {
 
             jest.spyOn(CommonUtils, 'logError').mockImplementation();
             jest.spyOn(CommonUtils, "getTimestampUTC").mockReturnValue(testTimestamp);
-            jest.spyOn(feedbackRepository, 'upsert').mockRejectedValue(new Error(mockError));
+            jest.spyOn(feedbackRepository, 'upsertInTa').mockRejectedValue(new Error(mockError));
             await dbTestSetup.addTestData();
 
             await expect(() => feedbackService.createFeedback(testParam_dto))
-            .rejects.toThrow(new DBQueryErrorException(mockError)); // exception handling
+            .rejects.toThrow(new DBQueryErrorException(mockError));
 
             const testResponse_Feedback = 
                 await feedbackService.searchFeedbackEntriesByFilter({client_id: mockId.clients.valid[1]}); 
@@ -252,7 +252,7 @@ describe('Integration-tests (repository), priority: entity Feedback', () => {
             expect(testResponse_Feedback).toBe(null); // rollback => no insert
         })
 
-        test('Repository process fn upsert(), result: Exception on FeedbackRating + Rollback', async () => {
+        test('Repository process fn upsertInTa(), result: Exception on FeedbackRating + Rollback', async () => {
             const testParam_dto: FeedbackCreateDTO = {
                 client_id: mockId.clients.valid[1],
                 user_id: mockId.users.valid[0],
@@ -263,7 +263,7 @@ describe('Integration-tests (repository), priority: entity Feedback', () => {
             const mockError = 'FeedbackRating-create-mock-error';
 
             jest.spyOn(CommonUtils, "getTimestampUTC").mockReturnValue(testTimestamp);
-            jest.spyOn(feedbackRatingRepository, 'create').mockRejectedValue(new Error(mockError));
+            jest.spyOn(feedbackRatingRepository, 'createInTa').mockRejectedValue(new Error(mockError));
 
             await dbTestSetup.addTestData();
             const testResponse_Feedback = 
@@ -293,9 +293,9 @@ describe('Integration-tests (repository), priority: entity Feedback', () => {
                 feedback_id: testParam_id,
                 client_id: testValidClientsId,
                 user_id: testValidUsersId,
-                rating: 5,
-                term_accepted: true,
-                message: 'test-feedback-message',
+                rating: dbData_Feedback[2],
+                term_accepted: dbData_Feedback[3],
+                message: dbData_Feedback[4],
                 reviewed_on: mockTimestamp,
                 last_modified: mockTimestamp,
                 created_on: testTimestamp
@@ -327,7 +327,7 @@ describe('Integration-tests (repository), priority: entity Feedback', () => {
                 };
             })
 
-            describe('Route: GET/find/id/:id', () => {
+            describe('Route: GET/id/:id', () => {
 
                 test('Params: <id>, validator: fn isInt() by value as string', async () => {
                     const testParam_id = 'invalid-id';
@@ -335,7 +335,7 @@ describe('Integration-tests (repository), priority: entity Feedback', () => {
                     testError['value'] = testParam_id;
 
                     const testResponse = await request(app)
-                        .get(`${apiUrl}/find/id/${testParam_id}`);
+                        .get(`${apiUrl}/id/${testParam_id}`);
 
                     expect(testResponse.statusCode).toBe(ErrorStatusCodes.InvalidPropertiesException);
                     expect(testResponse.body.headers.data).toEqual([testError]);
@@ -542,8 +542,8 @@ describe('Integration-tests (repository), priority: entity Feedback', () => {
                 let testData: Partial<FeedbackRequestCreateDTO>;
                 beforeEach(() => {
                     app = createTestApp([
-                        MockUtils.injectTestClient(mockId.clients.valid[0]),
-                        MockUtils.injectTestUser(mockId.users.valid[0])
+                        MockUtils.injectTestClientId(mockId.clients.valid[0]),
+                        MockUtils.injectTestUserId(mockId.users.valid[0])
                     ], router, apiUrl);
                     testData = {
                         user_email: 'max.muster@test.com',
@@ -700,8 +700,8 @@ describe('Integration-tests (repository), priority: entity Feedback', () => {
                 let app: any;
                 beforeEach(() => {
                     app = createTestApp([
-                        MockUtils.injectTestClient(mockId.clients.valid[0]),
-                        MockUtils.injectTestUser(mockId.users.valid[0])
+                        MockUtils.injectTestClientId(mockId.clients.valid[0]),
+                        MockUtils.injectTestUserId(mockId.users.valid[0])
                     ], router, apiUrl);
                 })
 

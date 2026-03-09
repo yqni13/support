@@ -33,26 +33,6 @@ class ClientsRepository implements ICreateRepository<Clients>, IUpdateFlagReposi
         }
     }
 
-    async findByName(name: string): Promise<Clients | null> {
-        const filterColumn = 'name';
-        const sql = `SELECT * FROM ${this.table} WHERE ${filterColumn} = $1;`;
-        const value = [name];
-        const db = DBConnection.getInstance();
-        let client: any;
-        try {
-            client = await db.connect();
-            const result: QueryResult<Clients> = await client.query(sql, value);
-            await db.close(client);
-            return result.rows[0] ?? null;
-        } catch(err: any) {
-            const message = "DB ERROR ON SELECT QUERY";
-            const method = "SUPPORT_ClientsRepository_findByName";
-            logError(message, method, err);
-            await db.close(client);
-            throw new DBQueryErrorException(err);
-        }
-    }
-
     async findByActiveKey(hash: string): Promise<Clients | null> {
         const sql = `SELECT * FROM ${this.table} WHERE api_key_hash = $1 AND status = $2;`;
         const values = [hash, ApiKeyStatus.ACTIVE];

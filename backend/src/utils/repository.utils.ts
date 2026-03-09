@@ -26,7 +26,7 @@ export function mapFilteredQueryValues<T extends Record<string, any>>(dto: T, ta
     const argGroups: string[] = [];
     const timestampObj = {};
     Object.entries(dto).forEach(([key, content]) => {
-        if(key !== 'last_modified' && key !== 'created_on') {
+        if(key !== 'reviewed_on' && key !== 'last_modified' && key !== 'created_on') {
             const valArr = Array.isArray(content) ? content : [content];
             const conditions = valArr.map((value) => {
                 if(value === null) {

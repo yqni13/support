@@ -4,7 +4,6 @@ import cors from "cors";
 import { MiddlewareLoader } from "../src/loaders/middleware.loader";
 
 /**
- * 
  * @param middleware Array to inject necessary middleware mocks
  * @param router Express router
  * @param route Api route (example: /api/v1/entity)

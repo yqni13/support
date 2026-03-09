@@ -194,7 +194,7 @@ describe('Unit-tests (repository), priority: entity FeedbackRating', () => {
         })
     })
 
-    describe('Database tests table <feedback_ratings>, priority fn create()', () => {
+    describe('Database tests table <feedback_ratings>, priority fn createInTa()', () => {
 
         let sql: string;
         let mockParam_entity: FeedbackRating;
@@ -215,7 +215,7 @@ describe('Unit-tests (repository), priority: entity FeedbackRating', () => {
                 const mockValues: any[] = Object.values(mockParam_entity).map(value => value);
                 const mockResult: FeedbackRating = structuredClone(mockParam_entity);
                 const mockClient = MockUtils.mapMockDbClient(mockResult);
-                const testFn = await feedbackRatingRepository.create((mockClient as any), mockParam_entity);
+                const testFn = await feedbackRatingRepository.createInTa((mockClient as any), mockParam_entity);
 
                 expect(testFn).toEqual(mockResult);
                 expect(DBConnection.getInstance).toHaveBeenCalled();
@@ -226,10 +226,10 @@ describe('Unit-tests (repository), priority: entity FeedbackRating', () => {
             })
         })
         
-        // Testing invalid fn call is tested in feedback.integration.test.ts file.
+        // Testing invalid fn call is tested in feedback.integration.test.ts due to transaction structure.
     })
 
-    describe('Database tests table <feedback_ratings>, priority fn update()', () => {
+    describe('Database tests table <feedback_ratings>, priority fn updateInTa()', () => {
 
         let sql: string;
         let mockParam_dto: FeedbackRatingUpdateDTO;
@@ -254,7 +254,7 @@ describe('Unit-tests (repository), priority: entity FeedbackRating', () => {
                 };
 
                 const mockClient = MockUtils.mapMockDbClient(mockResult);
-                const testFn = await feedbackRatingRepository.update((mockClient as any), mockParam_id, mockParam_dto);
+                const testFn = await feedbackRatingRepository.updateInTa((mockClient as any), mockParam_id, mockParam_dto);
 
                 expect(testFn).toEqual(mockResult);
                 expect(DBConnection.getInstance).toHaveBeenCalled();
@@ -270,7 +270,7 @@ describe('Unit-tests (repository), priority: entity FeedbackRating', () => {
                 const mockResult: FeedbackRating | null = null;
 
                 const mockClient = MockUtils.mapMockDbClient(mockResult);
-                const testFn = await feedbackRatingRepository.update((mockClient as any), mockParam_id, mockParam_dto);
+                const testFn = await feedbackRatingRepository.updateInTa((mockClient as any), mockParam_id, mockParam_dto);
 
                 expect(testFn).toEqual(mockResult);
                 expect(DBConnection.getInstance).toHaveBeenCalled();
@@ -281,6 +281,6 @@ describe('Unit-tests (repository), priority: entity FeedbackRating', () => {
             })
         })
         
-        // Testing invalid fn call is tested in feedback.integration.test.ts file.
+        // Testing invalid fn call is tested in feedback.integration.test.ts due to transaction structure.
     })
 })

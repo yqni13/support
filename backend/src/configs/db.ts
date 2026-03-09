@@ -8,6 +8,8 @@ import { logError } from '../utils/common.utils';
 // Global setting to parse certain db data to specific types:
 // 1082: type Date [yyyy-mm-dd] - otherwise Date will be returned as full timestamp + time zone changes
 pg.types.setTypeParser(1082, (val) => val);
+// 1184: tell pg driver how to parse timestamp with time zone
+pg.types.setTypeParser(1184, (val) => new Date(val + "Z"));
 
 export class DBConnection {
     private static instance: DBConnection;

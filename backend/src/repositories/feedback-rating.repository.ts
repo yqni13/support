@@ -58,8 +58,8 @@ IFindRepository<FeedbackRating> {
     }
 
     async findAll(): Promise<FeedbackRating[] | null> {
-        const orderPrio = "client_id";
-        const sql = `SELECT * FROM ${this.table} ORDER BY ${orderPrio} ASC FETCH FIRST 100 ROWS ONLY;`;
+        const orderPrio = "created_on";
+        const sql = `SELECT * FROM ${this.table} ORDER BY ${orderPrio} DESC;`;
         const db = DBConnection.getInstance();
         let client: any;
         try {
@@ -76,7 +76,10 @@ IFindRepository<FeedbackRating> {
         }
     }
 
-    async create(client: PoolClient, entity: FeedbackRating): Promise<FeedbackRating> {
+    /**
+     * @description Repository function to call only when used within a transaction => needs PoolClient as param.
+     */
+    async createInTa(client: PoolClient, entity: FeedbackRating): Promise<FeedbackRating> {
         const sql = `INSERT INTO ${this.table}
         (client_id, count, rating_sum, last_modified, created_on)
         VALUES ($1, $2, $3, $4, $5)
@@ -84,10 +87,12 @@ IFindRepository<FeedbackRating> {
         const values = [entity.client_id, entity.count, entity.rating_sum, entity.last_modified, entity.created_on];
         const result: QueryResult<FeedbackRating> = await client.query(sql, values);
         return result.rows[0];
-        // Used within transaction => catch & handle exceptions there.
     }
 
-    async update(client: PoolClient, id: string, dto: FeedbackRatingUpdateDTO): Promise <FeedbackRating | null> {
+    /**
+     * @description Repository function to call only when used within a transaction => needs PoolClient as param.
+     */
+    async updateInTa(client: PoolClient, id: string, dto: FeedbackRatingUpdateDTO): Promise <FeedbackRating | null> {
         const filterColumn = 'client_id';
         const sql = `UPDATE ${this.table}
         SET count = count + $1, rating_sum = rating_sum + $2, last_modified = $3::timestamp
@@ -96,7 +101,6 @@ IFindRepository<FeedbackRating> {
         const values = [dto.count, dto.rating, dto.last_modified, id];
         const result: QueryResult<FeedbackRating> = await client.query(sql, values);
         return result.rows[0] ?? null;
-        // Used within transaction => catch & handle exceptions there.
     }
 }
 

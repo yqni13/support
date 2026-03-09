@@ -76,25 +76,6 @@ describe('Integration-tests (repository), priority: entity Clients', () => {
 
             expect(testResponse).toMatchObject(testResult);
         })
-        
-        test('Repository process fn findByName(), result: "SUCCESS"', async () => {
-            const mockParam_name = 'TESTCLIENT';
-            const testResult: ClientsExistResponseDTO | null = {
-                client_id: mockId.clients.valid[0],
-                name: 'TESTCLIENT',
-                api_key_hash: secrets.TEST_APIKEY_HASH,
-                status: ApiKeyStatus.ACTIVE,
-                flag: null,
-                last_use: testTimestamp,
-                last_modified: testTimestamp,
-                created_on: testTimestamp
-            };
-
-            await dbTestSetup.addTestData();
-            const testResponse = await clientsService.getClientByName(mockParam_name);
-
-            expect(testResponse).toMatchObject(testResult);
-        })
 
         test('Repository process fn findStatusByName(), result: "SUCCESS"', async () => {
             const testParam_name = 'TESTCLIENT';

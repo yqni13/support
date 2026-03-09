@@ -15,14 +15,7 @@ class FeedbackRepository {
 
     async findById(id: number): Promise<Feedback | null> {
         const filterColumn = "feedback_id";
-        const sql = `SELECT
-        ${this.table}.*,
-        clients.name AS client_name,
-        users.email AS user_email
-        FROM ${this.table}
-        LEFT JOIN clients ON ${this.table}.client_id = clients.client_id
-        LEFT JOIN users ON ${this.table}.user_id = users.user_id
-        WHERE ${filterColumn} = $1;`;
+        const sql = `SELECT * FROM ${this.table} WHERE ${filterColumn} = $1;`;
         const value = [id];
         const db = DBConnection.getInstance();
         let client: any;
@@ -84,12 +77,12 @@ class FeedbackRepository {
 
     /**
      * 
-     * @description Update if insert has conflict on existing entry for same client_id and user_id (unique combination).
-     * @returns {FeedbackResponseDTO | null} entity: Feedback expanded by rating_old value for FeedbackRating process.
+     * @description Update on insert conflict for existing client_id and user_id combined entry (unique constraint). Is called within transaction only => needs PoolClient as param.
+     * @returns {FeedbackResponseDTO | null} Entity <Feedback> expanded by rating_old value for further processing.
      */
-    async upsert(client: PoolClient, entity: Partial<Feedback>): Promise<FeedbackResponseDTO | null> {
+    async upsertInTa(client: PoolClient, entity: Partial<Feedback>): Promise<FeedbackResponseDTO | null> {
         const sql = `
-        WITH existing AS (
+        WITH pre_update_data AS (
             SELECT rating
             FROM ${this.table}
             WHERE client_id = $1 AND user_id = $2
@@ -107,12 +100,11 @@ class FeedbackRepository {
         WHERE NOT (${this.table}.message IS NOT NULL AND ${this.table}.reviewed_on IS NOT NULL)
         RETURNING
             ${this.table}.*,
-            (SELECT rating FROM existing) AS rating_old;
+            (SELECT rating FROM pre_update_data) AS rating_old;
         `;
         const values = [entity.client_id, entity.user_id, entity.rating, entity.term_accepted, entity.message, null, entity.last_modified, entity.created_on];
         const result: QueryResult<FeedbackResponseDTO> = await client.query(sql, values);
         return result.rows[0] ?? null;
-        // Used within transaction => catch & handle exceptions there.
     }
 }
 

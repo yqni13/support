@@ -18,7 +18,7 @@ const router = Router();
 
 // findById
 router.get(
-    '/find/id/:id',
+    '/id/:id',
     authAdmin(),
     getSchema,
     factory(feedbackController.getFeedback)

@@ -1,9 +1,13 @@
+import {
+    FeedbackRatingCreateDTO,
+    FeedbackRatingExtendedResponseDTO,
+    FeedbackRatingResponseDTO,
+    FeedbackRatingUpdateDTO
+} from "../dtos/feedback-rating.dto";
 import { PoolClient } from 'pg';
-import { FeedbackRatingCreateDTO, FeedbackRatingExtendedResponseDTO, FeedbackRatingResponseDTO, FeedbackRatingUpdateDTO } from "../dtos/feedback-rating.dto";
 import feedbackRatingModel from "../models/feedback-rating.model";
 import feedbackRatingRepository from "../repositories/feedback-rating.repository";
 import { FeedbackRating } from "../repositories/interfaces/feedback-rating.entity.interface";
-import * as CommonUtils from "../utils/common.utils";
 
 class FeedbackRatingService {
     private timeMapTargets: string[];
@@ -17,8 +21,8 @@ class FeedbackRatingService {
         if(!result) {
             return null;
         }
-        const newResult = feedbackRatingModel.mapAverageRating(result, true);
-        return CommonUtils.mapObjTimestamps<FeedbackRatingExtendedResponseDTO>(newResult, this.timeMapTargets);
+        const newResult = feedbackRatingModel.toFeedbackRatingResponseDTO(result, true);
+        return feedbackRatingModel.toFeedbackRatingResponseDTO(newResult, true);
     }
 
     async getFeedbackRatingByClientName(client_name: string): Promise<FeedbackRatingResponseDTO | null> {
@@ -26,7 +30,7 @@ class FeedbackRatingService {
         if(!result) {
             return null;
         }
-        return feedbackRatingModel.mapAverageRating(result, false);
+        return feedbackRatingModel.toFeedbackRatingResponseDTO(result, false);
     }
 
     async getAllFeedbackRatings(): Promise<FeedbackRatingExtendedResponseDTO[] | null> {
@@ -34,23 +38,30 @@ class FeedbackRatingService {
         if(!results) {
             return null;
         }
-        const newResults = results.map((result: FeedbackRating) => feedbackRatingModel.mapAverageRating(result, true));
-        return CommonUtils.mapArrayTimestamps<FeedbackRatingExtendedResponseDTO>(newResults, this.timeMapTargets);
+        const newResults = 
+            results.map((result: FeedbackRating) => feedbackRatingModel.toFeedbackRatingResponseDTO(result, true));
+        return feedbackRatingModel.toFeedbackRatingResponseDTOArray(newResults, true);
     }
 
-    async createFeedbackRating(client: PoolClient, dto: FeedbackRatingCreateDTO): Promise<FeedbackRating> {
+    /**
+     * @description Service function to call only when used within a transaction => needs PoolClient as param.
+     */
+    async createFeedbackRatingInTa(client: PoolClient, dto: FeedbackRatingCreateDTO): Promise<FeedbackRatingExtendedResponseDTO> {
         const entity: FeedbackRating = feedbackRatingModel.generateFeedbackRatingEntity(dto);
-        const result: FeedbackRating = await feedbackRatingRepository.create(client, entity);
-        return CommonUtils.mapObjTimestamps<FeedbackRating>(result, this.timeMapTargets);
+        const result: FeedbackRating = await feedbackRatingRepository.createInTa(client, entity);
+        return feedbackRatingModel.toFeedbackRatingResponseDTO(result, true);
     }
 
-    async updateFeedbackRating(client: PoolClient, id: string, dto: FeedbackRatingUpdateDTO): Promise<FeedbackRatingResponseDTO | null> {
+    /**
+     * @description Service function to call only when used within a transaction => needs PoolClient as param.
+     */
+    async updateFeedbackRatingInTa(client: PoolClient, id: string, dto: FeedbackRatingUpdateDTO): Promise<FeedbackRatingResponseDTO | null> {
         dto = feedbackRatingModel.mapFeedbackRatingUpdateDTO(dto);
-        const result: FeedbackRating | null = await feedbackRatingRepository.update(client, id, dto);
+        const result: FeedbackRating | null = await feedbackRatingRepository.updateInTa(client, id, dto);
         if(!result) {
             return null;
         }
-        return feedbackRatingModel.mapAverageRating(result, false);
+        return feedbackRatingModel.toFeedbackRatingResponseDTO(result, false);
     }
 }
 

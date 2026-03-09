@@ -13,7 +13,7 @@ const router = Router();
 
 // findById
 router.get(
-    '/find/id/:id',
+    '/id/:id',
     authAdmin(),
     getExtendedSchema,
     factory(feedbackRatingController.getExtendedFeedbackRating)
@@ -21,7 +21,7 @@ router.get(
 
 // findByClientName
 router.get(
-    '/find/name/:client_name',
+    '/name/:client_name',
     maintain(), authClient(),
     getSchema,
     factory(feedbackRatingController.getFeedbackRating)

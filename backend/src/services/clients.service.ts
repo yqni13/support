@@ -29,11 +29,6 @@ class ClientsService {
         return !result ? null : CommonUtils.mapObjTimestamps<ClientsExistResponseDTO>(result, this.timeMapTargets);
     }
 
-    async getClientByName(name: string): Promise<ClientsExistResponseDTO | null> {
-        const result = await clientsRepository.findByName(name);
-        return !result ? null : CommonUtils.mapObjTimestamps<ClientsExistResponseDTO>(result, this.timeMapTargets);
-    }
-
     /**
      * @description Usage for apikey authentication in auth.middleware.ts.
      */

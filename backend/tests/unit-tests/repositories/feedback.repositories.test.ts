@@ -143,7 +143,7 @@ describe('Unit-tests (repository), priority: entity Feedback', () => {
         })
     })
 
-    describe('Database tests table <feedback_entries>, priority fn upsert()', () => {
+    describe('Database tests table <feedback_entries>, priority fn upsertInTa()', () => {
 
         describe('Testing valid fn calls', () => {
 
@@ -155,7 +155,7 @@ describe('Unit-tests (repository), priority: entity Feedback', () => {
 
                 const mockResult: Feedback = structuredClone(mockData);
                 const mockClient = MockUtils.mapMockDbClient(mockResult);
-                const testFn = await feedbackRepository.upsert((mockClient as any), mockParam_entity);
+                const testFn = await feedbackRepository.upsertInTa((mockClient as any), mockParam_entity);
 
                 expect(testFn).toEqual(mockResult);
                 expect(DBConnection.getInstance).toHaveBeenCalled();
@@ -166,7 +166,7 @@ describe('Unit-tests (repository), priority: entity Feedback', () => {
             })
         })
 
-        // Testing invalid fn call is tested in feedback.integration.test.ts file.
+        // Testing invalid fn call is tested in feedback.integration.test.ts due to transaction structure.
     })
 
     describe('Database tests table <feedback_entries>, priority fn updateReview()', () => {

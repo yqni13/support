@@ -135,7 +135,7 @@ describe('Unit-tests (utils), priority: synonym RepoUtils', () => {
 
     describe('Testing invalid fn calls', () => {
 
-        test('Fn asTransaction(), params: <message, method, fn()> for intended Rollback', async () => {
+        test('Fn asTransaction(), params: <message, method, fn()> for failed transaction => ROLLBACK', async () => {
             const mockParam_message = 'DB ERROR ON REPO-UTILS TRANSACTION';
             const mockParam_method = 'SUPPORT_RepoUtils_asTransaction';
             const mockQuery = jest.fn();

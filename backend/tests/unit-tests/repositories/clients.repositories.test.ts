@@ -96,59 +96,6 @@ describe('Unit-tests (repository), priority: entity Clients', () => {
         })
     })
 
-    describe('Database tests table <clients>, priority: fn findByName()', () => {
-
-        describe('Testing valid fn calls', () => {
-
-            let sql: string;
-            beforeEach(() => {
-                sql = `SELECT`;
-            });
-
-            test('Return data for existing entry, params: valid <name>', async () => {
-                const mockParam_name = 'valid_clients_test_name';
-                const mockResult: Clients | null = structuredClone(mockData);
-                const mockClient = MockUtils.mapMockDbClient(mockResult);
-                const testFn = await clientsRepository.findByName(mockParam_name);
-
-                expect(testFn).toEqual(mockResult);
-                expect(DBConnection.getInstance).toHaveBeenCalled();
-                expect(mockClient.query).toHaveBeenCalledWith(
-                    expect.stringContaining(sql),
-                    expect.arrayContaining([mockParam_name])
-                );
-            })
-
-            test('Return null for non-existing entry, params: invalid <name>', async () => {
-                const mockParam_name = 'invalid_clients_test_name';
-                const mockResult: Clients | null = null;
-                const mockClient = MockUtils.mapMockDbClient(mockResult);
-                const testFn = await clientsRepository.findByName(mockParam_name);
-
-                expect(testFn).toEqual(mockResult);
-                expect(DBConnection.getInstance).toHaveBeenCalled();
-                expect(mockClient.query).toHaveBeenCalledWith(
-                    expect.stringContaining(sql),
-                    expect.arrayContaining([mockParam_name])
-                );
-            })
-        })
-
-        describe('Testing invalid fn calls', () => {
-
-            test('Throw DBQueryErrorException by catch-block', async () => {
-                const mockParam_name = 'invalid_clients_test_name';
-                const mockErrorMsg = "DB ERROR ON SELECT QUERY";
-                const mockResult: Clients | null = null;
-                jest.spyOn(CommonUtils, "logError").mockReturnValue();
-                const _ = MockUtils.mapMockDbClient(mockResult, mockBoolean, mockErrorMsg);
-
-                await expect(() => clientsRepository.findByName(mockParam_name))
-                    .rejects.toThrow(expectExceptionResult);
-            })
-        })
-    })
-
     describe('Database tests table <clients>, priority: fn findByActiveKey()', () => {
 
         describe('Testing valid fn calls', () => {

@@ -40,7 +40,7 @@ export function disableConsoleMessages() {
 /**
  * @description Used in combination with createTestApp() to mock client authentication for flexible testing.
  */
-export function injectTestClient(clientId: string) {
+export function injectTestClientId(clientId: string) {
     return function (req: Request, res: Response, next: NextFunction) {
         (req as any).apiClients = { client_id: clientId };
         next();
@@ -50,7 +50,7 @@ export function injectTestClient(clientId: string) {
 /**
  * @description Used in combination with createTestApp() to mock user authentication for flexible testing.
  */
-export function injectTestUser(userId: string) {
+export function injectTestUserId(userId: string) {
     return function (req: Request, res: Response, next: NextFunction) {
         (req as any).apiUsers = { user_id: userId };
         next();

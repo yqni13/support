@@ -72,11 +72,11 @@ describe('Unit-tests (model), priority: entity FeedbackRating', () => {
         })
     })
 
-    describe('Priority: fn mapAverageRating()', () =>{
+    describe('Priority: fn toFeedbackRatingResponseDTO()', () =>{
 
         describe('Testing valid fn calls', () => {
 
-            test('Map average rating to response, result: dto FeedbackRatingExtendedResponseDTO', () => {
+            test('Convert entity to dto + map average rating, result: FeedbackRatingExtendedResponseDTO', () => {
                 const mockParam_entity: FeedbackRating = {
                     client_id: mockId.clients.valid[0],
                     count: 16,
@@ -85,8 +85,8 @@ describe('Unit-tests (model), priority: entity FeedbackRating', () => {
                     created_on: mockTimestamp
                 };
                 const mockParam_extended: boolean = true;
-                
-                const testFn = feedbackRatingModel.mapAverageRating(mockParam_entity, mockParam_extended);
+                jest.spyOn(CommonUtils, 'getTimestampUTC').mockReturnValue(mockTimestamp);
+                const testFn = feedbackRatingModel.toFeedbackRatingResponseDTO(mockParam_entity, mockParam_extended);
                 const expectResult: FeedbackRatingExtendedResponseDTO = {
                     ...mockParam_entity,
                     rating_average: 4.2
@@ -95,7 +95,7 @@ describe('Unit-tests (model), priority: entity FeedbackRating', () => {
                 expect(testFn).toEqual(expectResult);
             })
 
-            test('Map average rating to response, result: dto FeedbackRatingResponseDTO', () => {
+            test('Convert entity to dto + map average rating, result: FeedbackRatingResponseDTO', () => {
                 const mockParam_entity: FeedbackRating = {
                     client_id: mockId.clients.valid[0],
                     count: 16,
@@ -104,11 +104,56 @@ describe('Unit-tests (model), priority: entity FeedbackRating', () => {
                     created_on: mockTimestamp
                 };
                 const mockParam_extended: boolean = false;
-                
-                const testFn = feedbackRatingModel.mapAverageRating(mockParam_entity, mockParam_extended);
+                jest.spyOn(CommonUtils, 'getTimestampUTC').mockReturnValue(mockTimestamp);
+                const testFn = feedbackRatingModel.toFeedbackRatingResponseDTO(mockParam_entity, mockParam_extended);
                 const expectResult: FeedbackRatingResponseDTO = {
                     rating_average: 4.2
                 };
+
+                expect(testFn).toEqual(expectResult);
+            })
+        })
+    })
+
+    describe('Priority: fn toFeedbackRatingResponseDTOArray()', () =>{
+
+        describe('Testing valid fn calls', () => {
+
+            test('Convert entity[] to dto[] + map average rating, result: FeedbackRatingExtendedResponseDTO[]', () => {
+                const mockParam_entities: FeedbackRating[] = [{
+                    client_id: mockId.clients.valid[0],
+                    count: 16,
+                    rating_sum: 67,
+                    last_modified: mockTimestamp,
+                    created_on: mockTimestamp
+                }];
+                const mockParam_extended: boolean = true;
+                jest.spyOn(CommonUtils, 'getTimestampUTC').mockReturnValue(mockTimestamp);
+                const testFn =
+                    feedbackRatingModel.toFeedbackRatingResponseDTOArray(mockParam_entities, mockParam_extended);
+                const expectResult: FeedbackRatingExtendedResponseDTO[] = [{
+                    ...mockParam_entities[0],
+                    rating_average: 4.2
+                }];
+
+                expect(testFn).toEqual(expectResult);
+            })
+
+            test('Convert entity[] to dto[] + map average rating, result: FeedbackRatingResponseDTO[]', () => {
+                const mockParam_entities: FeedbackRating[] = [{
+                    client_id: mockId.clients.valid[0],
+                    count: 16,
+                    rating_sum: 67,
+                    last_modified: mockTimestamp,
+                    created_on: mockTimestamp
+                }];
+                const mockParam_extended: boolean = false;
+                jest.spyOn(CommonUtils, 'getTimestampUTC').mockReturnValue(mockTimestamp);
+                const testFn =
+                    feedbackRatingModel.toFeedbackRatingResponseDTOArray(mockParam_entities, mockParam_extended);
+                const expectResult: FeedbackRatingResponseDTO[] = [{
+                    rating_average: 4.2
+                }];
 
                 expect(testFn).toEqual(expectResult);
             })
