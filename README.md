@@ -1,12 +1,13 @@
 # yqni13 | support
-$\texttt{\color{teal}{v1.4.1}}$
-
+$\texttt{\color{teal}{v1.4.4}}$
 
 <br>
 
-<div>
-    <img src="assets/img/readme-bg.png" alt="logo">
-</div>
+
+
+<!-- <div align="center">
+    <img src="assets/img/readme-bg.png" width="250px" alt="logo">
+</div> -->
 
 ### Technology
 
@@ -29,7 +30,7 @@ $\texttt{\color{teal}{v1.4.1}}$
 
 <br>
 
-## How to
+## 🪄 $\textsf{\color{salmon}Getting started}$
 
 ### Build & Deploy
 This application server will is hosted by <a href="https://render.com/">Render</a> in a Docker container and a PostgreSQL database hosted by Neon. Additionally a <a href="https://console.cron-job.org/">cron-job</a> is set up to keep the service alive on Render due to 15-min inactivity on free tier plan.<br>
@@ -37,37 +38,33 @@ The development process is structured by the TDD (test driven development) princ
 
 <br>
 
-## Overview
 
-### $\textsf{\color{teal}Features}$
+## 🧩 $\textsf{\color{salmon}Features}$
 
 <dl>
-    <dd>🪲 support/bug/feedback-ticket handling including client + user data</dd>
-    <dd>✨ counting/adding up ratings and administer rating average</dd>
-    <dd>📂 file handling (upload/delete) from requests + cloud storage</dd>
-    <dd>:mag: filtered search for ticket + user data (properties + timespan)</dd>
-    <dd>:closed_lock_with_key: en/disable application (maintenance mode) triggered by request/logic</dd>
-    <dd>:key: request verification by api-keys</dd>
-    <dd>🕵️ request rate limiting + violation handling</dd>
+    <dd>🪲 Ticket system | Handles support & bug reports per client with status lifecycle and optional file attachments</dd>
+    <dd>✨ Feedback & Rating system | Abuse-resistant rating system with atomic aggregate updates - one active rating per user per client</dd>
+    <dd>📂 Cloud file handling | Upload/delete via Cloudflare R2 (S3-compatible) - supporting pdf & images up to 1MB each, max 5 per ticket</dd>
+    <dd>🔎 Filtered search | Query ticket and user data by properties and/or timespan</dd>
+    <dd>🔐 Maintenance Mode | Enable/disable application triggered by request or internal logic</dd>
+    <dd>🕵️ Rate limiting | Request throttling with violation handling</dd>
+    <dd>🔑 API Key Auth | Client authentication via API keys</dd>
 </dl>
 
-<br>
 
-### $\textsf{\color{teal}Tickets}$
-
-Documentation follows with finished refactoring (task: SUPPORT-65).
 
 <br>
 
-### $\textsf{\color{teal}Feedback/Rating}$
+### $\textsf{\color{teal}Feedback \&\ Rating}$
 
-Documentation follows with finished refactoring (task: SUPPORT-65).
+User can utilize a feedback & rating system to rate the application in use and send criticism or praise. For every client can exist multiple entries for the entity `Feedback` but only one `FeedbackRating` which holds the accumulated data of the pointing feedback entries.<br>
+Resubmissions are handled in the database by an `ON CONFLICT` upsert query [see upsertInTa()](./backend/src/repositories/feedback.repository.ts) on the unique `(client_id, user_id)` constraint, followed by an atomic aggregate update to the 'FeedbackRating' table entry. Both queries are executed within a single transaction to guarantee data consistency. The rating happens numerical (1-5) and returns an average rating value as number with up to 1 decimal place.
 
 <br>
 
 ### $\textsf{\color{teal}File handling}$
 
-User can attach files for any support/bug ticket to provide further information (screenshots, images, ...) on their message. Attachments are limited to upload up to `5` files and each file can be up to `1`mb [see validation](./backend/src/middleware/files/validate.files.middleware.ts). Currently only `images` (webp, jpg, jpeg, png) and `pdf` files are supported, but more will follow. Cloud in use is `Cloudflare` (see Figure 1) using S3Client for api communication and files will be deleted when a ticket is closed, canceled or expired (time check).
+User can attach files for any support/bug ticket to provide further information (screenshots, images, ...) on their message. Attachments are limited to upload up to `5` files and each file can be up to `1`MB [see validation](./backend/src/middleware/files/validate.files.middleware.ts). Currently only `images` (webp, jpg, jpeg, png) and `pdf` files are supported, but more will follow. Cloud in use is `Cloudflare` (see Figure 1) using S3Client for api communication and files will be deleted when a ticket is closed, canceled or expired (time check).
 <div align="center">
     <img src="assets/img/cloudflare_demo.png" alt="&nbsp;Cloudflare upload demo">
     Figure 1 - Cloudflare upload demo, v1.0.0
@@ -86,7 +83,7 @@ To monitor errors the logging framework `Winston` is used in combination with Lo
 
 <br>
 
-## Testing
+## 🔧 $\textsf{\color{salmon}Testing}$
 
 ### $\textsf{\color{teal}Demo}$
 
@@ -155,22 +152,22 @@ Preventing an unwanted merge with unfinished/failed test run, the project is set
 
 <br>
 
-## Updates
+## 📝 $\textsf{\color{salmon}Updates}$
 [see changelog for all updates](/docs/CHANGELOG.md)
 
-### $\textsf{\color{forestgreen}last update:}$
 
-$\textsf{[v1.3.5\ =>\ {\textbf{\color{brown}v1.4.1}]}}$ app<br>
-$\textsf{[v1.5.4\ =>\ {\textbf{\color{brown}v1.6.0}]}}$ database
-- $\textsf{\color{teal}Addition:}$ Added api route + logic for Feedback/FeedbackRating to add new feedback/rating or get current average rating value.
+$\textsf{[v1.4.1\ =>\ {\textbf{\color{brown}v1.4.4}]}}$ app<br>
 - $\textsf{\color{orange}Patch:}$ Updated:
-  + testing whole process (request-to-response) with individual injection of middlewares when necessary.
-  + database with new migration to add tables 'feedback_entries' and 'feedback_ratings' to handle single feedback/ratings seperately from accumulated average rating.
+  + entity ID's are using now nominal types instead basic string|number.
+  + some model functions are renamed to keep consistency and improve readability.
+  + some api routes have been shortened to keep consistency and improve readability.
 
 <br>
 
 ### Update objectives:
 <dl>
+    <dd>- caching layer</dd>
+    <dd>- background worker</dd>
     <dd>- jenkins setup</dd>
     <dd>- mail setup</dd>
 </dl>

@@ -4,9 +4,19 @@
 
 <br>
 
+### $\textsf{\color{skyblue}2026/03/09}$
+
+$\textsf{[v1.4.1\ =>\ {\textbf{\color{brown}v1.4.4}]}}$ app<br>
+- $\textsf{\color{orange}Patch:}$ Updated:
+  + entity ID's are using now nominal types instead basic string|number.
+  + some model functions are renamed to keep consistency and improve readability.
+  + some api routes have been shortened to keep consistency and improve readability.
+
+<br>
+
 ### $\textsf{\color{skyblue}2026/03/07}$
 
-$\textsf{[v1.3.5\ =>\ {\textbf{\color{brown}v1.4.1}]}}$ app<br>
+$\textsf{[v1.3.5\ =>\ v1.4.1]}$ app<br>
 $\textsf{[v1.5.4\ =>\ {\textbf{\color{brown}v1.6.0}]}}$ database
 - $\textsf{\color{teal}Addition:}$ Added api route + logic for Feedback/FeedbackRating to add new feedback/rating or get current average rating value.
 - $\textsf{\color{orange}Patch:}$ Updated:
