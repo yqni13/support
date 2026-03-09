@@ -1,4 +1,5 @@
 import { ClientsId } from "../repositories/interfaces/clients.entity.interface";
+import { TicketsId } from "../repositories/interfaces/tickets.entity.interface";
 import { UsersId } from "../repositories/interfaces/users.entity.interface";
 import { SingleOrArray } from "../utils/custom-types.utils";
 import { DeviceOption } from "../utils/enums/device-option.enum";
@@ -62,7 +63,7 @@ export interface TicketsFilterDTO {
 }
 
 export interface TicketsResponseDTO {
-    ticket_id: string,
+    ticket_id: TicketsId,
     client_id: ClientsId,
     user_id: UsersId,
     status: TicketStatus,
@@ -79,7 +80,7 @@ export interface TicketsResponseDTO {
 }
 
 export interface TicketsResponseExtendedDTO {
-    ticket_id: string,
+    ticket_id: TicketsId,
     client_id: ClientsId,
     client_name: string,
     user_id: UsersId,

@@ -2,7 +2,7 @@ import { TicketsCreateDTO, TicketsResponseDTO, TicketsUpdateDTO } from "../../..
 import * as CommonUtils from "../../../src/utils/common.utils";
 import * as mockId from "../../mock-data/id.mock-data.json";
 import { TicketStatus } from "../../../src/utils/enums/ticket-status.enum";
-import { Tickets } from "../../../src/repositories/interfaces/tickets.entity.interface";
+import { Tickets, TicketsId } from "../../../src/repositories/interfaces/tickets.entity.interface";
 import ticketsModel from "../../../src/models/tickets.model";
 import { Readable } from 'stream';
 import { FilesService } from "../../../src/services/files.service";
@@ -11,6 +11,7 @@ import { PermissionException } from "../../../src/utils/exceptions/auth.exceptio
 import { ClientsId } from "../../../src/repositories/interfaces/clients.entity.interface";
 import { UsersId } from "../../../src/repositories/interfaces/users.entity.interface";
 
+const mockValidTicketId = mockId.tickets.valid[0] as TicketsId;
 const mockValidClientId = mockId.clients.valid[0] as ClientsId;
 const mockValidUserId = mockId.users.valid[0] as UsersId;
 const mockTimestamp = '2025-01-01T14:00:04.000Z';
@@ -54,7 +55,7 @@ describe('Unit-tests (model), priority: entity Tickets', () => {
         describe('Testing valid fn calls', () => {
 
             test('Generate new object, priority: no files', async () => {
-                const mockParam_id = mockId.tickets.new[0];
+                const mockParam_id = mockId.tickets.new[0] as TicketsId;
                 const mockParam_dto: TicketsCreateDTO = {
                     client_id: mockValidClientId,
                     user_id: mockValidUserId,
@@ -85,7 +86,7 @@ describe('Unit-tests (model), priority: entity Tickets', () => {
             })
 
             test('Generate new object, priority: single file', async () => {
-                const mockParam_id = mockId.tickets.new[0];
+                const mockParam_id = mockId.tickets.new[0] as TicketsId;
                 const mockParam_dto: TicketsCreateDTO = {
                     client_id: mockValidClientId,
                     user_id: mockValidUserId,
@@ -121,7 +122,7 @@ describe('Unit-tests (model), priority: entity Tickets', () => {
             })
 
             test('Generate new object, priority: multiple files', async () => {
-                const mockParam_id = mockId.tickets.new[0];
+                const mockParam_id = mockId.tickets.new[0] as TicketsId;
                 const mockParam_dto: TicketsCreateDTO = {
                     client_id: mockValidClientId,
                     user_id: mockValidUserId,
@@ -194,7 +195,7 @@ describe('Unit-tests (model), priority: entity Tickets', () => {
 
             test('Check for file deletion => call FilesService.deleteFiles(), params: <dto>', async () => {
                 const mockParam_dto: TicketsResponseDTO = {
-                    ticket_id: mockId.tickets.valid[0],
+                    ticket_id: mockValidTicketId,
                     client_id: mockValidClientId,
                     user_id: mockValidUserId,
                     status: TicketStatus.ISSUED,
@@ -218,7 +219,7 @@ describe('Unit-tests (model), priority: entity Tickets', () => {
 
             test('Check for file deletion => does NOT call FilesService.deleteFiles(), params: <dto>', async () => {
                 const mockParam_dto: TicketsResponseDTO = {
-                    ticket_id: mockId.tickets.valid[1],
+                    ticket_id: mockId.tickets.valid[1] as TicketsId,
                     client_id: mockValidClientId,
                     user_id: mockValidUserId,
                     status: TicketStatus.ISSUED,
@@ -243,7 +244,7 @@ describe('Unit-tests (model), priority: entity Tickets', () => {
         let mockParam_dto: TicketsResponseDTO;
         beforeEach(() => {
             mockParam_dto = {
-                ticket_id: mockId.tickets.valid[0],
+                ticket_id: mockValidTicketId,
                 client_id: mockValidClientId,
                 user_id: mockValidUserId,
                 status: TicketStatus.CLOSED,

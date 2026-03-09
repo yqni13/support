@@ -5,8 +5,10 @@ import { TicketStatus } from "../../utils/enums/ticket-status.enum";
 import { ClientsId } from "./clients.entity.interface";
 import { UsersId } from "./users.entity.interface";
 
+export type TicketsId = string & { readonly brand: unique symbol };
+
 export interface Tickets {
-    ticket_id: string,
+    ticket_id: TicketsId,
     client_id: ClientsId,
     user_id: UsersId,
     status: TicketStatus,

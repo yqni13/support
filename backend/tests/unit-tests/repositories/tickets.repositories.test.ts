@@ -2,7 +2,7 @@ import { DBConnection } from "../../../src/configs/db";
 import * as CommonUtils from "../../../src/utils/common.utils";
 import * as MockUtils from "../../common.test-utils";
 import { default as mockId } from "../../mock-data/id.mock-data.json";
-import { Tickets } from "../../../src/repositories/interfaces/tickets.entity.interface";
+import { Tickets, TicketsId } from "../../../src/repositories/interfaces/tickets.entity.interface";
 import { DBQueryErrorException } from "../../../src/utils/exceptions/db.exception";
 import { TicketStatus } from "../../../src/utils/enums/ticket-status.enum";
 import ticketsRepository from "../../../src/repositories/tickets.repository";
@@ -20,11 +20,12 @@ jest.mock("../../../src/configs/db", () => {
     }
 });
 
-const mockTimestamp = '2025-01-01T14:00:04.000Z';
+const mockValidTicketId = mockId.tickets.valid[0] as TicketsId;
 const mockValidClientId = mockId.clients.valid[0] as ClientsId;
 const mockValidUserId = mockId.users.valid[0] as UsersId;
+const mockTimestamp = '2025-01-01T14:00:04.000Z';
 const mockData: Tickets = {
-    ticket_id: mockId.tickets.valid[0],
+    ticket_id: mockValidTicketId,
     client_id: mockValidClientId,
     user_id: mockValidUserId,
     status: TicketStatus.ISSUED,
@@ -71,7 +72,7 @@ describe('Unit-tests (repository), priority: entity Tickets', () => {
             })
 
             test('Return null for non-existing entry, params: non-existing <id>', async () => {
-                const mockParam_id = mockId.tickets.invalid[0];
+                const mockParam_id = mockId.tickets.invalid[0] as TicketsId;
                 const mockResult = null;
                 const mockClient = MockUtils.mapMockDbClient(mockResult);
                 const testFn = await ticketsRepository.findById(mockParam_id);
@@ -88,7 +89,7 @@ describe('Unit-tests (repository), priority: entity Tickets', () => {
         describe('Testing invalid fn calls', () => {
 
             test('Throw DBQueryErrorException by catch-block', async () => {
-                const mockParam_id = mockId.tickets.invalid[0];
+                const mockParam_id = mockId.tickets.invalid[0] as TicketsId;
                 const mockErrorMsg = "DB ERROR ON SELECT QUERY";
                 const mockResult = null;
                 jest.spyOn(CommonUtils, "logError").mockReturnValue();
@@ -112,7 +113,7 @@ describe('Unit-tests (repository), priority: entity Tickets', () => {
             test('Return data for multiple existing entries', async () => {
                 const mockData_entry0: TicketsResponseDTO = structuredClone(mockData);
                 const mockData_entry1: TicketsResponseDTO = {
-                    ticket_id: 'another_valid_tickets_test_id',
+                    ticket_id: 'another_valid_tickets_test_id' as TicketsId,
                     client_id: 'another_valid_clients_test_id' as ClientsId,
                     user_id: 'another_valid_users_test_id' as UsersId,
                     status: TicketStatus.ACTIVE,
@@ -187,7 +188,7 @@ describe('Unit-tests (repository), priority: entity Tickets', () => {
                 const mockResult: TicketsResponseDTO[] = [
                     mockData,
                     {
-                        ticket_id: 'another_valid_tickets_id',
+                        ticket_id: 'another_valid_tickets_id' as TicketsId,
                         client_id: mockValidClientId,
                         user_id: 'another_valid_users_id' as UsersId,
                         status: TicketStatus.ACTIVE,
@@ -223,7 +224,7 @@ describe('Unit-tests (repository), priority: entity Tickets', () => {
                 const mockResult: TicketsResponseDTO[] = [
                     mockData,
                     {
-                        ticket_id: 'another_valid_tickets_id',
+                        ticket_id: 'another_valid_tickets_id' as TicketsId,
                         client_id: 'another_valid_client_id' as ClientsId,
                         user_id: mockValidUserId,
                         status: TicketStatus.ACTIVE,
@@ -353,7 +354,7 @@ describe('Unit-tests (repository), priority: entity Tickets', () => {
     describe('Database tests table <tickets>, priority: fn create()', () => {
 
         const mockParam_entity: Tickets = {
-            ticket_id: mockId.tickets.new[0],
+            ticket_id: mockId.tickets.new[0] as TicketsId,
             client_id: mockValidClientId,
             user_id: mockValidUserId,
             status: TicketStatus.ISSUED,
@@ -422,7 +423,7 @@ describe('Unit-tests (repository), priority: entity Tickets', () => {
         describe('Testing valid fn calls', () => {
 
             test('Return data of changed entry, params: valid <id, dto>', async () => {
-                const mockParam_id = mockData.user_id;
+                const mockParam_id = mockData.ticket_id;
                 const mockValues: any[] = Object.values(mockParam_dto).map(value => value);
                 mockValues.push(mockParam_id);
                 const mockResult: Tickets = structuredClone(mockData);
@@ -440,7 +441,7 @@ describe('Unit-tests (repository), priority: entity Tickets', () => {
             })
 
             test('Return null for non-existing entry, params: invalid <id, dto>', async () => {
-                const mockParam_id = mockId.tickets.invalid[0];
+                const mockParam_id = mockId.tickets.invalid[0] as TicketsId;
                 const mockValues: any[] = Object.values(mockParam_dto).map(value => value);
                 mockValues.push(mockParam_id);
 
@@ -460,7 +461,7 @@ describe('Unit-tests (repository), priority: entity Tickets', () => {
         describe('Testing invalid fn calls', () => {
 
             test('Throw DBQueryErrorException by catch-block', async () => {
-                const mockParam_id = mockId.tickets.invalid[0];
+                const mockParam_id = mockId.tickets.invalid[0] as TicketsId;
                 const mockErrorMsg = "DB ERROR ON UPDATE QUERY";
                 const mockResult = null;
                 jest.spyOn(CommonUtils, "logError").mockReturnValue();
@@ -497,7 +498,7 @@ describe('Unit-tests (repository), priority: entity Tickets', () => {
             })
 
             test('Return false for non-existing entry, params: invalid <id>', async () => {
-                const mockParam_id = mockId.tickets.invalid[0];
+                const mockParam_id = mockId.tickets.invalid[0] as TicketsId;
                 const mockResult = false;
                 const mockClient = MockUtils.mapMockDbClient(mockResult);
                 const testFn = await ticketsRepository.delete(mockParam_id);
@@ -514,7 +515,7 @@ describe('Unit-tests (repository), priority: entity Tickets', () => {
         describe('Testing invalid fn calls', () => {
 
             test('Throw DBQueryErrorException by catch-block', async () => {
-                const mockParam_id = mockId.tickets.invalid[0];
+                const mockParam_id = mockId.tickets.invalid[0] as TicketsId;
                 const mockErrorMsg = "DB ERROR ON DELETE QUERY";
                 const mockResult = null;
                 jest.spyOn(CommonUtils, "logError").mockReturnValue();

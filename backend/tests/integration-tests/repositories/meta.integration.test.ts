@@ -1,4 +1,4 @@
-import { Maintenance, Meta } from './../../../src/repositories/interfaces/meta.entity.interface';
+import { Maintenance, Meta, MetaId } from './../../../src/repositories/interfaces/meta.entity.interface';
 import { NextFunction, Request, Response } from "express";
 import { DBTestSetup } from "../../db-container.setup";
 import { runMigrations } from '../../db-migrations.setup';
@@ -23,6 +23,8 @@ jest.mock('../../../src/middleware/maintenance.middleware', () => ({
 import app from '../../../src/app';
 
 jest.setTimeout(60000);
+
+const testValidMetaId = mockId.meta.valid[0] as MetaId;
 const testTimestamp = '2025-01-01T14:00:01.000Z';
 
 describe('Integration-tests (repository), priority: entity Meta', () => {
@@ -37,7 +39,7 @@ describe('Integration-tests (repository), priority: entity Meta', () => {
         await runMigrations('meta.integration.test.ts');
         apiUrl = '/api/v1/meta';
         mockResult = {
-            id: 1,
+            id: testValidMetaId,
             app: 'support',
             author: 'yqni13',
             build_on: testTimestamp,
@@ -65,7 +67,7 @@ describe('Integration-tests (repository), priority: entity Meta', () => {
         });
 
         test('Repository process fn findById(), result: "SUCCESS"', async () => {
-            const testParam_id = 1;
+            const testParam_id = testValidMetaId;
             const testResult: Meta = {
                 id: testParam_id,
                 app: "support",
@@ -93,7 +95,7 @@ describe('Integration-tests (repository), priority: entity Meta', () => {
         test('Repository process fn findByName(), result: "SUCCESS"', async () => {
             const testParam_name = "support";
             const testResult: Meta = {
-                id: 1,
+                id: testValidMetaId,
                 app: testParam_name,
                 author: "yqni13",
                 build_on: testTimestamp,
@@ -118,7 +120,7 @@ describe('Integration-tests (repository), priority: entity Meta', () => {
 
         test('Repository process fn findAll(), result: "SUCCESS"', async () => {
             const testResult: Meta[] = [{
-                id: 1,
+                id: testValidMetaId,
                 app: "support",
                 author: "yqni13",
                 build_on: testTimestamp,
@@ -142,7 +144,7 @@ describe('Integration-tests (repository), priority: entity Meta', () => {
         })
 
         test('Repository process fn update(), result: "SUCCESS"', async () => {
-            const testParam_id = 1;
+            const testParam_id = testValidMetaId;
             const testParam_dto: MetaUpdateDTO = {
                 app: 'support',
                 author: 'yqni13',

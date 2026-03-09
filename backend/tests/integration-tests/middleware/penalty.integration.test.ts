@@ -10,12 +10,15 @@ import { runMigrations } from "../../db-migrations.setup";
 import usersService from "../../../src/services/users.service";
 import { MaintenanceMode } from "../../../src/utils/enums/maintenance-mode.enum";
 import metaService from "../../../src/services/meta.service";
+import { UsersId } from "../../../src/repositories/interfaces/users.entity.interface";
+import { ClientsId } from "../../../src/repositories/interfaces/clients.entity.interface";
+import { MetaId } from "../../../src/repositories/interfaces/meta.entity.interface";
 
 jest.setTimeout(60000);
 
-const testValidMetaId = mockId.meta.valid[0];
-const testValidClientsId = mockId.clients.valid[0];
-const testValidUsersId = mockId.users.valid[0];
+const testValidMetaId = mockId.meta.valid[0] as MetaId;
+const testValidClientId = mockId.clients.valid[0] as ClientsId;
+const testValidUserId = mockId.users.valid[0] as UsersId;
 
 describe('Integration-tests (middleware), priority: class PenaltyHandler', () => {
 
@@ -40,13 +43,13 @@ describe('Integration-tests (middleware), priority: class PenaltyHandler', () =>
         test('Params: <PenaltyContext> has Violation.CLIENTSFLAG, result: "PENALTY"', async () => {
             const testParam_context: PenaltyContext = {
                 type: Violation.CLIENTSFLAG,
-                id: testValidClientsId,
+                id: testValidClientId,
                 penaltyValue: null
             };
 
             await dbTestSetup.addTestData();
             const _ = await penaltyHandler.apply(testParam_context);
-            const testFn = await clientsService.getClientById(testValidClientsId);
+            const testFn = await clientsService.getClientById(testValidClientId);
             const testClientsFlagResult = Flag.WARNING;
 
             expect(testFn?.flag).toBe(testClientsFlagResult);
@@ -55,13 +58,13 @@ describe('Integration-tests (middleware), priority: class PenaltyHandler', () =>
         test('Params: <PenaltyContext> has Violation.USERSFLAG, result: "PENALTY"', async () => {
             const testParam_context: PenaltyContext = {
                 type: Violation.USERSFLAG,
-                id: testValidUsersId,
+                id: testValidUserId,
                 penaltyValue: null
             };
 
             await dbTestSetup.addTestData();
             const _ = await penaltyHandler.apply(testParam_context);
-            const testFn = await usersService.getUserById(testValidUsersId);
+            const testFn = await usersService.getUserById(testValidUserId);
             const testUsersFlagResult = Flag.WARNING;
 
             expect(testFn?.flag).toBe(testUsersFlagResult);

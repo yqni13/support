@@ -4,6 +4,7 @@ import {
     MetaUpdateDTO,
     MaintenanceUpdateDTO,
 } from '../dtos/meta.dto';
+import { MetaId } from '../repositories/interfaces/meta.entity.interface';
 import metaRepository from '../repositories/meta.repository';
 import * as CommonUtils from "../utils/common.utils";
 
@@ -14,7 +15,7 @@ class MetaService {
         this.timeMapTargets = ['build_on', 'created_on', 'last_modified'];
     }
 
-    async getMetaById(id: number): Promise<MetaResponseDTO | null> {
+    async getMetaById(id: MetaId): Promise<MetaResponseDTO | null> {
         const result = await metaRepository.findById(id);
         return !result ? null : CommonUtils.mapObjTimestamps<MetaResponseDTO>(result, this.timeMapTargets);
     }
@@ -29,7 +30,7 @@ class MetaService {
         return !result ? null : CommonUtils.mapArrayTimestamps<MetaResponseDTO>(result, this.timeMapTargets);
     }
 
-    async updateMeta(id: number, dto: MetaUpdateDTO): Promise<MetaResponseDTO | null> {
+    async updateMeta(id: MetaId, dto: MetaUpdateDTO): Promise<MetaResponseDTO | null> {
         dto.last_modified = CommonUtils.getTimestampUTC();
         const result = await metaRepository.update(id, dto);
         return !result ? null : CommonUtils.mapObjTimestamps<MetaResponseDTO>(result, this.timeMapTargets);
@@ -40,7 +41,7 @@ class MetaService {
         return !result ? null : CommonUtils.mapObjTimestamps<MaintenanceResponseDTO>(result, this.timeMapTargets);
     }
 
-    async updateMaintenanceMode(id: number, dto: MaintenanceUpdateDTO): Promise<MaintenanceResponseDTO | null> {
+    async updateMaintenanceMode(id: MetaId, dto: MaintenanceUpdateDTO): Promise<MaintenanceResponseDTO | null> {
         dto.last_modified = CommonUtils.getTimestampUTC();
         const result = await metaRepository.updateMaintenance(id, dto);
         return !result ? null : CommonUtils.mapObjTimestamps<MaintenanceResponseDTO>(result, this.timeMapTargets);

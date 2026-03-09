@@ -1,3 +1,4 @@
+import { MetaId } from "../repositories/interfaces/meta.entity.interface"
 import { EnvMode } from "../utils/enums/env-mode.enum"
 import { MaintenanceMode } from "../utils/enums/maintenance-mode.enum"
 
@@ -15,7 +16,7 @@ export interface MetaUpdateDTO {
 }
 
 export interface MetaResponseDTO {
-    id: number,
+    id: MetaId,
     app: string,
     author: string,
     build_on: string,
@@ -36,7 +37,7 @@ export interface MaintenanceUpdateDTO {
 }
 
 export interface MaintenanceResponseDTO {
-    id: number,
+    id: MetaId,
     app: string,
     build_on: string,
     maintenance_mode: MaintenanceMode,

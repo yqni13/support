@@ -21,7 +21,11 @@ import ticketsModel from "../../../src/models/tickets.model";
 import { CloudService } from "../../../src/services/cloud.service";
 import { TicketOption } from "../../../src/utils/enums/ticket-option.enum";
 import { DeviceOption } from "../../../src/utils/enums/device-option.enum";
+import { UsersId } from "../../../src/repositories/interfaces/users.entity.interface";
+import { ClientsId } from "../../../src/repositories/interfaces/clients.entity.interface";
+import { TicketsId } from "../../../src/repositories/interfaces/tickets.entity.interface";
 
+const testValidTicketId = mockId.tickets.valid[0] as TicketsId;
 const testValidClientId = mockId.clients.valid[0] as ClientsId;
 const testValidUserId = mockId.users.valid[0] as UsersId;
 const testTimestamp = '2025-01-01T14:00:04.000Z';
@@ -49,8 +53,6 @@ jest.mock('../../../src/middleware/observe.middleware.ts', () => ({
 }))
 
 import app from '../../../src/app';
-import { UsersId } from "../../../src/repositories/interfaces/users.entity.interface";
-import { ClientsId } from "../../../src/repositories/interfaces/clients.entity.interface";
 
 jest.setTimeout(60000);
 
@@ -60,7 +62,7 @@ describe('Integration-tests (repository), priority: entity Tickets', () => {
     let apiUrl: string;
     const testClientsName = 'TESTCLIENT';
     const testUsersEmail = 'max.mustermann@yqni13.com';
-    const testNewParam_ticket_id = mockId.tickets.new[0];
+    const testNewParam_ticket_id = mockId.tickets.new[0] as TicketsId;
     beforeAll(async () => {
         dbTestSetup = new DBTestSetup();
         await dbTestSetup.init();
@@ -81,7 +83,7 @@ describe('Integration-tests (repository), priority: entity Tickets', () => {
     describe('Testing valid fn calls', () => {
 
         test('Repository process fn findById(), result: "SUCCESS"', async () => {
-            const testParam_id = mockId.tickets.valid[0];
+            const testParam_id = testValidTicketId;
             const testResult: TicketsResponseExtendedDTO = {
                 ticket_id: testParam_id,
                 client_id: testValidClientId,
@@ -112,7 +114,7 @@ describe('Integration-tests (repository), priority: entity Tickets', () => {
         test('Repository process fn findAll(), result: "SUCCESS"', async () => {
             const testResult: TicketsResponseDTO[] = [
                 {
-                    ticket_id: mockId.tickets.valid[0],
+                    ticket_id: testValidTicketId,
                     client_id: testValidClientId,
                     user_id: testValidUserId,
                     status: TicketStatus.ISSUED,
@@ -128,7 +130,7 @@ describe('Integration-tests (repository), priority: entity Tickets', () => {
                     created_on: testTimestamp
                 },
                 {
-                    ticket_id: mockId.tickets.valid[1],
+                    ticket_id: mockId.tickets.valid[1] as TicketsId,
                     client_id: testValidClientId,
                     user_id: testValidUserId,
                     status: TicketStatus.ISSUED,
@@ -174,7 +176,7 @@ describe('Integration-tests (repository), priority: entity Tickets', () => {
             };
             const testResult: TicketsResponseDTO[] = [
                 {
-                    ticket_id: mockId.tickets.valid[0],
+                    ticket_id: testValidTicketId,
                     client_id: testValidClientId,
                     user_id: testValidUserId,
                     status: TicketStatus.ISSUED,
@@ -190,7 +192,7 @@ describe('Integration-tests (repository), priority: entity Tickets', () => {
                     created_on: testTimestamp
                 },
                 {
-                    ticket_id: mockId.tickets.valid[1],
+                    ticket_id: mockId.tickets.valid[1] as TicketsId,
                     client_id: testValidClientId,
                     user_id: testValidUserId,
                     status: TicketStatus.ISSUED,
@@ -223,7 +225,7 @@ describe('Integration-tests (repository), priority: entity Tickets', () => {
             };
             const testResult: TicketsResponseDTO[] = [
                 {
-                    ticket_id: mockId.tickets.valid[0],
+                    ticket_id: testValidTicketId,
                     client_id: testValidClientId,
                     user_id: testValidUserId,
                     status: TicketStatus.ISSUED,
@@ -239,7 +241,7 @@ describe('Integration-tests (repository), priority: entity Tickets', () => {
                     created_on: testTimestamp
                 },
                 {
-                    ticket_id: mockId.tickets.valid[1],
+                    ticket_id: mockId.tickets.valid[1] as TicketsId,
                     client_id: testValidClientId,
                     user_id: testValidUserId,
                     status: TicketStatus.ISSUED,
@@ -272,7 +274,7 @@ describe('Integration-tests (repository), priority: entity Tickets', () => {
             };
             const testResult: TicketsResponseDTO[] = [
                 {
-                    ticket_id: mockId.tickets.valid[0],
+                    ticket_id: testValidTicketId,
                     client_id: testValidClientId,
                     user_id: testValidUserId,
                     status: TicketStatus.ISSUED,
@@ -288,7 +290,7 @@ describe('Integration-tests (repository), priority: entity Tickets', () => {
                     created_on: testTimestamp
                 },
                 {
-                    ticket_id: mockId.tickets.valid[1],
+                    ticket_id: mockId.tickets.valid[1] as TicketsId,
                     client_id: testValidClientId,
                     user_id: testValidUserId,
                     status: TicketStatus.ISSUED,
@@ -321,7 +323,7 @@ describe('Integration-tests (repository), priority: entity Tickets', () => {
             };
             const testResult: TicketsResponseDTO[] = [
                 {
-                    ticket_id: mockId.tickets.valid[0],
+                    ticket_id: testValidTicketId,
                     client_id: testValidClientId,
                     user_id: testValidUserId,
                     status: TicketStatus.ISSUED,
@@ -337,7 +339,7 @@ describe('Integration-tests (repository), priority: entity Tickets', () => {
                     created_on: testTimestamp
                 },
                 {
-                    ticket_id: mockId.tickets.valid[1],
+                    ticket_id: mockId.tickets.valid[1] as TicketsId,
                     client_id: testValidClientId,
                     user_id: testValidUserId,
                     status: TicketStatus.ISSUED,
@@ -522,7 +524,7 @@ describe('Integration-tests (repository), priority: entity Tickets', () => {
         })
 
         test('Repository process fn update() without resource_paths, result: "SUCCESS"', async () => {
-            const testParam_id = mockId.tickets.valid[1];
+            const testParam_id = mockId.tickets.valid[1] as TicketsId;
             const testParam_dto: TicketsUpdateDTO = {
                 status: TicketStatus.ACTIVE,
                 option: TicketOption.SUPPORT,
@@ -559,7 +561,7 @@ describe('Integration-tests (repository), priority: entity Tickets', () => {
         })
 
         test('Repository process fn update() with resource_paths, result: "SUCCESS"', async () => {
-            const testParam_id = mockId.tickets.valid[0];
+            const testParam_id = testValidTicketId;
             const testParam_dto: TicketsUpdateDTO = {
                 status: TicketStatus.ACTIVE,
                 option: TicketOption.BUG,

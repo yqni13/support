@@ -11,6 +11,6 @@ export const penaltyHandler = new PenaltyHandler(
     new Map<Violation, PenaltyApply>([
         [Violation.CLIENTSFLAG, new ClientsFlagPenalty()],
         [Violation.USERSFLAG, new UsersFlagPenalty()],
-        [Violation.MAINTENANCE_TRAFFIC, new MaintenanceTrafficPenalty]
+        [Violation.MAINTENANCE_TRAFFIC, new MaintenanceTrafficPenalty()]
     ])
 )

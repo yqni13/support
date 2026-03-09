@@ -1,7 +1,7 @@
 import { QueryResult } from "pg";
 import { DBConnection } from "../configs/db";
 import { IBaseRepository, IFindRepository } from "./interfaces/base.repository.interface";
-import { Maintenance, Meta } from "./interfaces/meta.entity.interface";
+import { Maintenance, Meta, MetaId } from "./interfaces/meta.entity.interface";
 import { logError } from "../utils/common.utils";
 import { DBQueryErrorException } from "../utils/exceptions/db.exception";
 
@@ -13,7 +13,7 @@ class MetaRepository implements IBaseRepository<Meta>, IFindRepository<Meta> {
         this.table = "meta";
     }
 
-    async findById(id: number): Promise<Meta | null> {
+    async findById(id: MetaId): Promise<Meta | null> {
         const filterColumn = "id";
         const sql = `SELECT 
         id, app, author, build_on, environment, app_version, db_version, docker_image, docker_version, jenkins_version, maintenance_mode, last_modified, created_on 
@@ -103,7 +103,7 @@ class MetaRepository implements IBaseRepository<Meta>, IFindRepository<Meta> {
         }
     }
 
-    async update(id: number, dto: Partial<Meta>): Promise<Meta | null> {
+    async update(id: MetaId, dto: Partial<Meta>): Promise<Meta | null> {
         const filterColumn = "id";
         const sql = `UPDATE ${this.table}
         SET app = $1, author = $2, build_on = $3, environment = $4, app_version = $5, db_version = $6,
@@ -129,7 +129,7 @@ class MetaRepository implements IBaseRepository<Meta>, IFindRepository<Meta> {
         }
     }
 
-    async updateMaintenance(id: number, dto: Partial<Meta>): Promise<Maintenance | null> {
+    async updateMaintenance(id: MetaId, dto: Partial<Meta>): Promise<Maintenance | null> {
         const filterColumn = "id";
         const sql = `UPDATE ${this.table}
         SET maintenance_mode = $1, last_modified = $2
