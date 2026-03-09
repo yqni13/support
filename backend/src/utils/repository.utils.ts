@@ -1,4 +1,8 @@
+import { PoolClient } from "pg";
 import { BaseQuery, TimestampFilters } from "../repositories/interfaces/common.repository.interface";
+import { DBConnection } from "../configs/db";
+import { logError } from "./common.utils";
+import { DBQueryErrorException } from "./exceptions/db.exception";
 
 /**
  * @param data Timestamp values come in array [older, younger].
@@ -22,7 +26,7 @@ export function mapFilteredQueryValues<T extends Record<string, any>>(dto: T, ta
     const argGroups: string[] = [];
     const timestampObj = {};
     Object.entries(dto).forEach(([key, content]) => {
-        if(key !== 'last_modified' && key !== 'created_on') {
+        if(key !== 'reviewed_on' && key !== 'last_modified' && key !== 'created_on') {
             const valArr = Array.isArray(content) ? content : [content];
             const conditions = valArr.map((value) => {
                 if(value === null) {
@@ -54,4 +58,31 @@ export function mapFilteredQueryValues<T extends Record<string, any>>(dto: T, ta
     }
 
     return { sql: sql + ';', values: values };
+}
+
+/**
+ * @description Wrapper to apply logic within transaction environment + logging/exception handling.
+ */
+export async function asTransaction<T>(
+    message: string,
+    method: string,
+    fn: (client: PoolClient) => Promise<T | null>
+): Promise<T | null> {
+    const db = DBConnection.getInstance();
+    let client: any;
+    try {
+        client = await db.connect();
+        await client.query('BEGIN');
+
+        const result = await fn(client);
+
+        await client.query('COMMIT');
+        return result;
+    } catch(err: any) {
+        await client.query('ROLLBACK');
+        logError(message, method, err);
+        throw new DBQueryErrorException(err);
+    } finally {
+        await db.close(client);
+    }
 }

@@ -5,10 +5,14 @@ import metaRouter from '../routes/meta.route';
 import ticketsRouter from '../routes/tickets.route'; 
 import usersRouter from '../routes/users.route';
 import testRouter from '../routes/test.route';
+import feedbackRouter from '../routes/feedback.route';
+import feedbackRatingRouter from '../routes/feedback-rating.route';
 
 export class RoutesLoader {
     static initRoutes(app: Application, version: string) {
         app.use(`/api/${version}/clients`, clientsRouter);
+        app.use(`/api/${version}/feedback`, feedbackRouter);
+        app.use(`/api/${version}/feedback-rating`, feedbackRatingRouter);
         app.use(`/api/${version}/mailing`, mailingRouter); 
         app.use(`/api/${version}/meta`, metaRouter);
         app.use(`/api/${version}/test`, testRouter);

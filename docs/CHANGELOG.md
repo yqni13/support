@@ -4,10 +4,21 @@
 
 <br>
 
+### $\textsf{\color{skyblue}2026/03/07}$
+
+$\textsf{[v1.3.5\ =>\ {\textbf{\color{brown}v1.4.1}]}}$ app<br>
+$\textsf{[v1.5.4\ =>\ {\textbf{\color{brown}v1.6.0}]}}$ database
+- $\textsf{\color{teal}Addition:}$ Added api route + logic for Feedback/FeedbackRating to add new feedback/rating or get current average rating value.
+- $\textsf{\color{orange}Patch:}$ Updated:
+  + testing whole process (request-to-response) with individual injection of middlewares when necessary.
+  + database with new migration to add tables 'feedback_entries' and 'feedback_ratings' to handle single feedback/ratings seperately from accumulated average rating.
+
+<br>
+
 ### $\textsf{\color{skyblue}2026/02/26}$
 
-$\textsf{[v1.3.4\ =>\ {\textbf{\color{brown}v1.3.5}]}}$ app<br>
-$\textsf{[v1.5.3\ =>\ {\textbf{\color{brown}v1.5.4}]}}$ database
+$\textsf{[v1.3.4\ =>\ v1.3.5]}$ app<br>
+$\textsf{[v1.5.3\ =>\ v1.5.4]}$ database
 - $\textsf{\color{orange}Patch:}$ Updated:
   +  new migration to add properties 'info_browser', 'info_os' and 'info_device' as well as property 'title' with default value 'support_ticket' to table 'tickets' and increased max length of property 'message' up to 5000 characters
   +  ticket validation/handling/tests to inlcude new & changed properties

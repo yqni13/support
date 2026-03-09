@@ -419,7 +419,7 @@ describe('Unit-tests (repository), priority: entity Tickets', () => {
 
         describe('Testing valid fn calls', () => {
 
-            test('Return data of changed entry, params: valid <id>', async () => {
+            test('Return data of changed entry, params: valid <id, dto>', async () => {
                 const mockParam_id = mockData.user_id;
                 const mockValues: any[] = Object.values(mockParam_dto).map(value => value);
                 mockValues.push(mockParam_id);
@@ -437,7 +437,7 @@ describe('Unit-tests (repository), priority: entity Tickets', () => {
                 );
             })
 
-            test('Return null for non-existing entry, params: invalid <id>', async () => {
+            test('Return null for non-existing entry, params: invalid <id, dto>', async () => {
                 const mockParam_id = mockId.tickets.invalid[0];
                 const mockValues: any[] = Object.values(mockParam_dto).map(value => value);
                 mockValues.push(mockParam_id);

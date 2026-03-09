@@ -1,5 +1,5 @@
 # yqni13 | support
-$\texttt{\color{teal}{v1.3.5}}$
+$\texttt{\color{teal}{v1.4.1}}$
 
 
 <br>
@@ -43,6 +43,7 @@ The development process is structured by the TDD (test driven development) princ
 
 <dl>
     <dd>🪲 support/bug/feedback-ticket handling including client + user data</dd>
+    <dd>✨ counting/adding up ratings and administer rating average</dd>
     <dd>📂 file handling (upload/delete) from requests + cloud storage</dd>
     <dd>:mag: filtered search for ticket + user data (properties + timespan)</dd>
     <dd>:closed_lock_with_key: en/disable application (maintenance mode) triggered by request/logic</dd>
@@ -54,7 +55,13 @@ The development process is structured by the TDD (test driven development) princ
 
 ### $\textsf{\color{teal}Tickets}$
 
-Documentation follows with finished feedback handling (task: SUPPORT-64).
+Documentation follows with finished refactoring (task: SUPPORT-65).
+
+<br>
+
+### $\textsf{\color{teal}Feedback/Rating}$
+
+Documentation follows with finished refactoring (task: SUPPORT-65).
 
 <br>
 
@@ -118,7 +125,7 @@ Install the packages `@jest/globals`, `@types/jest`, `supertest`, `@testcontaine
 ```sh
 npm install jest @jest/globals @types/jest supertest @testcontainers/postgresql testcontainers --save-dev
 ```
-350+ tests exist currently for models, utils, validators and workflows (integration tests) - see [tests](./backend/tests).<br>
+450+ tests exist currently for models, utils, validators and workflows (integration tests) - see [tests](./backend/tests).<br>
 Run tests on local device by including setup for dotenv/config to provide environment variables:
 ```sh
 set NODE_ENV=test && jest --setupFiles dotenv/config
@@ -153,11 +160,12 @@ Preventing an unwanted merge with unfinished/failed test run, the project is set
 
 ### $\textsf{\color{forestgreen}last update:}$
 
-$\textsf{[v1.3.4\ =>\ {\textbf{\color{brown}v1.3.5}]}}$ app<br>
-$\textsf{[v1.5.3\ =>\ {\textbf{\color{brown}v1.5.4}]}}$ database
+$\textsf{[v1.3.5\ =>\ {\textbf{\color{brown}v1.4.1}]}}$ app<br>
+$\textsf{[v1.5.4\ =>\ {\textbf{\color{brown}v1.6.0}]}}$ database
+- $\textsf{\color{teal}Addition:}$ Added api route + logic for Feedback/FeedbackRating to add new feedback/rating or get current average rating value.
 - $\textsf{\color{orange}Patch:}$ Updated:
-  +  new migration to add properties 'info_browser', 'info_os' and 'info_device' as well as property 'title' with default value 'support_ticket' to table 'tickets' and increased max length of property 'message' up to 5000 characters
-  +  ticket validation/handling/tests to inlcude new & changed properties
+  + testing whole process (request-to-response) with individual injection of middlewares when necessary.
+  + database with new migration to add tables 'feedback_entries' and 'feedback_ratings' to handle single feedback/ratings seperately from accumulated average rating.
 
 <br>
 

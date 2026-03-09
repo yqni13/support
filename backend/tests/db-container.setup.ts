@@ -2,6 +2,7 @@ import { Client } from "pg";
 import { StartedTestContainer } from "testcontainers";
 import { PostgreSqlContainer } from "@testcontainers/postgresql";
 import { DBTestData } from "./db-data.setup";
+import { logError } from "../src/utils/common.utils";
 
 export class DBTestSetup {
 
@@ -63,8 +64,8 @@ export class DBTestSetup {
 
     async addTestData() {
         const dbTestData = DBTestData.getInstance();
-        await this.client.query('BEGIN');
         try {
+            await this.client.query('BEGIN');
             const metaData = dbTestData.getMetaInsertSql();
             await this.client.query(metaData.sql, metaData.values);
             const clientData = dbTestData.getClientsInsertSql();
@@ -77,12 +78,17 @@ export class DBTestSetup {
             await this.client.query(rateLimitData.sql, rateLimitData.values);
             const demoLimitData = dbTestData.getDemoLimitsInsertSql();
             await this.client.query(demoLimitData.sql, demoLimitData.values);
-            const ticketDataNoPaths = dbTestData.getTicketsWithoutPathsInsertSql();
-            await this.client.query(ticketDataNoPaths.sql, ticketDataNoPaths.values);
+            const feedbackData = dbTestData.getFeedbackInsertSql();
+            await this.client.query(feedbackData.sql, feedbackData.values);
+            const feedbackRatingData = dbTestData.getFeedbackRatingInsertSql();
+            await this.client.query(feedbackRatingData.sql, feedbackRatingData.values);
             await this.client.query('COMMIT');
         } catch (err: any) {
             await this.client.query('ROLLBACK');
-            throw new Error('TESTCONTAINER ERROR INSERT TEST DATA');
+            const message = "TESTCONTAINER ERROR ON INSERT TEST DATA";
+            const method = "SUPPORT_DBTestSetup_addTestData";
+            logError(message, method, err);
+            throw new Error(message);
         }
     }
 
