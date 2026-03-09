@@ -1,4 +1,5 @@
 import { ClientsId } from "../repositories/interfaces/clients.entity.interface"
+import { FeedbackId } from "../repositories/interfaces/feedback.entity.interface"
 import { UsersId } from "../repositories/interfaces/users.entity.interface"
 
 export interface FeedbackCreateDTO {
@@ -32,7 +33,7 @@ export interface FeedbackFilterDTO {
 }
 
 export interface FeedbackResponseDTO {
-    feedback_id: number,
+    feedback_id: FeedbackId,
     client_id: ClientsId,
     user_id: UsersId,
     rating: number,

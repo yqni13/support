@@ -14,9 +14,12 @@ import demoLimitsService from "../../../src/services/demo-limits.service";
 import { DemoLimitsCountDTO, DemoLimitsResponseDTO } from "../../../src/dtos/demo-limits.dto";
 import { ClientsId } from "../../../src/repositories/interfaces/clients.entity.interface";
 import { UsersId } from "../../../src/repositories/interfaces/users.entity.interface";
+import { RateLimitId } from "../../../src/repositories/interfaces/rate-limits.entity.interface";
+import { DemoLimitId } from "../../../src/repositories/interfaces/demo-limits.entity.interface";
 
 jest.setTimeout(60000);
 
+const testValidRateLimitId = mockId.rate_limits.valid[0] as RateLimitId;
 const testValidClientId = mockId.clients.valid[0] as ClientsId;
 const testValidUserId = mockId.users.valid[0] as UsersId;
 
@@ -79,7 +82,7 @@ describe('Integration-tests (repository), priority: entity RateLimits', () => {
             await dbTestSetup.addTestData();
             const testResponse = await rateLimitsService.createRateLimit(mockParam_dto);
             const mockResponse: RateLimitsResponseDTO = {
-                rate_limit_id: 2,
+                rate_limit_id: mockId.rate_limits.new[0] as RateLimitId,
                 client_id: testValidClientId,
                 user_id: testValidUserId,
                 day: '2025-01-02',
@@ -104,7 +107,7 @@ describe('Integration-tests (repository), priority: entity RateLimits', () => {
             await dbTestSetup.addTestData();
             const testResponse = await rateLimitsService.updateRateLimit(dto);
             const mockResponse: RateLimitsResponseDTO = {
-                rate_limit_id: 1,
+                rate_limit_id: testValidRateLimitId,
                 client_id: testValidClientId,
                 user_id: testValidUserId,
                 day: '2025-01-01',
@@ -158,7 +161,7 @@ describe('Integration-tests (repository), priority: entity RateLimits', () => {
             await dbTestSetup.addTestData();
             const testResponse = await demoLimitsService.createDemoLimit();
             const mockResponse: DemoLimitsResponseDTO = {
-                demo_limit_id: 2,
+                demo_limit_id: 2 as DemoLimitId,
                 day: '2025-01-02',
                 count: 1,
                 last_modified: testTimestamp
@@ -177,7 +180,7 @@ describe('Integration-tests (repository), priority: entity RateLimits', () => {
             await dbTestSetup.addTestData();
             const testResponse = await demoLimitsService.updateDemoLimit();
             const mockResponse: DemoLimitsResponseDTO = {
-                demo_limit_id: 1,
+                demo_limit_id: 1 as DemoLimitId,
                 day: '2025-01-01',
                 count: 2,
                 last_modified: testTimestamp

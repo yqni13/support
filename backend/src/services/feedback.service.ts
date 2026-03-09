@@ -9,12 +9,11 @@ import * as RepoUtils from "../utils/repository.utils";
 import feedbackRatingModel from "../models/feedback-rating.model";
 import feedbackModel from "../models/feedback.model";
 import feedbackRepository from "../repositories/feedback.repository";
-import { Feedback } from "../repositories/interfaces/feedback.entity.interface";
+import { Feedback, FeedbackId } from "../repositories/interfaces/feedback.entity.interface";
 import feedbackRatingService from "./feedback-rating.service";
 
 class FeedbackService {
-
-    async getFeedbackById(id: number): Promise<FeedbackResponseDTO | null> {
+    async getFeedbackById(id: FeedbackId): Promise<FeedbackResponseDTO | null> {
         const result = await feedbackRepository.findById(id);
         return !result ? null : feedbackModel.toFeedbackResponseDTO(result);
     }
@@ -64,7 +63,7 @@ class FeedbackService {
         })
     }
 
-    async updateFeedbackReview(id: number): Promise<FeedbackResponseDTO | null> {
+    async updateFeedbackReview(id: FeedbackId): Promise<FeedbackResponseDTO | null> {
         const dto: FeedbackUpdateReviewDTO = feedbackModel.generateFeedbackUpdateReviewDTO();
         const result: Feedback | null = await feedbackRepository.updateReview(id, dto);
         return !result ? null : feedbackModel.toFeedbackResponseDTO(result);

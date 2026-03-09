@@ -1,8 +1,10 @@
 import { ClientsId } from "./clients.entity.interface";
 import { UsersId } from "./users.entity.interface";
 
+export type FeedbackId = number & { readonly brand: unique symbol };
+
 export interface Feedback {
-    feedback_id: number,
+    feedback_id: FeedbackId,
     client_id: ClientsId,
     user_id: UsersId,
     rating: number,

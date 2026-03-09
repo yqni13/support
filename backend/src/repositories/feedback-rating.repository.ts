@@ -5,6 +5,7 @@ import { DBQueryErrorException } from "../utils/exceptions/db.exception";
 import { IFindRepository } from "./interfaces/base.repository.interface";
 import { FeedbackRating } from "./interfaces/feedback-rating.entity.interface";
 import { FeedbackRatingUpdateDTO } from "../dtos/feedback-rating.dto";
+import { ClientsId } from "./interfaces/clients.entity.interface";
 
 class FeedbackRatingRepository implements 
 IFindRepository<FeedbackRating> {
@@ -14,7 +15,7 @@ IFindRepository<FeedbackRating> {
         this.table = 'feedback_ratings';
     }
 
-    async findById(id: string): Promise<FeedbackRating | null> {
+    async findById(id: ClientsId): Promise<FeedbackRating | null> {
         const filterColumn = 'client_id';
         const sql = `SELECT * FROM ${this.table} WHERE ${filterColumn} = $1;`;
         const value = [id];
@@ -92,7 +93,7 @@ IFindRepository<FeedbackRating> {
     /**
      * @description Repository function to call only when used within a transaction => needs PoolClient as param.
      */
-    async updateInTa(client: PoolClient, id: string, dto: FeedbackRatingUpdateDTO): Promise <FeedbackRating | null> {
+    async updateInTa(client: PoolClient, id: ClientsId, dto: FeedbackRatingUpdateDTO): Promise <FeedbackRating | null> {
         const filterColumn = 'client_id';
         const sql = `UPDATE ${this.table}
         SET count = count + $1, rating_sum = rating_sum + $2, last_modified = $3::timestamp

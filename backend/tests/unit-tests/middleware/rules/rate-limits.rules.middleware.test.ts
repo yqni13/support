@@ -22,9 +22,11 @@ import { UsersId } from "../../../../src/repositories/interfaces/users.entity.in
 
 // Ensure correct type by converting secret to number via unary + operator.
 import { secrets } from "../../../../src/utils/secrets.utils"
+import { TicketsId } from "../../../../src/repositories/interfaces/tickets.entity.interface";
 
 describe('Unit-tests (middleware), priority: implementation RateLimitsRule', () => {
 
+    const mockValidTicketId = mockId.tickets.valid[0] as TicketsId;
     const mockValidClientId = mockId.clients.valid[0] as ClientsId;
     const mockValidUserId = mockId.users.valid[0] as UsersId;
     let mockRetryAfter: string;
@@ -38,7 +40,7 @@ describe('Unit-tests (middleware), priority: implementation RateLimitsRule', () 
         };
         mockBurstContext = [
             {
-                ticket_id: 'valid_tickets_test_id_0',
+                ticket_id: mockValidTicketId,
                 client_id: mockValidClientId,
                 user_id: mockValidUserId,
                 status: TicketStatus.ISSUED,
@@ -50,7 +52,7 @@ describe('Unit-tests (middleware), priority: implementation RateLimitsRule', () 
                 created_on: '2025-01-01T14:00:04.000Z'
             },
             {
-                ticket_id: 'valid_tickets_test_id_1',
+                ticket_id: 'valid_tickets_test_id_1' as TicketsId,
                 client_id: mockValidClientId,
                 user_id: mockValidUserId,
                 status: TicketStatus.ISSUED,
@@ -86,7 +88,7 @@ describe('Unit-tests (middleware), priority: implementation RateLimitsRule', () 
                 const ruleCBL = new ClientsBurstLimitRule(3);
                 const mockContext = structuredClone(mockBurstContext);
                 mockContext.push({
-                    ticket_id: 'valid_tickets_test_id_2',
+                    ticket_id: 'valid_tickets_test_id_2' as TicketsId,
                     client_id: mockValidClientId,
                     user_id: mockValidUserId,
                     status: TicketStatus.ISSUED,
@@ -134,7 +136,7 @@ describe('Unit-tests (middleware), priority: implementation RateLimitsRule', () 
                 const ruleUBL = new UsersBurstLimitRule(3);
                 const mockContext = structuredClone(mockBurstContext);
                 mockContext.push({
-                    ticket_id: 'valid_tickets_test_id_2',
+                    ticket_id: 'valid_tickets_test_id_2' as TicketsId,
                     client_id: mockValidClientId,
                     user_id: mockValidUserId,
                     status: TicketStatus.ISSUED,

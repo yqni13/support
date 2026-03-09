@@ -40,7 +40,7 @@ describe('Unit-tests (repository), priority: entity FeedbackRating', () => {
             });
 
             test('Return data for existing entry, params: valid <id>', async () => {
-                const mockParam_id = mockId.clients.valid[0];
+                const mockParam_id = mockValidClientId;
                 const mockResult: FeedbackRating = structuredClone(mockData);
                 const mockClient = MockUtils.mapMockDbClient(mockResult);
                 const testFn = await feedbackRatingRepository.findById(mockParam_id);
@@ -54,7 +54,7 @@ describe('Unit-tests (repository), priority: entity FeedbackRating', () => {
             })
 
             test('Return null for non-existing entry, params: non-existing <id>', async () => {
-                const mockParam_id = mockId.clients.invalid[0];
+                const mockParam_id = mockId.clients.invalid[0] as ClientsId;
                 const mockResult = null;
                 const mockClient = MockUtils.mapMockDbClient(mockResult);
                 const testFn = await feedbackRatingRepository.findById(mockParam_id);
@@ -71,7 +71,7 @@ describe('Unit-tests (repository), priority: entity FeedbackRating', () => {
         describe('Testing invalid fn calls', () => {
 
             test('Throw DBQueryErrorException by catch-block', async () => {
-                const mockParam_id = mockId.clients.invalid[0];
+                const mockParam_id = mockId.clients.invalid[0] as ClientsId;
                 const mockErrorMsg = "DB ERROR ON SELECT QUERY";
                 const mockResult = null;
                 jest.spyOn(CommonUtils, "logError").mockReturnValue();
@@ -267,7 +267,7 @@ describe('Unit-tests (repository), priority: entity FeedbackRating', () => {
             })
 
             test('Return null for non-existing entry, params: invalid <id, dto>', async () => {
-                const mockParam_id = mockId.clients.invalid[0];
+                const mockParam_id = mockId.clients.invalid[0] as ClientsId;
                 const mockValues: any[] = [mockParam_dto.rating];
                 const mockResult: FeedbackRating | null = null;
 

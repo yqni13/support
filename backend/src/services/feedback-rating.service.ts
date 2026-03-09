@@ -8,15 +8,10 @@ import { PoolClient } from 'pg';
 import feedbackRatingModel from "../models/feedback-rating.model";
 import feedbackRatingRepository from "../repositories/feedback-rating.repository";
 import { FeedbackRating } from "../repositories/interfaces/feedback-rating.entity.interface";
+import { ClientsId } from "../repositories/interfaces/clients.entity.interface";
 
 class FeedbackRatingService {
-    private timeMapTargets: string[];
-
-    constructor() {
-        this.timeMapTargets = ['last_modified', 'created_on'];
-    }
-
-    async getExtendedFeedbackRatingById(id: string): Promise<FeedbackRatingExtendedResponseDTO | null> {
+    async getExtendedFeedbackRatingById(id: ClientsId): Promise<FeedbackRatingExtendedResponseDTO | null> {
         const result: FeedbackRating | null = await feedbackRatingRepository.findById(id);
         if(!result) {
             return null;
@@ -55,7 +50,7 @@ class FeedbackRatingService {
     /**
      * @description Service function to call only when used within a transaction => needs PoolClient as param.
      */
-    async updateFeedbackRatingInTa(client: PoolClient, id: string, dto: FeedbackRatingUpdateDTO): Promise<FeedbackRatingResponseDTO | null> {
+    async updateFeedbackRatingInTa(client: PoolClient, id: ClientsId, dto: FeedbackRatingUpdateDTO): Promise<FeedbackRatingResponseDTO | null> {
         dto = feedbackRatingModel.mapFeedbackRatingUpdateDTO(dto);
         const result: FeedbackRating | null = await feedbackRatingRepository.updateInTa(client, id, dto);
         if(!result) {

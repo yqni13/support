@@ -1,7 +1,7 @@
 import { PoolClient, QueryResult } from "pg";
 import { DBConnection } from "../configs/db";
 import { FeedbackFilterDTO, FeedbackResponseDTO, FeedbackUpdateReviewDTO } from "../dtos/feedback.dto";
-import { Feedback } from "./interfaces/feedback.entity.interface";
+import { Feedback, FeedbackId } from "./interfaces/feedback.entity.interface";
 import { DBQueryErrorException } from "../utils/exceptions/db.exception";
 import { logError } from "../utils/common.utils";
 import { mapFilteredQueryValues } from "../utils/repository.utils";
@@ -13,7 +13,7 @@ class FeedbackRepository {
         this.table = 'feedback_entries';
     }
 
-    async findById(id: number): Promise<Feedback | null> {
+    async findById(id: FeedbackId): Promise<Feedback | null> {
         const filterColumn = "feedback_id";
         const sql = `SELECT * FROM ${this.table} WHERE ${filterColumn} = $1;`;
         const value = [id];
@@ -51,7 +51,7 @@ class FeedbackRepository {
         }
     }
 
-    async updateReview(id: number, dto: FeedbackUpdateReviewDTO): Promise<Feedback | null> {
+    async updateReview(id: FeedbackId, dto: FeedbackUpdateReviewDTO): Promise<Feedback | null> {
         const filterColumn = "feedback_id";
             const sql = `UPDATE ${this.table}
             SET reviewed_on = $1::timestamp, last_modified = $2::timestamp

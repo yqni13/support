@@ -2,12 +2,13 @@ import { NextFunction, Request, Response } from "express";
 import { checkValidation } from "../middleware/validation.middleware";
 import feedbackRatingService from "../services/feedback-rating.service";
 import { FeedbackRatingExtendedResponseDTO, FeedbackRatingResponseDTO } from "../dtos/feedback-rating.dto";
+import { ClientsId } from "../repositories/interfaces/clients.entity.interface";
 
 class FeedbackRatingController {
     async getExtendedFeedbackRating(req: Request, res: Response, next: NextFunction) {
         try {
             checkValidation(req);
-            const id = req.params.id;
+            const id = req.params.id as ClientsId;
             const response: FeedbackRatingExtendedResponseDTO | null = await feedbackRatingService.getExtendedFeedbackRatingById(id);
             res.json(response);
         } catch(err: any) {
