@@ -46,7 +46,7 @@ class ClientsService {
     async createClient(dto: ClientsCreateDTO): Promise<ClientsCreateResponseDTO> {
         const clientsCreateObj = clientsModel.generateClientsCreateObj(dto);
         const result = await clientsRepository.create(clientsCreateObj.client);
-        return clientsModel.mapToCreateResponseDTO(result as Clients, clientsCreateObj.keyRaw);
+        return clientsModel.toClientsCreateResponseDTO(result as Clients, clientsCreateObj.keyRaw);
     }
 
     async updateClientFlag(id: ClientsId, dto: ClientsFlagUpdateDTO): Promise<ClientsFlagResponseDTO | null> {

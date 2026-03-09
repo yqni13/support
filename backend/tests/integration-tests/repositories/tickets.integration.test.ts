@@ -105,7 +105,7 @@ describe('Integration-tests (repository), priority: entity Tickets', () => {
 
             await dbTestSetup.addTestData();
             const testResponse = await request(app)
-                .get(`${apiUrl}/by-id/${testParam_id}`);
+                .get(`${apiUrl}/id/${testParam_id}`);
 
             expect(testResponse.statusCode).toBe(200);
             expect(testResponse.body).toMatchObject(testResult);
@@ -773,7 +773,7 @@ describe('Integration-tests (repository), priority: entity Tickets', () => {
                 };
             })
 
-            describe('Route: GET/by-id/:id', () => {
+            describe('Route: GET/id/:id', () => {
 
                 test('Params: <id>, validator: fn isUUID() by invalid id', async () => {
                     const testParam_id = 'invalid-id';
@@ -781,7 +781,7 @@ describe('Integration-tests (repository), priority: entity Tickets', () => {
                     testError['value'] = testParam_id;
 
                     const testResponse = await request(app)
-                        .get(`${apiUrl}/by-id/${testParam_id}`);
+                        .get(`${apiUrl}/id/${testParam_id}`);
 
                     expect(testResponse.statusCode).toBe(ErrorStatusCodes.InvalidPropertiesException);
                     expect(testResponse.body.headers.data).toEqual([testError]);

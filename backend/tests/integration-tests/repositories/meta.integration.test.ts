@@ -86,7 +86,7 @@ describe('Integration-tests (repository), priority: entity Meta', () => {
 
             await dbTestSetup.addTestData();
             const testResponse = await request(app)
-                .get(`${apiUrl}/by-id/${testParam_id}`);
+                .get(`${apiUrl}/id/${testParam_id}`);
 
             expect(testResponse.statusCode).toBe(200);
             expect(testResponse.body).toMatchObject(testResult)
@@ -112,7 +112,7 @@ describe('Integration-tests (repository), priority: entity Meta', () => {
 
             await dbTestSetup.addTestData();
             const testResponse = await request(app)
-                .get(`${apiUrl}/by-name/${testParam_name}`);
+                .get(`${apiUrl}/name/${testParam_name}`);
 
             expect(testResponse.statusCode).toBe(200);
             expect(testResponse.body).toMatchObject(testResult)
@@ -256,7 +256,7 @@ describe('Integration-tests (repository), priority: entity Meta', () => {
 
         describe('All routes, priority: express-validators, location: <params>', () => {
 
-            describe('Route: GET/by-id:id', () => {
+            describe('Route: GET/id:id', () => {
 
                 test('Params: <id>, validator: fn isInt() by string', async () => {
                     const testParam_id = 'invalid_test_id';
@@ -269,7 +269,7 @@ describe('Integration-tests (repository), priority: entity Meta', () => {
                     };
 
                     const testResponse = await request(app)
-                        .get(`${apiUrl}/by-id/${testParam_id}`);
+                        .get(`${apiUrl}/id/${testParam_id}`);
 
                     expect(testResponse.statusCode).toBe(ErrorStatusCodes.InvalidPropertiesException);
                     expect(testResponse.body.headers.data).toEqual([testError]);

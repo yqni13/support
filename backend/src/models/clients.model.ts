@@ -14,7 +14,7 @@ class ClientsModel {
         this.timeMapTargets = ['last_use', 'last_modified', 'created_on'];
     }
 
-    mapToCreateResponseDTO(data: Clients, apiKey: string): ClientsCreateResponseDTO {
+    toClientsCreateResponseDTO(data: Clients, apiKey: string): ClientsCreateResponseDTO {
         data = CommonUtils.mapObjTimestamps(data, this.timeMapTargets);
         return {
             client_id: data.client_id,

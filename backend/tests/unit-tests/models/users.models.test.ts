@@ -10,7 +10,7 @@ const mockTimestamp = '2025-01-03T14:00:03.000Z';
 
 describe('Unit-tests (model), priority: entity Users', () => {
 
-    describe('Priority: fn generateUser()', () => {
+    describe('Priority: fn generateUserEntity()', () => {
 
         describe('Testing valid fn calls', () => {
 
@@ -23,7 +23,7 @@ describe('Unit-tests (model), priority: entity Users', () => {
                 jest.spyOn(CommonUtils, "generateUUID").mockReturnValue(mockParam_id);
                 jest.spyOn(CommonUtils, "getTimestampUTC").mockReturnValue(mockTimestamp);
 
-                const testFn = usersModel.generateUser(mockParam_dto);
+                const testFn = usersModel.generateUserEntity(mockParam_dto);
                 const expectResult: Users = {
                     user_id: mockValidUserId,
                     email: mockParam_dto.email,

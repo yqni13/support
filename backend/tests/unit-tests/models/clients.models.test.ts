@@ -24,14 +24,14 @@ let mockData: Clients = {
 
 describe('Unit-tests (model), priority: entity Clients', () => {
 
-    describe('Priority: fn mapToCreateResponseDTO()', () => {
+    describe('Priority: fn toClientsCreateResponseDTO()', () => {
 
         describe('Testing valid fn calls', () => {
 
             test('Map timestamps of clients object, result: dto ClientsCreateResponseDTO', () => {
                 const mockParam_data: Clients = structuredClone(mockData);
 
-                const testFn = clientsModel.mapToCreateResponseDTO(mockParam_data, mockVar_apiKey.keyRaw);
+                const testFn = clientsModel.toClientsCreateResponseDTO(mockParam_data, mockVar_apiKey.keyRaw);
                 const expectResult: ClientsCreateResponseDTO = {
                     client_id: mockParam_data.client_id,
                     name: mockParam_data.name,

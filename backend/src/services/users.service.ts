@@ -38,7 +38,7 @@ class UsersService {
     }
 
     async createUser(dto: UsersCreateDTO): Promise<UsersResponseDTO> {
-        const user: Users = usersModel.generateUser(dto);
+        const user: Users = usersModel.generateUserEntity(dto);
         const result = await usersRepository.create(user);
         return CommonUtils.mapObjTimestamps<UsersResponseDTO>(result, this.timeMapTargets)
     }

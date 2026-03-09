@@ -15,7 +15,7 @@ const router = Router();
 
 // findById
 router.get(
-    '/by-id/:id',
+    '/id/:id',
     authAdmin(),
     byIdSchema,
     factory(metaController.getMetaById)
@@ -23,7 +23,7 @@ router.get(
 
 // findByName
 router.get(
-    '/by-name/:name',
+    '/name/:name',
     authAdmin(),
     byNameSchema,
     factory(metaController.getMetaByName)

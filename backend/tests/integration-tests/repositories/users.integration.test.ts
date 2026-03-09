@@ -62,7 +62,7 @@ describe('Integration-tests (repository), priority: entity Users', () => {
 
             await dbTestSetup.addTestData();
             const testResponse = await request(app)
-                .get(`${apiUrl}/by-id/${testParam_id}`);
+                .get(`${apiUrl}/id/${testParam_id}`);
 
             expect(testResponse.statusCode).toBe(200);
             expect(testResponse.body).toMatchObject(testResult);
@@ -81,7 +81,7 @@ describe('Integration-tests (repository), priority: entity Users', () => {
 
             await dbTestSetup.addTestData();
             const testResponse = await request(app)
-                .get(`${apiUrl}/by-email/${testParam_email}`);
+                .get(`${apiUrl}/email/${testParam_email}`);
 
             expect(testResponse.statusCode).toBe(200);
             expect(testResponse.body).toMatchObject(testResult);
@@ -265,7 +265,7 @@ describe('Integration-tests (repository), priority: entity Users', () => {
 
         describe('All routes, priority: express-validators, location: <params>', () => {
 
-            describe('Route: GET/by-id/:id', () => {
+            describe('Route: GET/id/:id', () => {
 
                 test('Params: <id>, validator: fn isUUID() by invalid id', async () => {
                     const testParam_id = 'invalid-id';
@@ -278,7 +278,7 @@ describe('Integration-tests (repository), priority: entity Users', () => {
                     }
 
                     const testResponse = await request(app)
-                        .get(`${apiUrl}/by-id/${testParam_id}`);
+                        .get(`${apiUrl}/id/${testParam_id}`);
 
                     expect(testResponse.statusCode).toBe(ErrorStatusCodes.InvalidPropertiesException);
                     expect(testResponse.body.headers.data).toEqual([testError]);

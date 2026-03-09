@@ -18,7 +18,7 @@ const mockTimestamp = '2025-01-01T14:00:04.000Z';
 
 describe('Unit-tests (model), priority: entity Tickets', () => {
 
-    describe('Priority: fn generateTicket()', () => {
+    describe('Priority: fn generateTicketEntity()', () => {
     
         let mockFile_pdf: Express.Multer.File;
         let mockFile_webp: Express.Multer.File;
@@ -68,7 +68,7 @@ describe('Unit-tests (model), priority: entity Tickets', () => {
                 jest.spyOn(CommonUtils, "generateUUID").mockReturnValue(mockParam_id);
                 jest.spyOn(CommonUtils, "getTimestampUTC").mockReturnValue(mockTimestamp);
 
-                const testFn = await ticketsModel.generateTicket(mockParam_dto, mockParam_files);
+                const testFn = await ticketsModel.generateTicketEntity(mockParam_dto, mockParam_files);
                 const expectResult: Tickets = {
                     ticket_id: mockParam_id,
                     client_id: mockParam_dto.client_id,
@@ -103,7 +103,7 @@ describe('Unit-tests (model), priority: entity Tickets', () => {
                 jest.spyOn(FilesService.prototype, 'uploadFiles').mockImplementation();
                 jest.spyOn(FilesService.prototype, 'getResourcePaths').mockReturnValue(mockPaths);
 
-                const testFn = await ticketsModel.generateTicket(mockParam_dto, mockParam_files);
+                const testFn = await ticketsModel.generateTicketEntity(mockParam_dto, mockParam_files);
                 const expectResult: Tickets = {
                     ticket_id: mockParam_id,
                     client_id: mockParam_dto.client_id,
@@ -142,7 +142,7 @@ describe('Unit-tests (model), priority: entity Tickets', () => {
                 jest.spyOn(FilesService.prototype, 'uploadFiles').mockImplementation();
                 jest.spyOn(FilesService.prototype, 'getResourcePaths').mockReturnValue(mockPaths);
 
-                const testFn = await ticketsModel.generateTicket(mockParam_dto, mockParam_files);
+                const testFn = await ticketsModel.generateTicketEntity(mockParam_dto, mockParam_files);
                 const expectResult: Tickets = {
                     ticket_id: mockParam_id,
                     client_id: mockParam_dto.client_id,

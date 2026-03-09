@@ -4,7 +4,7 @@ import * as CommonUtils from "../utils/common.utils";
 import { UserStatus } from "../utils/enums/user-status.enum";
 
 class UsersModel {
-    generateUser(dto: UsersCreateDTO): Users {
+    generateUserEntity(dto: UsersCreateDTO): Users {
         const timestamp = CommonUtils.getTimestampUTC();
         return {
             user_id: CommonUtils.generateUUID() as UsersId,
