@@ -22,9 +22,11 @@ jest.mock('../../../src/middleware/maintenance.middleware', () => ({
 
 import app from '../../../src/app';
 import { DBTestData } from "../../db-data.setup";
+import { ClientsId } from "../../../src/repositories/interfaces/clients.entity.interface";
 
 jest.setTimeout(60000);
 
+const mockValidClientId = mockId.clients.valid[0] as ClientsId;
 const testTimestamp = '2025-01-01T14:00:09.000Z';
 
 describe('Integration-tests (repository), priority: entity FeedbackRating', () => {
@@ -53,7 +55,7 @@ describe('Integration-tests (repository), priority: entity FeedbackRating', () =
     describe('Testing valid fn calls', () => {
 
         test('Repository process fn findById(), result: "SUCCESS"', async () => {
-            const testParam_id = mockId.clients.valid[0];
+            const testParam_id = mockValidClientId;
             const testResult: FeedbackRatingExtendedResponseDTO | null = {
                 client_id: testParam_id,
                 count: dbData_FeedbackRating[1],
@@ -89,7 +91,7 @@ describe('Integration-tests (repository), priority: entity FeedbackRating', () =
         test('Repository process fn findAll(), result: "SUCCESS"', async () => {
             const testResult: FeedbackRatingExtendedResponseDTO[] | null = [
                 {
-                    client_id: mockId.clients.valid[0],
+                    client_id: mockValidClientId,
                     count: dbData_FeedbackRating[1],
                     rating_sum: dbData_FeedbackRating[2],
                     rating_average: 4.2,

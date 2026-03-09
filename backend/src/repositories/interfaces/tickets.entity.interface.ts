@@ -2,11 +2,13 @@ import { DeviceOption } from "../../utils/enums/device-option.enum";
 import { Flag } from "../../utils/enums/flag.enum";
 import { TicketOption } from "../../utils/enums/ticket-option.enum";
 import { TicketStatus } from "../../utils/enums/ticket-status.enum";
+import { ClientsId } from "./clients.entity.interface";
+import { UsersId } from "./users.entity.interface";
 
 export interface Tickets {
     ticket_id: string,
-    client_id: string,
-    user_id: string,
+    client_id: ClientsId,
+    user_id: UsersId,
     status: TicketStatus,
     option: TicketOption,
     title: string,

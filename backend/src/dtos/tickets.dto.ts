@@ -1,3 +1,5 @@
+import { ClientsId } from "../repositories/interfaces/clients.entity.interface";
+import { UsersId } from "../repositories/interfaces/users.entity.interface";
 import { SingleOrArray } from "../utils/custom-types.utils";
 import { DeviceOption } from "../utils/enums/device-option.enum";
 import { Flag } from "../utils/enums/flag.enum";
@@ -5,14 +7,14 @@ import { TicketOption } from "../utils/enums/ticket-option.enum";
 import { TicketStatus } from "../utils/enums/ticket-status.enum";
 
 export interface TicketsIntervalDTO {
-    client_id?: string,
-    user_id?: string,
+    client_id?: ClientsId,
+    user_id?: UsersId,
     intervalTime: string
 }
 
 export interface TicketsCreateDTO {
-    client_id: string,
-    user_id: string,
+    client_id: ClientsId,
+    user_id: UsersId,
     option: TicketOption,
     title: string,
     message: string,
@@ -49,8 +51,8 @@ export interface TicketsUpdateDTO {
 }
 
 export interface TicketsFilterDTO {
-    client_id?: SingleOrArray<string>,
-    user_id?: SingleOrArray<string>,
+    client_id?: SingleOrArray<ClientsId>,
+    user_id?: SingleOrArray<UsersId>,
     title?: string,
     status?: SingleOrArray<TicketStatus>,
     option?: SingleOrArray<TicketOption>,
@@ -61,8 +63,8 @@ export interface TicketsFilterDTO {
 
 export interface TicketsResponseDTO {
     ticket_id: string,
-    client_id: string,
-    user_id: string,
+    client_id: ClientsId,
+    user_id: UsersId,
     status: TicketStatus,
     option: TicketOption,
     title: string,
@@ -78,9 +80,9 @@ export interface TicketsResponseDTO {
 
 export interface TicketsResponseExtendedDTO {
     ticket_id: string,
-    client_id: string,
+    client_id: ClientsId,
     client_name: string,
-    user_id: string,
+    user_id: UsersId,
     user_email: string,
     status: TicketStatus,
     option: TicketOption,

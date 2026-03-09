@@ -6,6 +6,8 @@ import { Feedback } from "../../../src/repositories/interfaces/feedback.entity.i
 import { DBConnection } from "../../../src/configs/db";
 import feedbackRepository from "../../../src/repositories/feedback.repository";
 import { FeedbackFilterDTO, FeedbackUpdateReviewDTO } from "../../../src/dtos/feedback.dto";
+import { UsersId } from "../../../src/repositories/interfaces/users.entity.interface";
+import { ClientsId } from "../../../src/repositories/interfaces/clients.entity.interface";
 
 jest.mock("../../../src/configs/db", () => {
     return {
@@ -18,8 +20,8 @@ jest.mock("../../../src/configs/db", () => {
 const mockTimestamp = '2025-01-01T14:00:08.000Z';
 const mockData: Feedback = {
     feedback_id: mockId.feedback.valid[0],
-    client_id: mockId.clients.valid[0],
-    user_id: mockId.users.valid[0],
+    client_id: mockId.clients.valid[0] as ClientsId,
+    user_id: mockId.users.valid[0] as UsersId,
     rating: 5,
     term_accepted: true,
     message: 'valid_feedback_test_message',
@@ -112,7 +114,9 @@ describe('Unit-tests (repository), priority: entity Feedback', () => {
             })
 
             test('Return null for non-existing entry, params: non-existing <user_id>', async () => {
-                const mockParam_dto = { user_id: [mockId.users.invalid[0], 'another_invalid_users_test_id'] };
+                const mockParam_dto = {
+                    user_id: [mockId.users.invalid[0], 'another_invalid_users_test_id'] as UsersId[]
+                };
                 const mockValues = mockParam_dto.user_id;
                 const mockResult: Feedback[] | null = null;
 

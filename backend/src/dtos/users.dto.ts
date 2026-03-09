@@ -1,6 +1,7 @@
 import { UserStatus } from "../utils/enums/user-status.enum";
 import { Flag } from "../utils/enums/flag.enum";
 import { SingleOrArray } from "../utils/custom-types.utils";
+import { UsersId } from "../repositories/interfaces/users.entity.interface";
 
 export interface UsersCreateDTO {
     email: string,
@@ -27,7 +28,7 @@ export interface UsersFilterDTO {
 }
 
 export interface UsersResponseDTO {
-    user_id: string,
+    user_id: UsersId,
     email: string,
     status: UserStatus,
     flag: Flag | null,

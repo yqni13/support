@@ -1,7 +1,10 @@
+import { ClientsId } from "./clients.entity.interface";
+import { UsersId } from "./users.entity.interface";
+
 export interface Feedback {
     feedback_id: number,
-    client_id: string,
-    user_id: string,
+    client_id: ClientsId,
+    user_id: UsersId,
     rating: number,
     term_accepted: boolean,
     message?: string,

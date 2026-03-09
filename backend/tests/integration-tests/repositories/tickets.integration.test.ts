@@ -22,8 +22,8 @@ import { CloudService } from "../../../src/services/cloud.service";
 import { TicketOption } from "../../../src/utils/enums/ticket-option.enum";
 import { DeviceOption } from "../../../src/utils/enums/device-option.enum";
 
-const testValidClientsId = mockId.clients.valid[0];
-const testValidUsersId = mockId.users.valid[0];
+const testValidClientId = mockId.clients.valid[0] as ClientsId;
+const testValidUserId = mockId.users.valid[0] as UsersId;
 const testTimestamp = '2025-01-01T14:00:04.000Z';
 
 jest.mock('../../../src/middleware/auth.admin.middleware', () => ({
@@ -31,13 +31,13 @@ jest.mock('../../../src/middleware/auth.admin.middleware', () => ({
 }));
 jest.mock('../../../src/middleware/auth.client.middleware', () => ({
     authClient: jest.fn(() => (req: Request, res: Response, next: NextFunction) => {
-        (req as any).apiClients = { client_id: testValidClientsId };
+        (req as any).apiClients = { client_id: testValidClientId };
         next();
     })
 }));
 jest.mock('../../../src/middleware/auth.user.middleware', () => ({
     authUser: jest.fn(() => (req: Request, res: Response, next: NextFunction) => {
-        (req as any).apiUsers = { user_id: testValidUsersId };
+        (req as any).apiUsers = { user_id: testValidUserId };
         next();
     })
 }));
@@ -49,6 +49,8 @@ jest.mock('../../../src/middleware/observe.middleware.ts', () => ({
 }))
 
 import app from '../../../src/app';
+import { UsersId } from "../../../src/repositories/interfaces/users.entity.interface";
+import { ClientsId } from "../../../src/repositories/interfaces/clients.entity.interface";
 
 jest.setTimeout(60000);
 
@@ -82,9 +84,9 @@ describe('Integration-tests (repository), priority: entity Tickets', () => {
             const testParam_id = mockId.tickets.valid[0];
             const testResult: TicketsResponseExtendedDTO = {
                 ticket_id: testParam_id,
-                client_id: testValidClientsId,
+                client_id: testValidClientId,
                 client_name: testClientsName,
-                user_id: testValidUsersId,
+                user_id: testValidUserId,
                 user_email: testUsersEmail,
                 status: TicketStatus.ISSUED,
                 option: TicketOption.SUPPORT,
@@ -111,8 +113,8 @@ describe('Integration-tests (repository), priority: entity Tickets', () => {
             const testResult: TicketsResponseDTO[] = [
                 {
                     ticket_id: mockId.tickets.valid[0],
-                    client_id: testValidClientsId,
-                    user_id: testValidUsersId,
+                    client_id: testValidClientId,
+                    user_id: testValidUserId,
                     status: TicketStatus.ISSUED,
                     option: TicketOption.SUPPORT,
                     title: 'test-title',
@@ -127,8 +129,8 @@ describe('Integration-tests (repository), priority: entity Tickets', () => {
                 },
                 {
                     ticket_id: mockId.tickets.valid[1],
-                    client_id: testValidClientsId,
-                    user_id: testValidUsersId,
+                    client_id: testValidClientId,
+                    user_id: testValidUserId,
                     status: TicketStatus.ISSUED,
                     option: TicketOption.SUPPORT,
                     title: 'test-title',
@@ -152,7 +154,7 @@ describe('Integration-tests (repository), priority: entity Tickets', () => {
 
         test('Repository process fn findByFilter(), params: <client_id> result: null', async () => {
             const testParam_dto: TicketsFilterDTO = {
-                client_id: mockId.tickets.invalid[0]
+                client_id: mockId.clients.invalid[0] as ClientsId
             };
             const testResult: TicketsResponseDTO[] | null = null;
 
@@ -167,14 +169,14 @@ describe('Integration-tests (repository), priority: entity Tickets', () => {
 
         test('Repository process fn findByFilter(), params: <user_id[], status> result: "SUCCESS"', async () => {
             const testParam_dto: TicketsFilterDTO = {
-                user_id: [testValidUsersId, mockId.tickets.invalid[0]],
+                user_id: [testValidUserId, mockId.users.invalid[0] as UsersId],
                 status: TicketStatus.ISSUED
             };
             const testResult: TicketsResponseDTO[] = [
                 {
                     ticket_id: mockId.tickets.valid[0],
-                    client_id: testValidClientsId,
-                    user_id: testValidUsersId,
+                    client_id: testValidClientId,
+                    user_id: testValidUserId,
                     status: TicketStatus.ISSUED,
                     option: TicketOption.SUPPORT,
                     title: 'test-title',
@@ -189,8 +191,8 @@ describe('Integration-tests (repository), priority: entity Tickets', () => {
                 },
                 {
                     ticket_id: mockId.tickets.valid[1],
-                    client_id: testValidClientsId,
-                    user_id: testValidUsersId,
+                    client_id: testValidClientId,
+                    user_id: testValidUserId,
                     status: TicketStatus.ISSUED,
                     option: TicketOption.SUPPORT,
                     title: 'test-title',
@@ -222,8 +224,8 @@ describe('Integration-tests (repository), priority: entity Tickets', () => {
             const testResult: TicketsResponseDTO[] = [
                 {
                     ticket_id: mockId.tickets.valid[0],
-                    client_id: testValidClientsId,
-                    user_id: testValidUsersId,
+                    client_id: testValidClientId,
+                    user_id: testValidUserId,
                     status: TicketStatus.ISSUED,
                     option: TicketOption.SUPPORT,
                     title: 'test-title',
@@ -238,8 +240,8 @@ describe('Integration-tests (repository), priority: entity Tickets', () => {
                 },
                 {
                     ticket_id: mockId.tickets.valid[1],
-                    client_id: testValidClientsId,
-                    user_id: testValidUsersId,
+                    client_id: testValidClientId,
+                    user_id: testValidUserId,
                     status: TicketStatus.ISSUED,
                     option: TicketOption.SUPPORT,
                     title: 'test-title',
@@ -271,8 +273,8 @@ describe('Integration-tests (repository), priority: entity Tickets', () => {
             const testResult: TicketsResponseDTO[] = [
                 {
                     ticket_id: mockId.tickets.valid[0],
-                    client_id: testValidClientsId,
-                    user_id: testValidUsersId,
+                    client_id: testValidClientId,
+                    user_id: testValidUserId,
                     status: TicketStatus.ISSUED,
                     option: TicketOption.SUPPORT,
                     title: 'test-title',
@@ -287,8 +289,8 @@ describe('Integration-tests (repository), priority: entity Tickets', () => {
                 },
                 {
                     ticket_id: mockId.tickets.valid[1],
-                    client_id: testValidClientsId,
-                    user_id: testValidUsersId,
+                    client_id: testValidClientId,
+                    user_id: testValidUserId,
                     status: TicketStatus.ISSUED,
                     option: TicketOption.SUPPORT,
                     title: 'test-title',
@@ -320,8 +322,8 @@ describe('Integration-tests (repository), priority: entity Tickets', () => {
             const testResult: TicketsResponseDTO[] = [
                 {
                     ticket_id: mockId.tickets.valid[0],
-                    client_id: testValidClientsId,
-                    user_id: testValidUsersId,
+                    client_id: testValidClientId,
+                    user_id: testValidUserId,
                     status: TicketStatus.ISSUED,
                     option: TicketOption.SUPPORT,
                     title: 'test-title',
@@ -336,8 +338,8 @@ describe('Integration-tests (repository), priority: entity Tickets', () => {
                 },
                 {
                     ticket_id: mockId.tickets.valid[1],
-                    client_id: testValidClientsId,
-                    user_id: testValidUsersId,
+                    client_id: testValidClientId,
+                    user_id: testValidUserId,
                     status: TicketStatus.ISSUED,
                     option: TicketOption.SUPPORT,
                     title: 'test-title',
@@ -393,8 +395,8 @@ describe('Integration-tests (repository), priority: entity Tickets', () => {
 
             const testResult: TicketsResponseDTO = {
                 ticket_id: testNewParam_ticket_id,
-                client_id: testValidClientsId,
-                user_id: testValidUsersId,
+                client_id: testValidClientId,
+                user_id: testValidUserId,
                 status: TicketStatus.ISSUED,
                 option: TicketOption.SUPPORT,
                 title: testParam_dto.title,
@@ -434,8 +436,8 @@ describe('Integration-tests (repository), priority: entity Tickets', () => {
 
             const testResult: TicketsResponseDTO = {
                 ticket_id: testNewParam_ticket_id,
-                client_id: testValidClientsId,
-                user_id: testValidUsersId,
+                client_id: testValidClientId,
+                user_id: testValidUserId,
                 status: TicketStatus.ISSUED,
                 option: TicketOption.SUPPORT,
                 title: testParam_dto.title,
@@ -492,8 +494,8 @@ describe('Integration-tests (repository), priority: entity Tickets', () => {
 
             const testResult: TicketsResponseDTO = {
                 ticket_id: testNewParam_ticket_id,
-                client_id: testValidClientsId,
-                user_id: testValidUsersId,
+                client_id: testValidClientId,
+                user_id: testValidUserId,
                 status: TicketStatus.ISSUED,
                 option: TicketOption.SUPPORT,
                 title: testParam_dto.title,
@@ -541,8 +543,8 @@ describe('Integration-tests (repository), priority: entity Tickets', () => {
                 info_os: 'Android 15',
                 info_device: DeviceOption.MOBILE,
                 ticket_id: testParam_id,
-                client_id: testValidClientsId,
-                user_id: testValidUsersId,
+                client_id: testValidClientId,
+                user_id: testValidUserId,
                 last_modified: mockTimestampNoPaths,
                 created_on: mockTimestampNoPaths
             };
@@ -578,8 +580,8 @@ describe('Integration-tests (repository), priority: entity Tickets', () => {
                 info_os: 'Windows 11',
                 info_device: DeviceOption.COMPUTER,
                 ticket_id: testParam_id,
-                client_id: testValidClientsId,
-                user_id: testValidUsersId,
+                client_id: testValidClientId,
+                user_id: testValidUserId,
                 last_modified: testTimestamp,
                 created_on: testTimestamp
             };
@@ -840,7 +842,7 @@ describe('Integration-tests (repository), priority: entity Tickets', () => {
 
                 test('Params: <client_id>, validator: fn isUUID() by invalid value', async () => {
                     let testParam_dto: TicketsFilterDTO = {
-                        client_id: [mockId.clients.valid[0], 'invalid-id']
+                        client_id: [mockId.clients.valid[0], 'invalid-id'] as ClientsId[]
                     }
                     const testError = [{
                         type: 'field',
@@ -860,7 +862,7 @@ describe('Integration-tests (repository), priority: entity Tickets', () => {
 
                 test('Params: <user_id>, validator: fn isUUID() by invalid value', async () => {
                     let testParam_dto: TicketsFilterDTO = {
-                        user_id: ['invalid-id-0', mockId.clients.valid[0], 'invalid-id-1']
+                        user_id: ['invalid-id-0', mockId.users.valid[0], 'invalid-id-1'] as UsersId[]
                     }
                     const testError = [
                         {

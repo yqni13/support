@@ -13,6 +13,8 @@ import { RateLimits } from "../../../src/repositories/interfaces/rate-limits.ent
 import { DemoLimits } from "../../../src/repositories/interfaces/demo-limits.entity.interface";
 import { DemoLimitsCountDTO, DemoLimitsResponseDTO, DemoLimitsUpdateDTO } from "../../../src/dtos/demo-limits.dto";
 import demoLimitsRepository from "../../../src/repositories/demo-limits.repository";
+import { ClientsId } from "../../../src/repositories/interfaces/clients.entity.interface";
+import { UsersId } from "../../../src/repositories/interfaces/users.entity.interface";
 
 jest.mock("../../../src/configs/db", () => {
     return {
@@ -24,8 +26,8 @@ jest.mock("../../../src/configs/db", () => {
 
 const mockTimestamp = '2025-01-01T14:00:05.000Z';
 const mockDate = '2025-01-01';
-const mockValidClientsId = mockId.clients.valid[0];
-const mockValidUsersId = mockId.users.valid[0];
+const mockValidClientsId = mockId.clients.valid[0] as ClientsId;
+const mockValidUsersId = mockId.users.valid[0] as UsersId;
 const expectExceptionResult = DBQueryErrorException;
 const mockBoolean = false;
 
@@ -233,8 +235,8 @@ describe('Unit-tests (repository), priority: entity RateLimits', () => {
 
                 test('Throw DBQueryErrorException by catch-block', async () => {
                     const mockParam_dto: RateLimitsUpdateDTO = {
-                        client_id: mockId.clients.invalid[0],
-                        user_id: mockId.users.invalid[0],
+                        client_id: mockValidClientsId,
+                        user_id: mockValidUsersId,
                         day: '2025-01-01',
                         last_modified: mockTimestamp
                     };

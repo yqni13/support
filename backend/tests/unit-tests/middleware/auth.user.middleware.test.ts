@@ -1,7 +1,7 @@
 import { default as mockId } from "../../mock-data/id.mock-data.json";
 import * as CommonUtils from "../../../src/utils/common.utils";
 import { authUser } from "../../../src/middleware/auth.user.middleware";
-import { Users } from "../../../src/repositories/interfaces/users.entity.interface";
+import { Users, UsersId } from "../../../src/repositories/interfaces/users.entity.interface";
 import { UserStatus } from "../../../src/utils/enums/user-status.enum";
 import usersService from "../../../src/services/users.service";
 import { UsersResponseDTO } from "../../../src/dtos/users.dto";
@@ -10,6 +10,7 @@ import { Flag } from "../../../src/utils/enums/flag.enum";
 
 describe('Unit-tests (middleware), priority: fn authUser()', () => {
 
+    const mockValidUserId = mockId.users.valid[0] as UsersId;
     const mockTimestamp = '2025-01-01T14:00:00.000Z';
     const res: any = {};
     const next = jest.fn();
@@ -22,7 +23,7 @@ describe('Unit-tests (middleware), priority: fn authUser()', () => {
         test('Verfiy user, params: valid <user_email> for existing user', async () => {
             const mockUserEmail = 'valid_user@test.com';
             const mockUser: Users = {
-                user_id: mockId.users.valid[0],
+                user_id: mockValidUserId,
                 email: mockUserEmail,
                 status: UserStatus.ACTIVE,
                 flag: null,
@@ -47,7 +48,7 @@ describe('Unit-tests (middleware), priority: fn authUser()', () => {
             const mockUserEmail = 'non-existing-user@test.com';
             const mockUser: Users | null = null;
             const mockNewUser: UsersResponseDTO = {
-                user_id: mockId.users.valid[0],
+                user_id: mockValidUserId,
                 email: mockUserEmail,
                 status: UserStatus.ACTIVE,
                 flag: null,
@@ -75,7 +76,7 @@ describe('Unit-tests (middleware), priority: fn authUser()', () => {
         test('Verify user, error: InvalidUsersException', async () => {
             const mockUserEmail = 'valid-user@test.com';
             const mockUser: Users = {
-                user_id: mockId.users.valid[0],
+                user_id: mockValidUserId,
                 email: mockUserEmail,
                 status: UserStatus.ACTIVE,
                 flag: Flag.ERROR,
@@ -99,7 +100,7 @@ describe('Unit-tests (middleware), priority: fn authUser()', () => {
         test('Verify user, error: BlockedUsersException', async () => {
             const mockUserEmail = 'valid-user@test.com';
             const mockUser: Users = {
-                user_id: mockId.users.valid[0],
+                user_id: mockValidUserId,
                 email: mockUserEmail,
                 status: UserStatus.BLACKLISTED,
                 flag: Flag.ERROR,

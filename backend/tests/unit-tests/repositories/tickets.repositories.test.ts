@@ -9,6 +9,8 @@ import ticketsRepository from "../../../src/repositories/tickets.repository";
 import { TicketsFilterDTO, TicketsIntervalDTO, TicketsResponseDTO, TicketsResponseExtendedDTO, TicketsUpdateDTO } from "../../../src/dtos/tickets.dto";
 import { TicketOption } from "../../../src/utils/enums/ticket-option.enum";
 import { DeviceOption } from "../../../src/utils/enums/device-option.enum";
+import { UsersId } from "../../../src/repositories/interfaces/users.entity.interface";
+import { ClientsId } from "../../../src/repositories/interfaces/clients.entity.interface";
 
 jest.mock("../../../src/configs/db", () => {
     return {
@@ -19,10 +21,12 @@ jest.mock("../../../src/configs/db", () => {
 });
 
 const mockTimestamp = '2025-01-01T14:00:04.000Z';
+const mockValidClientId = mockId.clients.valid[0] as ClientsId;
+const mockValidUserId = mockId.users.valid[0] as UsersId;
 const mockData: Tickets = {
     ticket_id: mockId.tickets.valid[0],
-    client_id: mockId.clients.valid[0],
-    user_id: mockId.users.valid[0],
+    client_id: mockValidClientId,
+    user_id: mockValidUserId,
     status: TicketStatus.ISSUED,
     option: TicketOption.SUPPORT,
     title: 'test-title',
@@ -109,8 +113,8 @@ describe('Unit-tests (repository), priority: entity Tickets', () => {
                 const mockData_entry0: TicketsResponseDTO = structuredClone(mockData);
                 const mockData_entry1: TicketsResponseDTO = {
                     ticket_id: 'another_valid_tickets_test_id',
-                    client_id: 'another_valid_clients_test_id',
-                    user_id: 'another_valid_users_test_id',
+                    client_id: 'another_valid_clients_test_id' as ClientsId,
+                    user_id: 'another_valid_users_test_id' as UsersId,
                     status: TicketStatus.ACTIVE,
                     option: TicketOption.SUPPORT,
                     title: 'another-test-title',
@@ -170,26 +174,22 @@ describe('Unit-tests (repository), priority: entity Tickets', () => {
 
             let sql: string;
             let mockTimestamp_now: Date;
-            let mockClientId: string;
-            let mockUserId: string;
             beforeEach(() => {
                 sql = `SELECT`;
                 mockTimestamp_now = new Date('2025-01-01T14:01:50.000Z');
-                mockClientId = mockId.clients.valid[0];
-                mockUserId = mockId.users.valid[0];
             });
 
             test('Return data for existing entry, params: <client_id>', async () => {
                 const mockParam_dto: TicketsIntervalDTO = {
-                    client_id: mockClientId,
+                    client_id: mockValidClientId,
                     intervalTime: '1 minute'
                 };
                 const mockResult: TicketsResponseDTO[] = [
                     mockData,
                     {
                         ticket_id: 'another_valid_tickets_id',
-                        client_id: mockClientId,
-                        user_id: 'another_valid_users_id',
+                        client_id: mockValidClientId,
+                        user_id: 'another_valid_users_id' as UsersId,
                         status: TicketStatus.ACTIVE,
                         option: TicketOption.SUPPORT,
                         title: 'valid-test-title',
@@ -211,21 +211,21 @@ describe('Unit-tests (repository), priority: entity Tickets', () => {
                 expect(DBConnection.getInstance).toHaveBeenCalled();
                 expect(mockClient.query).toHaveBeenCalledWith(
                     expect.stringContaining(sql),
-                    expect.arrayContaining([mockClientId, mockTimestamp_now, mockParam_dto.intervalTime])
+                    expect.arrayContaining([mockValidClientId, mockTimestamp_now, mockParam_dto.intervalTime])
                 );
             })
 
             test('Return data for existing entry, params: <user_id>', async () => {
                 const mockParam_dto: TicketsIntervalDTO = {
-                    user_id: mockUserId,
+                    user_id: mockValidUserId,
                     intervalTime: '1 minute'
                 };
                 const mockResult: TicketsResponseDTO[] = [
                     mockData,
                     {
                         ticket_id: 'another_valid_tickets_id',
-                        client_id: 'another_valid_client_id',
-                        user_id: mockUserId,
+                        client_id: 'another_valid_client_id' as ClientsId,
+                        user_id: mockValidUserId,
                         status: TicketStatus.ACTIVE,
                         option: TicketOption.SUPPORT,
                         title: 'valid-test-title',
@@ -247,13 +247,13 @@ describe('Unit-tests (repository), priority: entity Tickets', () => {
                 expect(DBConnection.getInstance).toHaveBeenCalled();
                 expect(mockClient.query).toHaveBeenCalledWith(
                     expect.stringContaining(sql),
-                    expect.arrayContaining([mockUserId, mockTimestamp_now, mockParam_dto.intervalTime])
+                    expect.arrayContaining([mockValidUserId, mockTimestamp_now, mockParam_dto.intervalTime])
                 );
             })
 
             test('Return null for existing entry beyond time interval', async () => {
                 const mockParam_dto: TicketsIntervalDTO = {
-                    client_id: mockClientId,
+                    client_id: mockValidClientId,
                     intervalTime: '1 minute'
                 };
                 const mockResult = null;
@@ -266,7 +266,7 @@ describe('Unit-tests (repository), priority: entity Tickets', () => {
                 expect(DBConnection.getInstance).toHaveBeenCalled();
                 expect(mockClient.query).toHaveBeenCalledWith(
                     expect.stringContaining(sql),
-                    expect.arrayContaining([mockClientId, mockTimestamp_now, mockParam_dto.intervalTime])
+                    expect.arrayContaining([mockValidClientId, mockTimestamp_now, mockParam_dto.intervalTime])
                 );
             })
         })
@@ -275,7 +275,7 @@ describe('Unit-tests (repository), priority: entity Tickets', () => {
 
             test('Throw DBQueryErrorException by catch-block', async () => {
                 const mockParam_dto = {
-                    user_id: mockId.users.valid[0],
+                    user_id: mockValidUserId,
                     intervalTime: '1 minute'
                 };
                 const mockErrorMsg = "DB ERROR ON SELECT QUERY";
@@ -317,7 +317,9 @@ describe('Unit-tests (repository), priority: entity Tickets', () => {
             })
 
             test('Return null for non-existing entry, params: non-existing <user_id>', async () => {
-                const mockParam_dto = { user_id: ['non-existing_users_test_id_0', 'non-existing_users_test_id_1'] };
+                const mockParam_dto = {
+                    user_id: ['non-existing_users_test_id_0', 'non-existing_users_test_id_1'] as UsersId[] 
+                };
                 const mockValues = mockParam_dto.user_id;
                 const mockResult: Tickets[] | null = null;
 
@@ -352,8 +354,8 @@ describe('Unit-tests (repository), priority: entity Tickets', () => {
 
         const mockParam_entity: Tickets = {
             ticket_id: mockId.tickets.new[0],
-            client_id: mockId.clients.valid[0],
-            user_id: mockId.users.valid[0],
+            client_id: mockValidClientId,
+            user_id: mockValidUserId,
             status: TicketStatus.ISSUED,
             option: TicketOption.SUPPORT,
             title: 'new-test-title',

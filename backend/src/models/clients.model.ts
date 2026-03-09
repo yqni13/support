@@ -2,7 +2,7 @@ import {
     ClientsCreateDTO,
     ClientsCreateResponseDTO,
 } from "../dtos/clients.dto";
-import { Clients } from "../repositories/interfaces/clients.entity.interface";
+import { Clients, ClientsId } from "../repositories/interfaces/clients.entity.interface";
 import crypto from 'crypto';
 import * as CommonUtils from "../utils/common.utils";
 import { ApiKeyStatus } from "../utils/enums/api-key-status.enum";
@@ -43,7 +43,7 @@ class ClientsModel {
     }
 
     generateClientsCreateObj(dto: ClientsCreateDTO): { client: Clients, keyRaw: string } {
-        const id = CommonUtils.generateUUID();
+        const id = CommonUtils.generateUUID() as ClientsId;
         const keyObj = this._generateApiKeyObj();
         const timestamp = CommonUtils.getTimestampUTC();
         const client: Clients = {

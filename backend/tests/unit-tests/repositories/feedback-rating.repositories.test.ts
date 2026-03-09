@@ -6,6 +6,7 @@ import { default as mockId } from "../../mock-data/id.mock-data.json";
 import feedbackRatingRepository from "../../../src/repositories/feedback-rating.repository";
 import { DBConnection } from "../../../src/configs/db";
 import { FeedbackRatingUpdateDTO } from "../../../src/dtos/feedback-rating.dto";
+import { ClientsId } from "../../../src/repositories/interfaces/clients.entity.interface";
 
 jest.mock("../../../src/configs/db", () => {
     return {
@@ -15,9 +16,10 @@ jest.mock("../../../src/configs/db", () => {
     }
 });
 
+const mockValidClientId = mockId.clients.valid[0] as ClientsId;
 const mockTimestamp = '2025-01-01T14:00:09.000Z';
 const mockData: FeedbackRating = {
-    client_id: mockId.clients.valid[0],
+    client_id: mockValidClientId,
     count: 16,
     rating_sum: 67,
     last_modified: mockTimestamp,
@@ -146,7 +148,7 @@ describe('Unit-tests (repository), priority: entity FeedbackRating', () => {
             test('Return data for multiple existing entries', async () => {
                 const mockData_entry0: FeedbackRating = structuredClone(mockData);
                 const mockData_entry1: FeedbackRating = {
-                    client_id: 'another_clients_test_id',
+                    client_id: 'another_clients_test_id' as ClientsId,
                     count: 5,
                     rating_sum: 19,
                     last_modified: mockTimestamp,
@@ -201,7 +203,7 @@ describe('Unit-tests (repository), priority: entity FeedbackRating', () => {
         beforeEach(() => {
             sql = `INSERT`;
             mockParam_entity = {
-                client_id: mockId.clients.new[0],
+                client_id: mockValidClientId,
                 count: 0,
                 rating_sum: 0,
                 last_modified: mockTimestamp,

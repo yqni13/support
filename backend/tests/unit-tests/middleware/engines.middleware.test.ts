@@ -11,20 +11,21 @@ import { default as mockId } from "../../mock-data/id.mock-data.json";
 
 // Ensure correct type by converting secret to number via unary + operator.
 import { secrets } from "../../../src/utils/secrets.utils";
+import { ClientsId } from "../../../src/repositories/interfaces/clients.entity.interface";
+import { UsersId } from "../../../src/repositories/interfaces/users.entity.interface";
 
 describe('Unit-tests (middleware), priority: class RateLimitsEngine', () => {
 
+    const mockValidClientId = mockId.clients.valid[0] as ClientsId;
+    const mockValidUserId = mockId.users.valid[0] as UsersId;
+
     describe('Testing valid fn calls', () => {
 
-        let mockValidClientsId: string;
-        let mockValidUsersId: string;
         let mockParam_data: RateLimitsData;
         beforeEach(() => {
-            mockValidClientsId = mockId.clients.valid[0],
-            mockValidUsersId = mockId.users.valid[0];
             mockParam_data = {
-                client_id: mockValidClientsId,
-                user_id: mockValidUsersId
+                client_id: mockValidClientId,
+                user_id: mockValidUserId
             };
         });
 
@@ -57,7 +58,7 @@ describe('Unit-tests (middleware), priority: class RateLimitsEngine', () => {
                     retryAfter: '2025-01-02T00.00.01.000Z',
                     penalty: {
                         type: Violation.CLIENTSFLAG,
-                        id: mockValidClientsId,
+                        id: mockValidClientId,
                         penaltyValue: null
                     }
                 };
@@ -89,7 +90,7 @@ describe('Unit-tests (middleware), priority: class RateLimitsEngine', () => {
                 const engine = new RateLimitsEngine([rule], count);
 
                 const mockResponse = null;
-                const testFn = await engine.process({ client_id: 'demo', user_id: 'demo' });
+                const testFn = await engine.process({ client_id: 'demo' as ClientsId, user_id: 'demo' as UsersId });
 
                 expect(testFn).toBe(mockResponse);
             })
@@ -107,7 +108,7 @@ describe('Unit-tests (middleware), priority: class RateLimitsEngine', () => {
                 const engine = new RateLimitsEngine([rule], count);
 
                 const mockResponse = response;
-                const testFn = await engine.process({ client_id: 'demo', user_id: 'demo' });
+                const testFn = await engine.process({ client_id: 'demo' as ClientsId, user_id: 'demo' as UsersId });
 
                 expect(testFn).toBe(mockResponse);
             })

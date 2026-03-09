@@ -9,6 +9,7 @@ import {
 import { TicketsResponseDTO } from "../../../../src/dtos/tickets.dto";
 import { RateLimitsData, RateLimitsResponse } from "../../../../src/middleware/interfaces/rate-limits.interface.middleware";
 import * as CommonUtils from "../../../../src/utils/common.utils";
+import { default as mockId } from "../../../mock-data/id.mock-data.json";
 import ticketsService from "../../../../src/services/tickets.service";
 import { TicketStatus } from "../../../../src/utils/enums/ticket-status.enum";
 import rateLimitsService from "../../../../src/services/rate-limits.service";
@@ -16,30 +17,33 @@ import demoLimitsService from "../../../../src/services/demo-limits.service";
 import { Violation } from "../../../../src/utils/enums/violations.enum";
 import { MaintenanceMode } from "../../../../src/utils/enums/maintenance-mode.enum";
 import { TicketOption } from "../../../../src/utils/enums/ticket-option.enum";
+import { ClientsId } from "../../../../src/repositories/interfaces/clients.entity.interface";
+import { UsersId } from "../../../../src/repositories/interfaces/users.entity.interface";
 
 // Ensure correct type by converting secret to number via unary + operator.
 import { secrets } from "../../../../src/utils/secrets.utils"
 
 describe('Unit-tests (middleware), priority: implementation RateLimitsRule', () => {
 
-    const mockValidClientsId = 'valid_clients_test_id';
-    const mockValidUsersId = 'valid_users_test_id';
+    const mockValidClientId = mockId.clients.valid[0] as ClientsId;
+    const mockValidUserId = mockId.users.valid[0] as UsersId;
     let mockRetryAfter: string;
     let mockParam_data: RateLimitsData;
     let mockBurstContext: TicketsResponseDTO[];
     beforeEach(() => {
         mockRetryAfter = '2025-01-02T00:00:01.000Z';
         mockParam_data = {
-            client_id: mockValidClientsId,
-            user_id: mockValidUsersId
+            client_id: mockValidClientId,
+            user_id: mockValidUserId
         };
         mockBurstContext = [
             {
                 ticket_id: 'valid_tickets_test_id_0',
-                client_id: mockValidClientsId,
-                user_id: mockValidUsersId,
+                client_id: mockValidClientId,
+                user_id: mockValidUserId,
                 status: TicketStatus.ISSUED,
                 option: TicketOption.SUPPORT,
+                title: 'test_title_0',
                 message: 'test_message_0',
                 flag: null,
                 last_modified: '2025-01-01T14:00:04.000Z',
@@ -47,10 +51,11 @@ describe('Unit-tests (middleware), priority: implementation RateLimitsRule', () 
             },
             {
                 ticket_id: 'valid_tickets_test_id_1',
-                client_id: mockValidClientsId,
-                user_id: mockValidUsersId,
+                client_id: mockValidClientId,
+                user_id: mockValidUserId,
                 status: TicketStatus.ISSUED,
                 option: TicketOption.SUPPORT,
+                title: 'test_title_1',
                 message: 'test_message_1',
                 flag: null,
                 last_modified: '2025-01-01T14:00:11.000Z',
@@ -82,10 +87,11 @@ describe('Unit-tests (middleware), priority: implementation RateLimitsRule', () 
                 const mockContext = structuredClone(mockBurstContext);
                 mockContext.push({
                     ticket_id: 'valid_tickets_test_id_2',
-                    client_id: mockValidClientsId,
-                    user_id: mockValidUsersId,
+                    client_id: mockValidClientId,
+                    user_id: mockValidUserId,
                     status: TicketStatus.ISSUED,
                     option: TicketOption.SUPPORT,
+                    title: 'test_title_2',
                     message: 'test_message_2',
                     flag: null,
                     last_modified: '2025-01-01T14:00:23.000Z',
@@ -129,10 +135,11 @@ describe('Unit-tests (middleware), priority: implementation RateLimitsRule', () 
                 const mockContext = structuredClone(mockBurstContext);
                 mockContext.push({
                     ticket_id: 'valid_tickets_test_id_2',
-                    client_id: mockValidClientsId,
-                    user_id: mockValidUsersId,
+                    client_id: mockValidClientId,
+                    user_id: mockValidUserId,
                     status: TicketStatus.ISSUED,
                     option: TicketOption.SUPPORT,
+                    title: 'test_title_2',
                     message: 'test_message_2',
                     flag: null,
                     last_modified: '2025-01-01T14:00:23.000Z',
@@ -196,7 +203,7 @@ describe('Unit-tests (middleware), priority: implementation RateLimitsRule', () 
                     retryAfter: mockRetryAfter,
                     penalty: {
                         type: Violation.CLIENTSFLAG,
-                        id: 'valid_clients_test_id',
+                        id: mockValidClientId,
                         penaltyValue: null
                     }
                 };
@@ -250,7 +257,7 @@ describe('Unit-tests (middleware), priority: implementation RateLimitsRule', () 
                     retryAfter: mockRetryAfter,
                     penalty: {
                         type: Violation.USERSFLAG,
-                        id: 'valid_users_test_id',
+                        id: mockValidUserId,
                         penaltyValue: null
                     }
                 };

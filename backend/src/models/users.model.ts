@@ -1,5 +1,5 @@
 import { UsersCreateDTO } from "../dtos/users.dto";
-import { Users } from "../repositories/interfaces/users.entity.interface";
+import { Users, UsersId } from "../repositories/interfaces/users.entity.interface";
 import * as CommonUtils from "../utils/common.utils";
 import { UserStatus } from "../utils/enums/user-status.enum";
 
@@ -7,7 +7,7 @@ class UsersModel {
     generateUser(dto: UsersCreateDTO): Users {
         const timestamp = CommonUtils.getTimestampUTC();
         return {
-            user_id: CommonUtils.generateUUID(),
+            user_id: CommonUtils.generateUUID() as UsersId,
             email: dto.email,
             status: UserStatus.ACTIVE,
             flag: null,

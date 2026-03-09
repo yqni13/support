@@ -6,7 +6,7 @@ import { ErrorStatusCodes } from '../../../src/utils/errorStatusCodes.utils';
 import { DBTestSetup } from "../../db-container.setup";
 import { runMigrations } from '../../db-migrations.setup';
 import { UsersUpdateDTO, UsersFilterDTO, UsersResponseDTO, UsersCreateDTO, UsersFlagUpdateDTO } from "../../../src/dtos/users.dto";
-import { Users } from "../../../src/repositories/interfaces/users.entity.interface";
+import { Users, UsersId } from "../../../src/repositories/interfaces/users.entity.interface";
 import { UserStatus } from "../../../src/utils/enums/user-status.enum";
 import { Flag } from "../../../src/utils/enums/flag.enum";
 import { default as mockId } from "../../mock-data/id.mock-data.json";
@@ -23,6 +23,8 @@ jest.mock('../../../src/middleware/maintenance.middleware', () => ({
 import app from '../../../src/app';
 
 jest.setTimeout(60000);
+
+const mockValidUserId = mockId.users.valid[0] as UsersId;
 const testTimestamp = '2025-01-01T14:00:03.000Z';
 
 describe('Integration-tests (repository), priority: entity Users', () => {
@@ -48,7 +50,7 @@ describe('Integration-tests (repository), priority: entity Users', () => {
     describe('Testing valid fn calls', () => {
 
         test('Repository process fn findById(), result: "SUCCESS"', async () => {
-            const testParam_id = mockId.users.valid[0];
+            const testParam_id = mockValidUserId;
             const testResult: UsersResponseDTO = {
                 user_id: testParam_id,
                 email: 'max.mustermann@yqni13.com',
@@ -69,7 +71,7 @@ describe('Integration-tests (repository), priority: entity Users', () => {
         test('Repository process fn findByEmail(), result: "SUCCESS"', async () => {
             const testParam_email = 'max.mustermann@yqni13.com';
             const testResult: UsersResponseDTO = {
-                user_id: mockId.users.valid[0],
+                user_id: mockValidUserId,
                 email: testParam_email,
                 status: UserStatus.ACTIVE,
                 flag: null,
@@ -86,10 +88,10 @@ describe('Integration-tests (repository), priority: entity Users', () => {
         })
 
         test('Repository process fn findAll(), result: "SUCCESS"', async () => {
-            const testParam_id = mockId.users.valid[0];
+            const testParam_id = mockValidUserId;
             const testResult: Users[] = [
                 {
-                    user_id: mockId.users.valid[1],
+                    user_id: mockId.users.valid[1] as UsersId,
                     email: 'aurora.otsuki@yqni13.com',
                     status: UserStatus.ACTIVE,
                     flag: null,
@@ -136,7 +138,7 @@ describe('Integration-tests (repository), priority: entity Users', () => {
                 status: UserStatus.ACTIVE
             };
             const testResult: UsersResponseDTO[] = [{
-                user_id: mockId.users.valid[0],
+                user_id: mockValidUserId,
                 email: 'max.mustermann@yqni13.com',
                 status: UserStatus.ACTIVE,
                 flag: null,
@@ -161,7 +163,7 @@ describe('Integration-tests (repository), priority: entity Users', () => {
                 last_modified: ['2024-12-01T10:00:00.000Z', '2025-12-01T14:00:00.000Z']
             };
             const testResult: UsersResponseDTO[] = [{
-                user_id: mockId.users.valid[0],
+                user_id: mockValidUserId,
                 email: 'max.mustermann@yqni13.com',
                 status: UserStatus.ACTIVE,
                 flag: null,
@@ -181,7 +183,7 @@ describe('Integration-tests (repository), priority: entity Users', () => {
         })
 
         test('Repository process fn create(), result: "SUCCESS"', async () => {
-            const testParam_id = mockId.users.new[0];
+            const testParam_id = mockId.users.new[0] as UsersId;
             const testParam_dto: UsersCreateDTO = {
                 email: 'new-user@test.com'
             };
@@ -234,7 +236,7 @@ describe('Integration-tests (repository), priority: entity Users', () => {
         })
 
         test('Repository process fn updateFlag(), result: "SUCCESS"', async () => {
-            const testParam_id = mockId.users.valid[0];
+            const testParam_id = mockValidUserId;
             const testParam_dto: UsersFlagUpdateDTO = {
                 flag: Flag.WARNING
             };

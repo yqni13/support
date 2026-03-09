@@ -1,6 +1,7 @@
 import { QueryResult } from "pg";
 import { DBConnection } from "../src/configs/db";
 import { NextFunction, Request, Response } from "express";
+import { UsersId } from "../src/repositories/interfaces/users.entity.interface";
 
 type MockClient = {
     query: jest.Mock
@@ -50,7 +51,7 @@ export function injectTestClientId(clientId: string) {
 /**
  * @description Used in combination with createTestApp() to mock user authentication for flexible testing.
  */
-export function injectTestUserId(userId: string) {
+export function injectTestUserId(userId: UsersId) {
     return function (req: Request, res: Response, next: NextFunction) {
         (req as any).apiUsers = { user_id: userId };
         next();

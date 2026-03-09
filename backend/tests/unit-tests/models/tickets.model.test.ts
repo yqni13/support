@@ -8,7 +8,11 @@ import { Readable } from 'stream';
 import { FilesService } from "../../../src/services/files.service";
 import { TicketOption } from "../../../src/utils/enums/ticket-option.enum";
 import { PermissionException } from "../../../src/utils/exceptions/auth.exception";
+import { ClientsId } from "../../../src/repositories/interfaces/clients.entity.interface";
+import { UsersId } from "../../../src/repositories/interfaces/users.entity.interface";
 
+const mockValidClientId = mockId.clients.valid[0] as ClientsId;
+const mockValidUserId = mockId.users.valid[0] as UsersId;
 const mockTimestamp = '2025-01-01T14:00:04.000Z';
 
 describe('Unit-tests (model), priority: entity Tickets', () => {
@@ -52,8 +56,8 @@ describe('Unit-tests (model), priority: entity Tickets', () => {
             test('Generate new object, priority: no files', async () => {
                 const mockParam_id = mockId.tickets.new[0];
                 const mockParam_dto: TicketsCreateDTO = {
-                    client_id: mockId.clients.valid[0],
-                    user_id: mockId.users.valid[0],
+                    client_id: mockValidClientId,
+                    user_id: mockValidUserId,
                     option: TicketOption.SUPPORT,
                     title: 'test-title',
                     message: 'test-message'
@@ -83,8 +87,8 @@ describe('Unit-tests (model), priority: entity Tickets', () => {
             test('Generate new object, priority: single file', async () => {
                 const mockParam_id = mockId.tickets.new[0];
                 const mockParam_dto: TicketsCreateDTO = {
-                    client_id: mockId.clients.valid[0],
-                    user_id: mockId.users.valid[0],
+                    client_id: mockValidClientId,
+                    user_id: mockValidUserId,
                     option: TicketOption.SUPPORT,
                     title: 'test-title',
                     message: 'test-message'
@@ -119,8 +123,8 @@ describe('Unit-tests (model), priority: entity Tickets', () => {
             test('Generate new object, priority: multiple files', async () => {
                 const mockParam_id = mockId.tickets.new[0];
                 const mockParam_dto: TicketsCreateDTO = {
-                    client_id: mockId.clients.valid[0],
-                    user_id: mockId.users.valid[0],
+                    client_id: mockValidClientId,
+                    user_id: mockValidUserId,
                     option: TicketOption.SUPPORT,
                     title: 'test-title',
                     message: 'test-message'
@@ -191,8 +195,8 @@ describe('Unit-tests (model), priority: entity Tickets', () => {
             test('Check for file deletion => call FilesService.deleteFiles(), params: <dto>', async () => {
                 const mockParam_dto: TicketsResponseDTO = {
                     ticket_id: mockId.tickets.valid[0],
-                    client_id: mockId.clients.valid[0],
-                    user_id: mockId.users.valid[0],
+                    client_id: mockValidClientId,
+                    user_id: mockValidUserId,
                     status: TicketStatus.ISSUED,
                     option: TicketOption.SUPPORT,
                     title: 'test-title',
@@ -215,8 +219,8 @@ describe('Unit-tests (model), priority: entity Tickets', () => {
             test('Check for file deletion => does NOT call FilesService.deleteFiles(), params: <dto>', async () => {
                 const mockParam_dto: TicketsResponseDTO = {
                     ticket_id: mockId.tickets.valid[1],
-                    client_id: mockId.clients.valid[0],
-                    user_id: mockId.users.valid[0],
+                    client_id: mockValidClientId,
+                    user_id: mockValidUserId,
                     status: TicketStatus.ISSUED,
                     option: TicketOption.SUPPORT,
                     title: 'test-title-without-resource_paths',
@@ -240,8 +244,8 @@ describe('Unit-tests (model), priority: entity Tickets', () => {
         beforeEach(() => {
             mockParam_dto = {
                 ticket_id: mockId.tickets.valid[0],
-                client_id: mockId.clients.valid[0],
-                user_id: mockId.users.valid[0],
+                client_id: mockValidClientId,
+                user_id: mockValidUserId,
                 status: TicketStatus.CLOSED,
                 option: TicketOption.SUPPORT,
                 title: 'test-title',
