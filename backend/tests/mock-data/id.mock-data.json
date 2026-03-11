@@ -1,7 +1,8 @@
 {
     "clients": {
         "invalid": [
-            "c34ad3f7-e263-42a0-bc09-b2d9dd2598c6"
+            "c34ad3f7-e263-42a0-bc09-b2d9dd2598c6",
+            "3fd1c826-4c30-42f1-becf-5389575f0d2e"
         ],
         "new": [
             "56a7a3f5-e2f4-4040-bb00-f194f8853d62"
@@ -40,17 +41,18 @@
             0
         ],
         "new": [
-            3,
+            2,
             4
         ],
         "valid": [
             1,
-            2
+            3
         ]
     },
     "tickets": {
         "invalid": [
-            "b284d72d-1000-412c-8a7f-bbc9f9b5113d"
+            "b284d72d-1000-412c-8a7f-bbc9f9b5113d",
+            "e3dedcd2-bab4-4f05-b592-abdceca708ac"
         ],
         "new": [
             "6404a514-602b-43de-b4eb-919c83222645"
@@ -62,7 +64,8 @@
     },
     "users": {
         "invalid": [
-            "3c11e85a-5377-4b93-8064-e07e27c643ab"
+            "3c11e85a-5377-4b93-8064-e07e27c643ab",
+            "fda3c5e1-3b09-4c49-8f0d-d495a2503a43"
         ],
         "new": [
             "73b29215-fb40-4b40-904a-2dfe4a448426"

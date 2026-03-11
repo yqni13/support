@@ -6,13 +6,15 @@ import { runMigrations } from '../../db-migrations.setup';
 import { default as mockId } from "../../mock-data/id.mock-data.json";
 import { FeedbackRatingExtendedResponseDTO, FeedbackRatingResponseDTO } from "../../../src/dtos/feedback-rating.dto";
 import { ErrorStatusCodes } from "../../../src/utils/errorStatusCodes.utils";
+import { DBTestData } from "../../db-data.setup";
+import { ClientsId } from "../../../src/repositories/interfaces/clients.entity.interface";
 
 jest.mock('../../../src/middleware/auth.admin.middleware', () => ({
     authAdmin: jest.fn(() => (req: Request, res: Response, next: NextFunction) => next())
 }));
 jest.mock('../../../src/middleware/auth.client.middleware', () => ({
     authClient: jest.fn(() => (req: Request, res: Response, next: NextFunction) => {
-        (req as any).apiClients = { client_id: mockId.clients.valid[0] };
+        (req as any).apiClients = { client_id: testValidClientId };
         next();
     })
 }));
@@ -21,10 +23,10 @@ jest.mock('../../../src/middleware/maintenance.middleware', () => ({
 }));
 
 import app from '../../../src/app';
-import { DBTestData } from "../../db-data.setup";
 
 jest.setTimeout(60000);
 
+const testValidClientId = mockId.clients.valid[0] as ClientsId;
 const testTimestamp = '2025-01-01T14:00:09.000Z';
 
 describe('Integration-tests (repository), priority: entity FeedbackRating', () => {
@@ -53,7 +55,7 @@ describe('Integration-tests (repository), priority: entity FeedbackRating', () =
     describe('Testing valid fn calls', () => {
 
         test('Repository process fn findById(), result: "SUCCESS"', async () => {
-            const testParam_id = mockId.clients.valid[0];
+            const testParam_id = testValidClientId;
             const testResult: FeedbackRatingExtendedResponseDTO | null = {
                 client_id: testParam_id,
                 count: dbData_FeedbackRating[1],
@@ -89,7 +91,7 @@ describe('Integration-tests (repository), priority: entity FeedbackRating', () =
         test('Repository process fn findAll(), result: "SUCCESS"', async () => {
             const testResult: FeedbackRatingExtendedResponseDTO[] | null = [
                 {
-                    client_id: mockId.clients.valid[0],
+                    client_id: testValidClientId,
                     count: dbData_FeedbackRating[1],
                     rating_sum: dbData_FeedbackRating[2],
                     rating_average: 4.2,
@@ -116,7 +118,7 @@ describe('Integration-tests (repository), priority: entity FeedbackRating', () =
             describe('Route: GET/id/:id', () => {
 
                 test('Params: <id>, validator: fn isUUID() by invalid id', async () => {
-                    const testParam_id = 'invalid-id';
+                    const testParam_id = 'invalid-UUID' as ClientsId;
                     const testError = {
                         type: 'field',
                         value: testParam_id,

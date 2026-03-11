@@ -1,9 +1,11 @@
 import { FeedbackRatingCreateDTO, FeedbackRatingExtendedResponseDTO, FeedbackRatingResponseDTO, FeedbackRatingUpdateDTO } from "../../../src/dtos/feedback-rating.dto";
 import feedbackRatingModel from "../../../src/models/feedback-rating.model";
+import { ClientsId } from "../../../src/repositories/interfaces/clients.entity.interface";
 import { FeedbackRating } from "../../../src/repositories/interfaces/feedback-rating.entity.interface";
 import * as CommonUtils from "../../../src/utils/common.utils";
 import * as mockId from "../../mock-data/id.mock-data.json";
 
+const mockValidClientId = mockId.clients.valid[0] as ClientsId;
 const mockTimestamp = '2025-01-01T14:00:09.000Z';
 
 describe('Unit-tests (model), priority: entity FeedbackRating', () => {
@@ -14,7 +16,7 @@ describe('Unit-tests (model), priority: entity FeedbackRating', () => {
 
             test('Generate new object, params: <count, rating_sum> are undefined', () => {
                 const mockParam_dto: FeedbackRatingCreateDTO = {
-                    client_id: mockId.clients.valid[0]
+                    client_id: mockValidClientId
                 };
                 jest.spyOn(CommonUtils, "getTimestampUTC").mockReturnValue(mockTimestamp);
 
@@ -32,7 +34,7 @@ describe('Unit-tests (model), priority: entity FeedbackRating', () => {
 
             test('Generate new object, params: <count, rating_sum> have values', () => {
                 const mockParam_dto: FeedbackRatingCreateDTO = {
-                    client_id: mockId.clients.valid[0],
+                    client_id: mockValidClientId,
                     count: 1,
                     rating_sum: 5
                 };
@@ -78,7 +80,7 @@ describe('Unit-tests (model), priority: entity FeedbackRating', () => {
 
             test('Convert entity to dto + map average rating, result: FeedbackRatingExtendedResponseDTO', () => {
                 const mockParam_entity: FeedbackRating = {
-                    client_id: mockId.clients.valid[0],
+                    client_id: mockValidClientId,
                     count: 16,
                     rating_sum: 67,
                     last_modified: mockTimestamp,
@@ -97,7 +99,7 @@ describe('Unit-tests (model), priority: entity FeedbackRating', () => {
 
             test('Convert entity to dto + map average rating, result: FeedbackRatingResponseDTO', () => {
                 const mockParam_entity: FeedbackRating = {
-                    client_id: mockId.clients.valid[0],
+                    client_id: mockValidClientId,
                     count: 16,
                     rating_sum: 67,
                     last_modified: mockTimestamp,
@@ -121,7 +123,7 @@ describe('Unit-tests (model), priority: entity FeedbackRating', () => {
 
             test('Convert entity[] to dto[] + map average rating, result: FeedbackRatingExtendedResponseDTO[]', () => {
                 const mockParam_entities: FeedbackRating[] = [{
-                    client_id: mockId.clients.valid[0],
+                    client_id: mockValidClientId,
                     count: 16,
                     rating_sum: 67,
                     last_modified: mockTimestamp,
@@ -141,7 +143,7 @@ describe('Unit-tests (model), priority: entity FeedbackRating', () => {
 
             test('Convert entity[] to dto[] + map average rating, result: FeedbackRatingResponseDTO[]', () => {
                 const mockParam_entities: FeedbackRating[] = [{
-                    client_id: mockId.clients.valid[0],
+                    client_id: mockValidClientId,
                     count: 16,
                     rating_sum: 67,
                     last_modified: mockTimestamp,

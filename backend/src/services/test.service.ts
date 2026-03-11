@@ -1,8 +1,8 @@
-import { MetaResponseDTO } from '../dtos/meta.dto';
 import { TestDemoDTO, TestErrorDTO } from '../dtos/test.dto';
 import testModel from '../models/test.model';
 import metaRepository from '../repositories/meta.repository';
 import { DemoMode } from '../utils/enums/demo-mode.enum';
+import { secrets } from '../utils/secrets.utils';
 
 class TestService {
     async searchExceptionThrow(dto: TestErrorDTO) {
@@ -13,8 +13,7 @@ class TestService {
         let result: any;
         switch(dto.demo_mode) {
             case(DemoMode.SUCCESS): {
-                result = await metaRepository.findById(1);
-                result = { app_version: (result as MetaResponseDTO).app_version };
+                result = { app_version: secrets.APP_VERSION };
                 break;
             }
             case(DemoMode.ERROR): 

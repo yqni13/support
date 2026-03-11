@@ -6,7 +6,7 @@ import {
 } from "./interfaces/base.repository.interface";
 import { DBConnection } from "../configs/db";
 import { QueryResult } from "pg";
-import { Tickets } from "./interfaces/tickets.entity.interface";
+import { Tickets, TicketsId } from "./interfaces/tickets.entity.interface";
 import { TicketsFilterDTO, TicketsIntervalDTO, TicketsResponseExtendedDTO } from "../dtos/tickets.dto";
 import { DBQueryErrorException } from "../utils/exceptions/db.exception";
 import { logError, now } from "../utils/common.utils";
@@ -24,7 +24,7 @@ IDeleteRepository
         this.table = "tickets";
     }
 
-    async findById(id: string): Promise<TicketsResponseExtendedDTO | null> {
+    async findById(id: TicketsId): Promise<TicketsResponseExtendedDTO | null> {
         const filterColumn = "ticket_id";
         const sql = `SELECT
         ${this.table}.*,
@@ -138,7 +138,7 @@ IDeleteRepository
         }
     }
 
-    async update(id: string, dto: Partial<Tickets>): Promise<Tickets | null> {
+    async update(id: TicketsId, dto: Partial<Tickets>): Promise<Tickets | null> {
         const filterColumn = "ticket_id";
         const sql = `UPDATE ${this.table}
         SET status = $1, title = $2, message = $3, option = $4, flag = $5, info_browser = $6, info_os = $7,
@@ -163,7 +163,7 @@ IDeleteRepository
         }
     }
 
-    async delete(id: string): Promise<boolean> {
+    async delete(id: TicketsId): Promise<boolean> {
         const filterColumn = "ticket_id";
         const sql = `DELETE FROM ${this.table} WHERE ${filterColumn} = $1;`;
         const value = [id];

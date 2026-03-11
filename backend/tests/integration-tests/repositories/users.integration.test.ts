@@ -6,7 +6,7 @@ import { ErrorStatusCodes } from '../../../src/utils/errorStatusCodes.utils';
 import { DBTestSetup } from "../../db-container.setup";
 import { runMigrations } from '../../db-migrations.setup';
 import { UsersUpdateDTO, UsersFilterDTO, UsersResponseDTO, UsersCreateDTO, UsersFlagUpdateDTO } from "../../../src/dtos/users.dto";
-import { Users } from "../../../src/repositories/interfaces/users.entity.interface";
+import { Users, UsersId } from "../../../src/repositories/interfaces/users.entity.interface";
 import { UserStatus } from "../../../src/utils/enums/user-status.enum";
 import { Flag } from "../../../src/utils/enums/flag.enum";
 import { default as mockId } from "../../mock-data/id.mock-data.json";
@@ -23,6 +23,8 @@ jest.mock('../../../src/middleware/maintenance.middleware', () => ({
 import app from '../../../src/app';
 
 jest.setTimeout(60000);
+
+const testValidUserId = mockId.users.valid[0] as UsersId;
 const testTimestamp = '2025-01-01T14:00:03.000Z';
 
 describe('Integration-tests (repository), priority: entity Users', () => {
@@ -48,7 +50,7 @@ describe('Integration-tests (repository), priority: entity Users', () => {
     describe('Testing valid fn calls', () => {
 
         test('Repository process fn findById(), result: "SUCCESS"', async () => {
-            const testParam_id = mockId.users.valid[0];
+            const testParam_id = testValidUserId;
             const testResult: UsersResponseDTO = {
                 user_id: testParam_id,
                 email: 'max.mustermann@yqni13.com',
@@ -60,7 +62,7 @@ describe('Integration-tests (repository), priority: entity Users', () => {
 
             await dbTestSetup.addTestData();
             const testResponse = await request(app)
-                .get(`${apiUrl}/by-id/${testParam_id}`);
+                .get(`${apiUrl}/id/${testParam_id}`);
 
             expect(testResponse.statusCode).toBe(200);
             expect(testResponse.body).toMatchObject(testResult);
@@ -69,7 +71,7 @@ describe('Integration-tests (repository), priority: entity Users', () => {
         test('Repository process fn findByEmail(), result: "SUCCESS"', async () => {
             const testParam_email = 'max.mustermann@yqni13.com';
             const testResult: UsersResponseDTO = {
-                user_id: mockId.users.valid[0],
+                user_id: testValidUserId,
                 email: testParam_email,
                 status: UserStatus.ACTIVE,
                 flag: null,
@@ -79,17 +81,17 @@ describe('Integration-tests (repository), priority: entity Users', () => {
 
             await dbTestSetup.addTestData();
             const testResponse = await request(app)
-                .get(`${apiUrl}/by-email/${testParam_email}`);
+                .get(`${apiUrl}/email/${testParam_email}`);
 
             expect(testResponse.statusCode).toBe(200);
             expect(testResponse.body).toMatchObject(testResult);
         })
 
         test('Repository process fn findAll(), result: "SUCCESS"', async () => {
-            const testParam_id = mockId.users.valid[0];
+            const testParam_id = testValidUserId;
             const testResult: Users[] = [
                 {
-                    user_id: mockId.users.valid[1],
+                    user_id: mockId.users.valid[1] as UsersId,
                     email: 'aurora.otsuki@yqni13.com',
                     status: UserStatus.ACTIVE,
                     flag: null,
@@ -136,7 +138,7 @@ describe('Integration-tests (repository), priority: entity Users', () => {
                 status: UserStatus.ACTIVE
             };
             const testResult: UsersResponseDTO[] = [{
-                user_id: mockId.users.valid[0],
+                user_id: testValidUserId,
                 email: 'max.mustermann@yqni13.com',
                 status: UserStatus.ACTIVE,
                 flag: null,
@@ -161,7 +163,7 @@ describe('Integration-tests (repository), priority: entity Users', () => {
                 last_modified: ['2024-12-01T10:00:00.000Z', '2025-12-01T14:00:00.000Z']
             };
             const testResult: UsersResponseDTO[] = [{
-                user_id: mockId.users.valid[0],
+                user_id: testValidUserId,
                 email: 'max.mustermann@yqni13.com',
                 status: UserStatus.ACTIVE,
                 flag: null,
@@ -181,7 +183,7 @@ describe('Integration-tests (repository), priority: entity Users', () => {
         })
 
         test('Repository process fn create(), result: "SUCCESS"', async () => {
-            const testParam_id = mockId.users.new[0];
+            const testParam_id = mockId.users.new[0] as UsersId;
             const testParam_dto: UsersCreateDTO = {
                 email: 'new-user@test.com'
             };
@@ -208,7 +210,7 @@ describe('Integration-tests (repository), priority: entity Users', () => {
         })
 
         test('Repository process fn update(), result: "SUCCESS"', async () => {
-            const testParam_id = mockId.users.valid[0];
+            const testParam_id = testValidUserId;
             const testParam_dto: Partial<Users> = {
                 email: 'user@test.com',
                 status: UserStatus.ACTIVE,
@@ -234,7 +236,7 @@ describe('Integration-tests (repository), priority: entity Users', () => {
         })
 
         test('Repository process fn updateFlag(), result: "SUCCESS"', async () => {
-            const testParam_id = mockId.users.valid[0];
+            const testParam_id = testValidUserId;
             const testParam_dto: UsersFlagUpdateDTO = {
                 flag: Flag.WARNING
             };
@@ -263,10 +265,10 @@ describe('Integration-tests (repository), priority: entity Users', () => {
 
         describe('All routes, priority: express-validators, location: <params>', () => {
 
-            describe('Route: GET/by-id/:id', () => {
+            describe('Route: GET/id/:id', () => {
 
                 test('Params: <id>, validator: fn isUUID() by invalid id', async () => {
-                    const testParam_id = 'invalid-id';
+                    const testParam_id = 'invalid-UUID';
                     const testError = {
                         type: 'field',
                         value: testParam_id,
@@ -276,7 +278,7 @@ describe('Integration-tests (repository), priority: entity Users', () => {
                     }
 
                     const testResponse = await request(app)
-                        .get(`${apiUrl}/by-id/${testParam_id}`);
+                        .get(`${apiUrl}/id/${testParam_id}`);
 
                     expect(testResponse.statusCode).toBe(ErrorStatusCodes.InvalidPropertiesException);
                     expect(testResponse.body.headers.data).toEqual([testError]);
@@ -286,7 +288,7 @@ describe('Integration-tests (repository), priority: entity Users', () => {
             describe('Route: PUT/update/:id', () => {
 
                 test('Params: <id>, validator: fn isUUID() by invalid id', async () => {
-                    const testParam_id = 'invalid-id';
+                    const testParam_id = 'invalid-UUID';
                     const testParam_dto: UsersUpdateDTO = {
                         email: 'new-user@test.com',
                         status: UserStatus.ACTIVE,
@@ -333,7 +335,7 @@ describe('Integration-tests (repository), priority: entity Users', () => {
                 const testedParams = Object.keys(testData) as (keyof typeof testData)[];
 
                 test.each(testedParams)('Params: <%s>, validator: fn notEmpty() by undefined', async (invalidParam) => {
-                    const testParam_id = mockId.users.valid[0];
+                    const testParam_id = testValidUserId;
                     let mockParam_dto = structuredClone(testData);
                     delete mockParam_dto[invalidParam];
 
@@ -410,7 +412,7 @@ describe('Integration-tests (repository), priority: entity Users', () => {
             describe('Route: PUT/update/:id', () => {
 
                 test('Params: <UsersUpdateDTO>, validator: fn requirePayload() by undefined', async () =>{
-                    const testParam_id = mockId.users.valid[0];
+                    const testParam_id = testValidUserId;
                     const testParam_dto = undefined;
                     const testError = structuredClone(mockError);
 

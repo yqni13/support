@@ -13,8 +13,8 @@ const logger = Logger.getLogger();
  */
 export const now = (): Date => new Date();
 
-export function generateUUID(): string {
-    return uuid_v4();
+export function generateUUID<T extends string>(): T {
+    return uuid_v4() as T;
 }
 
 export function mapKeyToHash(key: string): string {
@@ -38,19 +38,6 @@ export function getNextDayUTC(timestamp?: Date): string {
 
 export function isEmptyObj(obj: any): boolean {
     return JSON.stringify(obj) === '{}';
-}
-
-export function selectPrivateKey(source: MailSource): string {
-    switch(source) {
-        case(MailSource.ARTDV): {
-            return secrets.PRIVATE_KEY_ARTDV;
-        }
-        case(MailSource.TAVA): {
-            return secrets.PRIVATE_KEY_TAVA;
-        }
-        default:
-            throw new InvalidSourceException();
-    }
 }
 
 export function logError(message: string, method: string, err: any) {

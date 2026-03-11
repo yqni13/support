@@ -12,7 +12,7 @@ import {
 import clientsModel from '../models/clients.model';
 import * as CommonUtils from '../utils/common.utils';
 import clientsRepository from '../repositories/clients.repository';
-import { Clients } from "../repositories/interfaces/clients.entity.interface";
+import { Clients, ClientsId } from "../repositories/interfaces/clients.entity.interface";
 
 class ClientsService {
     private timeMapTargets: string[];
@@ -24,7 +24,7 @@ class ClientsService {
     /**
      * @description Usage for testing purpose.
      */
-    async getClientById(id: string): Promise<ClientsExistResponseDTO | null> {
+    async getClientById(id: ClientsId): Promise<ClientsExistResponseDTO | null> {
         const result = await clientsRepository.findById(id);
         return !result ? null : CommonUtils.mapObjTimestamps<ClientsExistResponseDTO>(result, this.timeMapTargets);
     }
@@ -46,22 +46,22 @@ class ClientsService {
     async createClient(dto: ClientsCreateDTO): Promise<ClientsCreateResponseDTO> {
         const clientsCreateObj = clientsModel.generateClientsCreateObj(dto);
         const result = await clientsRepository.create(clientsCreateObj.client);
-        return clientsModel.mapToCreateResponseDTO(result as Clients, clientsCreateObj.keyRaw);
+        return clientsModel.toClientsCreateResponseDTO(result as Clients, clientsCreateObj.keyRaw);
     }
 
-    async updateClientFlag(id: string, dto: ClientsFlagUpdateDTO): Promise<ClientsFlagResponseDTO | null> {
+    async updateClientFlag(id: ClientsId, dto: ClientsFlagUpdateDTO): Promise<ClientsFlagResponseDTO | null> {
         dto.last_modified = CommonUtils.getTimestampUTC();
         const result = await clientsRepository.updateFlag(id, dto);
         return !result ? null : CommonUtils.mapObjTimestamps<ClientsFlagResponseDTO>(result, this.timeMapTargets);
     }
 
-    async updateClientStatus(id: string, dto: ClientsStatusUpdateDTO): Promise<ClientsStatusResponseDTO | null> {
+    async updateClientStatus(id: ClientsId, dto: ClientsStatusUpdateDTO): Promise<ClientsStatusResponseDTO | null> {
         dto.last_modified = CommonUtils.getTimestampUTC();
         const result = await clientsRepository.updateStatus(id, dto);
         return !result ? null : CommonUtils.mapObjTimestamps<ClientsStatusResponseDTO>(result, this.timeMapTargets);
     }
 
-    async updateClientLastUse(id: string): Promise<ClientsLastUseResponseDTO | null> {
+    async updateClientLastUse(id: ClientsId): Promise<ClientsLastUseResponseDTO | null> {
         const dto: ClientsLastUseUpdateDTO = { last_use: CommonUtils.getTimestampUTC() };
         const result = await clientsRepository.updateLastUse(id, dto);
         return !result ? null : CommonUtils.mapObjTimestamps<ClientsLastUseResponseDTO>(result, this.timeMapTargets);

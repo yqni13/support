@@ -2,7 +2,6 @@ import { body, param, ValidationChain } from 'express-validator';
 import * as CommonValidators from "../common.validation";
 import { UserStatus } from '../../utils/enums/user-status.enum';
 import { Flag } from '../../utils/enums/flag.enum';
-import { SingleOrArray } from '../../utils/custom-types.utils';
 import { CommonExceptionMessage as Message } from '../../utils/enums/common-exception-messages.enum';
 
 export const getUserByIdSchema: ValidationChain[] = [
@@ -22,21 +21,21 @@ export const getUserByEmailSchema: ValidationChain[] = [
 
 export const postUsersSearchSchema: ValidationChain[] = [
     body('email')
-        .custom((content: SingleOrArray<string>) => {
+        .custom((content: string | string[]) => {
             content = Array.isArray(content) ? content : [content];
             content.forEach((email) => CommonValidators.validateEmail(email))
             return true;
         })
         .optional(),
     body('status')
-        .custom((content: SingleOrArray<UserStatus>) => {
+        .custom((content: UserStatus | UserStatus[]) => {
             content = Array.isArray(content) ? content : [content];
             content.forEach((status) => CommonValidators.validateEnum(status, UserStatus, 'userStatus'))
             return true;
         })
         .optional(),
     body('flag')
-        .custom((content: undefined | null | SingleOrArray<Flag>) => {
+        .custom((content: undefined | null | Flag | Flag[]) => {
             // Manual check for undefined/null necessary because null is valid value.
             if(content === null || content === undefined) {
                 return true;

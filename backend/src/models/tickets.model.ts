@@ -1,14 +1,14 @@
 import { TicketsCreateDTO, TicketsResponseDTO, TicketsUpdateDTO } from "../dtos/tickets.dto";
-import { Tickets } from "../repositories/interfaces/tickets.entity.interface";
+import { Tickets, TicketsId } from "../repositories/interfaces/tickets.entity.interface";
 import * as CommonUtils from "../utils/common.utils";
 import { TicketStatus } from "../utils/enums/ticket-status.enum";
 import { FilesService } from "../services/files.service";
 import { PermissionException } from "../utils/exceptions/auth.exception";
 
 class TicketsModel {
-    async generateTicket(dto: TicketsCreateDTO, files: Express.Multer.File[] | null): Promise<Tickets> {
+    async generateTicketEntity(dto: TicketsCreateDTO, files: Express.Multer.File[] | null): Promise<Tickets> {
         const timestamp = CommonUtils.getTimestampUTC();
-        const newId = CommonUtils.generateUUID();
+        const newId = CommonUtils.generateUUID<TicketsId>();
         let paths: string[] | null = null;
         if(files) {
             const filesService = new FilesService(files, 'tickets');

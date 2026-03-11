@@ -6,14 +6,12 @@ import fs from "fs";
 class Secrets {
     readonly APP_VERSION: string;
     readonly APP_META: Record<string, string>;
-    readonly ADMIN_API: string;
+    readonly ADMIN_KEY: string;
     readonly ENV_MODE: string;
     readonly PORT: number;
     readonly EMAIL_RECEIVER: string;
     readonly EMAIL_SENDER: string;
     readonly EMAIL_PASS: string;
-    readonly PRIVATE_KEY_ARTDV: string;
-    readonly PRIVATE_KEY_TAVA: string;
     readonly BETTERSTACK_LOGGING_KEY: string;
     readonly BETTERSTACK_HOST: string;
     readonly DB_USER: string;
@@ -44,14 +42,12 @@ class Secrets {
     private constructor() {
         this.APP_VERSION = this.getAppVersion();
         this.APP_META = this.getAppMeta();
-        this.ADMIN_API = this.setAdminApi();
+        this.ADMIN_KEY = this.setAdminKey();
         this.ENV_MODE = this.setEnvMode();
         this.PORT = this.setPort();
         this.EMAIL_RECEIVER = this.setEmailReceiver();
         this.EMAIL_SENDER = this.setEmailSender();
         this.EMAIL_PASS = this.setEmailPass();
-        this.PRIVATE_KEY_ARTDV = this.setPrivateKey_ARTDV();
-        this.PRIVATE_KEY_TAVA = this.setPrivateKey_TAVA();
         this.BETTERSTACK_LOGGING_KEY = this.setBetterStackLoggingKey();
         this.BETTERSTACK_HOST = this.setBetterStackHost();
         this.DB_USER = this.setDbUser();
@@ -97,11 +93,11 @@ class Secrets {
         return !packageJson ? null : packageJson.appMeta;
     }
 
-    private setAdminApi() {
-        if(!Config.ADMIN_API) {
-            throw new AuthSecretNotFoundException('secret-404-env#ADMIN_API');
+    private setAdminKey() {
+        if(!Config.ADMIN_KEY) {
+            throw new AuthSecretNotFoundException('secret-404-env#ADMIN_KEY');
         }
-        return Config.ADMIN_API;
+        return Config.ADMIN_KEY;
     }
 
     private setEnvMode() {
@@ -137,34 +133,6 @@ class Secrets {
             throw new AuthSecretNotFoundException('secret-404-env#EMAIL_PASS');
         }
         return Config.EMAIL_PASS;
-    }
-
-    private setPrivateKey_ARTDV = () => {
-        let key;
-        if(Config.MODE === 'development') {
-            key = !Config.PRIVATE_KEY_ARTDV ? null : fs.readFileSync(Config.PRIVATE_KEY_ARTDV, 'utf8');
-        } else {
-            key = Config.PRIVATE_KEY_ARTDV;
-        }
-    
-        if(!key) {
-            throw new AuthSecretNotFoundException('secret-404-env#PRIVATE_KEY_ARTDV');
-        }    
-        return key;
-    }
-
-    private setPrivateKey_TAVA = () => {
-        let key;
-        if(Config.MODE === 'development') {
-            key = !Config.PRIVATE_KEY_TAVA ? null : fs.readFileSync(Config.PRIVATE_KEY_TAVA, 'utf8');
-        } else {
-            key = Config.PRIVATE_KEY_TAVA;
-        }
-    
-        if(!key) {
-            throw new AuthSecretNotFoundException('secret-404-env#PRIVATE_KEY_TAVA');
-        }    
-        return key;
     }
 
     private setBetterStackLoggingKey = () => {

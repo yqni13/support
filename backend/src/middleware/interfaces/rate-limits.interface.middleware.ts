@@ -1,10 +1,10 @@
-import { Clients } from "../../repositories/interfaces/clients.entity.interface";
-import { Users } from "../../repositories/interfaces/users.entity.interface";
+import { Clients, ClientsId } from "../../repositories/interfaces/clients.entity.interface";
+import { Users, UsersId } from "../../repositories/interfaces/users.entity.interface";
 import { PenaltyContext } from "./penalties.interface.middleware";
 
 export interface RateLimitsData {
-    client_id: string,
-    user_id: string,
+    client_id: ClientsId,
+    user_id: UsersId,
     client?: Clients,
     user?: Users,
 }

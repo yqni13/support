@@ -1,5 +1,7 @@
+import { ClientsId } from "../repositories/interfaces/clients.entity.interface"
+
 export interface FeedbackRatingCreateDTO {
-    client_id: string,
+    client_id: ClientsId,
     count?: number,
     rating_sum?: number
 }
@@ -15,7 +17,7 @@ export interface FeedbackRatingResponseDTO {
 }
 
 export interface FeedbackRatingExtendedResponseDTO extends FeedbackRatingResponseDTO {
-    client_id: string,
+    client_id: ClientsId,
     count: number,
     rating_sum: number,
     last_modified: string,

@@ -1,10 +1,15 @@
 import { FeedbackRatingResponseDTO } from "../../../src/dtos/feedback-rating.dto";
 import { FeedbackCreateDTO, FeedbackResponseDTO, FeedbackUpdateReviewDTO } from "../../../src/dtos/feedback.dto";
 import feedbackModel from "../../../src/models/feedback.model";
-import { Feedback } from "../../../src/repositories/interfaces/feedback.entity.interface";
+import { ClientsId } from "../../../src/repositories/interfaces/clients.entity.interface";
+import { Feedback, FeedbackId } from "../../../src/repositories/interfaces/feedback.entity.interface";
+import { UsersId } from "../../../src/repositories/interfaces/users.entity.interface";
 import * as CommonUtils from "../../../src/utils/common.utils";
 import * as mockId from "../../mock-data/id.mock-data.json";
 
+const mockValidClientId = mockId.clients.valid[0] as ClientsId;
+const mockValidUserId = mockId.users.valid[0] as UsersId;
+const mockValidFeedbackId = mockId.feedback.valid[0] as FeedbackId;
 const mockTimestamp = '2025-01-01T14:00:08.000Z';
 
 describe('Unit-tests (model), priority: entity Feedback', () => {
@@ -12,9 +17,9 @@ describe('Unit-tests (model), priority: entity Feedback', () => {
     let mockEntity: Feedback;
     beforeEach(() => {
         mockEntity = {
-            feedback_id: mockId.feedback.valid[0],
-            client_id: mockId.clients.valid[0],
-            user_id: mockId.users.valid[0],
+            feedback_id: mockValidFeedbackId,
+            client_id: mockValidClientId,
+            user_id: mockValidUserId,
             rating: 5,
             term_accepted: true,
             message: 'valid_feedback_test_message',
@@ -121,9 +126,9 @@ describe('Unit-tests (model), priority: entity Feedback', () => {
                 const originalEntity: Feedback = structuredClone(mockEntity);
                 originalEntity.reviewed_on = mockTimestamp;
                 const newEntity: Feedback = {
-                    feedback_id: mockId.feedback.valid[1],
-                    client_id: mockId.clients.valid[0],
-                    user_id: mockId.users.valid[1],
+                    feedback_id: mockId.feedback.valid[1] as FeedbackId,
+                    client_id: mockValidClientId,
+                    user_id: mockId.users.valid[1] as UsersId,
                     rating: 4,
                     term_accepted: false,
                     message: 'another_valid_feedback_test_message',

@@ -1,7 +1,7 @@
 import { DBConnection } from "../configs/db";
 import { QueryResult } from "pg";
 import { IBaseRepository, ICreateRepository, IFindRepository, IUpdateFlagRepository } from "./interfaces/base.repository.interface";
-import { Users } from "./interfaces/users.entity.interface";
+import { Users, UsersId } from "./interfaces/users.entity.interface";
 import { logError } from "../utils/common.utils";
 import { UsersFilterDTO } from "../dtos/users.dto";
 import { DBQueryErrorException } from "../utils/exceptions/db.exception";
@@ -19,7 +19,7 @@ IUpdateFlagRepository<Users>
         this.table = "users";
     }
 
-    async findById(id: string): Promise<Users | null> {
+    async findById(id: UsersId): Promise<Users | null> {
         const filterColumn = "user_id";
         const sql = `SELECT * FROM ${this.table} WHERE ${filterColumn} = $1;`;
         const value = [id];
@@ -122,7 +122,7 @@ IUpdateFlagRepository<Users>
         }
     }
 
-    async update(id: string, dto: Partial<Users>): Promise<Users | null> {
+    async update(id: UsersId, dto: Partial<Users>): Promise<Users | null> {
         const filterColumn = "user_id";
         const sql = `UPDATE ${this.table}
         SET email = $1, status = $2, flag = $3, last_modified = $4
@@ -146,7 +146,7 @@ IUpdateFlagRepository<Users>
         }
     }
 
-    async updateFlag(id: string, dto: Partial<Users>): Promise<Users | null> {
+    async updateFlag(id: UsersId, dto: Partial<Users>): Promise<Users | null> {
         const filterColumn = "user_id";
         const sql = `UPDATE ${this.table}
         SET flag = $1, last_modified = $2

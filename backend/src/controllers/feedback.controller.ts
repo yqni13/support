@@ -2,12 +2,13 @@ import { NextFunction, Request, Response } from "express";
 import { checkValidation } from "../middleware/validation.middleware";
 import { FeedbackCreateDTO, FeedbackFilterDTO, FeedbackResponseDTO } from "../dtos/feedback.dto";
 import feedbackService from "../services/feedback.service";
+import { FeedbackId } from "../repositories/interfaces/feedback.entity.interface";
 
 class FeedbackController {
     async getFeedback(req: Request, res: Response, next: NextFunction) {
         try {
             checkValidation(req);
-            const id = +req.params.id;
+            const id = (+req.params.id) as FeedbackId;
             const response: FeedbackResponseDTO | null = await feedbackService.getFeedbackById(id);
             res.json(response);
         } catch(err: any) {
@@ -44,7 +45,7 @@ class FeedbackController {
     async patchFeedbackReview(req: Request, res: Response, next: NextFunction) {
         try {
             checkValidation(req);
-            const id = +req.params.id;
+            const id = (+req.params.id) as FeedbackId;
             const response: FeedbackResponseDTO | null = await feedbackService.updateFeedbackReview(id);
             res.json(response);
         } catch(err: any) {

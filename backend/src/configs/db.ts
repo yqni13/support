@@ -16,7 +16,7 @@ export class DBConnection {
     #pool: pg.Pool;
 
     constructor() {
-        const connectionString = this._getConnectionString(secrets.ENV_MODE);
+        const connectionString = this.getConnectionString(secrets.ENV_MODE);
         this.#pool = new pg.Pool({connectionString});
     }
 
@@ -27,7 +27,7 @@ export class DBConnection {
         return DBConnection.instance;
     }
 
-    _getConnectionString(env: string) {
+    private getConnectionString(env: string) {
         // Remove white spaces to be comparable with enum values.
         env = env.trim() as EnvMode;
         let db: string;

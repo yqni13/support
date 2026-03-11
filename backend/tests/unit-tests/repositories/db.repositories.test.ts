@@ -42,17 +42,17 @@ describe('Unit-tests (repository), class DBConnection', () => {
 
     describe('Testing valid fn calls', () => {
 
-        test('Fn _getConnectionString(), environment: development', () => {
+        test('Fn getConnectionString(), environment: development', () => {
             const mockParam_env = 'development';
-            const testFn = mockDb._getConnectionString(mockParam_env);
+            const testFn = mockDb.getConnectionString(mockParam_env);
             const expectUser = 'postgres';
 
             expect(testFn).toContain(expectUser);
         })
 
-        test('Fn _getConnectionString(), environment: test', () => {
+        test('Fn getConnectionString(), environment: test', () => {
             const mockParam_env = 'test';
-            const testFn = mockDb._getConnectionString(mockParam_env);
+            const testFn = mockDb.getConnectionString(mockParam_env);
             const expectUser = 'testuser';
 
             expect(testFn).toContain(expectUser);

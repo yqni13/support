@@ -2,7 +2,7 @@ import { DBConnection } from "../../../src/configs/db";
 import * as CommonUtils from "../../../src/utils/common.utils";
 import * as MockUtils from "../../common.test-utils";
 import { default as mockId } from "../../mock-data/id.mock-data.json";
-import { Users } from "../../../src/repositories/interfaces/users.entity.interface";
+import { Users, UsersId } from "../../../src/repositories/interfaces/users.entity.interface";
 import { UserStatus } from "../../../src/utils/enums/user-status.enum";
 import usersRepository from "../../../src/repositories/users.repository";
 import { UsersUpdateDTO, UsersFlagUpdateDTO } from "../../../src/dtos/users.dto";
@@ -17,9 +17,10 @@ jest.mock("../../../src/configs/db", () => {
     }
 });
 
+const mockValidUserId = mockId.users.valid[0] as UsersId;
 const mockTimestamp = '2025-01-03T14:00:03.000Z';
 const mockData: Users = {
-    user_id: mockId.users.valid[0],
+    user_id: mockValidUserId,
     email: 'user@test.com',
     status: UserStatus.ACTIVE,
     flag: null,
@@ -41,7 +42,7 @@ describe('Unit-tests (repository), priority: entity Users', () => {
             });
 
             test('Return data for existing entry, params: valid <id>', async () => {
-                const mockParam_id = mockId.users.valid[0];
+                const mockParam_id = mockValidUserId;
 
                 const mockResult: Users | null = structuredClone(mockData);
                 const mockClient = MockUtils.mapMockDbClient(mockResult);
@@ -56,7 +57,7 @@ describe('Unit-tests (repository), priority: entity Users', () => {
             })
 
             test('Return null for non-existing entry, params: non-existing <id>', async () => {
-                const mockParam_id = mockId.users.invalid[0];
+                const mockParam_id = mockId.users.invalid[0] as UsersId;
                 const mockResult: Users | null = null;
 
                 const mockClient = MockUtils.mapMockDbClient(mockResult);
@@ -74,7 +75,7 @@ describe('Unit-tests (repository), priority: entity Users', () => {
         describe('Testing invalid fn calls', () => {
 
             test('Throw DBQueryErrorException by catch-block', async () => {
-                const mockParam_id = mockId.users.invalid[0];
+                const mockParam_id = mockId.users.invalid[0] as UsersId;
 
                 const mockErrorMsg = "DB ERROR ON SELECT QUERY";
                 const mockResult: Users | null = null;
@@ -152,7 +153,7 @@ describe('Unit-tests (repository), priority: entity Users', () => {
             test('Return data for multiple existing entries', async () => {
                 const mockData_entry0 = structuredClone(mockData);
                 const mockData_entry1 = structuredClone(mockData_entry0);
-                mockData_entry1['user_id'] = 'another_valid_users_test_id';
+                mockData_entry1['user_id'] = 'another_valid_users_test_id' as UsersId;
                 mockData_entry1['email'] = 'user1@test.com';
                 const mockResult: Users[] = [mockData_entry0, mockData_entry1];
 
@@ -258,7 +259,7 @@ describe('Unit-tests (repository), priority: entity Users', () => {
         beforeEach(() => {
             sql = 'INSERT';
             mockParam_entity = {
-                user_id: mockId.users.valid[0],
+                user_id: mockValidUserId,
                 email: 'new-user@test.com',
                 status: UserStatus.ACTIVE,
                 flag: null,
@@ -315,7 +316,7 @@ describe('Unit-tests (repository), priority: entity Users', () => {
         describe('Testing valid fn calls', () => {
 
             test('Return data of changed entry, params: valid <id>', async () => {
-                const mockParam_id = mockId.users.valid[0];
+                const mockParam_id = mockValidUserId;
                 const mockValues = Object.values(mockParam_dto).map(value => value);
                 mockValues.push(mockParam_id);
                 const mockResult: Users = structuredClone(mockData);
@@ -333,7 +334,7 @@ describe('Unit-tests (repository), priority: entity Users', () => {
             })
 
             test('Return null for no entries, params: non-existing <id>', async () => {
-                const mockParam_id = mockId.users.invalid[0];
+                const mockParam_id = mockId.users.invalid[0] as UsersId;
                 const mockValues = Object.values(mockParam_dto).map(value => value);
                 mockValues.push(mockParam_id);
 
@@ -354,7 +355,7 @@ describe('Unit-tests (repository), priority: entity Users', () => {
         describe('Testing invalid fn calls', () => {
 
             test('Throw DBQueryErrorException by catch-block', async () => {
-                const mockParam_id = mockId.users.invalid[0];
+                const mockParam_id = mockId.users.invalid[0] as UsersId;
                 const mockErrorMsg = "DB ERROR ON UPDATE QUERY";
                 const mockResult = null;
                 jest.spyOn(CommonUtils, "logError").mockReturnValue();
@@ -381,7 +382,7 @@ describe('Unit-tests (repository), priority: entity Users', () => {
         describe('Testing valid fn calls', () => {
 
             test('Return data of changed entry, params: valid <id>', async () => {
-                const mockParam_id = mockId.users.valid[0];
+                const mockParam_id = mockValidUserId;
                 const mockValues = [mockParam_dto.flag, mockParam_dto.last_modified, mockParam_id];
 
                 const mockResult: Users = structuredClone(mockData);
@@ -399,7 +400,7 @@ describe('Unit-tests (repository), priority: entity Users', () => {
             })
 
             test('Return null for no entries, params: non-existing <id>', async () => {
-                const mockParam_id = mockId.users.invalid[0];
+                const mockParam_id = mockId.users.invalid[0] as UsersId;
                 const mockValues = [mockParam_dto.flag, mockParam_dto.last_modified, mockParam_id];
 
                 const mockResult = null;
@@ -419,7 +420,7 @@ describe('Unit-tests (repository), priority: entity Users', () => {
         describe('Testing invalid fn calls', () => {
 
             test('Throw DBQueryErrorException by catch-block', async () => {
-                const mockParam_id = mockId.users.invalid[0];
+                const mockParam_id = mockId.users.invalid[0] as UsersId;
                 const mockErrorMsg = "DB ERROR ON UPDATE QUERY";
                 const mockResult = null;
                 jest.spyOn(CommonUtils, "logError").mockReturnValue();

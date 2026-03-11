@@ -16,7 +16,7 @@ import { ApiKeyStatus } from "../../../src/utils/enums/api-key-status.enum";
 import { DBTestSetup } from "../../db-container.setup";
 import { runMigrations } from '../../db-migrations.setup';
 import clientsModel from "../../../src/models/clients.model";
-import { Clients } from "../../../src/repositories/interfaces/clients.entity.interface";
+import { Clients, ClientsId } from "../../../src/repositories/interfaces/clients.entity.interface";
 import { CommonExceptionMessage } from "../../../src/utils/enums/common-exception-messages.enum";
 import { default as mockId } from "../../mock-data/id.mock-data.json";
 import { secrets } from "../../../src/utils/secrets.utils";
@@ -33,6 +33,8 @@ jest.mock('../../../src/middleware/maintenance.middleware', () => ({
 import app from '../../../src/app';
 
 jest.setTimeout(60000);
+
+const mockValidClientId = mockId.clients.valid[0] as ClientsId;
 const testTimestamp = '2025-01-01T14:00:02.000Z';
 
 describe('Integration-tests (repository), priority: entity Clients', () => {
@@ -59,9 +61,9 @@ describe('Integration-tests (repository), priority: entity Clients', () => {
     describe('Testing valid fn calls', () => {
 
         test('Repository process fn findById(), result: "SUCCESS"', async () => {
-            const testParam_id = mockId.clients.valid[0];
+            const testParam_id = mockValidClientId;
             const testResult: ClientsExistResponseDTO | null = {
-                client_id: mockId.clients.valid[0],
+                client_id: testParam_id,
                 name: 'TESTCLIENT',
                 api_key_hash: secrets.TEST_APIKEY_HASH,
                 status: ApiKeyStatus.ACTIVE,
@@ -80,7 +82,7 @@ describe('Integration-tests (repository), priority: entity Clients', () => {
         test('Repository process fn findStatusByName(), result: "SUCCESS"', async () => {
             const testParam_name = 'TESTCLIENT';
             const testResult: ClientsStatusResponseDTO = {
-                client_id: mockId.clients.valid[0],
+                client_id: mockValidClientId,
                 name: testParam_name,
                 status: ApiKeyStatus.ACTIVE,
                 last_use: testTimestamp,
@@ -109,11 +111,11 @@ describe('Integration-tests (repository), priority: entity Clients', () => {
         })
 
         test('Repository process fn create(), result: "SUCCESS"', async () => {
-            const testParam_client_id = mockId.clients.new[0];
+            const testParam_client_id = mockId.clients.new[0] as ClientsId;
             const testParam_dto = { name: 'testclient_test_create' };
 
             jest.spyOn(CommonUtils, 'generateUUID').mockReturnValue(testParam_client_id);
-            jest.spyOn(clientsModel, '_generateApiKeyObj').mockReturnValue(testVar_apiKey);
+            jest.spyOn(clientsModel as any, 'generateApiKeyObj').mockReturnValue(testVar_apiKey);
             jest.spyOn(CommonUtils, "getTimestampUTC").mockReturnValue(testTimestamp);
 
             const testResult: ClientsCreateResponseDTO = {
@@ -137,7 +139,7 @@ describe('Integration-tests (repository), priority: entity Clients', () => {
         })
 
         test('Repository process fn updateFlag(), result: "SUCCESS"', async () => {
-            const testParam_id = mockId.clients.valid[0];
+            const testParam_id = mockValidClientId;
             const testParam_dto: ClientsFlagUpdateDTO = {
                 flag: Flag.WARNING
             };
@@ -159,7 +161,7 @@ describe('Integration-tests (repository), priority: entity Clients', () => {
         })
 
         test('Repository process fn updateFlag(), result: null', async () => {
-            const testParam_id = mockId.clients.invalid[0];
+            const testParam_id = mockId.clients.invalid[0] as ClientsId;
             const testParam_dto: ClientsFlagUpdateDTO = {
                 flag: Flag.WARNING
             };
@@ -175,7 +177,7 @@ describe('Integration-tests (repository), priority: entity Clients', () => {
         })
 
         test('Repository process fn updateStatus(), result: "SUCCESS"', async () => {
-            const testParam_id = mockId.clients.valid[0];
+            const testParam_id = mockValidClientId;
             const testParam_data: Partial<Clients> = {
                 status: ApiKeyStatus.DISABLED
             };
@@ -208,7 +210,7 @@ describe('Integration-tests (repository), priority: entity Clients', () => {
             describe('Route: PUT/status/:id', () => {
 
                 test('Params: <id>, validator: fn isUUID() by invalid id', async () => {
-                    const testParam_id = 'invalid-id';
+                    const testParam_id = 'invalid-UUID' as ClientsId;
                     const testParam_dto: ClientsStatusUpdateDTO = {
                         status: ApiKeyStatus.EXPIRED
                     };
@@ -304,7 +306,7 @@ describe('Integration-tests (repository), priority: entity Clients', () => {
             describe('Route: PUT/status/:id', () => {
 
                 test('Params: <ClientsStatusUpdateDTO>, validator: fn requirePayload() by undefined', async () =>{
-                    const testParam_id = mockId.clients.valid[0];
+                    const testParam_id = mockValidClientId;
                     const testParam_dto = undefined;
                     const testError = structuredClone(mockError);
 

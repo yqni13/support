@@ -6,6 +6,7 @@ import { default as mockId } from "../../mock-data/id.mock-data.json";
 import feedbackRatingRepository from "../../../src/repositories/feedback-rating.repository";
 import { DBConnection } from "../../../src/configs/db";
 import { FeedbackRatingUpdateDTO } from "../../../src/dtos/feedback-rating.dto";
+import { ClientsId } from "../../../src/repositories/interfaces/clients.entity.interface";
 
 jest.mock("../../../src/configs/db", () => {
     return {
@@ -15,9 +16,10 @@ jest.mock("../../../src/configs/db", () => {
     }
 });
 
+const mockValidClientId = mockId.clients.valid[0] as ClientsId;
 const mockTimestamp = '2025-01-01T14:00:09.000Z';
 const mockData: FeedbackRating = {
-    client_id: mockId.clients.valid[0],
+    client_id: mockValidClientId,
     count: 16,
     rating_sum: 67,
     last_modified: mockTimestamp,
@@ -38,7 +40,7 @@ describe('Unit-tests (repository), priority: entity FeedbackRating', () => {
             });
 
             test('Return data for existing entry, params: valid <id>', async () => {
-                const mockParam_id = mockId.clients.valid[0];
+                const mockParam_id = mockValidClientId;
                 const mockResult: FeedbackRating = structuredClone(mockData);
                 const mockClient = MockUtils.mapMockDbClient(mockResult);
                 const testFn = await feedbackRatingRepository.findById(mockParam_id);
@@ -52,7 +54,7 @@ describe('Unit-tests (repository), priority: entity FeedbackRating', () => {
             })
 
             test('Return null for non-existing entry, params: non-existing <id>', async () => {
-                const mockParam_id = mockId.clients.invalid[0];
+                const mockParam_id = mockId.clients.invalid[0] as ClientsId;
                 const mockResult = null;
                 const mockClient = MockUtils.mapMockDbClient(mockResult);
                 const testFn = await feedbackRatingRepository.findById(mockParam_id);
@@ -69,7 +71,7 @@ describe('Unit-tests (repository), priority: entity FeedbackRating', () => {
         describe('Testing invalid fn calls', () => {
 
             test('Throw DBQueryErrorException by catch-block', async () => {
-                const mockParam_id = mockId.clients.invalid[0];
+                const mockParam_id = mockId.clients.invalid[0] as ClientsId;
                 const mockErrorMsg = "DB ERROR ON SELECT QUERY";
                 const mockResult = null;
                 jest.spyOn(CommonUtils, "logError").mockReturnValue();
@@ -146,7 +148,7 @@ describe('Unit-tests (repository), priority: entity FeedbackRating', () => {
             test('Return data for multiple existing entries', async () => {
                 const mockData_entry0: FeedbackRating = structuredClone(mockData);
                 const mockData_entry1: FeedbackRating = {
-                    client_id: 'another_clients_test_id',
+                    client_id: mockId.clients.valid[1] as ClientsId,
                     count: 5,
                     rating_sum: 19,
                     last_modified: mockTimestamp,
@@ -201,7 +203,7 @@ describe('Unit-tests (repository), priority: entity FeedbackRating', () => {
         beforeEach(() => {
             sql = `INSERT`;
             mockParam_entity = {
-                client_id: mockId.clients.new[0],
+                client_id: mockValidClientId,
                 count: 0,
                 rating_sum: 0,
                 last_modified: mockTimestamp,
@@ -265,7 +267,7 @@ describe('Unit-tests (repository), priority: entity FeedbackRating', () => {
             })
 
             test('Return null for non-existing entry, params: invalid <id, dto>', async () => {
-                const mockParam_id = mockId.clients.invalid[0];
+                const mockParam_id = mockId.clients.invalid[0] as ClientsId;
                 const mockValues: any[] = [mockParam_dto.rating];
                 const mockResult: FeedbackRating | null = null;
 
