@@ -217,7 +217,7 @@ describe('Unit-tests (repository), priority: entity Clients', () => {
         let mockParam_entity: Clients;
         beforeEach(() => {
             sql = `INSERT`;
-            mockVar_apiKey = clientsModel._generateApiKeyObj();
+            mockVar_apiKey = (clientsModel as any).generateApiKeyObj();
             mockParam_entity = {
                 client_id: mockValidClientId,
                 name: 'valid_clients_test_name',

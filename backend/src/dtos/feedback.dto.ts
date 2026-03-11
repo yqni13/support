@@ -43,5 +43,6 @@ export interface FeedbackResponseDTO {
     message?: string,
     reviewed_on?: string,
     last_modified: string,
-    created_on: string
+    created_on: string,
+    blocked?: boolean
 }

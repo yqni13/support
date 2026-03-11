@@ -3,7 +3,7 @@ import { MaintenanceMode } from "../utils/enums/maintenance-mode.enum";
 import { ExceedMaxEndpointException, UnexpectedApiResponseException, UnimplementedException } from "../utils/exceptions/api.exception";
 import { AuthSecretNotFoundException, BlockedUsersException, ForbiddenApiKeyException, InvalidApiKeyException, InvalidUsersException, MalformedApiKeyException, MissingApiKeyException, PermissionException } from "../utils/exceptions/auth.exception";
 import { InternalServerException, InvalidSourceException, MaintenanceException, RequestExceedMaxException } from "../utils/exceptions/common.exception";
-import { DBConnectionException, DBEmptyException, DBQueryErrorException } from "../utils/exceptions/db.exception";
+import { DBConnectionException, DBConstraintErrorException, DBEmptyException, DBQueryErrorException } from "../utils/exceptions/db.exception";
 import { InvalidFilesException, InvalidPropertiesException } from "../utils/exceptions/validation.exception";
 
 class TestModel {
@@ -44,6 +44,8 @@ class TestModel {
                 throw new DBEmptyException();
             case('DBQueryErrorException'):
                 throw new DBQueryErrorException();
+            case('DBConstraintErrorException'):
+                throw new DBConstraintErrorException(dto.errorMsg ?? this.substitutionMsg);
             // ValidationException
             case('InvalidPropertiesException'): {
                 const customError = [

@@ -113,9 +113,9 @@ describe('Unit-tests (repository), priority: entity Tickets', () => {
             test('Return data for multiple existing entries', async () => {
                 const mockData_entry0: TicketsResponseDTO = structuredClone(mockData);
                 const mockData_entry1: TicketsResponseDTO = {
-                    ticket_id: 'another_valid_tickets_test_id' as TicketsId,
-                    client_id: 'another_valid_clients_test_id' as ClientsId,
-                    user_id: 'another_valid_users_test_id' as UsersId,
+                    ticket_id: mockId.tickets.valid[1] as TicketsId,
+                    client_id: mockId.clients.valid[1] as ClientsId,
+                    user_id: mockId.users.valid[1] as UsersId,
                     status: TicketStatus.ACTIVE,
                     option: TicketOption.SUPPORT,
                     title: 'another-test-title',
@@ -188,9 +188,9 @@ describe('Unit-tests (repository), priority: entity Tickets', () => {
                 const mockResult: TicketsResponseDTO[] = [
                     mockData,
                     {
-                        ticket_id: 'another_valid_tickets_id' as TicketsId,
+                        ticket_id: mockId.tickets.valid[1] as TicketsId,
                         client_id: mockValidClientId,
-                        user_id: 'another_valid_users_id' as UsersId,
+                        user_id: mockId.users.valid[1] as UsersId,
                         status: TicketStatus.ACTIVE,
                         option: TicketOption.SUPPORT,
                         title: 'valid-test-title',
@@ -224,8 +224,8 @@ describe('Unit-tests (repository), priority: entity Tickets', () => {
                 const mockResult: TicketsResponseDTO[] = [
                     mockData,
                     {
-                        ticket_id: 'another_valid_tickets_id' as TicketsId,
-                        client_id: 'another_valid_client_id' as ClientsId,
+                        ticket_id: mockId.tickets.valid[1] as TicketsId,
+                        client_id: mockId.clients.valid[1] as ClientsId,
                         user_id: mockValidUserId,
                         status: TicketStatus.ACTIVE,
                         option: TicketOption.SUPPORT,
@@ -319,7 +319,7 @@ describe('Unit-tests (repository), priority: entity Tickets', () => {
 
             test('Return null for non-existing entry, params: non-existing <user_id>', async () => {
                 const mockParam_dto = {
-                    user_id: ['non-existing_users_test_id_0', 'non-existing_users_test_id_1'] as UsersId[] 
+                    user_id: [mockId.users.invalid[0], mockId.users.invalid[1]] as UsersId[] 
                 };
                 const mockValues = mockParam_dto.user_id;
                 const mockResult: Tickets[] | null = null;

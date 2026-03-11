@@ -9,8 +9,8 @@ import { DBQueryErrorException } from "../../../src/utils/exceptions/db.exceptio
 import * as MockUtils from "../../common.test-utils";
 import * as CommonUtils from "../../../src/utils/common.utils";
 import { default as mockId } from "../../mock-data/id.mock-data.json";
-import { RateLimitId, RateLimits } from "../../../src/repositories/interfaces/rate-limits.entity.interface";
-import { DemoLimitId, DemoLimits } from "../../../src/repositories/interfaces/demo-limits.entity.interface";
+import { RateLimitsId, RateLimits } from "../../../src/repositories/interfaces/rate-limits.entity.interface";
+import { DemoLimitsId, DemoLimits } from "../../../src/repositories/interfaces/demo-limits.entity.interface";
 import { DemoLimitsCountDTO, DemoLimitsResponseDTO, DemoLimitsUpdateDTO } from "../../../src/dtos/demo-limits.dto";
 import demoLimitsRepository from "../../../src/repositories/demo-limits.repository";
 import { ClientsId } from "../../../src/repositories/interfaces/clients.entity.interface";
@@ -24,7 +24,7 @@ jest.mock("../../../src/configs/db", () => {
     }
 });
 
-const mockValidRateLimitId = mockId.rate_limits.valid[0] as RateLimitId;
+const mockValidRateLimitId = mockId.rate_limits.valid[0] as RateLimitsId;
 const mockValidClientId = mockId.clients.valid[0] as ClientsId;
 const mockValidUserId = mockId.users.valid[0] as UsersId;
 const mockTimestamp = '2025-01-01T14:00:05.000Z';
@@ -76,7 +76,7 @@ describe('Unit-tests (repository), priority: entity RateLimits', () => {
                 test('Return entries by day, params: <RateLimitsCountDTO>', async () => {
                     const mockResult: RateLimits[] = [ 
                         {
-                            rate_limit_id: mockId.rate_limits.new[0] as RateLimitId,
+                            rate_limit_id: mockId.rate_limits.new[0] as RateLimitsId,
                             client_id: mockValidClientId,
                             user_id: mockValidUserId,
                             day: '2025-02-05',
@@ -84,7 +84,7 @@ describe('Unit-tests (repository), priority: entity RateLimits', () => {
                             last_modified: '2025-02-05T04:17:05.000Z'
                         },
                         {
-                            rate_limit_id: mockId.rate_limits.new[1] as RateLimitId,
+                            rate_limit_id: mockId.rate_limits.new[1] as RateLimitsId,
                             client_id: mockValidClientId,
                             user_id: mockValidUserId,
                             day: '2025-02-05',
@@ -267,7 +267,7 @@ describe('Unit-tests (repository), priority: entity RateLimits', () => {
                 test('Return entries by day, params: <DemoLimitsCountDTO>', async () => {
                     const mockResult: DemoLimits[] = [ 
                         {
-                            demo_limit_id: 2 as DemoLimitId,
+                            demo_limit_id: 2 as DemoLimitsId,
                             day: mockParam_dto.day,
                             count: 1,
                             last_modified: '2025-02-05T04:17:05.000Z'
@@ -317,7 +317,7 @@ describe('Unit-tests (repository), priority: entity RateLimits', () => {
 
                 test('Return data for created entry, params: <Partial<DemoLimits>>', async () => {
                     const mockResult: DemoLimitsResponseDTO = {
-                        demo_limit_id: 1 as DemoLimitId,
+                        demo_limit_id: 1 as DemoLimitsId,
                         day: mockDate,
                         count: 1,
                         last_modified: mockTimestamp
@@ -365,7 +365,7 @@ describe('Unit-tests (repository), priority: entity RateLimits', () => {
 
                 test('Return data of changed entry, params: valid <day>', async () => {
                     const mockResult: DemoLimitsResponseDTO | null = {
-                        demo_limit_id: 1 as DemoLimitId,
+                        demo_limit_id: 1 as DemoLimitsId,
                         day: '2025-01-01',
                         count: 1,
                         last_modified: mockTimestamp

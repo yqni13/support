@@ -1,10 +1,10 @@
-## How to migrate?
+## 🆕 $\textsf{\color{salmon}How to add new migration}$
 
-Create a new migration file (name scheme: <target-table>-update<serial_number>.migrations).<br>This will be saved automatically at [migrations](../../migrations/).
+Create a new migration file (ignore or follow name scheme: <target-table>-update<serial_number>.migrations).<br>
+This will be saved automatically at [migrations](../../migrations/).
 ```sh
-npm run migrate create <serial_number>-<target-table>-<create/update/delete>.migrations
+npx node-pg-migrate create <serial_number>-<target-table>-<create/update/delete>.migrations
 ```
-
 
 Adapt new migration file on `up` (target changes) and `down` (reset to current state).
 ```sh
@@ -20,39 +20,34 @@ module.exports = {
 module.exports = {
     shorthands,
     down: (pgm) => {
-        // reset to current state
+        // reset to original state
     }
 }
 ```
 
-Since a central db is in use for this project, the migration can be executed locally.
+<br>
 
-Set connection string as environment variable by the following command in powershell<br>
-local database:
+## ▶️ $\textsf{\color{salmon}How to run migrations}$
+
+### Since a central db is in use for this project, the migration can be executed locally.
+
+<br>
+
+Set connection string as environment variable in powershell for `local database`:
 ```sh
 path> $env:DATABASE_URL = "postgresql://<user>:<password>@<host>:<port>/<db>"
 ```
-hosted database (like Neon):
+... or for `hosted database` (like Neon):
 ```sh
 path> $env:DATABASE_URL = "postgresql://<user>:<password>@<host>/<db>?sslmode=require"
 ```
 
-(direction: 'up' or 'down')
-for specific number of migrations (going from youngest to oldest):
+To run migration (direction: 'up' or 'down')
+specify number of migrations (going from youngest to oldest) or ignore `count` to run all:
 
 ```sh
-path> npx node-pg-migrate <direction> <count> #==> npx node-pg-migrate down 9999
-or
-path> npm run migrate-<direction> <count>
+path> npx node-pg-migrate <direction> <count>
+
+#example (all migrations): npx node-pg-migrate up
+#example (precise number): npx node-pg-migrate down 1<br>
 ```
-
-or, running all migrations including specified one (up/down, migration file `without .js`):
-
-```sh
-path> $env:DATABASE_URL = <local_or_cloud_version>
-path> npx node-pg-migrate <direction> <migration-number>_<migration-name>
-```
-
-<br>
-
-Check database on correct changes and reset type in `package.json`.

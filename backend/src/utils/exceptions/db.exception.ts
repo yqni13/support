@@ -39,3 +39,9 @@ export class DBQueryErrorException extends DBException {
         super('support-dbquery-error', data);
     }
 }
+
+export class DBConstraintErrorException extends DBException {
+    constructor(message: string, data?: any) {
+        super(message, data);
+    }
+}

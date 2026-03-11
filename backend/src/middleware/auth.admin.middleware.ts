@@ -17,7 +17,7 @@ export function authAdmin() {
                 throw new MissingApiKeyException('support-missing-admin-auth');
             }
 
-            const hasValidKey = adminKey.trim() === secrets.ADMIN_API.trim();
+            const hasValidKey = adminKey.trim() === secrets.ADMIN_KEY.trim();
             if(!hasValidKey) {
                 throw new InvalidApiKeyException('support-invalid-admin-auth');
             }

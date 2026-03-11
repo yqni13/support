@@ -15,7 +15,7 @@ describe('Unit-tests (middleware), priority: fn authAdmin()', () => {
     describe('Testing valid fn calls', () => {
 
         test('Verfiy admin, params: valid <api-key>', async () => {
-            const mockApiKey = secrets.ADMIN_API.trim();
+            const mockApiKey = secrets.ADMIN_KEY.trim();
             req.header.mockReturnValue(mockApiKey);
 
             // middleware == factory fn returning express fn => fn(req, res, next)

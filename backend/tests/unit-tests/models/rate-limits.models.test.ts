@@ -2,15 +2,15 @@ import { RateLimitsCreateDTO } from "../../../src/dtos/rate-limits.dto";
 import demoLimitsModel from "../../../src/models/demo-limits.model";
 import rateLimitsModel from "../../../src/models/rate-limits.model";
 import { ClientsId } from "../../../src/repositories/interfaces/clients.entity.interface";
-import { DemoLimitId, DemoLimits } from "../../../src/repositories/interfaces/demo-limits.entity.interface";
-import { RateLimitId, RateLimits } from "../../../src/repositories/interfaces/rate-limits.entity.interface";
+import { DemoLimitsId, DemoLimits } from "../../../src/repositories/interfaces/demo-limits.entity.interface";
+import { RateLimitsId, RateLimits } from "../../../src/repositories/interfaces/rate-limits.entity.interface";
 import { UsersId } from "../../../src/repositories/interfaces/users.entity.interface";
 import * as CommonUtils from "../../../src/utils/common.utils";
 import { default as mockId } from "../../mock-data/id.mock-data.json";
 
 describe('Unit-tests (model), priority: entity RateLimits', () => {
 
-    const testValidRateLimitId = mockId.rate_limits.valid[0] as RateLimitId;
+    const mockValidRateLimitId = mockId.rate_limits.valid[0] as RateLimitsId;
     const mockValidClientId = mockId.clients.valid[0] as ClientsId;
     const mockValidUserId = mockId.users.valid[0] as UsersId;
 
@@ -21,7 +21,7 @@ describe('Unit-tests (model), priority: entity RateLimits', () => {
             test('Sum up count of entries, params: <RateLimits>[].length === 2', () => {
                 const mockParam_data: RateLimits[] = [
                     {
-                        rate_limit_id: testValidRateLimitId,
+                        rate_limit_id: mockValidRateLimitId,
                         client_id: mockValidClientId,
                         user_id: mockValidUserId,
                         day: '2025-01-01',
@@ -29,9 +29,9 @@ describe('Unit-tests (model), priority: entity RateLimits', () => {
                         last_modified: '2025-01-01T14:00:05.000Z'
                     },
                     {
-                        rate_limit_id: mockId.rate_limits.valid[1] as RateLimitId,
+                        rate_limit_id: mockId.rate_limits.valid[1] as RateLimitsId,
                         client_id: mockValidClientId,
-                        user_id: 'another_valid_users_test_id' as UsersId,
+                        user_id: mockId.users.valid[1] as UsersId,
                         day: '2025-01-01',
                         count: 2,
                         last_modified: '2025-01-01T14:00:05.000Z'
@@ -47,7 +47,7 @@ describe('Unit-tests (model), priority: entity RateLimits', () => {
             test('Sum up count of entries, params: <RateLimits>[].length === 1', () => {
                 const mockParam_data: RateLimits[] = [
                     {
-                        rate_limit_id: testValidRateLimitId,
+                        rate_limit_id: mockValidRateLimitId,
                         client_id: mockValidClientId,
                         user_id: mockValidUserId,
                         day: '2025-01-01',
@@ -112,7 +112,7 @@ describe('Unit-tests (model), priority: entity DemoLimits', () => {
             test('Sum up count of entries, params: <DemoLimits>[].length === 1', () => {
                 const mockParam_data: DemoLimits[] = [
                     {
-                        demo_limit_id: 1 as DemoLimitId,
+                        demo_limit_id: 1 as DemoLimitsId,
                         day: '2025-01-01',
                         count: 4,
                         last_modified: '2025-01-01T14:00:05.000Z'

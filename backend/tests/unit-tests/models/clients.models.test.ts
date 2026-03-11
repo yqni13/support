@@ -9,7 +9,7 @@ import { Clients, ClientsId } from "../../../src/repositories/interfaces/clients
 import { ApiKeyStatus } from "../../../src/utils/enums/api-key-status.enum";
 
 const mockValidClientId = mockId.clients.valid[0] as ClientsId;
-const mockVar_apiKey = clientsModel._generateApiKeyObj();
+const mockVar_apiKey = (clientsModel as any).generateApiKeyObj();
 const mockTimestamp = '2025-01-01T14:00:02.000Z';
 let mockData: Clients = {
     client_id: mockValidClientId,
@@ -70,7 +70,7 @@ describe('Unit-tests (model), priority: entity Clients', () => {
                 };
 
                 jest.spyOn(CommonUtils, "generateUUID").mockReturnValue(mockParam_id);
-                jest.spyOn(clientsModel, "_generateApiKeyObj").mockReturnValue(mockApiKeyObj);
+                jest.spyOn(clientsModel as any, "generateApiKeyObj").mockReturnValue(mockApiKeyObj);
                 jest.spyOn(CommonUtils, "getTimestampUTC").mockReturnValue(mockTimestamp);
 
                 const testFn = clientsModel.generateClientsCreateObj(mockParam_dto);

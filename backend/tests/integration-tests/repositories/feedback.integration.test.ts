@@ -14,15 +14,11 @@ import router from '../../../src/routes/feedback.route';
 import feedbackRatingService from '../../../src/services/feedback-rating.service';
 import feedbackRepository from '../../../src/repositories/feedback.repository';
 import feedbackService from '../../../src/services/feedback.service';
-import { DBQueryErrorException } from '../../../src/utils/exceptions/db.exception';
+import { DBConstraintErrorException, DBQueryErrorException } from '../../../src/utils/exceptions/db.exception';
 import feedbackRatingRepository from '../../../src/repositories/feedback-rating.repository';
 import { ClientsId } from '../../../src/repositories/interfaces/clients.entity.interface';
 import { UsersId } from '../../../src/repositories/interfaces/users.entity.interface';
 import { FeedbackId } from '../../../src/repositories/interfaces/feedback.entity.interface';
-
-const testValidClientId = mockId.clients.valid[0] as ClientsId;
-const testValidUserId = mockId.users.valid[0] as UsersId;
-const testTimestamp = '2025-01-01T14:00:08.000Z';
 
 jest.mock('../../../src/middleware/auth.admin.middleware', () => ({
     authAdmin: jest.fn(() => (req: Request, res: Response, next: NextFunction) => next())
@@ -42,7 +38,10 @@ jest.mock('../../../src/middleware/observe.middleware.ts', () => ({
 
 jest.setTimeout(60000);
 
-const mockValidFeedbackId = mockId.feedback.valid[0] as FeedbackId;
+const testValidFeedbackId = mockId.feedback.valid[0] as FeedbackId;
+const testValidClientId = mockId.clients.valid[0] as ClientsId;
+const testValidUserId = mockId.users.valid[0] as UsersId;
+const testTimestamp = '2025-01-01T14:00:08.000Z';
 
 describe('Integration-tests (repository), priority: entity Feedback', () => {
 
@@ -75,7 +74,7 @@ describe('Integration-tests (repository), priority: entity Feedback', () => {
 
         test('Repository process fn findById(), result: "SUCCESS"', async () => {
             const app = createTestApp([], router, apiUrl);
-            const testParam_id = mockValidFeedbackId;
+            const testParam_id = testValidFeedbackId;
             const testResult: FeedbackResponseDTO | null = {
                 feedback_id: testParam_id,
                 client_id: testValidClientId,
@@ -197,7 +196,6 @@ describe('Integration-tests (repository), priority: entity Feedback', () => {
                 user_email: email,
                 rating: 2,
                 term_accepted: true,
-                message: 'test-feedback-message-updated-client[0]'
             };
             // Test data FeedbackRating => position (count): [1], position (rating_sum): [2]
             const ratingDifference = testParam_dto.rating - dbTestData.getFeedbackInsertSql().values[2];
@@ -208,18 +206,19 @@ describe('Integration-tests (repository), priority: entity Feedback', () => {
             jest.spyOn(CommonUtils, "getTimestampUTC").mockReturnValue(testTimestamp_update);
 
             const testResult: FeedbackResponseDTO = {
-                feedback_id: mockValidFeedbackId,
+                feedback_id: testValidFeedbackId,
                 client_id: testValidClientId,
                 user_id: testValidUserId,
                 rating: testParam_dto.rating,
                 rating_average_new: mockResult_average_rating,
                 term_accepted: testParam_dto.term_accepted,
-                message: testParam_dto.message,
                 last_modified: testTimestamp_update,
-                created_on: testTimestamp
+                created_on: testTimestamp,
             };
 
             await dbTestSetup.addTestData();
+            // Update reviewed_on from NULL to value, otherwise WHERE clause sets blocked:true => throw exception.
+            await feedbackService.updateFeedbackReview(testValidFeedbackId);
             const testResponse_Feedback = await request(app)
                 .post(`${apiUrl}/create`)
                 .send(testParam_dto);
@@ -241,7 +240,7 @@ describe('Integration-tests (repository), priority: entity Feedback', () => {
                 term_accepted: true,
                 message: 'test-feedback-message-new-client[1]'
             };
-            const mockError = 'Feedback-upsert-mock-error';
+            const mockError = 'feedback-upsert-mock-error';
 
             jest.spyOn(CommonUtils, 'logError').mockImplementation();
             jest.spyOn(CommonUtils, "getTimestampUTC").mockReturnValue(testTimestamp);
@@ -283,9 +282,45 @@ describe('Integration-tests (repository), priority: entity Feedback', () => {
             expect(testResponse_FeedbackRating).toBe(null);
         })
 
+        test('Repository process fn upsertInTa(), result: Exception on `Blocked`', async () => {
+            const testParam_dto: FeedbackCreateDTO = {
+                client_id: mockId.clients.valid[1] as ClientsId,
+                user_id: testValidUserId,
+                rating: 3,
+                term_accepted: true,
+                message: 'test-feedback-message-new-client[1]'
+            };
+            const testFeedbackId = testValidFeedbackId;
+            const testResult: FeedbackResponseDTO | null = {
+                feedback_id: testFeedbackId,
+                client_id: testValidClientId,
+                user_id: testValidUserId,
+                rating: dbData_Feedback[2],
+                term_accepted: dbData_Feedback[3],
+                message: dbData_Feedback[4],
+                last_modified: testTimestamp,
+                created_on: testTimestamp,
+                blocked: true
+            };
+            const mockError = 'support-constraint-feedback';
+
+            jest.spyOn(CommonUtils, "getTimestampUTC").mockReturnValue(testTimestamp);
+            jest.spyOn(feedbackRepository, 'upsertInTa').mockResolvedValue(testResult);
+
+            await dbTestSetup.addTestData();
+            await expect(() => feedbackService.createFeedback(testParam_dto))
+                .rejects.toThrow(new DBConstraintErrorException(mockError));
+
+            const testCompareResult = await feedbackService.getFeedbackById(testFeedbackId);
+
+            expect(testCompareResult?.rating).not.toBe(testParam_dto.rating);
+            expect(testCompareResult?.message).not.toBe(testParam_dto.message);
+            expect(testCompareResult?.last_modified).toBe(testResult.last_modified);
+        })
+
         test('Repository process fn updateReview(), result: "SUCCESS"', async () => {
             const app = createTestApp([], router, apiUrl);
-            const testParam_id = mockValidFeedbackId;
+            const testParam_id = testValidFeedbackId;
             const mockTimestamp = '2026-01-01T14:00:08.000Z';
             // Test without changing created_on this time to see how .spyOn works with multiple calls in process.
             jest.spyOn(CommonUtils, "getTimestampUTC")
@@ -335,7 +370,7 @@ describe('Integration-tests (repository), priority: entity Feedback', () => {
             describe('Route: GET/id/:id', () => {
 
                 test('Params: <id>, validator: fn isInt() by value as string', async () => {
-                    const testParam_id = 'invalid-id';
+                    const testParam_id = 'invalid-id-number';
                     const testError = structuredClone(mockError);
                     testError['value'] = testParam_id;
 
@@ -350,7 +385,7 @@ describe('Integration-tests (repository), priority: entity Feedback', () => {
             describe('Route: PUT/update/review/:id', () => {
 
                 test('Params: <id>, validator: fn isInt() by value as string', async () => {
-                    const testParam_id = 'invalid-id';
+                    const testParam_id = 'invalid-id-number';
                     const testError = structuredClone(mockError);
                     testError['value'] = testParam_id;
 
@@ -385,7 +420,7 @@ describe('Integration-tests (repository), priority: entity Feedback', () => {
 
                 test('Params: <client_id>, validator: fn isUUID() by invalid value', async () => {
                     let testParam_dto: FeedbackFilterDTO = {
-                        client_id: [testValidClientId, 'invalid-id' as ClientsId]
+                        client_id: [testValidClientId, 'invalid-id'] as ClientsId[]
                     }
                     const testError = [{
                         type: 'field',

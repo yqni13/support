@@ -2,7 +2,6 @@ import { body, param, ValidationChain } from 'express-validator';
 import * as CommonValidators from "../common.validation";
 import { Flag } from '../../utils/enums/flag.enum';
 import { TicketStatus } from '../../utils/enums/ticket-status.enum';
-import { SingleOrArray } from '../../utils/custom-types.utils';
 import { CommonExceptionMessage as Message } from '../../utils/enums/common-exception-messages.enum';
 import { TicketOption } from '../../utils/enums/ticket-option.enum';
 
@@ -36,21 +35,21 @@ export const postTicketsSearchSchema: ValidationChain[] = [
         .withMessage('support-invalid-max#title!100')
         .optional(),
     body('status')
-        .custom((content: SingleOrArray<TicketStatus>) => {
+        .custom((content: TicketStatus | TicketStatus[]) => {
             content = Array.isArray(content) ? content : [content];
             content.forEach((status) => CommonValidators.validateEnum(status, TicketStatus, 'ticketStatus'))
             return true;
         })
         .optional(),
     body('option')
-        .custom((content: SingleOrArray<TicketOption>) => {
+        .custom((content: TicketOption | TicketOption[]) => {
             content = Array.isArray(content) ? content : [content];
             content.forEach((option) => CommonValidators.validateEnum(option, TicketOption, 'ticketOption'))
             return true;
         })
         .optional(),
     body('flag')
-        .custom((content: undefined | null | SingleOrArray<Flag>) => {
+        .custom((content: undefined | null | Flag | Flag[]) => {
             // Manual check for undefined/null necessary because null is valid value.
             if(content === null || content === undefined) {
                 return true;

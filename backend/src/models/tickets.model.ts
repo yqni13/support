@@ -8,7 +8,7 @@ import { PermissionException } from "../utils/exceptions/auth.exception";
 class TicketsModel {
     async generateTicketEntity(dto: TicketsCreateDTO, files: Express.Multer.File[] | null): Promise<Tickets> {
         const timestamp = CommonUtils.getTimestampUTC();
-        const newId = CommonUtils.generateUUID() as TicketsId;
+        const newId = CommonUtils.generateUUID<TicketsId>();
         let paths: string[] | null = null;
         if(files) {
             const filesService = new FilesService(files, 'tickets');

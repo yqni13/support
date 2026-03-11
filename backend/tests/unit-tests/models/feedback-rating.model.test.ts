@@ -2,12 +2,10 @@ import { FeedbackRatingCreateDTO, FeedbackRatingExtendedResponseDTO, FeedbackRat
 import feedbackRatingModel from "../../../src/models/feedback-rating.model";
 import { ClientsId } from "../../../src/repositories/interfaces/clients.entity.interface";
 import { FeedbackRating } from "../../../src/repositories/interfaces/feedback-rating.entity.interface";
-import { UsersId } from "../../../src/repositories/interfaces/users.entity.interface";
 import * as CommonUtils from "../../../src/utils/common.utils";
 import * as mockId from "../../mock-data/id.mock-data.json";
 
 const mockValidClientId = mockId.clients.valid[0] as ClientsId;
-const mockValidUserId = mockId.users.valid[0] as UsersId;
 const mockTimestamp = '2025-01-01T14:00:09.000Z';
 
 describe('Unit-tests (model), priority: entity FeedbackRating', () => {

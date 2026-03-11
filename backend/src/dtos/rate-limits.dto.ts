@@ -1,5 +1,5 @@
 import { ClientsId } from "../repositories/interfaces/clients.entity.interface"
-import { RateLimitId } from "../repositories/interfaces/rate-limits.entity.interface"
+import { RateLimitsId } from "../repositories/interfaces/rate-limits.entity.interface"
 import { UsersId } from "../repositories/interfaces/users.entity.interface"
 
 export interface RateLimitsCountDTO {
@@ -21,7 +21,7 @@ export interface RateLimitsUpdateDTO {
 }
 
 export interface RateLimitsResponseDTO {
-    rate_limit_id: RateLimitId,
+    rate_limit_id: RateLimitsId,
     client_id: ClientsId,
     user_id: UsersId,
     day: string,

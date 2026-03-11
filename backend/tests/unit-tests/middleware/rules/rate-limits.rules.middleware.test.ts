@@ -19,10 +19,11 @@ import { MaintenanceMode } from "../../../../src/utils/enums/maintenance-mode.en
 import { TicketOption } from "../../../../src/utils/enums/ticket-option.enum";
 import { ClientsId } from "../../../../src/repositories/interfaces/clients.entity.interface";
 import { UsersId } from "../../../../src/repositories/interfaces/users.entity.interface";
+import { TicketsId } from "../../../../src/repositories/interfaces/tickets.entity.interface";
 
 // Ensure correct type by converting secret to number via unary + operator.
 import { secrets } from "../../../../src/utils/secrets.utils"
-import { TicketsId } from "../../../../src/repositories/interfaces/tickets.entity.interface";
+import { MetaId } from "../../../../src/repositories/interfaces/meta.entity.interface";
 
 describe('Unit-tests (middleware), priority: implementation RateLimitsRule', () => {
 
@@ -311,7 +312,7 @@ describe('Unit-tests (middleware), priority: implementation RateLimitsRule', () 
                     retryAfter: mockRetryAfter,
                     penalty: {
                         type: Violation.MAINTENANCE_TRAFFIC,
-                        id: 1,
+                        id: mockId.meta.valid[0] as MetaId,
                         penaltyValue: MaintenanceMode.T011
                     }
                 };

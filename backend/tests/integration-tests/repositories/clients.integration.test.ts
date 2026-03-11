@@ -115,7 +115,7 @@ describe('Integration-tests (repository), priority: entity Clients', () => {
             const testParam_dto = { name: 'testclient_test_create' };
 
             jest.spyOn(CommonUtils, 'generateUUID').mockReturnValue(testParam_client_id);
-            jest.spyOn(clientsModel, '_generateApiKeyObj').mockReturnValue(testVar_apiKey);
+            jest.spyOn(clientsModel as any, 'generateApiKeyObj').mockReturnValue(testVar_apiKey);
             jest.spyOn(CommonUtils, "getTimestampUTC").mockReturnValue(testTimestamp);
 
             const testResult: ClientsCreateResponseDTO = {
@@ -210,7 +210,7 @@ describe('Integration-tests (repository), priority: entity Clients', () => {
             describe('Route: PUT/status/:id', () => {
 
                 test('Params: <id>, validator: fn isUUID() by invalid id', async () => {
-                    const testParam_id = 'invalid-id';
+                    const testParam_id = 'invalid-UUID' as ClientsId;
                     const testParam_dto: ClientsStatusUpdateDTO = {
                         status: ApiKeyStatus.EXPIRED
                     };
@@ -306,7 +306,7 @@ describe('Integration-tests (repository), priority: entity Clients', () => {
             describe('Route: PUT/status/:id', () => {
 
                 test('Params: <ClientsStatusUpdateDTO>, validator: fn requirePayload() by undefined', async () =>{
-                    const testParam_id = mockId.clients.valid[0];
+                    const testParam_id = mockValidClientId;
                     const testParam_dto = undefined;
                     const testError = structuredClone(mockError);
 

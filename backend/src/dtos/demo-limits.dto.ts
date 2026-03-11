@@ -1,4 +1,4 @@
-import { DemoLimitId } from "../repositories/interfaces/demo-limits.entity.interface"
+import { DemoLimitsId } from "../repositories/interfaces/demo-limits.entity.interface"
 
 export interface DemoLimitsCountDTO {
     day: string
@@ -10,7 +10,7 @@ export interface DemoLimitsUpdateDTO {
 }
 
 export interface DemoLimitsResponseDTO {
-    demo_limit_id: DemoLimitId,
+    demo_limit_id: DemoLimitsId,
     day: string,
     count: number,
     last_modified: string

@@ -11,6 +11,7 @@ import feedbackModel from "../models/feedback.model";
 import feedbackRepository from "../repositories/feedback.repository";
 import { Feedback, FeedbackId } from "../repositories/interfaces/feedback.entity.interface";
 import feedbackRatingService from "./feedback-rating.service";
+import { DBConstraintErrorException } from "../utils/exceptions/db.exception";
 
 class FeedbackService {
     async getFeedbackById(id: FeedbackId): Promise<FeedbackResponseDTO | null> {
@@ -36,6 +37,9 @@ class FeedbackService {
             let dtoUpdateFR: FeedbackRatingUpdateDTO;
             if(!result) {
                 return null;
+            } else if(result.blocked) {
+                // Update on feedback is not allowed if message exists for entry without being reviewed yet.
+                throw new DBConstraintErrorException('support-constraint-feedback');
             } else if(new Date(result.created_on).getTime() === new Date(entity.created_on!).getTime()) {
                 // New Feedback was created => increase rating_sum.
                 dtoUpdateFR = { count: 1, rating: dto.rating };
@@ -55,7 +59,8 @@ class FeedbackService {
                 };
                 await feedbackRatingService.createFeedbackRatingInTa(client, dtoCreateFR);
             }
-            // Use rating from dto if no other ratings for this client exist.
+            // Delete blocked info and use rating from dto if no other ratings for this client exist.
+            delete result['blocked'];
             return {
                 ...result,
                 rating_average_new: update?.rating_average ?? dto.rating

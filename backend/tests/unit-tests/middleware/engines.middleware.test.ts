@@ -8,11 +8,11 @@ import demoLimitsService from "../../../src/services/demo-limits.service";
 import rateLimitsService from "../../../src/services/rate-limits.service";
 import { Violation } from "../../../src/utils/enums/violations.enum";
 import { default as mockId } from "../../mock-data/id.mock-data.json";
+import { ClientsId } from "../../../src/repositories/interfaces/clients.entity.interface";
+import { UsersId } from "../../../src/repositories/interfaces/users.entity.interface";
 
 // Ensure correct type by converting secret to number via unary + operator.
 import { secrets } from "../../../src/utils/secrets.utils";
-import { ClientsId } from "../../../src/repositories/interfaces/clients.entity.interface";
-import { UsersId } from "../../../src/repositories/interfaces/users.entity.interface";
 
 describe('Unit-tests (middleware), priority: class RateLimitsEngine', () => {
 

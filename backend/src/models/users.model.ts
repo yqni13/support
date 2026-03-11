@@ -7,7 +7,7 @@ class UsersModel {
     generateUserEntity(dto: UsersCreateDTO): Users {
         const timestamp = CommonUtils.getTimestampUTC();
         return {
-            user_id: CommonUtils.generateUUID() as UsersId,
+            user_id: CommonUtils.generateUUID<UsersId>(),
             email: dto.email,
             status: UserStatus.ACTIVE,
             flag: null,

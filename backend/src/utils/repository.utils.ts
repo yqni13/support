@@ -26,7 +26,7 @@ export function mapFilteredQueryValues<T extends Record<string, any>>(dto: T, ta
     const argGroups: string[] = [];
     const timestampObj = {};
     Object.entries(dto).forEach(([key, content]) => {
-        if(key !== 'reviewed_on' && key !== 'last_modified' && key !== 'created_on') {
+        if(key !== 'last_modified' && key !== 'created_on') {
             const valArr = Array.isArray(content) ? content : [content];
             const conditions = valArr.map((value) => {
                 if(value === null) {
@@ -81,7 +81,11 @@ export async function asTransaction<T>(
     } catch(err: any) {
         await client.query('ROLLBACK');
         logError(message, method, err);
-        throw new DBQueryErrorException(err);
+        if(err.error) {
+            throw err;
+        } else {
+            throw new DBQueryErrorException(err);
+        }
     } finally {
         await db.close(client);
     }

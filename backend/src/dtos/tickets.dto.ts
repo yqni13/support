@@ -1,7 +1,6 @@
 import { ClientsId } from "../repositories/interfaces/clients.entity.interface";
 import { TicketsId } from "../repositories/interfaces/tickets.entity.interface";
 import { UsersId } from "../repositories/interfaces/users.entity.interface";
-import { SingleOrArray } from "../utils/custom-types.utils";
 import { DeviceOption } from "../utils/enums/device-option.enum";
 import { Flag } from "../utils/enums/flag.enum";
 import { TicketOption } from "../utils/enums/ticket-option.enum";
@@ -52,12 +51,12 @@ export interface TicketsUpdateDTO {
 }
 
 export interface TicketsFilterDTO {
-    client_id?: SingleOrArray<ClientsId>,
-    user_id?: SingleOrArray<UsersId>,
+    client_id?: ClientsId | ClientsId[],
+    user_id?: UsersId | UsersId[],
     title?: string,
-    status?: SingleOrArray<TicketStatus>,
-    option?: SingleOrArray<TicketOption>,
-    flag?: SingleOrArray<Flag> | null,
+    status?: TicketStatus | TicketStatus[],
+    option?: TicketOption | TicketOption[],
+    flag?: Flag | Flag[] | null,
     last_modified?: string[],
     created_on?: string[]
 }

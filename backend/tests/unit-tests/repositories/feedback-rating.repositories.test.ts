@@ -148,7 +148,7 @@ describe('Unit-tests (repository), priority: entity FeedbackRating', () => {
             test('Return data for multiple existing entries', async () => {
                 const mockData_entry0: FeedbackRating = structuredClone(mockData);
                 const mockData_entry1: FeedbackRating = {
-                    client_id: 'another_clients_test_id' as ClientsId,
+                    client_id: mockId.clients.valid[1] as ClientsId,
                     count: 5,
                     rating_sum: 19,
                     last_modified: mockTimestamp,

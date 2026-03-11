@@ -12,6 +12,7 @@ import { CommonExceptionMessage } from '../../../src/utils/enums/common-exceptio
 import { EnvMode } from '../../../src/utils/enums/env-mode.enum';
 import { DemoMode } from '../../../src/utils/enums/demo-mode.enum';
 import { default as mockId } from "../../mock-data/id.mock-data.json";
+import { secrets } from '../../../src/utils/secrets.utils';
 
 jest.mock('../../../src/middleware/auth.admin.middleware', () => ({
     authAdmin: jest.fn(() =>  (req: Request, res: Response, next: NextFunction) => next())
@@ -195,7 +196,7 @@ describe('Integration-tests (repository), priority: entity Meta', () => {
         })
 
         test('Repository process fn updateMaintenance(), result: "SUCCESS"', async () => {
-            const testParam_id = mockId.meta.valid[0];
+            const testParam_id = testValidMetaId;
             const testParam_data = { maintenance_mode: MaintenanceMode.E013 };
 
             // Mock Utils generated timeStamp for easy comparison.
@@ -225,6 +226,8 @@ describe('Integration-tests (repository), priority: entity Meta', () => {
                 const testParam_dto = { demo_mode: DemoMode.SUCCESS };
 
                 const testResult = { app_version: '0.0.1' };
+
+                jest.replaceProperty(secrets, 'APP_VERSION', '0.0.1');
 
                 await dbTestSetup.addTestData();
                 const testResponse = await request(app)
@@ -367,7 +370,7 @@ describe('Integration-tests (repository), priority: entity Meta', () => {
                 const testedParams = Object.keys(testData) as (keyof typeof testData)[];
 
                 test.each(testedParams)('Params: <%s>, validator: fn notEmpty() by undefined', async (invalidParam) => {
-                    const testParam_id = 1;
+                    const testParam_id = testValidMetaId;
                     let mockParam_dto = structuredClone(testData);
                     delete mockParam_dto[invalidParam];
                     const testError = structuredClone(mockError);
@@ -399,7 +402,7 @@ describe('Integration-tests (repository), priority: entity Meta', () => {
             describe('Route: PUT/info/:id', () => {
 
                 test('Params: <MetaUpdateDTO>, validator: fn requirePayload() by undefined', async () =>{
-                    const testParam_id = 1;
+                    const testParam_id = testValidMetaId;
                     const testParam_dto = undefined;
                     const testError = structuredClone(mockError);
 
@@ -417,7 +420,7 @@ describe('Integration-tests (repository), priority: entity Meta', () => {
             describe('Route: PUT/maintenance/:id', () => {
 
                 test('Params: <MaintenanceUpdateDTO>, validator: fn requirePayload() by undefined', async () =>{
-                    const testParam_id = mockId.meta.valid[0];
+                    const testParam_id = testValidMetaId;
                     const testParam_dto = undefined;
                     const testError = structuredClone(mockError);
 

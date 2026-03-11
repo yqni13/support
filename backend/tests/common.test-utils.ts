@@ -2,6 +2,7 @@ import { QueryResult } from "pg";
 import { DBConnection } from "../src/configs/db";
 import { NextFunction, Request, Response } from "express";
 import { UsersId } from "../src/repositories/interfaces/users.entity.interface";
+import { ClientsId } from "../src/repositories/interfaces/clients.entity.interface";
 
 type MockClient = {
     query: jest.Mock
@@ -41,7 +42,7 @@ export function disableConsoleMessages() {
 /**
  * @description Used in combination with createTestApp() to mock client authentication for flexible testing.
  */
-export function injectTestClientId(clientId: string) {
+export function injectTestClientId(clientId: ClientsId) {
     return function (req: Request, res: Response, next: NextFunction) {
         (req as any).apiClients = { client_id: clientId };
         next();

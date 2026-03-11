@@ -15,7 +15,7 @@ describe('Unit-tests (model), priority: entity Users', () => {
         describe('Testing valid fn calls', () => {
 
             test('Generate new user object, params: valid <id, dto>', () => {
-                const mockParam_id = mockId.users.valid[0];
+                const mockParam_id = mockValidUserId;
                 const mockParam_dto: UsersCreateDTO = {
                     email: 'valid.user@test.com'
                 };

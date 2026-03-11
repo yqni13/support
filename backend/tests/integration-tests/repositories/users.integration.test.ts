@@ -24,7 +24,7 @@ import app from '../../../src/app';
 
 jest.setTimeout(60000);
 
-const mockValidUserId = mockId.users.valid[0] as UsersId;
+const testValidUserId = mockId.users.valid[0] as UsersId;
 const testTimestamp = '2025-01-01T14:00:03.000Z';
 
 describe('Integration-tests (repository), priority: entity Users', () => {
@@ -50,7 +50,7 @@ describe('Integration-tests (repository), priority: entity Users', () => {
     describe('Testing valid fn calls', () => {
 
         test('Repository process fn findById(), result: "SUCCESS"', async () => {
-            const testParam_id = mockValidUserId;
+            const testParam_id = testValidUserId;
             const testResult: UsersResponseDTO = {
                 user_id: testParam_id,
                 email: 'max.mustermann@yqni13.com',
@@ -71,7 +71,7 @@ describe('Integration-tests (repository), priority: entity Users', () => {
         test('Repository process fn findByEmail(), result: "SUCCESS"', async () => {
             const testParam_email = 'max.mustermann@yqni13.com';
             const testResult: UsersResponseDTO = {
-                user_id: mockValidUserId,
+                user_id: testValidUserId,
                 email: testParam_email,
                 status: UserStatus.ACTIVE,
                 flag: null,
@@ -88,7 +88,7 @@ describe('Integration-tests (repository), priority: entity Users', () => {
         })
 
         test('Repository process fn findAll(), result: "SUCCESS"', async () => {
-            const testParam_id = mockValidUserId;
+            const testParam_id = testValidUserId;
             const testResult: Users[] = [
                 {
                     user_id: mockId.users.valid[1] as UsersId,
@@ -138,7 +138,7 @@ describe('Integration-tests (repository), priority: entity Users', () => {
                 status: UserStatus.ACTIVE
             };
             const testResult: UsersResponseDTO[] = [{
-                user_id: mockValidUserId,
+                user_id: testValidUserId,
                 email: 'max.mustermann@yqni13.com',
                 status: UserStatus.ACTIVE,
                 flag: null,
@@ -163,7 +163,7 @@ describe('Integration-tests (repository), priority: entity Users', () => {
                 last_modified: ['2024-12-01T10:00:00.000Z', '2025-12-01T14:00:00.000Z']
             };
             const testResult: UsersResponseDTO[] = [{
-                user_id: mockValidUserId,
+                user_id: testValidUserId,
                 email: 'max.mustermann@yqni13.com',
                 status: UserStatus.ACTIVE,
                 flag: null,
@@ -210,7 +210,7 @@ describe('Integration-tests (repository), priority: entity Users', () => {
         })
 
         test('Repository process fn update(), result: "SUCCESS"', async () => {
-            const testParam_id = mockId.users.valid[0];
+            const testParam_id = testValidUserId;
             const testParam_dto: Partial<Users> = {
                 email: 'user@test.com',
                 status: UserStatus.ACTIVE,
@@ -236,7 +236,7 @@ describe('Integration-tests (repository), priority: entity Users', () => {
         })
 
         test('Repository process fn updateFlag(), result: "SUCCESS"', async () => {
-            const testParam_id = mockValidUserId;
+            const testParam_id = testValidUserId;
             const testParam_dto: UsersFlagUpdateDTO = {
                 flag: Flag.WARNING
             };
@@ -268,7 +268,7 @@ describe('Integration-tests (repository), priority: entity Users', () => {
             describe('Route: GET/id/:id', () => {
 
                 test('Params: <id>, validator: fn isUUID() by invalid id', async () => {
-                    const testParam_id = 'invalid-id';
+                    const testParam_id = 'invalid-UUID';
                     const testError = {
                         type: 'field',
                         value: testParam_id,
@@ -288,7 +288,7 @@ describe('Integration-tests (repository), priority: entity Users', () => {
             describe('Route: PUT/update/:id', () => {
 
                 test('Params: <id>, validator: fn isUUID() by invalid id', async () => {
-                    const testParam_id = 'invalid-id';
+                    const testParam_id = 'invalid-UUID';
                     const testParam_dto: UsersUpdateDTO = {
                         email: 'new-user@test.com',
                         status: UserStatus.ACTIVE,
@@ -335,7 +335,7 @@ describe('Integration-tests (repository), priority: entity Users', () => {
                 const testedParams = Object.keys(testData) as (keyof typeof testData)[];
 
                 test.each(testedParams)('Params: <%s>, validator: fn notEmpty() by undefined', async (invalidParam) => {
-                    const testParam_id = mockId.users.valid[0];
+                    const testParam_id = testValidUserId;
                     let mockParam_dto = structuredClone(testData);
                     delete mockParam_dto[invalidParam];
 
@@ -412,7 +412,7 @@ describe('Integration-tests (repository), priority: entity Users', () => {
             describe('Route: PUT/update/:id', () => {
 
                 test('Params: <UsersUpdateDTO>, validator: fn requirePayload() by undefined', async () =>{
-                    const testParam_id = mockId.users.valid[0];
+                    const testParam_id = testValidUserId;
                     const testParam_dto = undefined;
                     const testError = structuredClone(mockError);
 

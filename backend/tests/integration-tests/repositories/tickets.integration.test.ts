@@ -171,7 +171,7 @@ describe('Integration-tests (repository), priority: entity Tickets', () => {
 
         test('Repository process fn findByFilter(), params: <user_id[], status> result: "SUCCESS"', async () => {
             const testParam_dto: TicketsFilterDTO = {
-                user_id: [testValidUserId, mockId.users.invalid[0] as UsersId],
+                user_id: [testValidUserId, mockId.users.invalid[0]] as UsersId[],
                 status: TicketStatus.ISSUED
             };
             const testResult: TicketsResponseDTO[] = [
@@ -611,7 +611,7 @@ describe('Integration-tests (repository), priority: entity Tickets', () => {
         })
 
         test('Repository process fn delete() with existing data for resource_paths, result: "SUCCESS"', async () => {
-            const testParam_id = mockId.tickets.valid[0];
+            const testParam_id = testValidTicketId;
             const testResult = true;
 
             jest.spyOn(ticketsModel, 'isPermittedToDelete').mockReturnValue(true);
@@ -776,7 +776,7 @@ describe('Integration-tests (repository), priority: entity Tickets', () => {
             describe('Route: GET/id/:id', () => {
 
                 test('Params: <id>, validator: fn isUUID() by invalid id', async () => {
-                    const testParam_id = 'invalid-id';
+                    const testParam_id = 'invalid-UUID';
                     const testError = structuredClone(mockError);
                     testError['value'] = testParam_id;
 
@@ -791,7 +791,7 @@ describe('Integration-tests (repository), priority: entity Tickets', () => {
             describe('Route: PUT/update/:id', () => {
 
                 test('Params: <id>, validator: fn isUUID() by invalid id', async () => {
-                    const testParam_id = 'invalid-id';
+                    const testParam_id = 'invalid-UUID';
                     const testParam_dto: TicketsUpdateDTO = {
                         status: TicketStatus.ACTIVE,
                         option: TicketOption.SUPPORT,
@@ -814,7 +814,7 @@ describe('Integration-tests (repository), priority: entity Tickets', () => {
             describe('Route: DELETE/delete/:id', () => {
 
                 test('Params: <id>, validator: fn isUUID() by invalid id', async () => {
-                    const testParam_id = 'invalid-id';
+                    const testParam_id = 'invalid-UUID';
                     const testError = structuredClone(mockError);
                     testError['value'] = testParam_id;
 
@@ -844,7 +844,7 @@ describe('Integration-tests (repository), priority: entity Tickets', () => {
 
                 test('Params: <client_id>, validator: fn isUUID() by invalid value', async () => {
                     let testParam_dto: TicketsFilterDTO = {
-                        client_id: [mockId.clients.valid[0], 'invalid-id'] as ClientsId[]
+                        client_id: [testValidClientId, 'invalid-id'] as ClientsId[]
                     }
                     const testError = [{
                         type: 'field',
@@ -864,7 +864,7 @@ describe('Integration-tests (repository), priority: entity Tickets', () => {
 
                 test('Params: <user_id>, validator: fn isUUID() by invalid value', async () => {
                     let testParam_dto: TicketsFilterDTO = {
-                        user_id: ['invalid-id-0', mockId.users.valid[0], 'invalid-id-1'] as UsersId[]
+                        user_id: ['invalid-id-0', testValidUserId, 'invalid-id-1'] as UsersId[]
                     }
                     const testError = [
                         {
@@ -1040,10 +1040,10 @@ describe('Integration-tests (repository), priority: entity Tickets', () => {
 
             describe('Route: PUT/update/:id', () => {
 
-                let testParam_id: string;
+                let testParam_id: TicketsId;
                 let testData: Partial<TicketsUpdateDTO>;
                 beforeEach(() => {
-                    testParam_id = mockId.tickets.invalid[0];
+                    testParam_id = mockId.tickets.invalid[0] as TicketsId;
                     testData = {
                         status: TicketStatus.ACTIVE,
                         option: TicketOption.SUPPORT,
@@ -1222,7 +1222,7 @@ describe('Integration-tests (repository), priority: entity Tickets', () => {
             describe('Route: PUT/update/:id', () => {
 
                 test('Params: <TicketsUpdateDTO>, validator: fn hasBodyPayload() by undefined', async () =>{
-                    const testParam_id = mockId.tickets.valid[0];
+                    const testParam_id = testValidTicketId;
                     const testParam_dto = undefined;
 
                     jest.spyOn(CommonUtils, 'logError').mockImplementation();
