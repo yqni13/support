@@ -1,5 +1,8 @@
 import { QueryResult } from "pg";
 import { DBConnection } from "../src/configs/db";
+import { NextFunction, Request, Response } from "express";
+import { UsersId } from "../src/repositories/interfaces/users.entity.interface";
+import { ClientsId } from "../src/repositories/interfaces/clients.entity.interface";
 
 type MockClient = {
     query: jest.Mock
@@ -34,4 +37,24 @@ export function mapMockDbClient(mockResult: any, mockBoolean: boolean = false, m
 export function disableConsoleMessages() {
     jest.spyOn(console, 'info').mockImplementation();
     jest.spyOn(console, 'debug').mockImplementation();
+}
+
+/**
+ * @description Used in combination with createTestApp() to mock client authentication for flexible testing.
+ */
+export function injectTestClientId(clientId: ClientsId) {
+    return function (req: Request, res: Response, next: NextFunction) {
+        (req as any).apiClients = { client_id: clientId };
+        next();
+    };
+}
+
+/**
+ * @description Used in combination with createTestApp() to mock user authentication for flexible testing.
+ */
+export function injectTestUserId(userId: UsersId) {
+    return function (req: Request, res: Response, next: NextFunction) {
+        (req as any).apiUsers = { user_id: userId };
+        next();
+    };
 }

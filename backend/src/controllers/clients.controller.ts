@@ -7,6 +7,7 @@ import {
     ClientsStatusUpdateDTO
 } from "../dtos/clients.dto";
 import clientsService from "../services/clients.service";
+import { ClientsId } from "../repositories/interfaces/clients.entity.interface";
 
 class ClientsController {
     async getClientStatus(req: Request, res: Response, next: NextFunction) {
@@ -34,7 +35,7 @@ class ClientsController {
     async patchClientStatus(req: Request, res: Response, next: NextFunction) {
         try {
             checkValidation(req);
-            const id: string = req.params.id;
+            const id = req.params.id as ClientsId;
             const dto: ClientsStatusUpdateDTO = req.body;
             const response: ClientsStatusResponseDTO | null = await clientsService.updateClientStatus(id, dto);
             res.json(response);

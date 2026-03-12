@@ -94,3 +94,4 @@ Basic description: `<base>.<subsuffix?>.<suffix>.<ending>` [specific always sing
 |------------------------|-----------------------------|------------------------------|
 | S_ID                   | Service Identification      | 'artdv', 'tava'              |
 | Desc                   | Description                 | --                           |
+| Ta                     | Transaction                 | short form for fn naming     |

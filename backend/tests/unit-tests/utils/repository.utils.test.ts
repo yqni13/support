@@ -1,8 +1,11 @@
+import { DBConnection } from "../../../src/configs/db";
 import { TicketsFilterDTO } from "../../../src/dtos/tickets.dto";
 import { TimestampFilters } from "../../../src/repositories/interfaces/common.repository.interface"
 import { Flag } from "../../../src/utils/enums/flag.enum";
 import { TicketStatus } from "../../../src/utils/enums/ticket-status.enum";
+import { DBQueryErrorException } from "../../../src/utils/exceptions/db.exception";
 import * as RepoUtils from "../../../src/utils/repository.utils";
+import * as CommonUtils from "../../../src/utils/common.utils";
 
 describe('Unit-tests (utils), priority: synonym RepoUtils', () => {
 
@@ -102,6 +105,58 @@ describe('Unit-tests (utils), priority: synonym RepoUtils', () => {
             };
 
             expect(testFn).toMatchObject(mockResult);
+        })
+
+        test('Fn asTransaction(), params: <message, method, fn()> for successful transaction', async () => {
+            const mockParam_message = 'DB ERROR ON REPO-UTILS TRANSACTION';
+            const mockParam_method = 'SUPPORT_RepoUtils_asTransaction';
+            const mockQuery = jest.fn();
+            const mockClient = { query: mockQuery };
+            const mockDbClose = jest.fn();
+            const mockDbConnect = jest.fn().mockResolvedValue(mockClient);
+
+            jest.spyOn(DBConnection, 'getInstance').mockReturnValue({
+                connect: mockDbConnect,
+                close: mockDbClose
+            } as any);
+
+            const testResult = 'test-logic-within-transaction';
+            const mockFn = jest.fn().mockResolvedValue(testResult);
+            const testFn = await RepoUtils.asTransaction(mockParam_message, mockParam_method, mockFn);
+
+            expect(mockDbConnect).toHaveBeenCalled();
+            expect(mockQuery).toHaveBeenNthCalledWith(1, 'BEGIN');
+            expect(mockQuery).toHaveBeenNthCalledWith(2, 'COMMIT');
+            expect(mockFn).toHaveBeenCalledWith(mockClient);
+            expect(mockDbClose).toHaveBeenCalledWith(mockClient);
+            expect(testFn).toBe(testResult);
+        })
+    })
+
+    describe('Testing invalid fn calls', () => {
+
+        test('Fn asTransaction(), params: <message, method, fn()> for failed transaction => ROLLBACK', async () => {
+            const mockParam_message = 'DB ERROR ON REPO-UTILS TRANSACTION';
+            const mockParam_method = 'SUPPORT_RepoUtils_asTransaction';
+            const mockQuery = jest.fn();
+            const mockClient = { query: mockQuery };
+            const mockDbClose = jest.fn();
+            const mockDbConnect = jest.fn().mockResolvedValue(mockClient);
+
+            jest.spyOn(DBConnection, 'getInstance').mockReturnValue({
+                connect: mockDbConnect,
+                close: mockDbClose
+            } as any);
+            jest.spyOn(CommonUtils, 'logError').mockImplementation();
+
+            const mockFn = jest.fn().mockRejectedValue(new Error('test-error-rollback'));
+            
+            await expect(RepoUtils.asTransaction(
+                mockParam_message, mockParam_method, mockFn
+            )).rejects.toThrow(DBQueryErrorException);
+            expect(mockQuery).toHaveBeenNthCalledWith(1, 'BEGIN');
+            expect(mockQuery).toHaveBeenNthCalledWith(2, 'ROLLBACK');
+            expect(mockDbClose).toHaveBeenCalledWith(mockClient);
         })
     })
 })

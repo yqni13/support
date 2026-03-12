@@ -16,7 +16,7 @@ const router = Router();
 
 // findById
 router.get(
-    '/by-id/:id',
+    '/id/:id',
     authAdmin(),
     byIdSchema,
     factory(usersController.getUserById)
@@ -24,7 +24,7 @@ router.get(
 
 // findByEmail
 router.get(
-    '/by-email/:email',
+    '/email/:email',
     authAdmin(),
     byEmailSchema,
     factory(usersController.getUserByEmail)

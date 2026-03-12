@@ -22,7 +22,7 @@ const router = Router();
 
 // findById
 router.get(
-    '/by-id/:id',
+    '/id/:id',
     authAdmin(),
     getSchema,
     factory(ticketsController.getTicket)

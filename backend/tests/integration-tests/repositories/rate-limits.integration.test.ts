@@ -12,11 +12,16 @@ import * as CommonUtils from '../../../src/utils/common.utils';
 import rateLimitsService from "../../../src/services/rate-limits.service";
 import demoLimitsService from "../../../src/services/demo-limits.service";
 import { DemoLimitsCountDTO, DemoLimitsResponseDTO } from "../../../src/dtos/demo-limits.dto";
+import { ClientsId } from "../../../src/repositories/interfaces/clients.entity.interface";
+import { UsersId } from "../../../src/repositories/interfaces/users.entity.interface";
+import { RateLimitsId } from "../../../src/repositories/interfaces/rate-limits.entity.interface";
+import { DemoLimitsId } from "../../../src/repositories/interfaces/demo-limits.entity.interface";
 
 jest.setTimeout(60000);
 
-const testValidClientsId = mockId.clients.valid[0];
-const testValidUsersId = mockId.users.valid[0];
+const testValidRateLimitId = mockId.rate_limits.valid[0] as RateLimitsId;
+const testValidClientId = mockId.clients.valid[0] as ClientsId;
+const testValidUserId = mockId.users.valid[0] as UsersId;
 
 describe('Integration-tests (repository), priority: entity RateLimits', () => {
 
@@ -40,7 +45,7 @@ describe('Integration-tests (repository), priority: entity RateLimits', () => {
 
         test('Repository process fn getRateLimitCount(), params: <client_id, day>, result: "SUCCESS"', async () => {
             const dto: RateLimitsCountDTO = {
-                client_id: mockId.clients.valid[0],
+                client_id: testValidClientId,
                 day: '2025-01-01'
             };
 
@@ -66,8 +71,8 @@ describe('Integration-tests (repository), priority: entity RateLimits', () => {
         test('Repository process fn createRateLimit(), result: "SUCCESS"', async () => {
             const testTimestamp = '2025-01-02T14:00:05.000Z';
             const mockParam_dto: RateLimitsCreateDTO = {
-                client_id: testValidClientsId,
-                user_id: testValidUsersId
+                client_id: testValidClientId,
+                user_id: testValidUserId
             };
             const dateUTC = CommonUtils.getDateUTC(new Date(testTimestamp));
             
@@ -77,9 +82,9 @@ describe('Integration-tests (repository), priority: entity RateLimits', () => {
             await dbTestSetup.addTestData();
             const testResponse = await rateLimitsService.createRateLimit(mockParam_dto);
             const mockResponse: RateLimitsResponseDTO = {
-                rate_limit_id: 2,
-                client_id: testValidClientsId,
-                user_id: testValidUsersId,
+                rate_limit_id: mockId.rate_limits.new[0] as RateLimitsId,
+                client_id: testValidClientId,
+                user_id: testValidUserId,
                 day: '2025-01-02',
                 count: 1,
                 last_modified: testTimestamp
@@ -92,8 +97,8 @@ describe('Integration-tests (repository), priority: entity RateLimits', () => {
         test('Repository process fn updateRateLimit(), result: "SUCCESS"', async () => {
             const testTimestamp = '2025-01-01T22:22:22.000Z';
             const dto: RateLimitsUpdateDTO = {
-                client_id: testValidClientsId,
-                user_id: testValidUsersId
+                client_id: testValidClientId,
+                user_id: testValidUserId
             };
 
             jest.spyOn(CommonUtils, 'getDateUTC').mockReturnValue(testTimestamp);
@@ -102,9 +107,9 @@ describe('Integration-tests (repository), priority: entity RateLimits', () => {
             await dbTestSetup.addTestData();
             const testResponse = await rateLimitsService.updateRateLimit(dto);
             const mockResponse: RateLimitsResponseDTO = {
-                rate_limit_id: 1,
-                client_id: testValidClientsId,
-                user_id: testValidUsersId,
+                rate_limit_id: testValidRateLimitId,
+                client_id: testValidClientId,
+                user_id: testValidUserId,
                 day: '2025-01-01',
                 count: 2,
                 last_modified: testTimestamp
@@ -117,8 +122,8 @@ describe('Integration-tests (repository), priority: entity RateLimits', () => {
         test('Repository process fn updateRateLimit(), result: null', async () => {
             const testTimestamp = '2025-01-02T22:22:22.000Z';
             const dto: RateLimitsUpdateDTO = {
-                client_id: testValidClientsId,
-                user_id: testValidUsersId
+                client_id: testValidClientId,
+                user_id: testValidUserId
             };
 
             jest.spyOn(CommonUtils, 'getDateUTC').mockReturnValue(testTimestamp);
@@ -156,7 +161,7 @@ describe('Integration-tests (repository), priority: entity RateLimits', () => {
             await dbTestSetup.addTestData();
             const testResponse = await demoLimitsService.createDemoLimit();
             const mockResponse: DemoLimitsResponseDTO = {
-                demo_limit_id: 2,
+                demo_limit_id: 2 as DemoLimitsId,
                 day: '2025-01-02',
                 count: 1,
                 last_modified: testTimestamp
@@ -175,7 +180,7 @@ describe('Integration-tests (repository), priority: entity RateLimits', () => {
             await dbTestSetup.addTestData();
             const testResponse = await demoLimitsService.updateDemoLimit();
             const mockResponse: DemoLimitsResponseDTO = {
-                demo_limit_id: 1,
+                demo_limit_id: 1 as DemoLimitsId,
                 day: '2025-01-01',
                 count: 2,
                 last_modified: testTimestamp

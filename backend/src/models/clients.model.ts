@@ -2,7 +2,7 @@ import {
     ClientsCreateDTO,
     ClientsCreateResponseDTO,
 } from "../dtos/clients.dto";
-import { Clients } from "../repositories/interfaces/clients.entity.interface";
+import { Clients, ClientsId } from "../repositories/interfaces/clients.entity.interface";
 import crypto from 'crypto';
 import * as CommonUtils from "../utils/common.utils";
 import { ApiKeyStatus } from "../utils/enums/api-key-status.enum";
@@ -14,7 +14,7 @@ class ClientsModel {
         this.timeMapTargets = ['last_use', 'last_modified', 'created_on'];
     }
 
-    mapToCreateResponseDTO(data: Clients, apiKey: string): ClientsCreateResponseDTO {
+    toClientsCreateResponseDTO(data: Clients, apiKey: string): ClientsCreateResponseDTO {
         data = CommonUtils.mapObjTimestamps(data, this.timeMapTargets);
         return {
             client_id: data.client_id,
@@ -28,7 +28,7 @@ class ClientsModel {
         };
     }
 
-    _generateApiKeyObj(): { keyRaw: string, keyHash: string } {
+    private generateApiKeyObj(): { keyRaw: string, keyHash: string } {
         const keyLength = 42;
         const charset = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
         const bytes = crypto.randomBytes(keyLength);
@@ -43,8 +43,8 @@ class ClientsModel {
     }
 
     generateClientsCreateObj(dto: ClientsCreateDTO): { client: Clients, keyRaw: string } {
-        const id = CommonUtils.generateUUID();
-        const keyObj = this._generateApiKeyObj();
+        const id = CommonUtils.generateUUID<ClientsId>();
+        const keyObj = this.generateApiKeyObj();
         const timestamp = CommonUtils.getTimestampUTC();
         const client: Clients = {
             client_id: id,

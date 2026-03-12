@@ -1,4 +1,4 @@
-import { Clients } from "./interfaces/clients.entity.interface";
+import { Clients, ClientsId } from "./interfaces/clients.entity.interface";
 import { DBConnection } from "../configs/db";
 import { QueryResult } from "pg";
 import { ApiKeyStatus } from "../utils/enums/api-key-status.enum";
@@ -13,7 +13,7 @@ class ClientsRepository implements ICreateRepository<Clients>, IUpdateFlagReposi
         this.table = "clients";
     }
 
-    async findById(id: string): Promise<Clients | null> {
+    async findById(id: ClientsId): Promise<Clients | null> {
         const filterColumn = 'client_id';
         const sql = `SELECT * FROM ${this.table} WHERE ${filterColumn} = $1;`;
         const value = [id];
@@ -94,7 +94,7 @@ class ClientsRepository implements ICreateRepository<Clients>, IUpdateFlagReposi
         }
     }
 
-    async updateFlag(id: string, dto: Partial<Clients>): Promise<Clients | null> {
+    async updateFlag(id: ClientsId, dto: Partial<Clients>): Promise<Clients | null> {
         const filterColumn = "client_id";
         const sql = `UPDATE ${this.table}
         SET flag = $1, last_modified = $2
@@ -118,7 +118,7 @@ class ClientsRepository implements ICreateRepository<Clients>, IUpdateFlagReposi
         }
     }
 
-    async updateStatus(id: string, dto: Partial<Clients>): Promise<Clients | null> {
+    async updateStatus(id: ClientsId, dto: Partial<Clients>): Promise<Clients | null> {
         const filterColumn = "client_id";
         const sql = `UPDATE ${this.table}
         SET status = $1, last_modified = $2
@@ -142,7 +142,7 @@ class ClientsRepository implements ICreateRepository<Clients>, IUpdateFlagReposi
         }
     }
 
-    async updateLastUse(id: string, dto: Partial<Clients>): Promise<Clients | null> {
+    async updateLastUse(id: ClientsId, dto: Partial<Clients>): Promise<Clients | null> {
         const filterColumn = "client_id";
         const sql = `UPDATE ${this.table}
         SET last_use = $1

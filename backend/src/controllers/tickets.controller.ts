@@ -8,12 +8,13 @@ import {
     TicketsUpdateDTO
 } from "../dtos/tickets.dto";
 import ticketsService from "../services/tickets.service";
+import { TicketsId } from "../repositories/interfaces/tickets.entity.interface";
 
 class TicketsController {
     async getTicket(req: Request, res: Response, next: NextFunction) {
         try {
             checkValidation(req);
-            const id = req.params.id;
+            const id = req.params.id as TicketsId;
             const response: TicketsResponseExtendedDTO | null = await ticketsService.getTicketById(id);
             res.json(response);
         } catch(err: any) {
@@ -65,7 +66,7 @@ class TicketsController {
     async patchTicket(req: Request, res: Response, next: NextFunction) {
         try {
             checkValidation(req);
-            const id: string = req.params.id;
+            const id = req.params.id as TicketsId;
             const dto: TicketsUpdateDTO = req.body;
             const response: TicketsResponseDTO | null = await ticketsService.updateTicket(id, dto);
             res.json(response);
@@ -77,7 +78,7 @@ class TicketsController {
     async deleteTicket(req: Request, res: Response, next: NextFunction) {
         try {
             checkValidation(req);
-            const id = req.params.id;
+            const id = req.params.id as TicketsId;
             const response: boolean = await ticketsService.deleteTicket(id);
             res.json(response);
         } catch(err: any) {

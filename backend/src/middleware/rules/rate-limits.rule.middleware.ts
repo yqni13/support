@@ -1,6 +1,7 @@
 import { DemoLimitsCountDTO } from "../../dtos/demo-limits.dto";
 import { RateLimitsCountDTO } from "../../dtos/rate-limits.dto";
 import { TicketsIntervalDTO } from "../../dtos/tickets.dto";
+import { MetaId } from "../../repositories/interfaces/meta.entity.interface";
 import demoLimitsService from "../../services/demo-limits.service";
 import rateLimitsService from "../../services/rate-limits.service";
 import ticketsService from "../../services/tickets.service";
@@ -108,7 +109,7 @@ export class TotalDailyLimitRule implements RateLimitsRule {
                 retryAfter: CommonUtils.getNextDayUTC(),
                 penalty: {
                     type: Violation.MAINTENANCE_TRAFFIC,
-                    id: 1,
+                    id: 1 as MetaId,
                     penaltyValue: MaintenanceMode.T011
                 }
             };

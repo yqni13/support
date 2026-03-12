@@ -3,6 +3,7 @@ import clientsRepository from "../repositories/clients.repository";
 import { Users } from "../repositories/interfaces/users.entity.interface";
 import usersRepository from "../repositories/users.repository";
 import { CommonExceptionMessage } from "../utils/enums/common-exception-messages.enum";
+import { MaintenanceMode } from "../utils/enums/maintenance-mode.enum";
 import { MalformedApiKeyException } from "../utils/exceptions/auth.exception";
 
 /**
@@ -193,5 +194,17 @@ export function validateTimestampFilter(timestamps: any): boolean {
     if(new Date(timestamps[0]) > new Date(timestamps[1])) {
         throw new Error(errorMsg);
     }
+    return true;
+}
+
+/**
+ * @description Test-specific validation to control if a tested exception requires specific message input (enum, ...).
+ */
+export function validateTestErrorMsg(exception: string, message: string): boolean {
+    const exceptionMessageRules = [
+        { exception: 'MaintenanceException', apply: (val: any) => validateEnum(val, MaintenanceMode, 'maintenanceMode')}
+    ];
+
+    const _ = exceptionMessageRules.find(rule => rule.exception === exception)?.apply(message);
     return true;
 }

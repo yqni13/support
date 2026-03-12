@@ -1,3 +1,4 @@
+import { ClientsId } from "../repositories/interfaces/clients.entity.interface";
 import { ApiKeyStatus } from "../utils/enums/api-key-status.enum";
 import { Flag } from "../utils/enums/flag.enum";
 
@@ -20,7 +21,7 @@ export interface ClientsLastUseUpdateDTO {
 }
 
 export interface ClientsExistResponseDTO {
-    client_id: string,
+    client_id: ClientsId,
     name: string,
     api_key_hash: string,
     status: ApiKeyStatus,
@@ -31,7 +32,7 @@ export interface ClientsExistResponseDTO {
 }
 
 export interface ClientsCreateResponseDTO {
-    client_id: string,
+    client_id: ClientsId,
     name: string,
     api_key: string,
     status: ApiKeyStatus,
@@ -42,7 +43,7 @@ export interface ClientsCreateResponseDTO {
 }
 
 export interface ClientsFlagResponseDTO {
-    client_id: string,
+    client_id: ClientsId,
     flag: Flag | null,
     last_use: string,
     last_modified: string,
@@ -50,7 +51,7 @@ export interface ClientsFlagResponseDTO {
 }
 
 export interface ClientsStatusResponseDTO {
-    client_id: string,
+    client_id: ClientsId,
     name: string,
     status: ApiKeyStatus,
     last_use: string,
@@ -59,7 +60,7 @@ export interface ClientsStatusResponseDTO {
 }
 
 export interface ClientsLastUseResponseDTO {
-    client_id: string,
+    client_id: ClientsId,
     name: string,
     last_use: string,
     last_modified: string,

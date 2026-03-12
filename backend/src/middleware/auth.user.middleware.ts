@@ -6,6 +6,7 @@ import { UsersCreateDTO } from "../dtos/users.dto";
 import { UserStatus } from "../utils/enums/user-status.enum";
 import { logError } from "../utils/common.utils";
 import { Flag } from "../utils/enums/flag.enum";
+import * as CommonValidators from "../validation/common.validation";
 
 /**
  * @description Status validation of existing user or create new user by email address.
@@ -14,6 +15,7 @@ export function authUser() {
     return async function(req: Request, res: Response, next: NextFunction) {
         try {
             const email = req.body.user_email;
+            CommonValidators.validateEmail(email);
             let user: Users | null = await usersService.getUserByEmail(email);
             if(!user) {
                 const dto: UsersCreateDTO = {
