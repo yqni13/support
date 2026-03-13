@@ -45,6 +45,9 @@ jest.mock('../../../src/middleware/auth.user.middleware', () => ({
         next();
     })
 }));
+jest.mock('../../../src/middleware/parser/form-data.parser.middleware.ts', () => ({
+    parseFormData: jest.fn(() => (req: Request, res: Response, next: NextFunction) => next())
+}))
 jest.mock('../../../src/middleware/maintenance.middleware', () => ({
     maintain: jest.fn(() =>  (req: Request, res: Response, next: NextFunction) => next())
 }));

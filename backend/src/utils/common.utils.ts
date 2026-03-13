@@ -1,6 +1,3 @@
-import { InvalidSourceException } from './exceptions/common.exception';
-import { MailSource } from './enums/mail-source.enum';
-import { secrets } from './secrets.utils';
 import { v4 as uuid_v4 } from 'uuid';
 import crypto from 'crypto';
 import { Logger } from '../logger/config.logger';
