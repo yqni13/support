@@ -27,14 +27,14 @@ class MetaRepository implements IBaseRepository<Meta>, IFindRepository<Meta> {
         try {
             client = await db.connect();
             const result: QueryResult<Meta> = await client.query(sql, value);
-            await db.close(client);
             return result.rows[0] ?? null;
         } catch(err: any) {
             const message = "DB ERROR ON SELECT QUERY";
             const method = "SUPPORT_MetaRepository_findById";
             logError(message, method, err);
-            await db.close(client);
             throw new DBQueryErrorException(err);
+        } finally {
+            await db.close(client);
         }
     }
 
@@ -52,14 +52,14 @@ class MetaRepository implements IBaseRepository<Meta>, IFindRepository<Meta> {
         try {
             client = await db.connect();
             const result: QueryResult<Meta> = await client.query(sql, value);
-            await db.close(client);
             return result.rows[0] ?? null;
         } catch(err: any) {
             const message = "DB ERROR ON SELECT QUERY";
             const method = "SUPPORT_MetaRepository_findByName";
             logError(message, method, err);
-            await db.close(client);
             throw new DBQueryErrorException(err);
+        } finally {
+            await db.close(client);
         }
     }
 
@@ -71,14 +71,14 @@ class MetaRepository implements IBaseRepository<Meta>, IFindRepository<Meta> {
         try {
             client = await db.connect();
             const result: QueryResult<Meta> = await client.query(sql);
-            await db.close(client);
             return !result.rows[0] || result.rows.length === 0 ? null : result.rows;
         } catch(err: any) {
             const message = "DB ERROR ON SELECT QUERY";
             const method = "SUPPORT_MetaRepository_findAll";
             logError(message, method, err);
-            await db.close(client);
             throw new DBQueryErrorException(err);
+        } finally {
+            await db.close(client);
         }
     }
 
@@ -92,14 +92,14 @@ class MetaRepository implements IBaseRepository<Meta>, IFindRepository<Meta> {
         try {
             client = await db.connect();
             const result: QueryResult<Maintenance> = await client.query(sql, value);
-            await db.close(client);
             return result.rows[0] ?? null;
         } catch(err: any) {
             const message = "DB ERROR ON SELECT QUERY";
             const method = "SUPPORT_MetaRepository_findMaintenance";
             logError(message, method, err);
-            await db.close(client);
             throw new DBQueryErrorException(err);
+        } finally {
+            await db.close(client);
         }
     }
 
@@ -118,14 +118,14 @@ class MetaRepository implements IBaseRepository<Meta>, IFindRepository<Meta> {
         try {
             client = await db.connect();
             const result: QueryResult<Meta> = await client.query(sql, values);
-            await db.close(client);
             return result.rows[0] ?? null;
         } catch(err: any) {
             const message = "DB ERROR ON UPDATE QUERY";
             const method = "SUPPORT_MetaRepository_update";
             logError(message, method, err);
-            await db.close(client);
             throw new DBQueryErrorException(err);
+        } finally {
+            await db.close(client);
         }
     }
 
@@ -142,14 +142,14 @@ class MetaRepository implements IBaseRepository<Meta>, IFindRepository<Meta> {
         try {
             client = await db.connect();
             const result: QueryResult<Maintenance> = await client.query(sql, values);
-            await db.close(client);
             return result.rows[0] ?? null;
         } catch(err: any) {
             const message = "DB ERROR ON UPDATE QUERY";
             const method = "SUPPORT_MetaRepository_updateMaintenance";
             logError(message, method, err);
-            await db.close(client);
             throw new DBQueryErrorException(err);
+        } finally {
+            await db.close(client);
         }
     }
 
@@ -163,14 +163,14 @@ class MetaRepository implements IBaseRepository<Meta>, IFindRepository<Meta> {
         try {
             client = await db.connect();
             const result: QueryResult<Meta> = await client.query(sql, value);
-            await db.close(client);
             return result.rows[0] ?? null;
         } catch(err: any) {
             const message = "DB ERROR ON SELECT QUERY";
             const method = "SUPPORT_MetaRepository_demoError";
             logError(message, method, err);
-            await db.close(client);
             throw new DBQueryErrorException(err);
+        } finally {
+            await db.close(client);
         }
     }
 }

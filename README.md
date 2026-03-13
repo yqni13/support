@@ -1,7 +1,7 @@
-# yqni13 | support
-$\texttt{\color{teal}{v1.4.4}}$
+# yqni13 | $\texttt{\colorbox{cornflowerblue}{\color{white}{SUPPORT}}}$
+### $\textsf{\color{brown}{v1.4.4}}$
 
-### Support hub - handling feedback & ratings (`/feedback`) and bug/support requests (`/tickets`) including file attachments across multiple applications via REST API built with NodeJS (Typescript), Express & PostgreSQL in Docker container. Created following Test-Driven Development (450+ tests including ephemeral database by testcontainers) and hosting env:prod via Render, Neon and Cloudflare.
+#### Support hub - handling feedback & ratings (`/feedback`) and bug/support requests (`/tickets`) including file attachments across multiple applications via REST API built with NodeJS (Typescript), Express & PostgreSQL in Docker container. Created following Test-Driven Development (450+ tests including ephemeral database by testcontainers) and hosting env:prod via Render, Neon and Cloudflare.
 
 <br>
 
@@ -64,7 +64,7 @@ Alternatively run application in Docker container [(see docs)](./docs/DEVOPS.md)
 
 <br>
 
-### $\textsf{\color{teal}Feedback \&\ Rating}$
+### $\textsf{\color{teal}Feedback and Rating}$
 
 User can utilize a feedback & rating system to rate the application in use and send criticism or praise. For every client can exist multiple entries for the entity `Feedback` but only one `FeedbackRating` which holds the accumulated data of the pointing feedback entries.<br>
 Resubmissions are handled in the database by an `ON CONFLICT` upsert query [see upsertInTa()](./backend/src/repositories/feedback.repository.ts) on the unique `(client_id, user_id)` constraint, followed by an atomic aggregate update to the 'FeedbackRating' table entry. Both queries are executed within a single transaction to guarantee data consistency.<br>

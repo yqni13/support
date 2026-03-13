@@ -1,8 +1,4 @@
-# yqni13 | support
-
-### $\texttt{\color{olive}{LIST\ OF\ UPDATES}}$
-
-<br>
+## 📜 $\textsf{\color{salmon}{List\ of\ updates}}$
 
 ### $\textsf{\color{skyblue}2026/03/09}$
 
