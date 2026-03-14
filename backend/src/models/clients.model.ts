@@ -1,6 +1,8 @@
 import {
     ClientsCreateDTO,
     ClientsCreateResponseDTO,
+    ClientsExtendedResponseDTO,
+    ClientsResponseDTO,
 } from "../dtos/clients.dto";
 import { Clients, ClientsId } from "../repositories/interfaces/clients.entity.interface";
 import crypto from 'crypto';
@@ -26,6 +28,26 @@ class ClientsModel {
             last_modified: data.last_modified,
             created_on: data.created_on
         };
+    }
+
+    toClientsResponseDTO(entity: Clients, extended: true): ClientsExtendedResponseDTO;
+    toClientsResponseDTO(entity: Clients, extended: false): ClientsResponseDTO;
+
+    toClientsResponseDTO(entity: Clients, extended: boolean) {
+        const response = {
+            client_id: entity.client_id,
+            name: entity.name,
+            api_key_hash: entity.api_key_hash,
+            status: entity.status,
+            flag: entity.flag,
+            last_use: CommonUtils.getTimestampUTC(new Date(entity.last_use)),
+            last_modified: CommonUtils.getTimestampUTC(new Date(entity.last_modified)),
+            created_on: CommonUtils.getTimestampUTC(new Date(entity.created_on))
+        };
+        if(!extended) {
+            delete (response as any)['api_key_hash'];
+        }
+        return response;
     }
 
     private generateApiKeyObj(): { keyRaw: string, keyHash: string } {

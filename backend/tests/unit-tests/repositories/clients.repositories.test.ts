@@ -1,10 +1,8 @@
 import {
-    ClientsStatusResponseDTO,
-    ClientsLastUseResponseDTO,
     ClientsStatusUpdateDTO,
     ClientsLastUseUpdateDTO,
     ClientsFlagUpdateDTO,
-    ClientsFlagResponseDTO
+    ClientsResponseDTO,
 } from "../../../src/dtos/clients.dto";
 import { DBConnection } from "../../../src/configs/db";
 import * as CommonUtils from "../../../src/utils/common.utils";
@@ -160,10 +158,11 @@ describe('Unit-tests (repository), priority: entity Clients', () => {
 
             test('Return data for existing entry, params: <name>', async () => {
                 const mockParam_name = 'existing_clients_test_name';
-                const mockResult: ClientsStatusResponseDTO = {
+                const mockResult: ClientsResponseDTO = {
                     client_id: mockValidClientId,
                     name: mockParam_name,
                     status: ApiKeyStatus.ACTIVE,
+                    flag: null,
                     last_use: mockTimestamp,
                     last_modified: mockTimestamp,
                     created_on: mockTimestamp
@@ -278,10 +277,11 @@ describe('Unit-tests (repository), priority: entity Clients', () => {
                 const mockParam_id = mockValidClientId;
                 const mockValues = [mockParam_dto.status, mockTimestamp, mockParam_id];
 
-                const mockResult: ClientsStatusResponseDTO = {
+                const mockResult: ClientsResponseDTO = {
                     client_id: mockParam_id,
                     name: mockParam_name,
                     status: mockParam_dto.status,
+                    flag: null,
                     last_use: mockTimestamp,
                     last_modified: mockTimestamp,
                     created_on: mockTimestamp
@@ -344,8 +344,10 @@ describe('Unit-tests (repository), priority: entity Clients', () => {
                 const mockParam_id = mockValidClientId;
                 const mockValues = [mockParam_dto.flag, mockTimestamp, mockParam_id];
 
-                const mockResult: ClientsFlagResponseDTO | null = {
+                const mockResult: ClientsResponseDTO | null = {
                     client_id: mockParam_id,
+                    name: 'TESTCLIENT',
+                    status: ApiKeyStatus.ACTIVE,
                     flag: Flag.WARNING,
                     last_use: mockTimestamp,
                     last_modified: mockTimestamp,
@@ -366,7 +368,7 @@ describe('Unit-tests (repository), priority: entity Clients', () => {
                 const mockParam_id = mockId.clients.invalid[0] as ClientsId;
                 const mockValues = [mockParam_dto.flag, mockTimestamp, mockParam_id];
 
-                const mockResult: ClientsFlagResponseDTO | null = null;
+                const mockResult: ClientsResponseDTO | null = null;
                 const mockClient = MockUtils.mapMockDbClient(mockResult);
                 const testFn = await clientsRepository.updateFlag(mockParam_id, mockParam_dto);
 
@@ -384,7 +386,7 @@ describe('Unit-tests (repository), priority: entity Clients', () => {
             test('Throw DBQueryErrorException by catch-block', async () => {
                 const mockParam_id = mockId.clients.invalid[0] as ClientsId;
                 const mockErrorMsg = "DB ERROR ON UPDATE QUERY";
-                const mockResult: ClientsFlagResponseDTO | null = null;
+                const mockResult: ClientsResponseDTO | null = null;
                 jest.spyOn(CommonUtils, "logError").mockReturnValue();
                 const _ = MockUtils.mapMockDbClient(mockResult, mockBoolean, mockErrorMsg);
 
@@ -413,9 +415,11 @@ describe('Unit-tests (repository), priority: entity Clients', () => {
 
                 jest.spyOn(CommonUtils, "getTimestampUTC").mockReturnValue(mockTimestamp);
 
-                const mockResult: ClientsLastUseResponseDTO = {
+                const mockResult: ClientsResponseDTO = {
                     client_id: mockParam_id,
                     name: mockParam_name,
+                    status: ApiKeyStatus.ACTIVE,
+                    flag: null,
                     last_use: mockTimestamp,
                     last_modified: mockTimestamp,
                     created_on: mockTimestamp

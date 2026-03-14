@@ -15,7 +15,7 @@ import { DBConstraintErrorException } from "../utils/exceptions/db.exception";
 
 class FeedbackService {
     async getFeedbackById(id: FeedbackId): Promise<FeedbackResponseDTO | null> {
-        const result = await feedbackRepository.findById(id);
+        const result: Feedback | null = await feedbackRepository.findById(id);
         return !result ? null : feedbackModel.toFeedbackResponseDTO(result);
     }
 

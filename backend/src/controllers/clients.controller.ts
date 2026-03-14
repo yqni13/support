@@ -2,9 +2,9 @@ import { NextFunction, Request, Response } from "express";
 import { checkValidation } from "../middleware/validation.middleware";
 import {
     ClientsCreateResponseDTO,
-    ClientsStatusResponseDTO,
     ClientsCreateDTO,
-    ClientsStatusUpdateDTO
+    ClientsStatusUpdateDTO,
+    ClientsResponseDTO
 } from "../dtos/clients.dto";
 import clientsService from "../services/clients.service";
 import { ClientsId } from "../repositories/interfaces/clients.entity.interface";
@@ -14,7 +14,7 @@ class ClientsController {
         try {
             checkValidation(req);
             const name = req.params.name;
-            const response: ClientsStatusResponseDTO | null = await clientsService.getClientStatusByName(name);
+            const response: ClientsResponseDTO | null = await clientsService.getClientStatusByName(name);
             res.json(response);
         } catch(err: any) {
             next(err);
@@ -37,7 +37,7 @@ class ClientsController {
             checkValidation(req);
             const id = req.params.id as ClientsId;
             const dto: ClientsStatusUpdateDTO = req.body;
-            const response: ClientsStatusResponseDTO | null = await clientsService.updateClientStatus(id, dto);
+            const response: ClientsResponseDTO | null = await clientsService.updateClientStatus(id, dto);
             res.json(response);
         } catch(err: any) {
             next(err);
