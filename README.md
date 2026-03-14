@@ -1,5 +1,5 @@
 # yqni13 | $\texttt{\colorbox{cornflowerblue}{\color{white}{SUPPORT}}}$
-### $\textsf{\color{brown}{v1.4.4}}$
+### $\textsf{\color{brown}{v1.4.9}}$
 
 #### Support hub - handling feedback & ratings (`/feedback`) and bug/support requests (`/tickets`) including file attachments across multiple applications via REST API built with NodeJS (Typescript), Express & PostgreSQL in Docker container. Created following Test-Driven Development (450+ tests including ephemeral database by testcontainers) and hosting env:prod via Render, Neon and Cloudflare.
 
@@ -168,11 +168,14 @@ Preventing an unwanted merge with unfinished/failed test run, the project is set
 [see changelog for all updates](/docs/CHANGELOG.md)
 
 
-$\textsf{[v1.4.1\ =>\ {\textbf{\color{brown}v1.4.4}]}}$ app<br>
+$\textsf{[v1.4.4\ =>\ {\textbf{\color{brown}v1.4.9}]}}$ app<br>
+- $\textsf{\color{teal}Addition:}$ Added form-data parser middleware for requests including files.
 - $\textsf{\color{orange}Patch:}$ Updated:
-  + entity ID's are using now nominal types instead basic string|number.
-  + some model functions are renamed to keep consistency and improve readability.
-  + some api routes have been shortened to keep consistency and improve readability.
+  + return types, mapping and handling (part 1).
+  + calculation for delete-permission by comparing timestamps (incorporate timezone offset on database read timestamp).
+  + 'tickets' request: more accurate check for containing files.
+  + use Promise-instance fn finally() in repository-layer to reduce code.
+  + documentation headers and display error on symbol (&).
 
 <br>
 

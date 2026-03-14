@@ -13,11 +13,6 @@ import clientsRepository from '../repositories/clients.repository';
 import { Clients, ClientsId } from "../repositories/interfaces/clients.entity.interface";
 
 class ClientsService {
-    private timeMapTargets: string[];
-
-    constructor() {
-        this.timeMapTargets = ['last_use', 'last_modified', 'created_on'];
-    }
 
     /**
      * @description Usage for testing purpose.

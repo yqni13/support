@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { checkValidation } from "../middleware/validation.middleware";
-import { FeedbackCreateDTO, FeedbackFilterDTO, FeedbackResponseDTO } from "../dtos/feedback.dto";
+import { FeedbackCreateDTO, FeedbackCreateResponseDTO, FeedbackFilterDTO, FeedbackResponseDTO } from "../dtos/feedback.dto";
 import feedbackService from "../services/feedback.service";
 import { FeedbackId } from "../repositories/interfaces/feedback.entity.interface";
 
@@ -35,7 +35,7 @@ class FeedbackController {
                 client_id: req.apiClients.client_id,
                 user_id: req.apiUsers.user_id
             };
-            const response: FeedbackResponseDTO | null = await feedbackService.createFeedback(dto);
+            const response: FeedbackCreateResponseDTO | null = await feedbackService.createFeedback(dto);
             res.json(response);
         } catch(err: any) {
             next(err);

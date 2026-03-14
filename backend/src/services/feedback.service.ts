@@ -1,11 +1,13 @@
 import {
     FeedbackCreateDTO,
+    FeedbackCreateResponseDTO,
     FeedbackFilterDTO,
     FeedbackResponseDTO,
     FeedbackUpdateReviewDTO
 } from "../dtos/feedback.dto";
 import { FeedbackRatingCreateDTO, FeedbackRatingResponseDTO, FeedbackRatingUpdateDTO } from "../dtos/feedback-rating.dto";
 import * as RepoUtils from "../utils/repository.utils";
+import * as CommonUtils from "../utils/common.utils";
 import feedbackRatingModel from "../models/feedback-rating.model";
 import feedbackModel from "../models/feedback.model";
 import feedbackRepository from "../repositories/feedback.repository";
@@ -27,13 +29,14 @@ class FeedbackService {
     /**
      * @description Create is used to create new or overwrite existing Feedback with new data inside database transaction => FeedbackRating created/updated in same process.
      */
-    async createFeedback(dto: FeedbackCreateDTO): Promise<FeedbackResponseDTO | null> {
+    async createFeedback(dto: FeedbackCreateDTO): Promise<FeedbackCreateResponseDTO | null> {
         const message = "DB ERROR ON FEEDBACK/FEEDBACK-RATING TRANSACTION";
         const method = "SUPPORT_FeedbackService_createFeedback";
 
         return RepoUtils.asTransaction(message, method, async(client) => {
             const entity: Partial<Feedback> = feedbackModel.generateFeedbackEntity(dto);
             const result: FeedbackResponseDTO | null = await feedbackRepository.upsertInTa(client, entity);
+
             let dtoUpdateFR: FeedbackRatingUpdateDTO;
             if(!result) {
                 return null;
@@ -50,7 +53,8 @@ class FeedbackService {
             }
             dtoUpdateFR = feedbackRatingModel.mapFeedbackRatingUpdateDTO(dtoUpdateFR);
             const update: FeedbackRatingResponseDTO | null = 
-                await feedbackRatingService.updateFeedbackRatingInTa(client, result.client_id, dtoUpdateFR);
+                await feedbackRatingService.updateFeedbackRatingInTa(client, dto.client_id, dtoUpdateFR);
+
             if(!update) {
                 const dtoCreateFR: FeedbackRatingCreateDTO = {
                     client_id: dto.client_id,
@@ -59,11 +63,12 @@ class FeedbackService {
                 };
                 await feedbackRatingService.createFeedbackRatingInTa(client, dtoCreateFR);
             }
-            // Delete blocked info and use rating from dto if no other ratings for this client exist.
-            delete result['blocked'];
+
             return {
-                ...result,
-                rating_average_new: update?.rating_average ?? dto.rating
+                rating: result.rating,
+                rating_old: result.rating_old,
+                rating_average_new: update?.rating_average ?? dto.rating,
+                created_on: CommonUtils.getTimestampUTC(new Date(result.created_on))
             }
         })
     }

@@ -1,4 +1,4 @@
-import { TicketsCreateDTO, TicketsResponseDTO, TicketsUpdateDTO } from "../../../src/dtos/tickets.dto";
+import { TicketsCreateDTO, TicketsCreateResponseDTO, TicketsResponseDTO, TicketsUpdateDTO } from "../../../src/dtos/tickets.dto";
 import * as CommonUtils from "../../../src/utils/common.utils";
 import * as mockId from "../../mock-data/id.mock-data.json";
 import { TicketStatus } from "../../../src/utils/enums/ticket-status.enum";
@@ -185,6 +185,38 @@ describe('Unit-tests (model), priority: entity Tickets', () => {
                 };
 
                 expect(testFn).toEqual(expectResult);
+            })
+        })
+    })
+
+    describe('Priority: fn toTicketsCreateResponseDTO()', () => {
+
+        describe('Testing valid fn calls', () => {
+
+            test('Convert entity to dto, params: <entity, extended> Clients, false', () => {
+                const mockParam_entity: Tickets = {
+                    ticket_id: mockValidTicketId,
+                    client_id: mockValidClientId,
+                    user_id: mockValidUserId,
+                    status: TicketStatus.ISSUED,
+                    option: TicketOption.BUG,
+                    title: 'test-title',
+                    message: 'test-message',
+                    flag: null,
+                    last_modified: mockTimestamp,
+                    created_on: mockTimestamp
+                };
+
+                jest.spyOn(CommonUtils, 'getTimestampUTC').mockReturnValue(mockTimestamp);
+                const expectResult: TicketsCreateResponseDTO = {
+                    status: mockParam_entity.status,
+                    option: mockParam_entity.option,
+                    flag: mockParam_entity.flag,
+                    created_on: mockTimestamp
+                };
+                const testFn = ticketsModel.toTicketsCreateResponseDTO(mockParam_entity);
+
+                expect(testFn).toMatchObject(expectResult);
             })
         })
     })

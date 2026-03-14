@@ -1,6 +1,6 @@
 import { PoolClient, QueryResult } from "pg";
 import { DBConnection } from "../configs/db";
-import { FeedbackFilterDTO, FeedbackResponseDTO, FeedbackUpdateReviewDTO } from "../dtos/feedback.dto";
+import { FeedbackCreateResponseDTO, FeedbackFilterDTO, FeedbackResponseDTO, FeedbackUpdateReviewDTO } from "../dtos/feedback.dto";
 import { Feedback, FeedbackId } from "./interfaces/feedback.entity.interface";
 import { DBQueryErrorException } from "../utils/exceptions/db.exception";
 import { logError } from "../utils/common.utils";

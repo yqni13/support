@@ -32,6 +32,14 @@ export interface FeedbackFilterDTO {
     created_on?: string | string[]
 }
 
+export interface FeedbackCreateResponseDTO {
+    rating: number,
+    rating_old?: number,
+    rating_average_new: number,
+    blocked?: boolean,
+    created_on: string
+}
+
 export interface FeedbackResponseDTO {
     feedback_id: FeedbackId,
     client_id: ClientsId,

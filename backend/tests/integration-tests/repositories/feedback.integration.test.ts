@@ -8,7 +8,7 @@ import { default as mockId } from "../../mock-data/id.mock-data.json";
 import { NextFunction, Request, Response } from "express";
 import { CommonExceptionMessage } from "../../../src/utils/enums/common-exception-messages.enum";
 import { ErrorStatusCodes } from "../../../src/utils/errorStatusCodes.utils";
-import { FeedbackCreateDTO, FeedbackFilterDTO, FeedbackRequestCreateDTO, FeedbackResponseDTO } from '../../../src/dtos/feedback.dto';
+import { FeedbackCreateDTO, FeedbackCreateResponseDTO, FeedbackFilterDTO, FeedbackRequestCreateDTO, FeedbackResponseDTO } from '../../../src/dtos/feedback.dto';
 import { DBTestData } from '../../db-data.setup';
 import router from '../../../src/routes/feedback.route';
 import feedbackRatingService from '../../../src/services/feedback-rating.service';
@@ -126,14 +126,9 @@ describe('Integration-tests (repository), priority: entity Feedback', () => {
 
             jest.spyOn(CommonUtils, "getTimestampUTC").mockReturnValue(testTimestamp);
 
-            const testResult: FeedbackResponseDTO = {
-                feedback_id: mockId.feedback.new[0] as FeedbackId,
-                client_id: testValidClientId,
-                user_id: mockId.users.valid[1] as UsersId,
+            const testResult: FeedbackCreateResponseDTO = {
                 rating: testParam_dto.rating,
                 rating_average_new: mockResult_average_rating,
-                term_accepted: testParam_dto.term_accepted,
-                last_modified: testTimestamp,
                 created_on: testTimestamp
             };
 
@@ -161,14 +156,9 @@ describe('Integration-tests (repository), priority: entity Feedback', () => {
 
             jest.spyOn(CommonUtils, "getTimestampUTC").mockReturnValue(testTimestamp);
 
-            const testResult: FeedbackResponseDTO = {
-                feedback_id: mockId.feedback.new[0] as FeedbackId,
-                client_id: mockId.clients.valid[1] as ClientsId,
-                user_id: testValidUserId,
+            const testResult: FeedbackCreateResponseDTO = {
                 rating: testParam_dto.rating,
                 rating_average_new: testParam_dto.rating,
-                term_accepted: testParam_dto.term_accepted,
-                last_modified: testTimestamp,
                 created_on: testTimestamp
             };
 
@@ -205,15 +195,11 @@ describe('Integration-tests (repository), priority: entity Feedback', () => {
 
             jest.spyOn(CommonUtils, "getTimestampUTC").mockReturnValue(testTimestamp_update);
 
-            const testResult: FeedbackResponseDTO = {
-                feedback_id: testValidFeedbackId,
-                client_id: testValidClientId,
-                user_id: testValidUserId,
+            const testResult: FeedbackCreateResponseDTO = {
                 rating: testParam_dto.rating,
+                rating_old: dbData_Feedback[2],
                 rating_average_new: mockResult_average_rating,
-                term_accepted: testParam_dto.term_accepted,
-                last_modified: testTimestamp_update,
-                created_on: testTimestamp,
+                created_on: testTimestamp_update,
             };
 
             await dbTestSetup.addTestData();

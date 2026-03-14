@@ -1,4 +1,4 @@
-import { TicketsCreateDTO, TicketsResponseDTO, TicketsUpdateDTO } from "../dtos/tickets.dto";
+import { TicketsCreateDTO, TicketsCreateResponseDTO, TicketsResponseDTO, TicketsUpdateDTO } from "../dtos/tickets.dto";
 import { Tickets, TicketsId } from "../repositories/interfaces/tickets.entity.interface";
 import * as CommonUtils from "../utils/common.utils";
 import { TicketStatus } from "../utils/enums/ticket-status.enum";
@@ -40,6 +40,15 @@ class TicketsModel {
             ...dto,
             last_modified: timestamp
         };
+    }
+
+    toTicketsCreateResponseDTO(entity: Tickets): TicketsCreateResponseDTO {
+        return {
+            status: entity.status,
+            option: entity.option,
+            flag: entity.flag,
+            created_on: CommonUtils.getTimestampUTC(new Date(entity.created_on))
+        }
     }
 
     async handleTicketBeforeDelete(dto: TicketsResponseDTO) {

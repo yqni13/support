@@ -61,6 +61,13 @@ export interface TicketsFilterDTO {
     created_on?: string[]
 }
 
+export interface TicketsCreateResponseDTO {
+    status: TicketStatus,
+    option: TicketOption,
+    flag: Flag | null,
+    created_on: string
+}
+
 export interface TicketsResponseDTO {
     ticket_id: TicketsId,
     client_id: ClientsId,

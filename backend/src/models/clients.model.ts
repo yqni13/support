@@ -10,23 +10,17 @@ import * as CommonUtils from "../utils/common.utils";
 import { ApiKeyStatus } from "../utils/enums/api-key-status.enum";
 
 class ClientsModel {
-    private timeMapTargets: string[];
-
-    constructor() {
-        this.timeMapTargets = ['last_use', 'last_modified', 'created_on'];
-    }
 
     toClientsCreateResponseDTO(data: Clients, apiKey: string): ClientsCreateResponseDTO {
-        data = CommonUtils.mapObjTimestamps(data, this.timeMapTargets);
         return {
             client_id: data.client_id,
             name: data.name,
             api_key: apiKey,
             status: data.status,
             flag: data.flag,
-            last_use: data.last_use,
-            last_modified: data.last_modified,
-            created_on: data.created_on
+            last_use: CommonUtils.getTimestampUTC(new Date(data.last_use)),
+            last_modified: CommonUtils.getTimestampUTC(new Date(data.last_modified)),
+            created_on: CommonUtils.getTimestampUTC(new Date(data.created_on))
         };
     }
 
