@@ -1,16 +1,14 @@
 import {
-    ClientsStatusResponseDTO,
-    ClientsLastUseResponseDTO,
     ClientsStatusUpdateDTO,
     ClientsLastUseUpdateDTO,
     ClientsFlagUpdateDTO,
-    ClientsFlagResponseDTO
+    ClientsResponseDTO,
 } from "../../../src/dtos/clients.dto";
 import { DBConnection } from "../../../src/configs/db";
 import * as CommonUtils from "../../../src/utils/common.utils";
 import * as MockUtils from "../../common.test-utils";
 import { default as mockId } from "../../mock-data/id.mock-data.json";
-import { Clients } from "../../../src/repositories/interfaces/clients.entity.interface";
+import { Clients, ClientsId } from "../../../src/repositories/interfaces/clients.entity.interface";
 import { ApiKeyStatus } from "../../../src/utils/enums/api-key-status.enum";
 import clientsRepository from "../../../src/repositories/clients.repository";
 import clientsModel from "../../../src/models/clients.model";
@@ -26,11 +24,11 @@ jest.mock("../../../src/configs/db", () => {
     }
 });
 
-const mockVar_id = '9e024539-32e8-4317-8007-84a3956e6b57';
+const mockValidClientId = mockId.clients.valid[0] as ClientsId;
 const mockVar_keyHash = secrets.TEST_APIKEY_HASH;
 const mockTimestamp = '2025-01-01T14:00:02.000Z';
 const mockData: Clients = {
-    client_id: mockVar_id,
+    client_id: mockValidClientId,
     name: 'valid_clients_test_name',
     api_key_hash: mockVar_keyHash,
     status: ApiKeyStatus.ACTIVE,
@@ -56,18 +54,18 @@ describe('Unit-tests (repository), priority: entity Clients', () => {
             test('Return data for existing entry, params: valid <id>', async () => {
                 const mockResult: Clients | null = structuredClone(mockData);
                 const mockClient = MockUtils.mapMockDbClient(mockResult);
-                const testFn = await clientsRepository.findById(mockVar_id);
+                const testFn = await clientsRepository.findById(mockValidClientId);
 
                 expect(testFn).toEqual(mockResult);
                 expect(DBConnection.getInstance).toHaveBeenCalled();
                 expect(mockClient.query).toHaveBeenCalledWith(
                     expect.stringContaining(sql),
-                    expect.arrayContaining([mockVar_id])
+                    expect.arrayContaining([mockValidClientId])
                 );
             })
 
             test('Return null for non-existing entry, params: invalid <id>', async () => {
-                const mockParam_id = mockId.clients.invalid[0];
+                const mockParam_id = mockId.clients.invalid[0] as ClientsId;
                 const mockResult: Clients | null = null;
                 const mockClient = MockUtils.mapMockDbClient(mockResult);
                 const testFn = await clientsRepository.findById(mockParam_id);
@@ -84,7 +82,7 @@ describe('Unit-tests (repository), priority: entity Clients', () => {
         describe('Testing invalid fn calls', () => {
 
             test('Throw DBQueryErrorException by catch-block', async () => {
-                const mockParam_id = mockId.clients.invalid[0];
+                const mockParam_id = mockId.clients.invalid[0] as ClientsId;
                 const mockErrorMsg = "DB ERROR ON SELECT QUERY";
                 const mockResult: Clients | null = null;
                 jest.spyOn(CommonUtils, "logError").mockReturnValue();
@@ -160,10 +158,11 @@ describe('Unit-tests (repository), priority: entity Clients', () => {
 
             test('Return data for existing entry, params: <name>', async () => {
                 const mockParam_name = 'existing_clients_test_name';
-                const mockResult: ClientsStatusResponseDTO = {
-                    client_id: 'valid_clients_test_id',
+                const mockResult: ClientsResponseDTO = {
+                    client_id: mockValidClientId,
                     name: mockParam_name,
                     status: ApiKeyStatus.ACTIVE,
+                    flag: null,
                     last_use: mockTimestamp,
                     last_modified: mockTimestamp,
                     created_on: mockTimestamp
@@ -217,9 +216,9 @@ describe('Unit-tests (repository), priority: entity Clients', () => {
         let mockParam_entity: Clients;
         beforeEach(() => {
             sql = `INSERT`;
-            mockVar_apiKey = clientsModel._generateApiKeyObj();
+            mockVar_apiKey = (clientsModel as any).generateApiKeyObj();
             mockParam_entity = {
-                client_id: mockVar_id,
+                client_id: mockValidClientId,
                 name: 'valid_clients_test_name',
                 api_key_hash: mockVar_apiKey.keyHash,
                 status: ApiKeyStatus.ACTIVE,
@@ -275,13 +274,14 @@ describe('Unit-tests (repository), priority: entity Clients', () => {
         describe('Testing valid fn calls', () => {
 
             test('Return data of changed entry, params: valid <id>', async () => {
-                const mockParam_id = mockId.clients.valid[0];
+                const mockParam_id = mockValidClientId;
                 const mockValues = [mockParam_dto.status, mockTimestamp, mockParam_id];
 
-                const mockResult: ClientsStatusResponseDTO = {
+                const mockResult: ClientsResponseDTO = {
                     client_id: mockParam_id,
                     name: mockParam_name,
                     status: mockParam_dto.status,
+                    flag: null,
                     last_use: mockTimestamp,
                     last_modified: mockTimestamp,
                     created_on: mockTimestamp
@@ -298,7 +298,7 @@ describe('Unit-tests (repository), priority: entity Clients', () => {
             })
 
             test('Return null for non-existing entry by invalid id', async () => {
-                const mockParam_id = mockId.clients.invalid[0];
+                const mockParam_id = mockId.clients.invalid[0] as ClientsId;
                 const mockValues = [mockParam_dto.status, mockTimestamp, mockParam_id];
 
                 const mockResult = null;
@@ -317,7 +317,7 @@ describe('Unit-tests (repository), priority: entity Clients', () => {
         describe('Testing invalid fn calls', () => {
 
             test('Throw DBQueryErrorException by catch-block', async () => {
-                const mockParam_id = mockId.clients.invalid[0];
+                const mockParam_id = mockId.clients.invalid[0] as ClientsId;
                 const mockErrorMsg = "DB ERROR ON UPDATE QUERY";
                 const mockResult = null;
                 jest.spyOn(CommonUtils, "logError").mockReturnValue();
@@ -341,11 +341,13 @@ describe('Unit-tests (repository), priority: entity Clients', () => {
         describe('Testing valid fn calls', () => {
 
             test('Return data of changed entry, params: valid <id>', async () => {
-                const mockParam_id = mockId.clients.valid[0];
+                const mockParam_id = mockValidClientId;
                 const mockValues = [mockParam_dto.flag, mockTimestamp, mockParam_id];
 
-                const mockResult: ClientsFlagResponseDTO | null = {
+                const mockResult: ClientsResponseDTO | null = {
                     client_id: mockParam_id,
+                    name: 'TESTCLIENT',
+                    status: ApiKeyStatus.ACTIVE,
                     flag: Flag.WARNING,
                     last_use: mockTimestamp,
                     last_modified: mockTimestamp,
@@ -363,10 +365,10 @@ describe('Unit-tests (repository), priority: entity Clients', () => {
             })
 
             test('Return null for non-existing entry, params: invalid <id>', async () => {
-                const mockParam_id = mockId.clients.invalid[0];
+                const mockParam_id = mockId.clients.invalid[0] as ClientsId;
                 const mockValues = [mockParam_dto.flag, mockTimestamp, mockParam_id];
 
-                const mockResult: ClientsFlagResponseDTO | null = null;
+                const mockResult: ClientsResponseDTO | null = null;
                 const mockClient = MockUtils.mapMockDbClient(mockResult);
                 const testFn = await clientsRepository.updateFlag(mockParam_id, mockParam_dto);
 
@@ -382,9 +384,9 @@ describe('Unit-tests (repository), priority: entity Clients', () => {
         describe('Testing invalid fn calls', () => {
 
             test('Throw DBQueryErrorException by catch-block', async () => {
-                const mockParam_id = mockId.clients.invalid[0];
+                const mockParam_id = mockId.clients.invalid[0] as ClientsId;
                 const mockErrorMsg = "DB ERROR ON UPDATE QUERY";
-                const mockResult: ClientsFlagResponseDTO | null = null;
+                const mockResult: ClientsResponseDTO | null = null;
                 jest.spyOn(CommonUtils, "logError").mockReturnValue();
                 const _ = MockUtils.mapMockDbClient(mockResult, mockBoolean, mockErrorMsg);
 
@@ -408,14 +410,16 @@ describe('Unit-tests (repository), priority: entity Clients', () => {
         describe('Testing valid fn calls', () => {
 
             test('Return data of changed entry, params: valid <id>', async () => {
-                const mockParam_id = mockId.clients.valid[0];
+                const mockParam_id = mockValidClientId;
                 const mockValues = [mockTimestamp, mockParam_id];
 
                 jest.spyOn(CommonUtils, "getTimestampUTC").mockReturnValue(mockTimestamp);
 
-                const mockResult: ClientsLastUseResponseDTO = {
+                const mockResult: ClientsResponseDTO = {
                     client_id: mockParam_id,
                     name: mockParam_name,
+                    status: ApiKeyStatus.ACTIVE,
+                    flag: null,
                     last_use: mockTimestamp,
                     last_modified: mockTimestamp,
                     created_on: mockTimestamp
@@ -432,7 +436,7 @@ describe('Unit-tests (repository), priority: entity Clients', () => {
             })
 
             test('Return null for non-existing entry, params: invalid <id>', async () => {
-                const mockParam_id = mockId.clients.invalid[0];
+                const mockParam_id = mockId.clients.invalid[0] as ClientsId;
                 const mockValues = [mockTimestamp, mockParam_id];
 
                 const mockResult = null;
@@ -451,7 +455,7 @@ describe('Unit-tests (repository), priority: entity Clients', () => {
         describe('Testing invalid fn calls', () => {
 
             test('Throw DBQueryErrorException by catch-block', async () => {
-                const mockParam_id = mockId.clients.invalid[0];
+                const mockParam_id = mockId.clients.invalid[0] as ClientsId;
                 const mockErrorMsg = "DB ERROR ON UPDATE QUERY";
                 const mockResult = null;
                 jest.spyOn(CommonUtils, "logError").mockReturnValue();

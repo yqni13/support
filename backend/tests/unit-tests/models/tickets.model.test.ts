@@ -1,19 +1,24 @@
-import { TicketsCreateDTO, TicketsResponseDTO, TicketsUpdateDTO } from "../../../src/dtos/tickets.dto";
+import { TicketsCreateDTO, TicketsCreateResponseDTO, TicketsResponseDTO, TicketsUpdateDTO } from "../../../src/dtos/tickets.dto";
 import * as CommonUtils from "../../../src/utils/common.utils";
 import * as mockId from "../../mock-data/id.mock-data.json";
 import { TicketStatus } from "../../../src/utils/enums/ticket-status.enum";
-import { Tickets } from "../../../src/repositories/interfaces/tickets.entity.interface";
+import { Tickets, TicketsId } from "../../../src/repositories/interfaces/tickets.entity.interface";
 import ticketsModel from "../../../src/models/tickets.model";
 import { Readable } from 'stream';
 import { FilesService } from "../../../src/services/files.service";
 import { TicketOption } from "../../../src/utils/enums/ticket-option.enum";
 import { PermissionException } from "../../../src/utils/exceptions/auth.exception";
+import { ClientsId } from "../../../src/repositories/interfaces/clients.entity.interface";
+import { UsersId } from "../../../src/repositories/interfaces/users.entity.interface";
 
+const mockValidTicketId = mockId.tickets.valid[0] as TicketsId;
+const mockValidClientId = mockId.clients.valid[0] as ClientsId;
+const mockValidUserId = mockId.users.valid[0] as UsersId;
 const mockTimestamp = '2025-01-01T14:00:04.000Z';
 
 describe('Unit-tests (model), priority: entity Tickets', () => {
 
-    describe('Priority: fn generateTicket()', () => {
+    describe('Priority: fn generateTicketEntity()', () => {
     
         let mockFile_pdf: Express.Multer.File;
         let mockFile_webp: Express.Multer.File;
@@ -50,11 +55,12 @@ describe('Unit-tests (model), priority: entity Tickets', () => {
         describe('Testing valid fn calls', () => {
 
             test('Generate new object, priority: no files', async () => {
-                const mockParam_id = mockId.tickets.new[0];
+                const mockParam_id = mockId.tickets.new[0] as TicketsId;
                 const mockParam_dto: TicketsCreateDTO = {
-                    client_id: mockId.clients.valid[0],
-                    user_id: mockId.users.valid[0],
+                    client_id: mockValidClientId,
+                    user_id: mockValidUserId,
                     option: TicketOption.SUPPORT,
+                    title: 'test-title',
                     message: 'test-message'
                 };
                 const mockParam_files: Express.Multer.File[] | null = null;
@@ -62,13 +68,14 @@ describe('Unit-tests (model), priority: entity Tickets', () => {
                 jest.spyOn(CommonUtils, "generateUUID").mockReturnValue(mockParam_id);
                 jest.spyOn(CommonUtils, "getTimestampUTC").mockReturnValue(mockTimestamp);
 
-                const testFn = await ticketsModel.generateTicket(mockParam_dto, mockParam_files);
+                const testFn = await ticketsModel.generateTicketEntity(mockParam_dto, mockParam_files);
                 const expectResult: Tickets = {
                     ticket_id: mockParam_id,
                     client_id: mockParam_dto.client_id,
                     user_id: mockParam_dto.user_id,
                     status: TicketStatus.ISSUED,
                     option: TicketOption.SUPPORT,
+                    title: mockParam_dto.title,
                     message: mockParam_dto.message,
                     flag: null,
                     last_modified: mockTimestamp,
@@ -79,11 +86,12 @@ describe('Unit-tests (model), priority: entity Tickets', () => {
             })
 
             test('Generate new object, priority: single file', async () => {
-                const mockParam_id = mockId.tickets.new[0];
+                const mockParam_id = mockId.tickets.new[0] as TicketsId;
                 const mockParam_dto: TicketsCreateDTO = {
-                    client_id: mockId.clients.valid[0],
-                    user_id: mockId.users.valid[0],
+                    client_id: mockValidClientId,
+                    user_id: mockValidUserId,
                     option: TicketOption.SUPPORT,
+                    title: 'test-title',
                     message: 'test-message'
                 };
                 const mockParam_files: Express.Multer.File[] | null = [mockFile_pdf];
@@ -95,13 +103,14 @@ describe('Unit-tests (model), priority: entity Tickets', () => {
                 jest.spyOn(FilesService.prototype, 'uploadFiles').mockImplementation();
                 jest.spyOn(FilesService.prototype, 'getResourcePaths').mockReturnValue(mockPaths);
 
-                const testFn = await ticketsModel.generateTicket(mockParam_dto, mockParam_files);
+                const testFn = await ticketsModel.generateTicketEntity(mockParam_dto, mockParam_files);
                 const expectResult: Tickets = {
                     ticket_id: mockParam_id,
                     client_id: mockParam_dto.client_id,
                     user_id: mockParam_dto.user_id,
                     status: TicketStatus.ISSUED,
                     option: TicketOption.SUPPORT,
+                    title: mockParam_dto.title,
                     message: mockParam_dto.message,
                     resource_paths: mockPaths,
                     flag: null,
@@ -113,11 +122,12 @@ describe('Unit-tests (model), priority: entity Tickets', () => {
             })
 
             test('Generate new object, priority: multiple files', async () => {
-                const mockParam_id = mockId.tickets.new[0];
+                const mockParam_id = mockId.tickets.new[0] as TicketsId;
                 const mockParam_dto: TicketsCreateDTO = {
-                    client_id: mockId.clients.valid[0],
-                    user_id: mockId.users.valid[0],
+                    client_id: mockValidClientId,
+                    user_id: mockValidUserId,
                     option: TicketOption.SUPPORT,
+                    title: 'test-title',
                     message: 'test-message'
                 };
                 const mockParam_files: Express.Multer.File[] | null = [mockFile_pdf, mockFile_webp];
@@ -132,13 +142,14 @@ describe('Unit-tests (model), priority: entity Tickets', () => {
                 jest.spyOn(FilesService.prototype, 'uploadFiles').mockImplementation();
                 jest.spyOn(FilesService.prototype, 'getResourcePaths').mockReturnValue(mockPaths);
 
-                const testFn = await ticketsModel.generateTicket(mockParam_dto, mockParam_files);
+                const testFn = await ticketsModel.generateTicketEntity(mockParam_dto, mockParam_files);
                 const expectResult: Tickets = {
                     ticket_id: mockParam_id,
                     client_id: mockParam_dto.client_id,
                     user_id: mockParam_dto.user_id,
                     status: TicketStatus.ISSUED,
                     option: TicketOption.SUPPORT,
+                    title: mockParam_dto.title,
                     message: mockParam_dto.message,
                     resource_paths: mockPaths,
                     flag: null,
@@ -160,6 +171,7 @@ describe('Unit-tests (model), priority: entity Tickets', () => {
                 const mockParam_dto: TicketsUpdateDTO = {
                     status: TicketStatus.PAUSED,
                     option: TicketOption.SUPPORT,
+                    title: 'test-title',
                     message: 'test-message',
                     flag: null
                 };
@@ -177,17 +189,50 @@ describe('Unit-tests (model), priority: entity Tickets', () => {
         })
     })
 
+    describe('Priority: fn toTicketsCreateResponseDTO()', () => {
+
+        describe('Testing valid fn calls', () => {
+
+            test('Convert entity to dto, params: <entity, extended> Clients, false', () => {
+                const mockParam_entity: Tickets = {
+                    ticket_id: mockValidTicketId,
+                    client_id: mockValidClientId,
+                    user_id: mockValidUserId,
+                    status: TicketStatus.ISSUED,
+                    option: TicketOption.BUG,
+                    title: 'test-title',
+                    message: 'test-message',
+                    flag: null,
+                    last_modified: mockTimestamp,
+                    created_on: mockTimestamp
+                };
+
+                jest.spyOn(CommonUtils, 'getTimestampUTC').mockReturnValue(mockTimestamp);
+                const expectResult: TicketsCreateResponseDTO = {
+                    status: mockParam_entity.status,
+                    option: mockParam_entity.option,
+                    flag: mockParam_entity.flag,
+                    created_on: mockTimestamp
+                };
+                const testFn = ticketsModel.toTicketsCreateResponseDTO(mockParam_entity);
+
+                expect(testFn).toMatchObject(expectResult);
+            })
+        })
+    })
+
     describe('Priority: fn handleTicketBeforeDelete()', () => {
 
         describe('Testing valid fn calls', () => {
 
             test('Check for file deletion => call FilesService.deleteFiles(), params: <dto>', async () => {
                 const mockParam_dto: TicketsResponseDTO = {
-                    ticket_id: mockId.tickets.valid[0],
-                    client_id: mockId.clients.valid[0],
-                    user_id: mockId.users.valid[0],
+                    ticket_id: mockValidTicketId,
+                    client_id: mockValidClientId,
+                    user_id: mockValidUserId,
                     status: TicketStatus.ISSUED,
                     option: TicketOption.SUPPORT,
+                    title: 'test-title',
                     message: 'test-message',
                     resource_paths: [`tickets/${mockId.tickets.valid[0]}/0_${mockId.tickets.valid[0]}.jpg`],
                     flag: null,
@@ -206,11 +251,12 @@ describe('Unit-tests (model), priority: entity Tickets', () => {
 
             test('Check for file deletion => does NOT call FilesService.deleteFiles(), params: <dto>', async () => {
                 const mockParam_dto: TicketsResponseDTO = {
-                    ticket_id: mockId.tickets.valid[1],
-                    client_id: mockId.clients.valid[0],
-                    user_id: mockId.users.valid[0],
+                    ticket_id: mockId.tickets.valid[1] as TicketsId,
+                    client_id: mockValidClientId,
+                    user_id: mockValidUserId,
                     status: TicketStatus.ISSUED,
                     option: TicketOption.SUPPORT,
+                    title: 'test-title-without-resource_paths',
                     message: 'test-message-without-resource_paths',
                     flag: null,
                     last_modified: mockTimestamp,
@@ -230,11 +276,12 @@ describe('Unit-tests (model), priority: entity Tickets', () => {
         let mockParam_dto: TicketsResponseDTO;
         beforeEach(() => {
             mockParam_dto = {
-                ticket_id: mockId.tickets.valid[0],
-                client_id: mockId.clients.valid[0],
-                user_id: mockId.users.valid[0],
+                ticket_id: mockValidTicketId,
+                client_id: mockValidClientId,
+                user_id: mockValidUserId,
                 status: TicketStatus.CLOSED,
                 option: TicketOption.SUPPORT,
+                title: 'test-title',
                 message: 'test-message',
                 flag: null,
                 last_modified: mockTimestamp,

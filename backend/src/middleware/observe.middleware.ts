@@ -14,6 +14,8 @@ import { RateLimitsData, RateLimitsResponse } from "./interfaces/rate-limits.int
 import { ExceedMaxEndpointException } from "../utils/exceptions/api.exception";
 import { DemoLimitsIncrement, RateLimitsIncrement } from "./adapter/rate-limits.adapter.middleware";
 import { penaltyHandler } from "./container/penalty.container.middleware";
+import { ClientsId } from "../repositories/interfaces/clients.entity.interface";
+import { UsersId } from "../repositories/interfaces/users.entity.interface";
 
 export function observe(isDemo: boolean = false) {
     return async function (req: Request, res: Response, next: NextFunction) {
@@ -63,5 +65,5 @@ async function checkDemoLimits(): Promise<RateLimitsResponse | null> {
         ],
         new DemoLimitsIncrement()
     );
-    return await engine.process({ client_id: 'demo', user_id: 'demo'});
+    return await engine.process({ client_id: 'demo' as ClientsId, user_id: 'demo' as UsersId});
 }

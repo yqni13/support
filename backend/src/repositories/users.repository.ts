@@ -1,7 +1,7 @@
 import { DBConnection } from "../configs/db";
 import { QueryResult } from "pg";
 import { IBaseRepository, ICreateRepository, IFindRepository, IUpdateFlagRepository } from "./interfaces/base.repository.interface";
-import { Users } from "./interfaces/users.entity.interface";
+import { Users, UsersId } from "./interfaces/users.entity.interface";
 import { logError } from "../utils/common.utils";
 import { UsersFilterDTO } from "../dtos/users.dto";
 import { DBQueryErrorException } from "../utils/exceptions/db.exception";
@@ -19,7 +19,7 @@ IUpdateFlagRepository<Users>
         this.table = "users";
     }
 
-    async findById(id: string): Promise<Users | null> {
+    async findById(id: UsersId): Promise<Users | null> {
         const filterColumn = "user_id";
         const sql = `SELECT * FROM ${this.table} WHERE ${filterColumn} = $1;`;
         const value = [id];
@@ -28,14 +28,14 @@ IUpdateFlagRepository<Users>
         try {
             client = await db.connect();
             const result: QueryResult<Users> = await client.query(sql, value);
-            await db.close(client);
             return result.rows[0] ?? null;
         } catch(err: any) {
             const message = "DB ERROR ON SELECT QUERY";
             const method = "SUPPORT_UsersRepository_findById";
             logError(message, method, err);
-            await db.close(client);
             throw new DBQueryErrorException(err);
+        } finally {
+            await db.close(client);
         }
     }
 
@@ -48,14 +48,14 @@ IUpdateFlagRepository<Users>
         try {
             client = await db.connect();
             const result: QueryResult<Users> = await client.query(sql, value);
-            await db.close(client);
             return result.rows[0] ?? null;
         } catch(err: any) {
             const message = "DB ERROR ON SELECT QUERY";
             const method = "SUPPORT_UsersRepository_findByEmail";
             logError(message, method, err);
-            await db.close(client);
             throw new DBQueryErrorException(err);
+        } finally {
+            await db.close(client);
         }
     }
 
@@ -67,14 +67,14 @@ IUpdateFlagRepository<Users>
         try {
             client = await db.connect();
             const result: QueryResult<Users> = await client.query(sql);
-            await db.close(client);
             return !result.rows[0] || result.rows.length === 0 ? null : result.rows;
         } catch(err: any) {
             const message = "DB ERROR ON SELECT QUERY";
             const method = "SUPPORT_UsersRepository_findAll";
             logError(message, method, err);
-            await db.close(client);
             throw new DBQueryErrorException(err);
+        } finally {
+            await db.close(client);
         }
     }
 
@@ -88,14 +88,14 @@ IUpdateFlagRepository<Users>
         try {
             client = await db.connect();
             const result: QueryResult<Users> = await client.query(queryData.sql, queryData.values);
-            await db.close(client);
             return !result.rows[0] || result.rows.length === 0 ? null : result.rows;
         } catch(err: any) {
             const message = "DB ERROR ON SELECT QUERY";
             const method = "SUPPORT_UsersRepository_findByFilter";
             logError(message, method, err);
-            await db.close(client);
             throw new DBQueryErrorException(err);
+        } finally {
+            await db.close(client);
         }
     }
 
@@ -111,18 +111,18 @@ IUpdateFlagRepository<Users>
         try {
             client = await db.connect();
             const result: QueryResult<Users> = await client.query(sql, values);
-            await db.close(client);
             return result.rows[0];
         } catch(err: any) {
             const message = "DB ERROR ON INSERT QUERY";
             const method = "SUPPORT_UsersRepository_create";
             logError(message, method, err);
-            await db.close(client);
             throw new DBQueryErrorException(err);
+        } finally {
+            await db.close(client);
         }
     }
 
-    async update(id: string, dto: Partial<Users>): Promise<Users | null> {
+    async update(id: UsersId, dto: Partial<Users>): Promise<Users | null> {
         const filterColumn = "user_id";
         const sql = `UPDATE ${this.table}
         SET email = $1, status = $2, flag = $3, last_modified = $4
@@ -135,18 +135,18 @@ IUpdateFlagRepository<Users>
         try {
             client = await db.connect();
             const result: QueryResult<Users> = await client.query(sql, values);
-            await db.close(client);
             return result.rows[0] ?? null;
         } catch(err: any) {
             const message = "DB ERROR ON UPDATE QUERY";
             const method = "SUPPORT_UsersRepository_update";
             logError(message, method, err);
-            await db.close(client);
             throw new DBQueryErrorException(err);
+        } finally {
+            await db.close(client);
         }
     }
 
-    async updateFlag(id: string, dto: Partial<Users>): Promise<Users | null> {
+    async updateFlag(id: UsersId, dto: Partial<Users>): Promise<Users | null> {
         const filterColumn = "user_id";
         const sql = `UPDATE ${this.table}
         SET flag = $1, last_modified = $2
@@ -159,14 +159,14 @@ IUpdateFlagRepository<Users>
         try {
             client = await db.connect();
             const result: QueryResult<Users> = await client.query(sql, values);
-            await db.close(client);
             return result.rows[0] ?? null;
         } catch(err: any) {
             const message = "DB ERROR ON UPDATE QUERY";
             const method = "SUPPORT_UsersRepository_updateFlag";
             logError(message, method, err);
-            await db.close(client);
             throw new DBQueryErrorException(err);
+        } finally {
+            await db.close(client);
         }
     }
 }

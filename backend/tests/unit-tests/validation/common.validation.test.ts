@@ -66,6 +66,15 @@ describe('Unit-tests (validation), priority: synonym CommonValidators', () => {
 
             expect(testFn).toBe(expectResult);
         })
+
+        test('Fn validateTestErrorMsg(), params: <exception> = MaintenanceException, <msg> = "M-008"', () => {
+            const mockParam_exception = 'MaintenanceException';
+            const mockParam_msg = MaintenanceMode.M008;
+            const testFn = CommonValidators.validateTestErrorMsg(mockParam_exception, mockParam_msg);
+            const expectResult = true;
+
+            expect(testFn).toBe(expectResult);
+        })
     })
 
     describe('Testing invalid fn calls', () => {
@@ -128,6 +137,16 @@ describe('Unit-tests (validation), priority: synonym CommonValidators', () => {
             const expectResult = 'support-invalid-entry#timestamps';
 
             expect(() => { CommonValidators.validateTimestampFilter(mockParam_timestamps)}).toThrow(expectResult);
+        })
+
+        test('Fn validateTestErrorMsg(), params: <exception> = MaintenanceException, <msg> = "test-test"', () => {
+            const mockParam_exception = 'MaintenanceException';
+            const mockParam_msg = 'test-test';
+            const expectResult = 'support-invalid-entry#maintenanceMode';
+
+            expect(() => { 
+                CommonValidators.validateTestErrorMsg(mockParam_exception, mockParam_msg)
+            }).toThrow(expectResult);
         })
     })
 })

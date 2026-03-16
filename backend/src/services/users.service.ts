@@ -8,7 +8,7 @@ import {
 import usersRepository from "../repositories/users.repository";
 import * as CommonUtils from "../utils/common.utils";
 import usersModel from "../models/users.model";
-import { Users } from "../repositories/interfaces/users.entity.interface";
+import { Users, UsersId } from "../repositories/interfaces/users.entity.interface";
 
 class UsersService {
     private timeMapTargets: string[];
@@ -17,7 +17,7 @@ class UsersService {
         this.timeMapTargets = ['last_modified', 'created_on'];
     }
 
-    async getUserById(id: string): Promise<UsersResponseDTO | null> {
+    async getUserById(id: UsersId): Promise<UsersResponseDTO | null> {
         const result = await usersRepository.findById(id);
         return !result ? null : CommonUtils.mapObjTimestamps<UsersResponseDTO>(result, this.timeMapTargets);
     }
@@ -38,18 +38,18 @@ class UsersService {
     }
 
     async createUser(dto: UsersCreateDTO): Promise<UsersResponseDTO> {
-        const user: Users = usersModel.generateUser(dto);
+        const user: Users = usersModel.generateUserEntity(dto);
         const result = await usersRepository.create(user);
         return CommonUtils.mapObjTimestamps<UsersResponseDTO>(result, this.timeMapTargets)
     }
 
-    async updateUser(id: string, dto: UsersUpdateDTO): Promise<UsersResponseDTO | null> {
+    async updateUser(id: UsersId, dto: UsersUpdateDTO): Promise<UsersResponseDTO | null> {
         dto.last_modified = CommonUtils.getTimestampUTC();
         const result = await usersRepository.update(id, dto);
         return !result ? null : CommonUtils.mapObjTimestamps<UsersResponseDTO>(result, this.timeMapTargets);
     }
 
-    async updateUserFlag(id: string, dto: UsersFlagUpdateDTO): Promise<UsersResponseDTO | null> {
+    async updateUserFlag(id: UsersId, dto: UsersFlagUpdateDTO): Promise<UsersResponseDTO | null> {
         dto.last_modified = CommonUtils.getTimestampUTC();
         const result = await usersRepository.updateFlag(id, dto);
         return !result ? null : CommonUtils.mapObjTimestamps<UsersResponseDTO>(result, this.timeMapTargets);

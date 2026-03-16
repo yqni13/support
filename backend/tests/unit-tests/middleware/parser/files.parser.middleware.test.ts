@@ -1,6 +1,6 @@
 import multer from 'multer';
 import * as CommonUtils from '../../../../src/utils/common.utils';
-import { parseFiles } from '../../../../src/middleware/files/parse.files.middleware';
+import { parseFiles } from '../../../../src/middleware/parser/files.parser.middleware';
 
 jest.mock('multer'); 
 // Tests including multer parsing mocked files => tickets.integration.test.ts
