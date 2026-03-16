@@ -22,14 +22,14 @@ class FeedbackRepository {
         try {
             client = await db.connect();
             const result: QueryResult<Feedback> = await client.query(sql, value);
-            await db.close(client);
             return result.rows[0] ?? null;
         } catch(err: any) {
             const message = "DB ERROR ON SELECT QUERY";
             const method = "SUPPORT_FeedbackRepository_findById";
             logError(message, method, err);
-            await db.close(client);
             throw new DBQueryErrorException(err);
+        } finally {
+            await db.close(client);
         }
     }
 
@@ -40,39 +40,39 @@ class FeedbackRepository {
         try {
             client = await db.connect();
             const result: QueryResult<Feedback> = await client.query(queryData.sql, queryData.values);
-            await db.close(client);
             return !result.rows[0] || result.rows.length === 0 ? null : result.rows;
         } catch(err: any) {
             const message = "DB ERROR ON SELECT QUERY";
             const method = "SUPPORT_FeedbackRepository_findByFilter";
             logError(message, method, err);
-            await db.close(client);
             throw new DBQueryErrorException(err);
+        } finally {
+            await db.close(client);
         }
     }
 
     async updateReview(id: FeedbackId, dto: FeedbackUpdateReviewDTO): Promise<Feedback | null> {
         const filterColumn = "feedback_id";
-            const sql = `UPDATE ${this.table}
-            SET reviewed_on = $1::timestamp, last_modified = $2::timestamp
-            WHERE ${filterColumn} = $3
-            RETURNING *;
-            `;
-            const values = [dto.reviewed_on, dto.last_modified, id];
-            const db = DBConnection.getInstance();
-            let client: any;
-            try {
-                client = await db.connect();
-                const result: QueryResult<Feedback> = await client.query(sql, values);
-                await db.close(client);
-                return result.rows[0] ?? null;
-            } catch(err: any) {
-                const message = "DB ERROR ON UPDATE QUERY";
-                const method = "SUPPORT_FeedbackRepository_updateReview";
-                logError(message, method, err);
-                await db.close(client);
-                throw new DBQueryErrorException(err);
-            }
+        const sql = `UPDATE ${this.table}
+        SET reviewed_on = $1::timestamp, last_modified = $2::timestamp
+        WHERE ${filterColumn} = $3
+        RETURNING *;
+        `;
+        const values = [dto.reviewed_on, dto.last_modified, id];
+        const db = DBConnection.getInstance();
+        let client: any;
+        try {
+            client = await db.connect();
+            const result: QueryResult<Feedback> = await client.query(sql, values);
+            return result.rows[0] ?? null;
+        } catch(err: any) {
+            const message = "DB ERROR ON UPDATE QUERY";
+            const method = "SUPPORT_FeedbackRepository_updateReview";
+            logError(message, method, err);
+            throw new DBQueryErrorException(err);
+        } finally {
+            await db.close(client);
+        }
     }
 
     /**

@@ -1,6 +1,8 @@
 import {
     ClientsCreateDTO,
     ClientsCreateResponseDTO,
+    ClientsExtendedResponseDTO,
+    ClientsResponseDTO,
 } from "../../../src/dtos/clients.dto";
 import * as CommonUtils from "../../../src/utils/common.utils";
 import { default as mockId } from "../../mock-data/id.mock-data.json";
@@ -48,6 +50,51 @@ describe('Unit-tests (model), priority: entity Clients', () => {
         })
     })
 
+    describe('Priority: fn toClientsResponseDTO()', () => {
+
+        describe('Testing valid fn calls', () => {
+
+            test('Convert entity to dto, params: <entity, extended> Clients, false', () => {
+                const mockParam_entity: Clients = structuredClone(mockData);
+                const mockParam_extended = false;
+
+                jest.spyOn(CommonUtils, 'getTimestampUTC').mockReturnValue(mockTimestamp);
+                const expectResult: ClientsResponseDTO = {
+                    client_id: mockParam_entity.client_id,
+                    name: mockParam_entity.name,
+                    status: mockParam_entity.status,
+                    flag: mockParam_entity.flag,
+                    last_use: mockTimestamp,
+                    last_modified: mockTimestamp,
+                    created_on: mockTimestamp
+                };
+                const testFn = clientsModel.toClientsResponseDTO(mockParam_entity, mockParam_extended);
+
+                expect(testFn).toMatchObject(expectResult);
+            })
+
+            test('Convert entity to dto, params: <entity, extended> Clients, true', () => {
+                const mockParam_entity: Clients = structuredClone(mockData);
+                const mockParam_extended = true;
+
+                jest.spyOn(CommonUtils, 'getTimestampUTC').mockReturnValue(mockTimestamp);
+                const expectResult: ClientsExtendedResponseDTO = {
+                    client_id: mockParam_entity.client_id,
+                    name: mockParam_entity.name,
+                    api_key_hash: mockParam_entity.api_key_hash,
+                    status: mockParam_entity.status,
+                    flag: mockParam_entity.flag,
+                    last_use: mockTimestamp,
+                    last_modified: mockTimestamp,
+                    created_on: mockTimestamp
+                };
+                const testFn = clientsModel.toClientsResponseDTO(mockParam_entity, mockParam_extended);
+
+                expect(testFn).toMatchObject(expectResult);
+            })
+        })
+    })
+
     describe('Priority: fn generateClientsCreateObj()', () => {
 
         describe('Testing valid fn calls', () => {
@@ -81,4 +128,3 @@ describe('Unit-tests (model), priority: entity Clients', () => {
         })
     })
 })
-

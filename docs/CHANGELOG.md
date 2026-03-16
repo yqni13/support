@@ -1,12 +1,22 @@
-# yqni13 | support
+## 📜 $\textsf{\color{salmon}{List\ of\ updates}}$
 
-### $\texttt{\color{olive}{LIST\ OF\ UPDATES}}$
+
+### $\textsf{\color{skyblue}2026/03/14}$
+
+$\textsf{[v1.4.4\ =>\ {\textbf{\color{brown}v1.4.9}]}}$ app<br>
+- $\textsf{\color{teal}Addition:}$ Added form-data parser middleware for requests including files.
+- $\textsf{\color{orange}Patch:}$ Updated:
+  + return types, mapping and handling (part 1).
+  + calculation for delete-permission by comparing timestamps (incorporate timezone offset on database read timestamp).
+  + 'tickets' request: more accurate check for containing files.
+  + use Promise-instance fn finally() in repository-layer to reduce code.
+  + documentation headers and display error on symbol (&).
 
 <br>
 
 ### $\textsf{\color{skyblue}2026/03/09}$
 
-$\textsf{[v1.4.1\ =>\ {\textbf{\color{brown}v1.4.4}]}}$ app<br>
+$\textsf{[v1.4.1\ =>\ v1.4.4]}$ app<br>
 - $\textsf{\color{orange}Patch:}$ Updated:
   + entity ID's are using now nominal types instead basic string|number.
   + some model functions are renamed to keep consistency and improve readability.

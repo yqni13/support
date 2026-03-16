@@ -22,14 +22,14 @@ class ClientsRepository implements ICreateRepository<Clients>, IUpdateFlagReposi
         try {
             client = await db.connect();
             const result: QueryResult<Clients> = await client.query(sql, value);
-            await db.close(client);
             return result.rows[0] ?? null;
         } catch(err: any) {
             const message = "DB ERROR ON SELECT QUERY";
             const method = "SUPPORT_ClientsRepository_findById";
             logError(message, method, err);
-            await db.close(client);
             throw new DBQueryErrorException(err);
+        } finally {
+            await db.close(client);
         }
     }
 
@@ -41,14 +41,14 @@ class ClientsRepository implements ICreateRepository<Clients>, IUpdateFlagReposi
         try {
             client = await db.connect();
             const result: QueryResult<Clients> = await client.query(sql, values);
-            await db.close(client);
             return result.rows[0] ?? null;
         } catch(err: any) {
             const message = "DB ERROR ON SELECT QUERY";
             const method = "SUPPORT_ClientsRepository_findByActiveKey";
             logError(message, method, err);
-            await db.close(client);
             throw new DBQueryErrorException(err);
+        } finally {
+            await db.close(client);
         }
     }
 
@@ -60,14 +60,14 @@ class ClientsRepository implements ICreateRepository<Clients>, IUpdateFlagReposi
         try {
             client = await db.connect();
             const result: QueryResult<Clients> = await client.query(sql, value);
-            await db.close(client);
             return result.rows[0] ?? null;
         } catch(err: any) {
             const message = "DB ERROR ON SELECT QUERY";
             const method = "SUPPORT_ClientsRepository_findStatusByName";
             logError(message, method, err);
-            await db.close(client);
             throw new DBQueryErrorException(err);
+        } finally {
+            await db.close(client);
         }
     }
 
@@ -83,14 +83,14 @@ class ClientsRepository implements ICreateRepository<Clients>, IUpdateFlagReposi
         try {
             client = await db.connect();
             const result: QueryResult<Clients> = await client.query(sql, values);
-            await db.close(client);
             return result.rows[0];
         } catch(err: any) {
             const message = "DB ERROR ON INSERT QUERY";
             const method = "SUPPORT_ClientsRepository_create";
             logError(message, method, err);
-            await db.close(client);
             throw new DBQueryErrorException(err);
+        } finally {
+            await db.close(client);
         }
     }
 
@@ -107,14 +107,14 @@ class ClientsRepository implements ICreateRepository<Clients>, IUpdateFlagReposi
         try {
             client = await db.connect();
             const result: QueryResult<Clients> = await client.query(sql, values);
-            await db.close(client);
             return result.rows[0] ?? null;
         } catch(err: any) {
             const message = "DB ERROR ON UPDATE QUERY";
             const method = "SUPPORT_ClientsRepository_updateFlag";
             logError(message, method, err);
-            await db.close(client);
             throw new DBQueryErrorException(err);
+        } finally {
+            await db.close(client);
         }
     }
 
@@ -131,14 +131,14 @@ class ClientsRepository implements ICreateRepository<Clients>, IUpdateFlagReposi
         try {
             client = await db.connect();
             const result: QueryResult<Clients> = await client.query(sql, values);
-            await db.close(client);
             return result.rows[0] ?? null;
         } catch(err: any) {
             const message = "DB ERROR ON UPDATE QUERY";
             const method = "SUPPORT_ClientsRepository_updateStatus";
             logError(message, method, err);
-            await db.close(client);
             throw new DBQueryErrorException(err);
+        } finally {
+            await db.close(client);
         }
     }
 
@@ -155,14 +155,14 @@ class ClientsRepository implements ICreateRepository<Clients>, IUpdateFlagReposi
         try {
             client = await db.connect();
             const result: QueryResult<Clients> = await client.query(sql, values);
-            await db.close(client);
             return result.rows[0] ?? null;
         } catch(err: any) {
             const message = "DB ERROR ON UPDATE QUERY";
             const method = "SUPPORT_ClientsRepository_updateLastStatus";
             logError(message, method, err);
-            await db.close(client);
             throw new DBQueryErrorException(err);
+        } finally {
+            await db.close(client);
         }
     }
 }

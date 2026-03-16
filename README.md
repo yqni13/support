@@ -1,7 +1,7 @@
-# yqni13 | support
-$\texttt{\color{teal}{v1.4.4}}$
+# yqni13 | $\texttt{\color{cornflowerblue}{SUPPORT}}$
+### $\textsf{\color{brown}{v1.4.9}}$
 
-### Support hub - handling feedback & ratings (`/feedback`) and bug/support requests (`/tickets`) including file attachments across multiple applications via REST API built with NodeJS (Typescript), Express & PostgreSQL in Docker container. Created following Test-Driven Development (450+ tests including ephemeral database by testcontainers) and hosting env:prod via Render, Neon and Cloudflare.
+#### Support hub - handling feedback/ratings (`/feedback`) and bug/support requests (`/tickets`) including file attachments across multiple applications via REST API. Built with NodeJS (Typescript), Express & PostgreSQL in Docker container using API-Key authentication and rate-limiting. Created following Test-Driven Development (450+ tests) and hosting env:prod via Render, Neon and Cloudflare.
 
 <br>
 
@@ -64,7 +64,14 @@ Alternatively run application in Docker container [(see docs)](./docs/DEVOPS.md)
 
 <br>
 
-### $\textsf{\color{teal}Feedback \&\ Rating}$
+### $\textsf{\color{teal}Tickets}$
+
+Main focus on this application is the creating and handling of tickets that are used to represent bug reports or support requests. Tickets are authenticated by client (application) and user identifier and hold information in different ways: `title` and `message` are used as the main description, followed by more specific but optional information like `device`, `operational system` and `browser` or optional file attachments that are stored in the cloud.<br>
+Tickets use status to signal the process and ensure it doesn't get deleted before solved, canceled or after a certain time when paused. Deleting a ticket also removes the respective files from the cloud that were originally attached.
+
+<br>
+
+### $\textsf{\color{teal}Feedback and Rating}$
 
 User can utilize a feedback & rating system to rate the application in use and send criticism or praise. For every client can exist multiple entries for the entity `Feedback` but only one `FeedbackRating` which holds the accumulated data of the pointing feedback entries.<br>
 Resubmissions are handled in the database by an `ON CONFLICT` upsert query [see upsertInTa()](./backend/src/repositories/feedback.repository.ts) on the unique `(client_id, user_id)` constraint, followed by an atomic aggregate update to the 'FeedbackRating' table entry. Both queries are executed within a single transaction to guarantee data consistency.<br>
@@ -75,7 +82,7 @@ Furthermore, if an existing feedback entry has a message stored, but is not revi
 
 ### $\textsf{\color{teal}File handling}$
 
-User can attach files for any support/bug ticket to provide further information (screenshots, images, ...) on their message. Attachments are limited to upload up to `5` files and each file can be up to `1`MB [see validation](./backend/src/middleware/files/validate.files.middleware.ts). Currently only `images` (webp, jpg, jpeg, png) and `pdf` files are supported, but more will follow. Cloud in use is `Cloudflare` (see Figure 1) using S3Client for api communication and files will be deleted when a ticket is closed, canceled or expired (time check).
+User can attach files for any support/bug ticket to provide further information (screenshots, images, ...) on their message. Attachments are limited to upload up to `5` files and each file can be up to `1`MB [see validation](./backend/src/middleware/files/validate.files.middleware.ts). Currently only `images` (webp, jpg, jpeg, png) and `pdf` files are supported, but more will follow. Cloud in use is `Cloudflare` (see `Figure 1`) using S3Client for api communication and files will be deleted when a ticket is closed, canceled or expired (time check).
 <div align="center">
     <img src="assets/img/cloudflare_demo.png" alt="&nbsp;Cloudflare upload demo">
     Figure 1 - Cloudflare upload demo, v1.0.0
@@ -83,13 +90,30 @@ User can attach files for any support/bug ticket to provide further information 
 
 <br>
 
+### $\textsf{\color{teal}Observation}$
+
+In terms of rate-limiting, penalties and ready-to-extend functionality, the observation middleware takes care of monitoring incoming requests by users and clients (see following workflow or `Figure 2`):
+<br>=> [middleware](./backend/src/middleware/observe.middleware.ts) // used for every user-request
+<br>=> [rate-limits engine](./backend/src/middleware/engines/rate-limits.engine.middleware.ts) // executes checks for ruleset violations
+<br>=> [rate-limits rules](./backend/src/middleware/rules/rate-limits.rule.middleware.ts) // rulesets
+<br>=> [rate-limits adapter](./backend/src/middleware/adapter/rate-limits.adapter.middleware.ts) // handles update/create of ruleset-check history
+<br>=> [penalty handler](./backend/src/middleware/handler/penalty.handler.middleware.ts) // set violations (status/flag change) if triggered 
+<br>=> middleware // throw exception or pass forward
+<div align="center">
+    <img src="assets/img/observe_middleware_diagram.png" alt="&nbsp;observe middleware diagram">
+    Figure 2 - observation middleware digram, v1.0.0-beta.2
+</div>
+
+
+<br>
+
 ## 📝 $\textsf{\color{salmon}Logging}$
 
 To monitor errors the logging framework `Winston` is used in combination with Logtail from `Betterstack` as a Singleton: [config](./backend/src/logger/config.logger.ts)
-<br>While working within local (DEV) or test environment, error messages are logged into the consoles. For the deployed environments (STAG/PROD) the logging is set to send logtails to Betterstack (longer storage time than app-hosting service). For easy access and monitoring of error messages, the Betterstack UI client dashboard comes in handy (see Figure 2). Additional meta data (environment + version numbers) help identifying and assigning errors.
+<br>While working within local (DEV) or test environment, error messages are logged into the consoles. For the deployed environments (STAG/PROD) the logging is set to send logtails to Betterstack (longer storage time than app-hosting service). For easy access and monitoring of error messages, the Betterstack UI client dashboard comes in handy (see `Figure 3`). Additional meta data (environment + version numbers) help identifying and assigning errors.
 <div align="center">
     <img src="assets/img/betterstack_logging.png" alt="&nbsp;Betterstack logging dashboard">
-    Figure 2 - Betterstack logging dashboard, v1.0.0-beta.1
+    Figure 3 - Betterstack logging dashboard, v1.0.0-beta.1
 </div>
 
 <br>
@@ -104,14 +128,14 @@ Testing of the application server can be done automatically via Jest tests (next
 [PAYLOAD] { "demo_mode": DemoMode }
 ```
 Use `https://support-0hsq.onrender.com` for {{url}} to test on live conditions.<br>
-See Figure 3 for the different use cases & responses (Postman, v11.73.5) - from left to right:
+See Figure 4 for the different use cases & responses (Postman, v11.73.5) - from left to right:
 <br>[PAYLOAD]: { "mode_enum": "success" } => retrieve current version number as request without fail
 <br>[PAYLOAD]: undefined (none) or empty obj/array => retrieve exception for undefined body
 <br>[PAYLOAD]: { "mode_enum": "%§$" } => retrieve exception due to invalid value
 <br>[PAYLOAD]: { "mode_enum": "error" } => retrieve exception for intended failing db query (see data.message: SEL instead of SELECT)
 <div align="center">
     <img src="assets/img/demo_results.png" alt="&nbsp;Betterstack logging dashboard">
-    Figure 3 - /test/demo responses, v1.3.1
+    Figure 4 - /test/demo responses, v1.3.1
 </div>
 
 <br>
@@ -150,16 +174,16 @@ or simply save as script command in `package.json` to run `npm test`:
 <br>
 
 To automatically check tests before merging feature/development branch further up, a `GitHub Action` is set up, see [main.yml](.github/workflows/main.yml).<br>
-Preventing an unwanted merge with unfinished/failed test run, the project is set up to disable merging until all tests have passed (see Figure 4 to Figure 5).
+Preventing an unwanted merge with unfinished/failed test run, the project is set up to disable merging until all tests have passed (see Figure 5 to Figure 6).
 
 <div align="center">
     <img src="assets/img/github-action-jest-processing.png" alt="&nbsp;GitHub processing tests">
-    Figure 4 - processing tests, v0.9.1
+    Figure 5 - processing tests, v0.9.1
 </div>
 <br>
 <div align="center">
     <img src="assets/img/github-action-jest-passed.png" alt="&nbsp;GitHub tests passed">
-    Figure 5 - passing tests, v0.9.1
+    Figure 6 - passing tests, v0.9.1
 </div>
 
 <br>
@@ -168,11 +192,14 @@ Preventing an unwanted merge with unfinished/failed test run, the project is set
 [see changelog for all updates](/docs/CHANGELOG.md)
 
 
-$\textsf{[v1.4.1\ =>\ {\textbf{\color{brown}v1.4.4}]}}$ app<br>
+$\textsf{[v1.4.4\ =>\ {\textbf{\color{brown}v1.4.9}]}}$ app<br>
+- $\textsf{\color{teal}Addition:}$ Added form-data parser middleware for requests including files.
 - $\textsf{\color{orange}Patch:}$ Updated:
-  + entity ID's are using now nominal types instead basic string|number.
-  + some model functions are renamed to keep consistency and improve readability.
-  + some api routes have been shortened to keep consistency and improve readability.
+  + return types, mapping and handling (part 1).
+  + calculation for delete-permission by comparing timestamps (incorporate timezone offset on database read timestamp).
+  + 'tickets' request: more accurate check for containing files.
+  + use Promise-instance fn finally() in repository-layer to reduce code.
+  + documentation headers and display error on symbol (&).
 
 <br>
 

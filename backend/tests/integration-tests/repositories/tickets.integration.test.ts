@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import {
+    TicketsCreateResponseDTO,
     TicketsFilterDTO,
     TicketsRequestCreateDTO,
     TicketsResponseDTO,
@@ -24,6 +25,7 @@ import { DeviceOption } from "../../../src/utils/enums/device-option.enum";
 import { UsersId } from "../../../src/repositories/interfaces/users.entity.interface";
 import { ClientsId } from "../../../src/repositories/interfaces/clients.entity.interface";
 import { TicketsId } from "../../../src/repositories/interfaces/tickets.entity.interface";
+import ticketsService from "../../../src/services/tickets.service";
 
 const testValidTicketId = mockId.tickets.valid[0] as TicketsId;
 const testValidClientId = mockId.clients.valid[0] as ClientsId;
@@ -45,6 +47,9 @@ jest.mock('../../../src/middleware/auth.user.middleware', () => ({
         next();
     })
 }));
+jest.mock('../../../src/middleware/parser/form-data.parser.middleware.ts', () => ({
+    parseFormData: jest.fn(() => (req: Request, res: Response, next: NextFunction) => next())
+}))
 jest.mock('../../../src/middleware/maintenance.middleware', () => ({
     maintain: jest.fn(() =>  (req: Request, res: Response, next: NextFunction) => next())
 }));
@@ -395,16 +400,10 @@ describe('Integration-tests (repository), priority: entity Tickets', () => {
             jest.spyOn(CommonUtils, "generateUUID").mockReturnValue(testNewParam_ticket_id);
             jest.spyOn(CommonUtils, "getTimestampUTC").mockReturnValue(testTimestamp);
 
-            const testResult: TicketsResponseDTO = {
-                ticket_id: testNewParam_ticket_id,
-                client_id: testValidClientId,
-                user_id: testValidUserId,
+            const testResult: TicketsCreateResponseDTO = {
                 status: TicketStatus.ISSUED,
                 option: TicketOption.SUPPORT,
-                title: testParam_dto.title,
-                message: testParam_dto.message,
                 flag: null,
-                last_modified: testTimestamp,
                 created_on: testTimestamp
             };
 
@@ -414,7 +413,7 @@ describe('Integration-tests (repository), priority: entity Tickets', () => {
                 .send(testParam_dto);
 
             expect(testResponse.statusCode).toBe(200);
-            expect(testResponse.body).toMatchObject(testResult)
+            expect(testResponse.body).toMatchObject(testResult);
         })
 
         test('Repository process fn create(), priority: with single file, result: "SUCCESS"', async () => {
@@ -436,17 +435,10 @@ describe('Integration-tests (repository), priority: entity Tickets', () => {
             jest.spyOn(FilesService.prototype, 'uploadFiles').mockImplementation();
             jest.spyOn(FilesService.prototype, 'getResourcePaths').mockReturnValue(mockPaths);
 
-            const testResult: TicketsResponseDTO = {
-                ticket_id: testNewParam_ticket_id,
-                client_id: testValidClientId,
-                user_id: testValidUserId,
+            const testResult: TicketsCreateResponseDTO = {
                 status: TicketStatus.ISSUED,
                 option: TicketOption.SUPPORT,
-                title: testParam_dto.title,
-                message: testParam_dto.message,
-                resource_paths: mockPaths,
                 flag: null,
-                last_modified: testTimestamp,
                 created_on: testTimestamp
             };
 
@@ -462,8 +454,11 @@ describe('Integration-tests (repository), priority: entity Tickets', () => {
                 .field('title', testParam_dto.title)
                 .field('message', testParam_dto.message);
 
+            const testFindByIdResponse = await ticketsService.getTicketById(testNewParam_ticket_id);
+
             expect(testResponse.statusCode).toBe(200);
-            expect(testResponse.body).toMatchObject(testResult)
+            expect(testResponse.body).toMatchObject(testResult);
+            expect(testFindByIdResponse?.resource_paths).toEqual(mockPaths);
         })
 
         test('Repository process fn create(), priority: with multiple files, result: "SUCCESS"', async () => {
@@ -494,17 +489,10 @@ describe('Integration-tests (repository), priority: entity Tickets', () => {
             jest.spyOn(FilesService.prototype, 'uploadFiles').mockImplementation();
             jest.spyOn(FilesService.prototype, 'getResourcePaths').mockReturnValue(mockPaths);
 
-            const testResult: TicketsResponseDTO = {
-                ticket_id: testNewParam_ticket_id,
-                client_id: testValidClientId,
-                user_id: testValidUserId,
+            const testResult: TicketsCreateResponseDTO = {
                 status: TicketStatus.ISSUED,
                 option: TicketOption.SUPPORT,
-                title: testParam_dto.title,
-                message: testParam_dto.message,
-                resource_paths: mockPaths,
                 flag: null,
-                last_modified: testTimestamp,
                 created_on: testTimestamp
             };
 
@@ -519,8 +507,11 @@ describe('Integration-tests (repository), priority: entity Tickets', () => {
                 .field('title', testParam_dto.title)
                 .field('message', testParam_dto.message);
 
+            const testFindByIdResponse = await ticketsService.getTicketById(testNewParam_ticket_id);
+
             expect(testResponse.statusCode).toBe(200);
-            expect(testResponse.body).toMatchObject(testResult)
+            expect(testResponse.body).toMatchObject(testResult);
+            expect(testFindByIdResponse?.resource_paths).toEqual(mockPaths);
         })
 
         test('Repository process fn update() without resource_paths, result: "SUCCESS"', async () => {

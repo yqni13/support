@@ -5,7 +5,8 @@ import {
     TicketsResponseDTO,
     TicketsFilterDTO,
     TicketsCreateDTO,
-    TicketsUpdateDTO
+    TicketsUpdateDTO,
+    TicketsCreateResponseDTO
 } from "../dtos/tickets.dto";
 import ticketsService from "../services/tickets.service";
 import { TicketsId } from "../repositories/interfaces/tickets.entity.interface";
@@ -55,8 +56,8 @@ class TicketsController {
                 client_id: req.apiClients.client_id,
                 user_id: req.apiUsers.user_id
             };
-            const files = req.files as Express.Multer.File[] ?? null;
-            const response: TicketsResponseDTO = await ticketsService.createTicket(dto, files);
+            const files = !req.files || req.files.length === 0 ? null : req.files as Express.Multer.File[];
+            const response: TicketsCreateResponseDTO = await ticketsService.createTicket(dto, files);
             res.json(response);
         } catch(err: any) {
             next(err);

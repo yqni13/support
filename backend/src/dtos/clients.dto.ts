@@ -20,17 +20,6 @@ export interface ClientsLastUseUpdateDTO {
     last_use: string
 }
 
-export interface ClientsExistResponseDTO {
-    client_id: ClientsId,
-    name: string,
-    api_key_hash: string,
-    status: ApiKeyStatus,
-    flag: Flag | null,
-    last_use: string,
-    last_modified: string,
-    created_on: string
-}
-
 export interface ClientsCreateResponseDTO {
     client_id: ClientsId,
     name: string,
@@ -42,27 +31,16 @@ export interface ClientsCreateResponseDTO {
     created_on: string
 }
 
-export interface ClientsFlagResponseDTO {
+export interface ClientsResponseDTO {
     client_id: ClientsId,
+    name: string,
+    status: ApiKeyStatus,
     flag: Flag | null,
     last_use: string,
     last_modified: string,
     created_on: string
 }
 
-export interface ClientsStatusResponseDTO {
-    client_id: ClientsId,
-    name: string,
-    status: ApiKeyStatus,
-    last_use: string,
-    last_modified: string,
-    created_on: string
-}
-
-export interface ClientsLastUseResponseDTO {
-    client_id: ClientsId,
-    name: string,
-    last_use: string,
-    last_modified: string,
-    created_on: string
+export interface ClientsExtendedResponseDTO extends ClientsResponseDTO{
+    api_key_hash: string
 }
