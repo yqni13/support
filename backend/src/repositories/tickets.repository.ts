@@ -40,14 +40,14 @@ IDeleteRepository
         try {
             client = await db.connect();
             const result: QueryResult<TicketsResponseExtendedDTO> = await client.query(sql, value);
-            await db.close(client);
             return result.rows[0] ?? null;
         } catch(err: any) {
             const message = "DB ERROR ON SELECT QUERY";
             const method = "SUPPORT_TicketsRepository_findById";
             logError(message, method, err);
-            await db.close(client);
             throw new DBQueryErrorException(err);
+        } finally {
+            await db.close(client);
         }
     }
 
@@ -59,14 +59,14 @@ IDeleteRepository
         try {
             client = await db.connect();
             const result: QueryResult<Tickets> = await client.query(sql);
-            await db.close(client);
             return !result.rows[0] || result.rows.length === 0 ? null : result.rows;
         } catch(err: any) {
             const message = "DB ERROR ON SELECT QUERY";
             const method = "SUPPORT_TicketsRepository_findAll";
             logError(message, method, err);
-            await db.close(client);
             throw new DBQueryErrorException(err);
+        } finally {
+            await db.close(client);
         }
     }
 
@@ -84,14 +84,14 @@ IDeleteRepository
         try {
             client = await db.connect();
             const result: QueryResult<Tickets> = await client.query(sql, values);
-            await db.close(client);
             return !result.rows[0] || result.rows.length === 0 ? null : result.rows;
         } catch(err: any) {
             const message = "DB ERROR ON SELECT QUERY";
             const method = "SUPPORT_TicketsRepository_findByTimeInterval";
             logError(message, method, err);
-            await db.close(client);
             throw new DBQueryErrorException(err);
+        } finally {
+            await db.close(client);
         }
     }
 
@@ -105,14 +105,14 @@ IDeleteRepository
         try {
             client = await db.connect();
             const result: QueryResult<Tickets> = await client.query(queryData.sql, queryData.values);
-            await db.close(client);
             return !result.rows[0] || result.rows.length === 0 ? null : result.rows;
         } catch(err: any) {
             const message = "DB ERROR ON SELECT QUERY";
             const method = "SUPPORT_TicketsRepository_findByFilter";
             logError(message, method, err);
-            await db.close(client);
             throw new DBQueryErrorException(err);
+        } finally {
+            await db.close(client);
         }
     }
 
@@ -127,14 +127,14 @@ IDeleteRepository
         try {
             client = await db.connect();
             const result: QueryResult<Tickets> = await client.query(sql, values);
-            await db.close(client);
             return result.rows[0];
         } catch(err: any) {
             const message = "DB ERROR ON INSERT QUERY";
             const method = "SUPPORT_TicketsRepository_create";
             logError(message, method, err);
-            await db.close(client);
             throw new DBQueryErrorException(err);
+        } finally {
+            await db.close(client);
         }
     }
 
@@ -152,14 +152,14 @@ IDeleteRepository
         try {
             client = await db.connect();
             const result: QueryResult<Tickets> = await client.query(sql, values);
-            await db.close(client);
             return result.rows[0] ?? null;
         } catch(err: any) {
             const message = "DB ERROR ON UPDATE QUERY";
             const method = "SUPPORT_TicketsRepository_update";
             logError(message, method, err);
-            await db.close(client);
             throw new DBQueryErrorException(err);
+        } finally {
+            await db.close(client);
         }
     }
 
@@ -172,14 +172,14 @@ IDeleteRepository
         try {
             client = await db.connect();
             const result = await client.query(sql, value);
-            await db.close(client);
             return result.rowCount > 0;
         } catch(err: any) {
             const message = "DB ERROR ON DELETE QUERY";
             const method = "SUPPORT_TicketsRepository_delete";
             logError(message, method, err);
-            await db.close(client);
             throw new DBQueryErrorException(err);
+        } finally {
+            await db.close(client);
         }
     }
 }

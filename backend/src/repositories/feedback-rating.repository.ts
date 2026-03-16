@@ -24,14 +24,14 @@ IFindRepository<FeedbackRating> {
         try {
             client = await db.connect();
             const result: QueryResult<FeedbackRating> = await client.query(sql, value);
-            await db.close(client);
             return result.rows[0] ?? null;
         } catch(err: any) {
             const message = "DB ERROR ON SELECT QUERY";
             const method = "SUPPORT_FeedbackRatingRepository_findById";
             logError(message, method, err);
-            await db.close(client);
             throw new DBQueryErrorException(err);
+        } finally {
+            await db.close(client);
         }
     }
 
@@ -47,14 +47,14 @@ IFindRepository<FeedbackRating> {
         try {
             client = await db.connect();
             const result: QueryResult<FeedbackRating> = await client.query(sql, value);
-            await db.close(client);
             return result.rows[0] ?? null;
         } catch(err: any) {
             const message = "DB ERROR ON SELECT QUERY";
             const method = "SUPPORT_FeedbackRatingRepository_findByClientsName";
             logError(message, method, err);
-            await db.close(client);
             throw new DBQueryErrorException(err);
+        } finally {
+            await db.close(client);
         }
     }
 
@@ -66,14 +66,14 @@ IFindRepository<FeedbackRating> {
         try {
             client = await db.connect();
             const result: QueryResult<FeedbackRating> = await client.query(sql);
-            await db.close(client);
             return !result.rows[0] || result.rows.length === 0 ? null : result.rows;
         } catch(err: any) {
             const message = "DB ERROR ON SELECT QUERY";
             const method = "SUPPORT_FeedbackRatingRepository_findAll";
             logError(message, method, err);
-            await db.close(client);
             throw new DBQueryErrorException(err);
+        } finally {
+            await db.close(client);
         }
     }
 

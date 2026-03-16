@@ -1,4 +1,4 @@
-import { TicketsCreateDTO, TicketsResponseDTO, TicketsUpdateDTO } from "../dtos/tickets.dto";
+import { TicketsCreateDTO, TicketsCreateResponseDTO, TicketsResponseDTO, TicketsUpdateDTO } from "../dtos/tickets.dto";
 import { Tickets, TicketsId } from "../repositories/interfaces/tickets.entity.interface";
 import * as CommonUtils from "../utils/common.utils";
 import { TicketStatus } from "../utils/enums/ticket-status.enum";
@@ -9,7 +9,7 @@ class TicketsModel {
     async generateTicketEntity(dto: TicketsCreateDTO, files: Express.Multer.File[] | null): Promise<Tickets> {
         const timestamp = CommonUtils.getTimestampUTC();
         const newId = CommonUtils.generateUUID<TicketsId>();
-        let paths: string[] | null = null;
+        let paths: string[] | undefined = undefined;
         if(files) {
             const filesService = new FilesService(files, 'tickets');
             filesService.transformFiles(newId);
@@ -24,7 +24,7 @@ class TicketsModel {
             option: dto.option,
             title: dto.title,
             message: dto.message,
-            resource_paths: paths ?? dto.resource_paths,
+            resource_paths: paths,
             flag: null,
             info_browser: dto.info_browser,
             info_os: dto.info_os,
@@ -42,6 +42,15 @@ class TicketsModel {
         };
     }
 
+    toTicketsCreateResponseDTO(entity: Tickets): TicketsCreateResponseDTO {
+        return {
+            status: entity.status,
+            option: entity.option,
+            flag: entity.flag,
+            created_on: CommonUtils.getTimestampUTC(new Date(entity.created_on))
+        }
+    }
+
     async handleTicketBeforeDelete(dto: TicketsResponseDTO) {
         if(dto.resource_paths && dto.resource_paths.length > 0) {
             const filesService = new FilesService([], 'tickets');
@@ -55,9 +64,18 @@ class TicketsModel {
             { timeRange: 30, apply: (status: TicketStatus) => status === TicketStatus.CLOSED },
             { timeRange: 0, apply: (status: TicketStatus) => status === TicketStatus.CANCEL }
         ];
-        const factorMilSecToDays = 1 / (1000 * 3600 * 24);
-        const days = Math.floor((CommonUtils.now().getTime() - new Date(dto.created_on).getTime()) * factorMilSecToDays);
-        const isPermitted = deleteRules.find(rule => days >= rule.timeRange)?.apply(dto.status) ?? false
+        const factorMilSecToDays = 1 / (1000 * 3600 * 24);        
+        const convertedTS = (ts: string) => {
+            const offSetInMs = new Date(ts).getTimezoneOffset();
+            const conversion = 60 * 1000;
+            // Javascript turns - (-) => +
+            return offSetInMs < 0
+                ? new Date(ts).getTime() - ((-1) * offSetInMs * conversion)
+                : new Date(ts).getTime() - (offSetInMs * conversion);
+        }
+
+        const passedDays = Math.floor((CommonUtils.now().getTime() - convertedTS(dto.created_on)) * factorMilSecToDays);
+        const isPermitted = deleteRules.find(rule => passedDays >= rule.timeRange)?.apply(dto.status);
         if(!isPermitted) {
             throw new PermissionException('support-delete-prohibited');
         }

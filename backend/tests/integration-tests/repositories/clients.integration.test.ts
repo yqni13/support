@@ -1,12 +1,11 @@
 import { NextFunction, Request, Response } from "express";
 import {
     ClientsCreateResponseDTO,
-    ClientsStatusResponseDTO,
     ClientsCreateDTO,
     ClientsStatusUpdateDTO,
-    ClientsFlagResponseDTO,
     ClientsFlagUpdateDTO,
-    ClientsExistResponseDTO
+    ClientsExtendedResponseDTO,
+    ClientsResponseDTO,
 } from "../../../src/dtos/clients.dto";
 import * as CommonUtils from '../../../src/utils/common.utils';
 import * as MockUtils from "../../common.test-utils";
@@ -31,6 +30,7 @@ jest.mock('../../../src/middleware/maintenance.middleware', () => ({
 }));
 
 import app from '../../../src/app';
+import { DBTestData } from "../../db-data.setup";
 
 jest.setTimeout(60000);
 
@@ -40,10 +40,14 @@ const testTimestamp = '2025-01-01T14:00:02.000Z';
 describe('Integration-tests (repository), priority: entity Clients', () => {
 
     let dbTestSetup: DBTestSetup;
+    let dbTestData: DBTestData;
+    let dbData_Clients: any[];
     let apiUrl: string;
     const testVar_apiKey = { keyRaw: secrets.TEST_APIKEY_RAW, keyHash: secrets.TEST_APIKEY_HASH };
     beforeAll(async () => {
         dbTestSetup = new DBTestSetup();
+        dbTestData = DBTestData.getInstance();
+        dbData_Clients = dbTestData.getClientsInsertSql().values;
         await dbTestSetup.init();
         MockUtils.disableConsoleMessages();
         await runMigrations('clients.integration.test.ts');
@@ -62,7 +66,7 @@ describe('Integration-tests (repository), priority: entity Clients', () => {
 
         test('Repository process fn findById(), result: "SUCCESS"', async () => {
             const testParam_id = mockValidClientId;
-            const testResult: ClientsExistResponseDTO | null = {
+            const testResult: ClientsExtendedResponseDTO | null = {
                 client_id: testParam_id,
                 name: 'TESTCLIENT',
                 api_key_hash: secrets.TEST_APIKEY_HASH,
@@ -81,10 +85,11 @@ describe('Integration-tests (repository), priority: entity Clients', () => {
 
         test('Repository process fn findStatusByName(), result: "SUCCESS"', async () => {
             const testParam_name = 'TESTCLIENT';
-            const testResult: ClientsStatusResponseDTO = {
+            const testResult: ClientsResponseDTO = {
                 client_id: mockValidClientId,
                 name: testParam_name,
-                status: ApiKeyStatus.ACTIVE,
+                status: dbData_Clients[3],
+                flag: dbData_Clients[4],
                 last_use: testTimestamp,
                 last_modified: testTimestamp,
                 created_on: testTimestamp
@@ -146,8 +151,10 @@ describe('Integration-tests (repository), priority: entity Clients', () => {
 
             jest.spyOn(CommonUtils, "getTimestampUTC").mockReturnValue(testTimestamp);
 
-            const testResult: ClientsFlagResponseDTO | null = {
+            const testResult: ClientsResponseDTO | null = {
                 client_id: testParam_id,
+                name: dbData_Clients[1],
+                status: dbData_Clients[3],
                 flag: Flag.WARNING,
                 last_use: testTimestamp,
                 last_modified: testTimestamp,
@@ -168,7 +175,7 @@ describe('Integration-tests (repository), priority: entity Clients', () => {
 
             jest.spyOn(CommonUtils, "getTimestampUTC").mockReturnValue(testTimestamp);
 
-            const testResult: ClientsFlagResponseDTO | null = null;
+            const testResult: ClientsResponseDTO | null = null;
 
             await dbTestSetup.addTestData();
             const testResponse = await clientsService.updateClientFlag(testParam_id, testParam_dto);
@@ -184,10 +191,11 @@ describe('Integration-tests (repository), priority: entity Clients', () => {
 
             jest.spyOn(CommonUtils, "getTimestampUTC").mockReturnValue(testTimestamp);
 
-            const testResult: ClientsStatusResponseDTO = {
+            const testResult: ClientsResponseDTO = {
                 client_id: testParam_id,
-                name: 'TESTCLIENT',
+                name: dbData_Clients[1],
                 status: ApiKeyStatus.DISABLED,
+                flag: dbData_Clients[4],
                 last_use: testTimestamp,
                 last_modified: testTimestamp,
                 created_on: testTimestamp
