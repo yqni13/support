@@ -27,7 +27,8 @@ class FeedbackService {
     }
 
     /**
-     * @description Create is used to create new or overwrite existing Feedback with new data inside database transaction => FeedbackRating created/updated in same process.
+     * @description Create is used to create new or overwrite existing Feedback with new data inside 
+     * database transaction => FeedbackRating created/updated in same process.
      */
     async createFeedback(dto: FeedbackCreateDTO): Promise<FeedbackCreateResponseDTO | null> {
         const message = "DB ERROR ON FEEDBACK/FEEDBACK-RATING TRANSACTION";

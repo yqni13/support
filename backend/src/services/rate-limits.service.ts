@@ -17,21 +17,23 @@ class RateLimitsService {
     }
 
     async getRateLimitCount(dto: RateLimitsCountDTO): Promise<number> {
-        const result = await rateLimitsRepository.count(dto);
+        const result: RateLimits[] | null = await rateLimitsRepository.count(dto);
         return rateLimitsModel.mapCounts(result);
+        // TODO(yqni13): null-value handling missing!
     }
 
     async createRateLimit(dto: RateLimitsCreateDTO): Promise<RateLimitsResponseDTO> {
         const entity: Partial<RateLimits> = rateLimitsModel.mapNewEntity(dto);
-        const result = await rateLimitsRepository.create(entity);
+        const result: RateLimits = await rateLimitsRepository.create(entity);
         return CommonUtils.mapObjTimestamps<RateLimitsResponseDTO>(result, this.timeMapTargets);
+        // TODO(yqni13): mapping from entity to dto missing!
     }
 
     async updateRateLimit(dto: RateLimitsUpdateDTO): Promise<RateLimitsResponseDTO | null> {
         const timestamp = new Date();
         dto['day'] = CommonUtils.getDateUTC(timestamp);
         dto['last_modified'] = CommonUtils.getTimestampUTC(timestamp);
-        const result = await rateLimitsRepository.update(dto);
+        const result: RateLimits | null = await rateLimitsRepository.update(dto);
         return !result ? null : CommonUtils.mapObjTimestamps<RateLimitsResponseDTO>(result, this.timeMapTargets);
     }
 }

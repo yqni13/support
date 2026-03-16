@@ -74,8 +74,8 @@ class TicketsModel {
                 : new Date(ts).getTime() - (offSetInMs * conversion);
         }
 
-        const days = Math.floor((CommonUtils.now().getTime() - convertedTS(dto.created_on)) * factorMilSecToDays);
-        const isPermitted = deleteRules.find(rule => days >= rule.timeRange)?.apply(dto.status) ?? false;
+        const passedDays = Math.floor((CommonUtils.now().getTime() - convertedTS(dto.created_on)) * factorMilSecToDays);
+        const isPermitted = deleteRules.find(rule => passedDays >= rule.timeRange)?.apply(dto.status);
         if(!isPermitted) {
             throw new PermissionException('support-delete-prohibited');
         }

@@ -32,6 +32,9 @@ export interface FeedbackFilterDTO {
     created_on?: string | string[]
 }
 
+/**
+ * @description Reduced content as this is used as response outside of admin environment. 
+ */
 export interface FeedbackCreateResponseDTO {
     rating: number,
     rating_old?: number,

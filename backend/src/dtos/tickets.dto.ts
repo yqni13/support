@@ -61,6 +61,9 @@ export interface TicketsFilterDTO {
     created_on?: string[]
 }
 
+/**
+ * @description Reduced content as this is used as response outside of admin environment.
+ */
 export interface TicketsCreateResponseDTO {
     status: TicketStatus,
     option: TicketOption,

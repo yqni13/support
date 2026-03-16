@@ -6,7 +6,6 @@ const logger = Logger.getLogger();
 
 /**
  * @description Testable function for current Date object.
- * @returns new Date()
  */
 export const now = (): Date => new Date();
 
@@ -78,7 +77,6 @@ export function getNextRankEnumValue<T extends Record<string, any>>(enumObj: T, 
 }
 
 /**
- * 
  * @returns {string} Returns substring or empty string if endChar is not found in text.
  */
 export function getPreCharString(text: string, endChar: string): string {
@@ -86,7 +84,6 @@ export function getPreCharString(text: string, endChar: string): string {
 }
 
 /**
- * 
  * @returns {string} Returns substring or empty string if startChar is not found in text.
  */
 export function getPostCharString(text: string, startChar: string): string {
