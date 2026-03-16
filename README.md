@@ -92,16 +92,12 @@ User can attach files for any support/bug ticket to provide further information 
 
 ### $\textsf{\color{teal}Observation}$
 
-In terms of rate-limiting, penalties and ready-to-extend functionality, the observation middleware takes care of monitoring incoming requests by users and clients (see following workflow or `Figure 2`):
-<br>=> [middleware](./backend/src/middleware/observe.middleware.ts) // used for every user-request
-<br>=> [rate-limits engine](./backend/src/middleware/engines/rate-limits.engine.middleware.ts) // executes checks for ruleset violations
-<br>=> [rate-limits rules](./backend/src/middleware/rules/rate-limits.rule.middleware.ts) // rulesets
-<br>=> [rate-limits adapter](./backend/src/middleware/adapter/rate-limits.adapter.middleware.ts) // handles update/create of ruleset-check history
-<br>=> [penalty handler](./backend/src/middleware/handler/penalty.handler.middleware.ts) // set violations (status/flag change) if triggered 
-<br>=> middleware // throw exception or pass forward
+In terms of rate-limiting, penalties and ready-to-extend functionality, the observation middleware takes care of monitoring incoming requests by users and clients (see following workflow or `Figure 2`).<br>
+
+A certain set of rules checks for incoming requests on a total number for the day and within a certain time range. Before the engine returns found violations, the adapter calls for an increment of the daily rate-limit count. Violations are handled by the penalty handler (setting flags/status) and the workflow ends with either throwing an exception or calling next() to pass to the next middleware.
 <div align="center">
     <img src="assets/img/observe_middleware_diagram.png" alt="&nbsp;observe middleware diagram">
-    Figure 2 - observation middleware digram, v1.0.0-beta.2
+    Figure 2 - observation middleware workflow, v1.0.0-beta.2
 </div>
 
 
