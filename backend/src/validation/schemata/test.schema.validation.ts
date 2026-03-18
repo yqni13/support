@@ -9,6 +9,8 @@ export const postErrorSchema: ValidationChain[] = [
         .notEmpty()
         .withMessage(Message.REQUIRED),
     body('errorMsg')
+        // Some exceptions require enum values instead individual strings for the error message.
+        .custom((msg, {req}) => CommonValidators.validateTestErrorMsg(req.body.error, msg))
         .optional()
 ];
 

@@ -1,8 +1,10 @@
 import { EnvMode } from "../../utils/enums/env-mode.enum";
 import { MaintenanceMode } from "../../utils/enums/maintenance-mode.enum";
 
+export type MetaId = number & { readonly brand: unique symbol };
+
 export interface Meta {
-    id: number,
+    id: MetaId,
     app: string,
     author: string,
     build_on: string,
@@ -18,7 +20,7 @@ export interface Meta {
 }
 
 export interface Maintenance {
-    id: number,
+    id: MetaId,
     app: string,
     build_on: string,
     maintenance_mode: MaintenanceMode,

@@ -1,7 +1,7 @@
 import { QueryResult } from "pg";
 import { DBConnection } from "../configs/db";
 import { IBaseRepository, IFindRepository } from "./interfaces/base.repository.interface";
-import { Maintenance, Meta } from "./interfaces/meta.entity.interface";
+import { Maintenance, Meta, MetaId } from "./interfaces/meta.entity.interface";
 import { logError } from "../utils/common.utils";
 import { DBQueryErrorException } from "../utils/exceptions/db.exception";
 
@@ -13,7 +13,7 @@ class MetaRepository implements IBaseRepository<Meta>, IFindRepository<Meta> {
         this.table = "meta";
     }
 
-    async findById(id: number): Promise<Meta | null> {
+    async findById(id: MetaId): Promise<Meta | null> {
         const filterColumn = "id";
         const sql = `SELECT 
         id, app, author, build_on, environment, app_version, db_version, docker_image, docker_version, jenkins_version, maintenance_mode, last_modified, created_on 
@@ -27,14 +27,14 @@ class MetaRepository implements IBaseRepository<Meta>, IFindRepository<Meta> {
         try {
             client = await db.connect();
             const result: QueryResult<Meta> = await client.query(sql, value);
-            await db.close(client);
             return result.rows[0] ?? null;
         } catch(err: any) {
             const message = "DB ERROR ON SELECT QUERY";
             const method = "SUPPORT_MetaRepository_findById";
             logError(message, method, err);
-            await db.close(client);
             throw new DBQueryErrorException(err);
+        } finally {
+            await db.close(client);
         }
     }
 
@@ -52,14 +52,14 @@ class MetaRepository implements IBaseRepository<Meta>, IFindRepository<Meta> {
         try {
             client = await db.connect();
             const result: QueryResult<Meta> = await client.query(sql, value);
-            await db.close(client);
             return result.rows[0] ?? null;
         } catch(err: any) {
             const message = "DB ERROR ON SELECT QUERY";
             const method = "SUPPORT_MetaRepository_findByName";
             logError(message, method, err);
-            await db.close(client);
             throw new DBQueryErrorException(err);
+        } finally {
+            await db.close(client);
         }
     }
 
@@ -71,14 +71,14 @@ class MetaRepository implements IBaseRepository<Meta>, IFindRepository<Meta> {
         try {
             client = await db.connect();
             const result: QueryResult<Meta> = await client.query(sql);
-            await db.close(client);
             return !result.rows[0] || result.rows.length === 0 ? null : result.rows;
         } catch(err: any) {
             const message = "DB ERROR ON SELECT QUERY";
             const method = "SUPPORT_MetaRepository_findAll";
             logError(message, method, err);
-            await db.close(client);
             throw new DBQueryErrorException(err);
+        } finally {
+            await db.close(client);
         }
     }
 
@@ -92,18 +92,18 @@ class MetaRepository implements IBaseRepository<Meta>, IFindRepository<Meta> {
         try {
             client = await db.connect();
             const result: QueryResult<Maintenance> = await client.query(sql, value);
-            await db.close(client);
             return result.rows[0] ?? null;
         } catch(err: any) {
             const message = "DB ERROR ON SELECT QUERY";
             const method = "SUPPORT_MetaRepository_findMaintenance";
             logError(message, method, err);
-            await db.close(client);
             throw new DBQueryErrorException(err);
+        } finally {
+            await db.close(client);
         }
     }
 
-    async update(id: number, dto: Partial<Meta>): Promise<Meta | null> {
+    async update(id: MetaId, dto: Partial<Meta>): Promise<Meta | null> {
         const filterColumn = "id";
         const sql = `UPDATE ${this.table}
         SET app = $1, author = $2, build_on = $3, environment = $4, app_version = $5, db_version = $6,
@@ -118,18 +118,18 @@ class MetaRepository implements IBaseRepository<Meta>, IFindRepository<Meta> {
         try {
             client = await db.connect();
             const result: QueryResult<Meta> = await client.query(sql, values);
-            await db.close(client);
             return result.rows[0] ?? null;
         } catch(err: any) {
             const message = "DB ERROR ON UPDATE QUERY";
             const method = "SUPPORT_MetaRepository_update";
             logError(message, method, err);
-            await db.close(client);
             throw new DBQueryErrorException(err);
+        } finally {
+            await db.close(client);
         }
     }
 
-    async updateMaintenance(id: number, dto: Partial<Meta>): Promise<Maintenance | null> {
+    async updateMaintenance(id: MetaId, dto: Partial<Meta>): Promise<Maintenance | null> {
         const filterColumn = "id";
         const sql = `UPDATE ${this.table}
         SET maintenance_mode = $1, last_modified = $2
@@ -142,14 +142,14 @@ class MetaRepository implements IBaseRepository<Meta>, IFindRepository<Meta> {
         try {
             client = await db.connect();
             const result: QueryResult<Maintenance> = await client.query(sql, values);
-            await db.close(client);
             return result.rows[0] ?? null;
         } catch(err: any) {
             const message = "DB ERROR ON UPDATE QUERY";
             const method = "SUPPORT_MetaRepository_updateMaintenance";
             logError(message, method, err);
-            await db.close(client);
             throw new DBQueryErrorException(err);
+        } finally {
+            await db.close(client);
         }
     }
 
@@ -163,14 +163,14 @@ class MetaRepository implements IBaseRepository<Meta>, IFindRepository<Meta> {
         try {
             client = await db.connect();
             const result: QueryResult<Meta> = await client.query(sql, value);
-            await db.close(client);
             return result.rows[0] ?? null;
         } catch(err: any) {
             const message = "DB ERROR ON SELECT QUERY";
             const method = "SUPPORT_MetaRepository_demoError";
             logError(message, method, err);
-            await db.close(client);
             throw new DBQueryErrorException(err);
+        } finally {
+            await db.close(client);
         }
     }
 }

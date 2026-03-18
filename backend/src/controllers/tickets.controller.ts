@@ -5,15 +5,17 @@ import {
     TicketsResponseDTO,
     TicketsFilterDTO,
     TicketsCreateDTO,
-    TicketsUpdateDTO
+    TicketsUpdateDTO,
+    TicketsCreateResponseDTO
 } from "../dtos/tickets.dto";
 import ticketsService from "../services/tickets.service";
+import { TicketsId } from "../repositories/interfaces/tickets.entity.interface";
 
 class TicketsController {
     async getTicket(req: Request, res: Response, next: NextFunction) {
         try {
             checkValidation(req);
-            const id = req.params.id;
+            const id = req.params.id as TicketsId;
             const response: TicketsResponseExtendedDTO | null = await ticketsService.getTicketById(id);
             res.json(response);
         } catch(err: any) {
@@ -54,8 +56,8 @@ class TicketsController {
                 client_id: req.apiClients.client_id,
                 user_id: req.apiUsers.user_id
             };
-            const files = req.files as Express.Multer.File[] ?? null;
-            const response: TicketsResponseDTO = await ticketsService.createTicket(dto, files);
+            const files = !req.files || req.files.length === 0 ? null : req.files as Express.Multer.File[];
+            const response: TicketsCreateResponseDTO = await ticketsService.createTicket(dto, files);
             res.json(response);
         } catch(err: any) {
             next(err);
@@ -65,7 +67,7 @@ class TicketsController {
     async patchTicket(req: Request, res: Response, next: NextFunction) {
         try {
             checkValidation(req);
-            const id: string = req.params.id;
+            const id = req.params.id as TicketsId;
             const dto: TicketsUpdateDTO = req.body;
             const response: TicketsResponseDTO | null = await ticketsService.updateTicket(id, dto);
             res.json(response);
@@ -77,7 +79,7 @@ class TicketsController {
     async deleteTicket(req: Request, res: Response, next: NextFunction) {
         try {
             checkValidation(req);
-            const id = req.params.id;
+            const id = req.params.id as TicketsId;
             const response: boolean = await ticketsService.deleteTicket(id);
             res.json(response);
         } catch(err: any) {

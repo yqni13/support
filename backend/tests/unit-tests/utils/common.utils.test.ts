@@ -1,4 +1,4 @@
-import { Users } from "../../../src/repositories/interfaces/users.entity.interface";
+import { Users, UsersId } from "../../../src/repositories/interfaces/users.entity.interface";
 import * as CommonUtils from "../../../src/utils/common.utils";
 import { Flag } from "../../../src/utils/enums/flag.enum";
 import { TicketStatus } from "../../../src/utils/enums/ticket-status.enum";
@@ -8,6 +8,8 @@ import { secrets } from "../../../src/utils/secrets.utils";
 import { default as mockId } from "../../mock-data/id.mock-data.json";
 
 describe('Unit-tests (utils), priority: synonym CommonUtils', () => {
+
+    const mockValidUserId = mockId.users.valid[0] as UsersId;
 
     describe('Testing valid fn calls', () => {
 
@@ -54,7 +56,7 @@ describe('Unit-tests (utils), priority: synonym CommonUtils', () => {
 
         test('Fn mapObjTimestamps()', () => {
             const mockParam_data: Users = {
-                user_id: mockId.users.valid[0],
+                user_id: mockValidUserId,
                 email: 'user@test.com',
                 status: UserStatus.ACTIVE,
                 flag: null,
@@ -65,7 +67,7 @@ describe('Unit-tests (utils), priority: synonym CommonUtils', () => {
 
             const testFn = CommonUtils.mapObjTimestamps(mockParam_data, mockParam_timeMapTargets);
             const expectResult: Users = {
-                user_id: mockId.users.valid[0],
+                user_id: mockValidUserId,
                 email: 'user@test.com',
                 status: UserStatus.ACTIVE,
                 flag: null,
@@ -79,7 +81,7 @@ describe('Unit-tests (utils), priority: synonym CommonUtils', () => {
         test('Fn mapArrayTimestamps()', () => {
             const mockParam_data: Users[] = [
                 {
-                    user_id: mockId.users.valid[0],
+                    user_id: mockValidUserId,
                     email: 'user0@test.com',
                     status: UserStatus.ACTIVE,
                     flag: null,
@@ -87,7 +89,7 @@ describe('Unit-tests (utils), priority: synonym CommonUtils', () => {
                     created_on: '2025-01-01 14:00:03.000+01'
                 },
                 {
-                    user_id: mockId.users.new[0],
+                    user_id: mockId.users.new[0] as UsersId,
                     email: 'user1@test.com',
                     status: UserStatus.ACTIVE,
                     flag: null,
@@ -100,7 +102,7 @@ describe('Unit-tests (utils), priority: synonym CommonUtils', () => {
             const testFn = CommonUtils.mapArrayTimestamps(mockParam_data, mockParam_timeMapTargets);
             const expectResult: Users[] = [
                 {
-                    user_id: mockId.users.valid[0],
+                    user_id: mockValidUserId,
                     email: 'user0@test.com',
                     status: UserStatus.ACTIVE,
                     flag: null,
@@ -108,7 +110,7 @@ describe('Unit-tests (utils), priority: synonym CommonUtils', () => {
                     created_on: '2025-01-01T13:00:03.000Z'
                 },
                 {
-                    user_id: mockId.users.new[0],
+                    user_id: mockId.users.new[0] as UsersId,
                     email: 'user1@test.com',
                     status: UserStatus.ACTIVE,
                     flag: null,

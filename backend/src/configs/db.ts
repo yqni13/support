@@ -8,13 +8,15 @@ import { logError } from '../utils/common.utils';
 // Global setting to parse certain db data to specific types:
 // 1082: type Date [yyyy-mm-dd] - otherwise Date will be returned as full timestamp + time zone changes
 pg.types.setTypeParser(1082, (val) => val);
+// 1184: tell pg driver how to parse timestamp with time zone
+pg.types.setTypeParser(1184, (val) => new Date(val + "Z"));
 
 export class DBConnection {
     private static instance: DBConnection;
     #pool: pg.Pool;
 
     constructor() {
-        const connectionString = this._getConnectionString(secrets.ENV_MODE);
+        const connectionString = this.getConnectionString(secrets.ENV_MODE);
         this.#pool = new pg.Pool({connectionString});
     }
 
@@ -25,7 +27,7 @@ export class DBConnection {
         return DBConnection.instance;
     }
 
-    _getConnectionString(env: string) {
+    private getConnectionString(env: string) {
         // Remove white spaces to be comparable with enum values.
         env = env.trim() as EnvMode;
         let db: string;

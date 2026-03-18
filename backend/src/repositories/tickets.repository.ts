@@ -6,7 +6,7 @@ import {
 } from "./interfaces/base.repository.interface";
 import { DBConnection } from "../configs/db";
 import { QueryResult } from "pg";
-import { Tickets } from "./interfaces/tickets.entity.interface";
+import { Tickets, TicketsId } from "./interfaces/tickets.entity.interface";
 import { TicketsFilterDTO, TicketsIntervalDTO, TicketsResponseExtendedDTO } from "../dtos/tickets.dto";
 import { DBQueryErrorException } from "../utils/exceptions/db.exception";
 import { logError, now } from "../utils/common.utils";
@@ -24,7 +24,7 @@ IDeleteRepository
         this.table = "tickets";
     }
 
-    async findById(id: string): Promise<TicketsResponseExtendedDTO | null> {
+    async findById(id: TicketsId): Promise<TicketsResponseExtendedDTO | null> {
         const filterColumn = "ticket_id";
         const sql = `SELECT
         ${this.table}.*,
@@ -40,14 +40,14 @@ IDeleteRepository
         try {
             client = await db.connect();
             const result: QueryResult<TicketsResponseExtendedDTO> = await client.query(sql, value);
-            await db.close(client);
             return result.rows[0] ?? null;
         } catch(err: any) {
             const message = "DB ERROR ON SELECT QUERY";
             const method = "SUPPORT_TicketsRepository_findById";
             logError(message, method, err);
-            await db.close(client);
             throw new DBQueryErrorException(err);
+        } finally {
+            await db.close(client);
         }
     }
 
@@ -59,14 +59,14 @@ IDeleteRepository
         try {
             client = await db.connect();
             const result: QueryResult<Tickets> = await client.query(sql);
-            await db.close(client);
             return !result.rows[0] || result.rows.length === 0 ? null : result.rows;
         } catch(err: any) {
             const message = "DB ERROR ON SELECT QUERY";
             const method = "SUPPORT_TicketsRepository_findAll";
             logError(message, method, err);
-            await db.close(client);
             throw new DBQueryErrorException(err);
+        } finally {
+            await db.close(client);
         }
     }
 
@@ -84,14 +84,14 @@ IDeleteRepository
         try {
             client = await db.connect();
             const result: QueryResult<Tickets> = await client.query(sql, values);
-            await db.close(client);
             return !result.rows[0] || result.rows.length === 0 ? null : result.rows;
         } catch(err: any) {
             const message = "DB ERROR ON SELECT QUERY";
             const method = "SUPPORT_TicketsRepository_findByTimeInterval";
             logError(message, method, err);
-            await db.close(client);
             throw new DBQueryErrorException(err);
+        } finally {
+            await db.close(client);
         }
     }
 
@@ -105,64 +105,65 @@ IDeleteRepository
         try {
             client = await db.connect();
             const result: QueryResult<Tickets> = await client.query(queryData.sql, queryData.values);
-            await db.close(client);
             return !result.rows[0] || result.rows.length === 0 ? null : result.rows;
         } catch(err: any) {
             const message = "DB ERROR ON SELECT QUERY";
             const method = "SUPPORT_TicketsRepository_findByFilter";
             logError(message, method, err);
-            await db.close(client);
             throw new DBQueryErrorException(err);
+        } finally {
+            await db.close(client);
         }
     }
 
     async create(entity: Tickets): Promise<Tickets> {
         const sql = `INSERT INTO ${this.table}
-        (ticket_id, client_id, user_id, status, option, message, resource_paths, flag, last_modified, created_on)
-        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+        (ticket_id, client_id, user_id, status, option, title, message, resource_paths, flag, info_browser, info_os, info_device, last_modified, created_on)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)
         RETURNING *;`;
-        const values = [entity.ticket_id, entity.client_id, entity.user_id, entity.status, entity.option, entity.message, entity.resource_paths, entity.flag, entity.last_modified, entity.created_on];
+        const values = [entity.ticket_id, entity.client_id, entity.user_id, entity.status, entity.option, entity.title, entity.message, entity.resource_paths, entity.flag, entity.info_browser, entity.info_os, entity.info_device, entity.last_modified, entity.created_on];
         const db = DBConnection.getInstance();
         let client: any;
         try {
             client = await db.connect();
             const result: QueryResult<Tickets> = await client.query(sql, values);
-            await db.close(client);
             return result.rows[0];
         } catch(err: any) {
             const message = "DB ERROR ON INSERT QUERY";
             const method = "SUPPORT_TicketsRepository_create";
             logError(message, method, err);
-            await db.close(client);
             throw new DBQueryErrorException(err);
+        } finally {
+            await db.close(client);
         }
     }
 
-    async update(id: string, dto: Partial<Tickets>): Promise<Tickets | null> {
+    async update(id: TicketsId, dto: Partial<Tickets>): Promise<Tickets | null> {
         const filterColumn = "ticket_id";
         const sql = `UPDATE ${this.table}
-        SET status = $1, message = $2, option = $3, flag = $4, last_modified = $5
-        WHERE ${filterColumn} = $6
+        SET status = $1, title = $2, message = $3, option = $4, flag = $5, info_browser = $6, info_os = $7,
+        info_device = $8, last_modified = $9
+        WHERE ${filterColumn} = $10
         RETURNING *;
         `;
-        const values = [dto.status, dto.message, dto.option, dto.flag, dto.last_modified, id];
+        const values = [dto.status, dto.title, dto.message, dto.option, dto.flag, dto.info_browser, dto.info_os, dto.info_device, dto.last_modified, id];
         const db = DBConnection.getInstance();
         let client: any;
         try {
             client = await db.connect();
             const result: QueryResult<Tickets> = await client.query(sql, values);
-            await db.close(client);
             return result.rows[0] ?? null;
         } catch(err: any) {
             const message = "DB ERROR ON UPDATE QUERY";
             const method = "SUPPORT_TicketsRepository_update";
             logError(message, method, err);
-            await db.close(client);
             throw new DBQueryErrorException(err);
+        } finally {
+            await db.close(client);
         }
     }
 
-    async delete(id: string): Promise<boolean> {
+    async delete(id: TicketsId): Promise<boolean> {
         const filterColumn = "ticket_id";
         const sql = `DELETE FROM ${this.table} WHERE ${filterColumn} = $1;`;
         const value = [id];
@@ -171,14 +172,14 @@ IDeleteRepository
         try {
             client = await db.connect();
             const result = await client.query(sql, value);
-            await db.close(client);
             return result.rowCount > 0;
         } catch(err: any) {
             const message = "DB ERROR ON DELETE QUERY";
             const method = "SUPPORT_TicketsRepository_delete";
             logError(message, method, err);
-            await db.close(client);
             throw new DBQueryErrorException(err);
+        } finally {
+            await db.close(client);
         }
     }
 }

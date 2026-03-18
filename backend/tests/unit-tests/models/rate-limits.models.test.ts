@@ -1,12 +1,18 @@
 import { RateLimitsCreateDTO } from "../../../src/dtos/rate-limits.dto";
 import demoLimitsModel from "../../../src/models/demo-limits.model";
 import rateLimitsModel from "../../../src/models/rate-limits.model";
-import { DemoLimits } from "../../../src/repositories/interfaces/demo-limits.entity.interface";
-import { RateLimits } from "../../../src/repositories/interfaces/rate-limits.entity.interface";
+import { ClientsId } from "../../../src/repositories/interfaces/clients.entity.interface";
+import { DemoLimitsId, DemoLimits } from "../../../src/repositories/interfaces/demo-limits.entity.interface";
+import { RateLimitsId, RateLimits } from "../../../src/repositories/interfaces/rate-limits.entity.interface";
+import { UsersId } from "../../../src/repositories/interfaces/users.entity.interface";
 import * as CommonUtils from "../../../src/utils/common.utils";
 import { default as mockId } from "../../mock-data/id.mock-data.json";
 
 describe('Unit-tests (model), priority: entity RateLimits', () => {
+
+    const mockValidRateLimitId = mockId.rate_limits.valid[0] as RateLimitsId;
+    const mockValidClientId = mockId.clients.valid[0] as ClientsId;
+    const mockValidUserId = mockId.users.valid[0] as UsersId;
 
     describe('Priority: fn mapCounts()', () => {
 
@@ -15,17 +21,17 @@ describe('Unit-tests (model), priority: entity RateLimits', () => {
             test('Sum up count of entries, params: <RateLimits>[].length === 2', () => {
                 const mockParam_data: RateLimits[] = [
                     {
-                        rate_limit_id: mockId.rate_limits.valid[0],
-                        client_id: mockId.clients.valid[0],
-                        user_id: mockId.users.valid[0],
+                        rate_limit_id: mockValidRateLimitId,
+                        client_id: mockValidClientId,
+                        user_id: mockValidUserId,
                         day: '2025-01-01',
                         count: 3,
                         last_modified: '2025-01-01T14:00:05.000Z'
                     },
                     {
-                        rate_limit_id: mockId.rate_limits.valid[1],
-                        client_id: mockId.clients.valid[0],
-                        user_id: 'another_valid_users_test_id',
+                        rate_limit_id: mockId.rate_limits.valid[1] as RateLimitsId,
+                        client_id: mockValidClientId,
+                        user_id: mockId.users.valid[1] as UsersId,
                         day: '2025-01-01',
                         count: 2,
                         last_modified: '2025-01-01T14:00:05.000Z'
@@ -41,9 +47,9 @@ describe('Unit-tests (model), priority: entity RateLimits', () => {
             test('Sum up count of entries, params: <RateLimits>[].length === 1', () => {
                 const mockParam_data: RateLimits[] = [
                     {
-                        rate_limit_id: mockId.rate_limits.valid[0],
-                        client_id: mockId.clients.valid[0],
-                        user_id: mockId.users.valid[0],
+                        rate_limit_id: mockValidRateLimitId,
+                        client_id: mockValidClientId,
+                        user_id: mockValidUserId,
                         day: '2025-01-01',
                         count: 4,
                         last_modified: '2025-01-01T14:00:05.000Z'
@@ -73,8 +79,8 @@ describe('Unit-tests (model), priority: entity RateLimits', () => {
 
             test('Map timestamp/date values to DTO, result: entity Partial<RateLimitsCreateDTO>', () => {
                 const mockParam_dto: RateLimitsCreateDTO = {
-                    client_id: mockId.clients.valid[0],
-                    user_id: mockId.users.valid[0],
+                    client_id: mockValidClientId,
+                    user_id: mockValidUserId,
                 }
                 const mockDate = '2025-01-01';
                 const mockTimestamp = '2025-01-01T14:00:05.000Z';
@@ -106,7 +112,7 @@ describe('Unit-tests (model), priority: entity DemoLimits', () => {
             test('Sum up count of entries, params: <DemoLimits>[].length === 1', () => {
                 const mockParam_data: DemoLimits[] = [
                     {
-                        demo_limit_id: 1,
+                        demo_limit_id: 1 as DemoLimitsId,
                         day: '2025-01-01',
                         count: 4,
                         last_modified: '2025-01-01T14:00:05.000Z'

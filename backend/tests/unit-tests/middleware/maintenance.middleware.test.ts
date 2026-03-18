@@ -6,8 +6,11 @@ import { MaintenanceMode } from '../../../src/utils/enums/maintenance-mode.enum'
 import { ErrorStatusCodes } from '../../../src/utils/errorStatusCodes.utils';
 import { maintain, updateTrafficError } from '../../../src/middleware/maintenance.middleware';
 import { default as mockId } from "../../mock-data/id.mock-data.json";
+import { MetaId } from '../../../src/repositories/interfaces/meta.entity.interface';
 
 describe('Unit-tests (middleware), priority: synonym MaintenanceMiddleware', () => {
+
+    const mockValidMetaId = mockId.meta.valid[0] as MetaId;
 
     describe('Middleware tests, priority: fn maintain()', () => {
 
@@ -18,7 +21,7 @@ describe('Unit-tests (middleware), priority: synonym MaintenanceMiddleware', () 
         let mockMaintenanceResponse: MaintenanceResponseDTO | null;
         beforeEach(() => {
             mockMaintenanceResponse = {
-                id: mockId.meta.valid[0],
+                id: mockValidMetaId,
                 app: 'support',
                 build_on: mockTimestamp,
                 maintenance_mode: MaintenanceMode.A000,
@@ -129,7 +132,7 @@ describe('Unit-tests (middleware), priority: synonym MaintenanceMiddleware', () 
         let mockMaintenanceResponse: MaintenanceResponseDTO;
         beforeEach(() => {
             mockMaintenanceResponse = {
-                id: 1,
+                id: mockValidMetaId,
                 app: 'support',
                 build_on: mockTimestamp,
                 maintenance_mode: MaintenanceMode.T011,

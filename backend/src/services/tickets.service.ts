@@ -4,9 +4,11 @@ import {
     TicketsFilterDTO,
     TicketsCreateDTO,
     TicketsUpdateDTO,
-    TicketsIntervalDTO
+    TicketsIntervalDTO,
+    TicketsCreateResponseDTO
 } from "../dtos/tickets.dto";
 import ticketsModel from "../models/tickets.model";
+import { Tickets, TicketsId } from "../repositories/interfaces/tickets.entity.interface";
 import ticketsRepository from "../repositories/tickets.repository";
 import * as CommonUtils from "../utils/common.utils";
 
@@ -17,7 +19,7 @@ class TicketsService {
         this.timeMapTargets = ['last_modified', 'created_on'];
     }
 
-    async getTicketById(id: string): Promise<TicketsResponseExtendedDTO | null> {
+    async getTicketById(id: TicketsId): Promise<TicketsResponseExtendedDTO | null> {
         const result = await ticketsRepository.findById(id);
         return !result ? null : CommonUtils.mapObjTimestamps<TicketsResponseExtendedDTO>(result, this.timeMapTargets);
     }
@@ -37,19 +39,19 @@ class TicketsService {
         return !result ? null : CommonUtils.mapArrayTimestamps<TicketsResponseDTO>(result, this.timeMapTargets);
     }
 
-    async createTicket(dto: TicketsCreateDTO, files: Express.Multer.File[] | null): Promise<TicketsResponseDTO> {
-        const ticket = await ticketsModel.generateTicket(dto, files);
-        const result = await ticketsRepository.create(ticket);
-        return CommonUtils.mapObjTimestamps<TicketsResponseDTO>(result, this.timeMapTargets); 
+    async createTicket(dto: TicketsCreateDTO, files: Express.Multer.File[] | null): Promise<TicketsCreateResponseDTO> {
+        const ticket = await ticketsModel.generateTicketEntity(dto, files);
+        const result: Tickets = await ticketsRepository.create(ticket);
+        return ticketsModel.toTicketsCreateResponseDTO(result); 
     }
 
-    async updateTicket(id: string, dto: TicketsUpdateDTO): Promise<TicketsResponseDTO | null> {
+    async updateTicket(id: TicketsId, dto: TicketsUpdateDTO): Promise<TicketsResponseDTO | null> {
         dto = ticketsModel.mapTicketUpdateDto(dto);
         const result = await ticketsRepository.update(id, dto);
         return !result ? null : CommonUtils.mapObjTimestamps<TicketsResponseDTO>(result, this.timeMapTargets);
     }
 
-    async deleteTicket(id: string): Promise<boolean> {
+    async deleteTicket(id: TicketsId): Promise<boolean> {
         const ticket = await ticketsRepository.findById(id);
         if(ticket && ticketsModel.isPermittedToDelete(ticket)) {
             await ticketsModel.handleTicketBeforeDelete(ticket);

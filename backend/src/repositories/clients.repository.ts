@@ -1,4 +1,4 @@
-import { Clients } from "./interfaces/clients.entity.interface";
+import { Clients, ClientsId } from "./interfaces/clients.entity.interface";
 import { DBConnection } from "../configs/db";
 import { QueryResult } from "pg";
 import { ApiKeyStatus } from "../utils/enums/api-key-status.enum";
@@ -13,7 +13,7 @@ class ClientsRepository implements ICreateRepository<Clients>, IUpdateFlagReposi
         this.table = "clients";
     }
 
-    async findById(id: string): Promise<Clients | null> {
+    async findById(id: ClientsId): Promise<Clients | null> {
         const filterColumn = 'client_id';
         const sql = `SELECT * FROM ${this.table} WHERE ${filterColumn} = $1;`;
         const value = [id];
@@ -22,14 +22,14 @@ class ClientsRepository implements ICreateRepository<Clients>, IUpdateFlagReposi
         try {
             client = await db.connect();
             const result: QueryResult<Clients> = await client.query(sql, value);
-            await db.close(client);
             return result.rows[0] ?? null;
         } catch(err: any) {
             const message = "DB ERROR ON SELECT QUERY";
             const method = "SUPPORT_ClientsRepository_findById";
             logError(message, method, err);
-            await db.close(client);
             throw new DBQueryErrorException(err);
+        } finally {
+            await db.close(client);
         }
     }
 
@@ -41,14 +41,14 @@ class ClientsRepository implements ICreateRepository<Clients>, IUpdateFlagReposi
         try {
             client = await db.connect();
             const result: QueryResult<Clients> = await client.query(sql, values);
-            await db.close(client);
             return result.rows[0] ?? null;
         } catch(err: any) {
             const message = "DB ERROR ON SELECT QUERY";
             const method = "SUPPORT_ClientsRepository_findByActiveKey";
             logError(message, method, err);
-            await db.close(client);
             throw new DBQueryErrorException(err);
+        } finally {
+            await db.close(client);
         }
     }
 
@@ -60,14 +60,14 @@ class ClientsRepository implements ICreateRepository<Clients>, IUpdateFlagReposi
         try {
             client = await db.connect();
             const result: QueryResult<Clients> = await client.query(sql, value);
-            await db.close(client);
             return result.rows[0] ?? null;
         } catch(err: any) {
             const message = "DB ERROR ON SELECT QUERY";
             const method = "SUPPORT_ClientsRepository_findStatusByName";
             logError(message, method, err);
-            await db.close(client);
             throw new DBQueryErrorException(err);
+        } finally {
+            await db.close(client);
         }
     }
 
@@ -83,18 +83,18 @@ class ClientsRepository implements ICreateRepository<Clients>, IUpdateFlagReposi
         try {
             client = await db.connect();
             const result: QueryResult<Clients> = await client.query(sql, values);
-            await db.close(client);
             return result.rows[0];
         } catch(err: any) {
             const message = "DB ERROR ON INSERT QUERY";
             const method = "SUPPORT_ClientsRepository_create";
             logError(message, method, err);
-            await db.close(client);
             throw new DBQueryErrorException(err);
+        } finally {
+            await db.close(client);
         }
     }
 
-    async updateFlag(id: string, dto: Partial<Clients>): Promise<Clients | null> {
+    async updateFlag(id: ClientsId, dto: Partial<Clients>): Promise<Clients | null> {
         const filterColumn = "client_id";
         const sql = `UPDATE ${this.table}
         SET flag = $1, last_modified = $2
@@ -107,18 +107,18 @@ class ClientsRepository implements ICreateRepository<Clients>, IUpdateFlagReposi
         try {
             client = await db.connect();
             const result: QueryResult<Clients> = await client.query(sql, values);
-            await db.close(client);
             return result.rows[0] ?? null;
         } catch(err: any) {
             const message = "DB ERROR ON UPDATE QUERY";
             const method = "SUPPORT_ClientsRepository_updateFlag";
             logError(message, method, err);
-            await db.close(client);
             throw new DBQueryErrorException(err);
+        } finally {
+            await db.close(client);
         }
     }
 
-    async updateStatus(id: string, dto: Partial<Clients>): Promise<Clients | null> {
+    async updateStatus(id: ClientsId, dto: Partial<Clients>): Promise<Clients | null> {
         const filterColumn = "client_id";
         const sql = `UPDATE ${this.table}
         SET status = $1, last_modified = $2
@@ -131,18 +131,18 @@ class ClientsRepository implements ICreateRepository<Clients>, IUpdateFlagReposi
         try {
             client = await db.connect();
             const result: QueryResult<Clients> = await client.query(sql, values);
-            await db.close(client);
             return result.rows[0] ?? null;
         } catch(err: any) {
             const message = "DB ERROR ON UPDATE QUERY";
             const method = "SUPPORT_ClientsRepository_updateStatus";
             logError(message, method, err);
-            await db.close(client);
             throw new DBQueryErrorException(err);
+        } finally {
+            await db.close(client);
         }
     }
 
-    async updateLastUse(id: string, dto: Partial<Clients>): Promise<Clients | null> {
+    async updateLastUse(id: ClientsId, dto: Partial<Clients>): Promise<Clients | null> {
         const filterColumn = "client_id";
         const sql = `UPDATE ${this.table}
         SET last_use = $1
@@ -155,14 +155,14 @@ class ClientsRepository implements ICreateRepository<Clients>, IUpdateFlagReposi
         try {
             client = await db.connect();
             const result: QueryResult<Clients> = await client.query(sql, values);
-            await db.close(client);
             return result.rows[0] ?? null;
         } catch(err: any) {
             const message = "DB ERROR ON UPDATE QUERY";
             const method = "SUPPORT_ClientsRepository_updateLastStatus";
             logError(message, method, err);
-            await db.close(client);
             throw new DBQueryErrorException(err);
+        } finally {
+            await db.close(client);
         }
     }
 }

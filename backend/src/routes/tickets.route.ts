@@ -14,15 +14,16 @@ import { authClient } from '../middleware/auth.client.middleware';
 import { authUser } from '../middleware/auth.user.middleware';
 import { maintain } from '../middleware/maintenance.middleware';
 import { observe } from '../middleware/observe.middleware';
-import { parseFiles } from '../middleware/files/parse.files.middleware';
+import { parseFiles } from '../middleware/parser/files.parser.middleware';
 import { requirePayload } from '../middleware/require.middleware';
 import { validateFiles } from '../middleware/files/validate.files.middleware';
+import { parseFormData } from '../middleware/parser/form-data.parser.middleware';
 
 const router = Router();
 
 // findById
 router.get(
-    '/by-id/:id',
+    '/id/:id',
     authAdmin(),
     getSchema,
     factory(ticketsController.getTicket)
@@ -46,7 +47,7 @@ router.post(
 // create
 router.post(
     '/create',
-    maintain(), parseFiles(), authClient(), authUser(),
+    maintain(), parseFiles(), parseFormData(), authClient(), authUser(),
     requirePayload(), observe(), validateFiles(),
     postSchema,
     factory(ticketsController.postTicket)

@@ -1,17 +1,20 @@
 import {
     ClientsCreateDTO,
     ClientsCreateResponseDTO,
+    ClientsExtendedResponseDTO,
+    ClientsResponseDTO,
 } from "../../../src/dtos/clients.dto";
 import * as CommonUtils from "../../../src/utils/common.utils";
 import { default as mockId } from "../../mock-data/id.mock-data.json";
 import clientsModel from "../../../src/models/clients.model";
-import { Clients } from "../../../src/repositories/interfaces/clients.entity.interface";
+import { Clients, ClientsId } from "../../../src/repositories/interfaces/clients.entity.interface";
 import { ApiKeyStatus } from "../../../src/utils/enums/api-key-status.enum";
 
-const mockVar_apiKey = clientsModel._generateApiKeyObj();
+const mockValidClientId = mockId.clients.valid[0] as ClientsId;
+const mockVar_apiKey = (clientsModel as any).generateApiKeyObj();
 const mockTimestamp = '2025-01-01T14:00:02.000Z';
 let mockData: Clients = {
-    client_id: mockId.clients.valid[0],
+    client_id: mockValidClientId,
     name: 'testclient',
     api_key_hash: mockVar_apiKey.keyHash,
     status: ApiKeyStatus.ACTIVE,
@@ -23,14 +26,14 @@ let mockData: Clients = {
 
 describe('Unit-tests (model), priority: entity Clients', () => {
 
-    describe('Priority: fn mapToCreateResponseDTO()', () => {
+    describe('Priority: fn toClientsCreateResponseDTO()', () => {
 
         describe('Testing valid fn calls', () => {
 
             test('Map timestamps of clients object, result: dto ClientsCreateResponseDTO', () => {
                 const mockParam_data: Clients = structuredClone(mockData);
 
-                const testFn = clientsModel.mapToCreateResponseDTO(mockParam_data, mockVar_apiKey.keyRaw);
+                const testFn = clientsModel.toClientsCreateResponseDTO(mockParam_data, mockVar_apiKey.keyRaw);
                 const expectResult: ClientsCreateResponseDTO = {
                     client_id: mockParam_data.client_id,
                     name: mockParam_data.name,
@@ -47,15 +50,60 @@ describe('Unit-tests (model), priority: entity Clients', () => {
         })
     })
 
+    describe('Priority: fn toClientsResponseDTO()', () => {
+
+        describe('Testing valid fn calls', () => {
+
+            test('Convert entity to dto, params: <entity, extended> Clients, false', () => {
+                const mockParam_entity: Clients = structuredClone(mockData);
+                const mockParam_extended = false;
+
+                jest.spyOn(CommonUtils, 'getTimestampUTC').mockReturnValue(mockTimestamp);
+                const expectResult: ClientsResponseDTO = {
+                    client_id: mockParam_entity.client_id,
+                    name: mockParam_entity.name,
+                    status: mockParam_entity.status,
+                    flag: mockParam_entity.flag,
+                    last_use: mockTimestamp,
+                    last_modified: mockTimestamp,
+                    created_on: mockTimestamp
+                };
+                const testFn = clientsModel.toClientsResponseDTO(mockParam_entity, mockParam_extended);
+
+                expect(testFn).toMatchObject(expectResult);
+            })
+
+            test('Convert entity to dto, params: <entity, extended> Clients, true', () => {
+                const mockParam_entity: Clients = structuredClone(mockData);
+                const mockParam_extended = true;
+
+                jest.spyOn(CommonUtils, 'getTimestampUTC').mockReturnValue(mockTimestamp);
+                const expectResult: ClientsExtendedResponseDTO = {
+                    client_id: mockParam_entity.client_id,
+                    name: mockParam_entity.name,
+                    api_key_hash: mockParam_entity.api_key_hash,
+                    status: mockParam_entity.status,
+                    flag: mockParam_entity.flag,
+                    last_use: mockTimestamp,
+                    last_modified: mockTimestamp,
+                    created_on: mockTimestamp
+                };
+                const testFn = clientsModel.toClientsResponseDTO(mockParam_entity, mockParam_extended);
+
+                expect(testFn).toMatchObject(expectResult);
+            })
+        })
+    })
+
     describe('Priority: fn generateClientsCreateObj()', () => {
 
         describe('Testing valid fn calls', () => {
 
             test('Generate new object Clients + raw key', () => {
+                const mockParam_id = mockValidClientId;
                 const mockParam_dto: ClientsCreateDTO = {
                     name: 'TESTCLIENT'
                 };
-                const mockParam_id = mockId.clients.valid[0];
                 const mockApiKeyObj = { keyRaw: 'test-key', keyHash: 'hashed-test-key' };
                 const mockClient: Clients = {
                     client_id: mockParam_id,
@@ -69,7 +117,7 @@ describe('Unit-tests (model), priority: entity Clients', () => {
                 };
 
                 jest.spyOn(CommonUtils, "generateUUID").mockReturnValue(mockParam_id);
-                jest.spyOn(clientsModel, "_generateApiKeyObj").mockReturnValue(mockApiKeyObj);
+                jest.spyOn(clientsModel as any, "generateApiKeyObj").mockReturnValue(mockApiKeyObj);
                 jest.spyOn(CommonUtils, "getTimestampUTC").mockReturnValue(mockTimestamp);
 
                 const testFn = clientsModel.generateClientsCreateObj(mockParam_dto);
@@ -80,4 +128,3 @@ describe('Unit-tests (model), priority: entity Clients', () => {
         })
     })
 })
-

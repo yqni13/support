@@ -1,7 +1,4 @@
-## How to handle DevOps (Docker / Jenkins)?
-
-### `Docker`
-
+## 🐋 $\textsf{\color{salmon}How to run app in Docker container}$
 
 Build image, volumes and container from docker-compose.yml of current path and start all (Whenever code-changes are registered, a new image will be built, otherwise the old last image will be restored.):
 

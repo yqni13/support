@@ -2,12 +2,13 @@ import { NextFunction, Request, Response } from "express";
 import { UsersUpdateDTO, UsersFilterDTO, UsersResponseDTO, UsersCreateDTO } from "../dtos/users.dto";
 import { checkValidation } from "../middleware/validation.middleware";
 import usersService from "../services/users.service";
+import { UsersId } from "../repositories/interfaces/users.entity.interface";
 
 class UsersController {
     async getUserById(req: Request, res: Response, next: NextFunction) {
         try {
             checkValidation(req);
-            const id = req.params.id;
+            const id = req.params.id as UsersId;
             const response: UsersResponseDTO | null = await usersService.getUserById(id);
             res.json(response);
         } catch(err: any) {
@@ -65,7 +66,7 @@ class UsersController {
     async patchUser(req: Request, res: Response, next: NextFunction) {
         try {
             checkValidation(req);
-            const id: string = req.params.id;
+            const id = req.params.id as UsersId;
             const dto: UsersUpdateDTO = req.body;
             const response: UsersResponseDTO | null = await usersService.updateUser(id, dto);
             res.json(response);
