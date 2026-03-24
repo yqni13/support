@@ -58,18 +58,24 @@ jest.mock('../../../src/middleware/observe.middleware.ts', () => ({
 }))
 
 import app from '../../../src/app';
+import { NotificationService } from "../../../src/services/notificiation.service";
+import { DBTestData } from "../../db-data.setup";
 
 jest.setTimeout(60000);
 
 describe('Integration-tests (repository), priority: entity Tickets', () => {
 
     let dbTestSetup: DBTestSetup;
+    let dbTestData: DBTestData;
+    let testValidClientName: string;
+    let testValidUserEmail: string;
     let apiUrl: string;
-    const testClientsName = 'TESTCLIENT';
-    const testUsersEmail = 'max.mustermann@yqni13.com';
     const testNewParam_ticket_id = mockId.tickets.new[0] as TicketsId;
     beforeAll(async () => {
         dbTestSetup = new DBTestSetup();
+        dbTestData = DBTestData.getInstance();
+        testValidClientName = dbTestData.getClientsInsertSql().values[1];
+        testValidUserEmail = dbTestData.getUsersInsertSql().values[1];
         await dbTestSetup.init();
         MockUtils.disableConsoleMessages(); // Surpress multiple messages (migration progress etc). Disable to debug.
         await runMigrations('tickets.integration.test.ts');
@@ -92,9 +98,9 @@ describe('Integration-tests (repository), priority: entity Tickets', () => {
             const testResult: TicketsResponseExtendedDTO = {
                 ticket_id: testParam_id,
                 client_id: testValidClientId,
-                client_name: testClientsName,
+                client_name: testValidClientName,
                 user_id: testValidUserId,
-                user_email: testUsersEmail,
+                user_email: testValidUserEmail,
                 status: TicketStatus.ISSUED,
                 option: TicketOption.SUPPORT,
                 title: 'test-title',
@@ -399,6 +405,7 @@ describe('Integration-tests (repository), priority: entity Tickets', () => {
 
             jest.spyOn(CommonUtils, "generateUUID").mockReturnValue(testNewParam_ticket_id);
             jest.spyOn(CommonUtils, "getTimestampUTC").mockReturnValue(testTimestamp);
+            jest.spyOn(NotificationService.prototype, 'sendTicketInfo').mockImplementation();
 
             const testResult: TicketsCreateResponseDTO = {
                 status: TicketStatus.ISSUED,
@@ -431,6 +438,7 @@ describe('Integration-tests (repository), priority: entity Tickets', () => {
 
             jest.spyOn(CommonUtils, "generateUUID").mockReturnValue(testNewParam_ticket_id);
             jest.spyOn(CommonUtils, "getTimestampUTC").mockReturnValue(testTimestamp);
+            jest.spyOn(NotificationService.prototype, 'sendTicketInfo').mockImplementation();
             jest.spyOn(FilesService.prototype, 'transformFiles').mockImplementation();
             jest.spyOn(FilesService.prototype, 'uploadFiles').mockImplementation();
             jest.spyOn(FilesService.prototype, 'getResourcePaths').mockReturnValue(mockPaths);
@@ -485,6 +493,7 @@ describe('Integration-tests (repository), priority: entity Tickets', () => {
 
             jest.spyOn(CommonUtils, "generateUUID").mockReturnValue(testNewParam_ticket_id);
             jest.spyOn(CommonUtils, "getTimestampUTC").mockReturnValue(testTimestamp);
+            jest.spyOn(NotificationService.prototype, 'sendTicketInfo').mockImplementation();
             jest.spyOn(FilesService.prototype, 'transformFiles').mockImplementation();
             jest.spyOn(FilesService.prototype, 'uploadFiles').mockImplementation();
             jest.spyOn(FilesService.prototype, 'getResourcePaths').mockReturnValue(mockPaths);

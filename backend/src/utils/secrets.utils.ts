@@ -9,6 +9,8 @@ class Secrets {
     readonly ADMIN_KEY: string;
     readonly ENV_MODE: string;
     readonly PORT: number;
+    readonly NOTIFY_ADMIN_ID: string;
+    readonly NOTIFY_BOT_KEY: string;
     readonly EMAIL_RECEIVER: string;
     readonly EMAIL_SENDER: string;
     readonly EMAIL_PASS: string;
@@ -45,6 +47,8 @@ class Secrets {
         this.ADMIN_KEY = this.setAdminKey();
         this.ENV_MODE = this.setEnvMode();
         this.PORT = this.setPort();
+        this.NOTIFY_ADMIN_ID = this.setNotifyAdminId();
+        this.NOTIFY_BOT_KEY = this.setNotifyBotKey();
         this.EMAIL_RECEIVER = this.setEmailReceiver();
         this.EMAIL_SENDER = this.setEmailSender();
         this.EMAIL_PASS = this.setEmailPass();
@@ -112,6 +116,20 @@ class Secrets {
             throw new AuthSecretNotFoundException('secret-404-env#PORT');
         }
         return Config.PORT;
+    }
+
+    private setNotifyAdminId() {
+        if(!Config.NOTIFY_ADMIN_ID) {
+            throw new AuthSecretNotFoundException('secret-404-env#NOTIFY_ADMIN_ID');
+        }
+        return Config.NOTIFY_ADMIN_ID;
+    }
+
+    private setNotifyBotKey() {
+        if(!Config.NOTIFY_BOT_KEY) {
+            throw new AuthSecretNotFoundException('secret-404-env#NOTIFY_BOT_KEY');
+        }
+        return Config.NOTIFY_BOT_KEY;
     }
 
     private setEmailReceiver() {

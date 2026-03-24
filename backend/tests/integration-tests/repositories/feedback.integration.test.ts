@@ -8,7 +8,7 @@ import { default as mockId } from "../../mock-data/id.mock-data.json";
 import { NextFunction, Request, Response } from "express";
 import { CommonExceptionMessage } from "../../../src/utils/enums/common-exception-messages.enum";
 import { ErrorStatusCodes } from "../../../src/utils/errorStatusCodes.utils";
-import { FeedbackCreateDTO, FeedbackCreateResponseDTO, FeedbackFilterDTO, FeedbackRequestCreateDTO, FeedbackResponseDTO } from '../../../src/dtos/feedback.dto';
+import { FeedbackCreateDTO, FeedbackCreateResponseDTO, FeedbackExtendedResponseDTO, FeedbackFilterDTO, FeedbackRequestCreateDTO, FeedbackResponseDTO } from '../../../src/dtos/feedback.dto';
 import { DBTestData } from '../../db-data.setup';
 import router from '../../../src/routes/feedback.route';
 import feedbackRatingService from '../../../src/services/feedback-rating.service';
@@ -19,6 +19,7 @@ import feedbackRatingRepository from '../../../src/repositories/feedback-rating.
 import { ClientsId } from '../../../src/repositories/interfaces/clients.entity.interface';
 import { UsersId } from '../../../src/repositories/interfaces/users.entity.interface';
 import { FeedbackId } from '../../../src/repositories/interfaces/feedback.entity.interface';
+import { NotificationService } from '../../../src/services/notificiation.service';
 
 jest.mock('../../../src/middleware/auth.admin.middleware', () => ({
     authAdmin: jest.fn(() => (req: Request, res: Response, next: NextFunction) => next())
@@ -49,12 +50,16 @@ describe('Integration-tests (repository), priority: entity Feedback', () => {
     let dbTestData: DBTestData;
     let dbData_Feedback: any[];
     let dbData_FeedbackRating: any[];
+    let testValidClientName: string;
+    let testValidUserEmail: string;
     let apiUrl: string;
     beforeAll(async () => {
         dbTestSetup = new DBTestSetup();
         dbTestData = DBTestData.getInstance();
         dbData_Feedback = dbTestData.getFeedbackInsertSql().values;
         dbData_FeedbackRating = dbTestData.getFeedbackRatingInsertSql().values;
+        testValidClientName = dbTestData.getClientsInsertSql().values[1];
+        testValidUserEmail = dbTestData.getUsersInsertSql().values[1];
         await dbTestSetup.init();
         MockUtils.disableConsoleMessages(); // Surpress multiple messages (migration progress etc). Disable to debug.
         await runMigrations('feedback.integration.test.ts');
@@ -125,6 +130,7 @@ describe('Integration-tests (repository), priority: entity Feedback', () => {
                 Number(((dbData_FeedbackRating[2] + testParam_dto.rating) / (dbData_FeedbackRating[1] + 1)).toFixed(1));
 
             jest.spyOn(CommonUtils, "getTimestampUTC").mockReturnValue(testTimestamp);
+            jest.spyOn(NotificationService.prototype, 'sendFeedbackInfo').mockImplementation();
 
             const testResult: FeedbackCreateResponseDTO = {
                 rating: testParam_dto.rating,
@@ -155,6 +161,7 @@ describe('Integration-tests (repository), priority: entity Feedback', () => {
             };
 
             jest.spyOn(CommonUtils, "getTimestampUTC").mockReturnValue(testTimestamp);
+            jest.spyOn(NotificationService.prototype, 'sendFeedbackInfo').mockImplementation();
 
             const testResult: FeedbackCreateResponseDTO = {
                 rating: testParam_dto.rating,
@@ -194,6 +201,7 @@ describe('Integration-tests (repository), priority: entity Feedback', () => {
             const testTimestamp_update = '2026-01-01T14:00:08.000Z';
 
             jest.spyOn(CommonUtils, "getTimestampUTC").mockReturnValue(testTimestamp_update);
+            jest.spyOn(NotificationService.prototype, 'sendFeedbackInfo').mockImplementation();
 
             const testResult: FeedbackCreateResponseDTO = {
                 rating: testParam_dto.rating,
@@ -230,6 +238,7 @@ describe('Integration-tests (repository), priority: entity Feedback', () => {
 
             jest.spyOn(CommonUtils, 'logError').mockImplementation();
             jest.spyOn(CommonUtils, "getTimestampUTC").mockReturnValue(testTimestamp);
+            jest.spyOn(NotificationService.prototype, 'sendFeedbackInfo').mockImplementation();
             jest.spyOn(feedbackRepository, 'upsertInTa').mockRejectedValue(new Error(mockError));
             await dbTestSetup.addTestData();
 
@@ -253,6 +262,7 @@ describe('Integration-tests (repository), priority: entity Feedback', () => {
             const mockError = 'FeedbackRating-create-mock-error';
 
             jest.spyOn(CommonUtils, "getTimestampUTC").mockReturnValue(testTimestamp);
+            jest.spyOn(NotificationService.prototype, 'sendFeedbackInfo').mockImplementation();
             jest.spyOn(feedbackRatingRepository, 'createInTa').mockRejectedValue(new Error(mockError));
 
             await dbTestSetup.addTestData();
@@ -277,10 +287,12 @@ describe('Integration-tests (repository), priority: entity Feedback', () => {
                 message: 'test-feedback-message-new-client[1]'
             };
             const testFeedbackId = testValidFeedbackId;
-            const testResult: FeedbackResponseDTO | null = {
+            const testResult: FeedbackExtendedResponseDTO | null = {
                 feedback_id: testFeedbackId,
                 client_id: testValidClientId,
+                client_name: testValidClientName,
                 user_id: testValidUserId,
+                user_email: testValidUserEmail,
                 rating: dbData_Feedback[2],
                 term_accepted: dbData_Feedback[3],
                 message: dbData_Feedback[4],
@@ -291,6 +303,7 @@ describe('Integration-tests (repository), priority: entity Feedback', () => {
             const mockError = 'support-constraint-feedback';
 
             jest.spyOn(CommonUtils, "getTimestampUTC").mockReturnValue(testTimestamp);
+            jest.spyOn(NotificationService.prototype, 'sendFeedbackInfo').mockImplementation();
             jest.spyOn(feedbackRepository, 'upsertInTa').mockResolvedValue(testResult);
 
             await dbTestSetup.addTestData();

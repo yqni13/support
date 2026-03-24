@@ -2,6 +2,8 @@ export const Config: any = {
     ADMIN_KEY: process.env.SECRET_ADMIN_KEY || null,
     ENV_MODE: process.env.NODE_ENV || 'development',
     PORT: process.env.ENV_PORT || 3000,
+    NOTIFY_ADMIN_ID: process.env.SECRET_NOTIFY_ADMIN_ID || null,
+    NOTIFY_BOT_KEY: process.env.SECRET_NOTIFY_BOT_KEY || null,
     EMAIL_RECEIVER: process.env.SECRET_EMAIL_RECEIVER || null,
     EMAIL_SENDER: process.env.SECRET_EMAIL_SENDER || null,
     EMAIL_PASS: process.env.SECRET_EMAIL_PASS || null,
