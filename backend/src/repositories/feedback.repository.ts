@@ -1,6 +1,6 @@
 import { PoolClient, QueryResult } from "pg";
 import { DBConnection } from "../configs/db";
-import { FeedbackFilterDTO, FeedbackResponseDTO, FeedbackUpdateReviewDTO } from "../dtos/feedback.dto";
+import { FeedbackExtendedResponseDTO, FeedbackFilterDTO, FeedbackResponseDTO, FeedbackUpdateReviewDTO } from "../dtos/feedback.dto";
 import { Feedback, FeedbackId } from "./interfaces/feedback.entity.interface";
 import { DBQueryErrorException } from "../utils/exceptions/db.exception";
 import { logError } from "../utils/common.utils";
@@ -90,14 +90,14 @@ class FeedbackRepository {
      * 
      * @param {PoolClient} client Client used to connect database as this fn is called within a transaction.
      * @param {Partial<Feedback>} entity All properties needed except 'feedback_id' due to serial type in database.
-     * @returns {FeedbackResponseDTO | null} FeedbackResponseDTO expands `Feedback` by 'rating_old' and 'blocked' value for further processing => `blocked: true` for prevented update or `NULL` if nothing was found (unexpected).
+     * @returns {FeedbackExtendedResponseDTO | null} FeedbackExtendedResponseDTO expands `Feedback` by 'rating_old', joined 'client_name' + 'user_email', and 'blocked' value for further processing => `blocked: true` for prevented update or `NULL` if nothing was found (unexpected).
      */
-    async upsertInTa(client: PoolClient, entity: Partial<Feedback>): Promise<FeedbackResponseDTO | null> {
+    async upsertInTa(client: PoolClient, entity: Partial<Feedback>): Promise<FeedbackExtendedResponseDTO | null> {
         const sql = `
         WITH pre_update_data AS (
             SELECT rating
             FROM ${this.table}
-            WHERE client_id = $1 AND user_id = $2
+            WHERE ${this.table}.client_id = $1 AND ${this.table}.user_id = $2
         ),
         upsert AS (
             INSERT INTO ${this.table}
@@ -114,17 +114,26 @@ class FeedbackRepository {
             RETURNING
                 ${this.table}.*,
                 (SELECT rating FROM pre_update_data) AS rating_old,
+                (SELECT name FROM clients WHERE clients.client_id = ${this.table}.client_id) AS client_name,
+                (SELECT email FROM users WHERE users.user_id = ${this.table}.user_id) AS user_email,
                 false AS blocked
         )
         SELECT * FROM upsert
         UNION ALL
-        SELECT *, NULL AS rating_old, true AS blocked
+        SELECT 
+            ${this.table}.*,
+            NULL AS rating_old,
+            clients.name AS client_name,
+            users.email AS user_email,
+            true AS blocked
         FROM ${this.table}
-        WHERE client_id = $1 AND user_id = $2
+        LEFT JOIN clients ON ${this.table}.client_id = clients.client_id
+        LEFT JOIN users ON ${this.table}.user_id = users.user_id
+        WHERE ${this.table}.client_id = $1 AND ${this.table}.user_id = $2
             AND NOT EXISTS (SELECT 1 FROM upsert)
         `;
         const values = [entity.client_id, entity.user_id, entity.rating, entity.term_accepted, entity.message, null, entity.last_modified, entity.created_on];
-        const result: QueryResult<FeedbackResponseDTO> = await client.query(sql, values);
+        const result: QueryResult<FeedbackExtendedResponseDTO> = await client.query(sql, values);
         return result.rows[0] ?? null;
     }
 }

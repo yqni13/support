@@ -1,6 +1,7 @@
 import {
     FeedbackCreateDTO,
     FeedbackCreateResponseDTO,
+    FeedbackExtendedResponseDTO,
     FeedbackFilterDTO,
     FeedbackResponseDTO,
     FeedbackUpdateReviewDTO
@@ -14,6 +15,7 @@ import feedbackRepository from "../repositories/feedback.repository";
 import { Feedback, FeedbackId } from "../repositories/interfaces/feedback.entity.interface";
 import feedbackRatingService from "./feedback-rating.service";
 import { DBConstraintErrorException } from "../utils/exceptions/db.exception";
+import { NotificationService } from "./notificiation.service";
 
 class FeedbackService {
     async getFeedbackById(id: FeedbackId): Promise<FeedbackResponseDTO | null> {
@@ -36,7 +38,7 @@ class FeedbackService {
 
         return RepoUtils.asTransaction(message, method, async(client) => {
             const entity: Partial<Feedback> = feedbackModel.generateFeedbackEntity(dto);
-            const result: FeedbackResponseDTO | null = await feedbackRepository.upsertInTa(client, entity);
+            const result: FeedbackExtendedResponseDTO | null = await feedbackRepository.upsertInTa(client, entity);
 
             let dtoUpdateFR: FeedbackRatingUpdateDTO;
             if(!result) {
@@ -64,12 +66,28 @@ class FeedbackService {
                 };
                 await feedbackRatingService.createFeedbackRatingInTa(client, dtoCreateFR);
             }
+            const rating_average = update?.rating_average ?? dto.rating;
+            const convertedCreatedOn = CommonUtils.getTimestampUTC(new Date(result.created_on));
+
+            if(dto.message) {
+                // Notify on new rating including criticism or praise.
+                const notify = NotificationService.getInstance();
+                await notify.sendFeedbackInfo({
+                    feedback_id: result.feedback_id,
+                    client_name: result.client_name,
+                    user_email: result.user_email,
+                    rating: result.rating,
+                    rating_average: rating_average,
+                    created_on: convertedCreatedOn,
+                    term_accepted: result.term_accepted
+                });
+            }
 
             return {
                 rating: result.rating,
                 rating_old: result.rating_old,
-                rating_average_new: update?.rating_average ?? dto.rating,
-                created_on: CommonUtils.getTimestampUTC(new Date(result.created_on))
+                rating_average_new: rating_average,
+                created_on: convertedCreatedOn
             }
         })
     }

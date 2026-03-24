@@ -11,6 +11,7 @@ import ticketsModel from "../models/tickets.model";
 import { Tickets, TicketsId } from "../repositories/interfaces/tickets.entity.interface";
 import ticketsRepository from "../repositories/tickets.repository";
 import * as CommonUtils from "../utils/common.utils";
+import { NotificationService } from "./notificiation.service";
 
 class TicketsService {
     private timeMapTargets: string[];
@@ -41,7 +42,16 @@ class TicketsService {
 
     async createTicket(dto: TicketsCreateDTO, files: Express.Multer.File[] | null): Promise<TicketsCreateResponseDTO> {
         const ticket = await ticketsModel.generateTicketEntity(dto, files);
-        const result: Tickets = await ticketsRepository.create(ticket);
+        const result: TicketsResponseExtendedDTO = await ticketsRepository.create(ticket);
+        const notificationService = NotificationService.getInstance();
+        await notificationService.sendTicketInfo({
+            ticket_id: result.ticket_id,
+            client_name: result.client_name,
+            user_email: result.user_email,
+            option: result.option,
+            title: result.title,
+            created_on: result.created_on
+        });
         return ticketsModel.toTicketsCreateResponseDTO(result); 
     }
 
