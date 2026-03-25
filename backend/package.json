@@ -1,6 +1,6 @@
 {
   "name": "support_backend",
-  "version": "1.4.9",
+  "version": "1.5.2",
   "appMeta": {
     "db_version": "1.6.0",
     "docker_image": "yqni13/support",
