@@ -2,7 +2,7 @@ import { TestErrorDTO } from "../dtos/test.dto";
 import { MaintenanceMode } from "../utils/enums/maintenance-mode.enum";
 import { ExceedMaxEndpointException, UnexpectedApiResponseException, UnimplementedException } from "../utils/exceptions/api.exception";
 import { AuthSecretNotFoundException, BlockedUsersException, ForbiddenApiKeyException, InvalidApiKeyException, InvalidUsersException, MalformedApiKeyException, MissingApiKeyException, PermissionException } from "../utils/exceptions/auth.exception";
-import { InternalServerException, InvalidSourceException, MaintenanceException, RequestExceedMaxException } from "../utils/exceptions/common.exception";
+import { InternalServerException, MaintenanceException } from "../utils/exceptions/common.exception";
 import { DBConnectionException, DBConstraintErrorException, DBEmptyException, DBQueryErrorException } from "../utils/exceptions/db.exception";
 import { InvalidFilesException, InvalidPropertiesException } from "../utils/exceptions/validation.exception";
 
@@ -31,10 +31,6 @@ class TestModel {
             // CommonException
             case('InternalServerException'):
                 throw new InternalServerException();
-            case('RequestExceedMaxException'):
-                throw new RequestExceedMaxException();
-            case('InvalidSourceException'):
-                throw new InvalidSourceException();
             case('MaintenanceException'):
                 throw new MaintenanceException(dto.errorMsg as MaintenanceMode ?? MaintenanceMode.E013);
             // DBConnectionException
