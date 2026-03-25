@@ -14,6 +14,17 @@ export class NotificationService {
         return NotificationService.instance;
     }
 
+    private async notify(params: NotificationPostParams) {
+        try {
+            await axios.post(`https://api.telegram.org/bot${secrets.NOTIFY_BOT_KEY.trim()}/sendMessage`, {
+                chat_id: secrets.NOTIFY_ADMIN_ID.trim(),
+                text: params.text.trim(),
+            });
+        } catch(err: any) {
+            CommonUtils.logError(params.logMsg, params.logMethod, err);
+        }
+    }
+
     async sendTicketInfo(data: NotificationTicketsParams) {
         const env = secrets.ENV_MODE.trim();
         let title: string | null = null;
@@ -66,16 +77,5 @@ export class NotificationService {
             logMsg: 'NOTIFICATION ERROR ON PENALTY NOTIFY',
             logMethod: 'Support_NotificationService_sendPenaltyInfo'
         });
-    }
-
-    private async notify(params: NotificationPostParams) {
-        try {
-            await axios.post(`https://api.telegram.org/bot${secrets.NOTIFY_BOT_KEY.trim()}/sendMessage`, {
-                chat_id: secrets.NOTIFY_ADMIN_ID.trim(),
-                text: params.text.trim(),
-            });
-        } catch(err: any) {
-            CommonUtils.logError(params.logMsg, params.logMethod, err);
-        }
     }
 }

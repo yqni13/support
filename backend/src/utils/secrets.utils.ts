@@ -11,9 +11,6 @@ class Secrets {
     readonly PORT: number;
     readonly NOTIFY_ADMIN_ID: string;
     readonly NOTIFY_BOT_KEY: string;
-    readonly EMAIL_RECEIVER: string;
-    readonly EMAIL_SENDER: string;
-    readonly EMAIL_PASS: string;
     readonly BETTERSTACK_LOGGING_KEY: string;
     readonly BETTERSTACK_HOST: string;
     readonly DB_USER: string;
@@ -49,9 +46,6 @@ class Secrets {
         this.PORT = this.setPort();
         this.NOTIFY_ADMIN_ID = this.setNotifyAdminId();
         this.NOTIFY_BOT_KEY = this.setNotifyBotKey();
-        this.EMAIL_RECEIVER = this.setEmailReceiver();
-        this.EMAIL_SENDER = this.setEmailSender();
-        this.EMAIL_PASS = this.setEmailPass();
         this.BETTERSTACK_LOGGING_KEY = this.setBetterStackLoggingKey();
         this.BETTERSTACK_HOST = this.setBetterStackHost();
         this.DB_USER = this.setDbUser();
@@ -130,27 +124,6 @@ class Secrets {
             throw new AuthSecretNotFoundException('secret-404-env#NOTIFY_BOT_KEY');
         }
         return Config.NOTIFY_BOT_KEY;
-    }
-
-    private setEmailReceiver() {
-        if(!Config.EMAIL_RECEIVER) {
-            throw new AuthSecretNotFoundException('secret-404-env#EMAIL_RECEIVER');
-        }
-        return Config.EMAIL_RECEIVER;
-    }
-
-    private setEmailSender() {
-        if(!Config.EMAIL_SENDER) {
-            throw new AuthSecretNotFoundException('secret-404-env#EMAIL_SENDER');
-        }
-        return Config.EMAIL_SENDER;
-    }
-
-    private setEmailPass() {
-        if(!Config.EMAIL_PASS) {
-            throw new AuthSecretNotFoundException('secret-404-env#EMAIL_PASS');
-        }
-        return Config.EMAIL_PASS;
     }
 
     private setBetterStackLoggingKey = () => {
