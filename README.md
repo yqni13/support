@@ -98,7 +98,7 @@ In terms of rate-limiting, penalties and ready-to-extend functionality, the obse
 
 A certain set of rules checks for incoming requests on a total number for the day and within a certain time range. Before the engine returns found violations, the adapter calls for an increment of the daily rate-limit count. Violations are handled by the penalty handler (setting flags/status) and the workflow ends with either throwing an exception or calling next() to pass to the next middleware.
 <div align="center">
-    <img src="assets/img/observe_middleware_diagram.png" alt="&nbsp;observe middleware diagram">
+    <img src="assets/diagram/observation_middleware_v1.5.2.png" alt="&nbsp;observe middleware diagram">
     Figure 2 - observation middleware workflow, v1.0.0-beta.2
 </div>
 
