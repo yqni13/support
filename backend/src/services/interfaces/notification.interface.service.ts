@@ -9,19 +9,19 @@ export interface NotificationPostParams {
     logMethod: string
 }
 
-export interface NotificationParams {
+export interface NotificationBaseParams {
     client_name: string,
     user_email: string,
     created_on: string
 }
 
-export interface NotificationTicketsParams extends NotificationParams {
+export interface NotificationTicketsParams extends NotificationBaseParams {
     ticket_id: TicketsId,
     option: TicketOption,
     title: string,
 }
 
-export interface NotificationFeedbackParams extends NotificationParams {
+export interface NotificationFeedbackParams extends NotificationBaseParams {
     feedback_id: FeedbackId,
     rating: number,
     rating_average: number,

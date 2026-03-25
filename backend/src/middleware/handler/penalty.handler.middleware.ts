@@ -77,7 +77,7 @@ export class MaintenanceTrafficPenalty implements PenaltyApply<Extract<PenaltyCo
         const notification = NotificationService.getInstance();
         await notification.sendPenaltyInfo({
             id: context.id,
-            entity: 'Meta',
+            entity: 'Maintenance',
             violation: context.type,
             penalty: dto.maintenance_mode,
         });

@@ -26,6 +26,8 @@ import { UsersId } from "../../../src/repositories/interfaces/users.entity.inter
 import { ClientsId } from "../../../src/repositories/interfaces/clients.entity.interface";
 import { TicketsId } from "../../../src/repositories/interfaces/tickets.entity.interface";
 import ticketsService from "../../../src/services/tickets.service";
+import { NotificationService } from "../../../src/services/notificiation.service";
+import { DBTestData } from "../../db-data.setup";
 
 const testValidTicketId = mockId.tickets.valid[0] as TicketsId;
 const testValidClientId = mockId.clients.valid[0] as ClientsId;
@@ -58,8 +60,6 @@ jest.mock('../../../src/middleware/observe.middleware.ts', () => ({
 }))
 
 import app from '../../../src/app';
-import { NotificationService } from "../../../src/services/notificiation.service";
-import { DBTestData } from "../../db-data.setup";
 
 jest.setTimeout(60000);
 

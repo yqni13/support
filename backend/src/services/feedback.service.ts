@@ -71,15 +71,15 @@ class FeedbackService {
 
             if(dto.message) {
                 // Notify on new rating including criticism or praise.
-                const notify = NotificationService.getInstance();
-                await notify.sendFeedbackInfo({
+                const notification = NotificationService.getInstance();
+                await notification.sendFeedbackInfo({
                     feedback_id: result.feedback_id,
                     client_name: result.client_name,
                     user_email: result.user_email,
                     rating: result.rating,
                     rating_average: rating_average,
-                    created_on: convertedCreatedOn,
-                    term_accepted: result.term_accepted
+                    term_accepted: result.term_accepted,
+                    created_on: convertedCreatedOn
                 });
             }
 

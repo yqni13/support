@@ -1,4 +1,9 @@
-import { NotificationFeedbackParams, NotificationPenaltyParams, NotificationPostParams, NotificationTicketsParams } from "./interfaces/notification.interface.service";
+import { 
+    NotificationFeedbackParams,
+    NotificationPenaltyParams,
+    NotificationPostParams,
+    NotificationTicketsParams
+} from "./interfaces/notification.interface.service";
 import { secrets } from "../utils/secrets.utils";
 import { EnvMode } from "../utils/enums/env-mode.enum";
 import axios from "axios";
@@ -25,16 +30,17 @@ export class NotificationService {
         }
     }
 
-    async sendTicketInfo(data: NotificationTicketsParams) {
+    private generateTitle(name: string): string {
         const env = secrets.ENV_MODE.trim();
-        let title: string | null = null;
         if(env === EnvMode.DEV) {
-            title = "SUPPORT:TICKET:TESTING-DEV";
+            return `SUPPORT:${name.toUpperCase()}:TESTING-DEV`;
         } else {
-            title = "SUPPORT:TICKET"
+            return `SUPPORT:${name.toUpperCase()}`;
         }
+    }
 
-        const message = `${title}\nID: ${data.ticket_id}\nCLIENT: ${data.client_name}\nUSER: ${data.user_email}\nOPTION: ${data.option}\nTITLE: ${data.title}\nDATE: ${CommonUtils.getTimestampUTC(new Date(data.created_on))}`;
+    async sendTicketInfo(data: NotificationTicketsParams) {
+        const message = `${this.generateTitle('ticket')}\nID: ${data.ticket_id}\nCLIENT: ${data.client_name}\nUSER: ${data.user_email}\nOPTION: ${data.option}\nTITLE: ${data.title}\nDATE: ${CommonUtils.getTimestampUTC(new Date(data.created_on))}`;
 
         await this.notify({
             text: message,
@@ -44,15 +50,7 @@ export class NotificationService {
     }
 
     async sendFeedbackInfo(data: NotificationFeedbackParams) {
-        const env = secrets.ENV_MODE.trim();
-        let title: string | null = null;
-        if(env === EnvMode.DEV) {
-            title = "SUPPORT:FEEDBACK:TESTING-DEV";
-        } else {
-            title = "SUPPORT:FEEDBACK"
-        }
-
-        const message = `${title}\nID: ${data.feedback_id}\nCLIENT: ${data.client_name}\nUSER: ${data.user_email}\nRATING: ${data.rating}\nAVERAGE: ${data.rating_average}\nTERM: ${data.term_accepted}\nDATE: ${CommonUtils.getTimestampUTC(new Date(data.created_on))}`;
+        const message = `${this.generateTitle('feedback')}\nID: ${data.feedback_id}\nCLIENT: ${data.client_name}\nUSER: ${data.user_email}\nRATING: ${data.rating}\nAVERAGE: ${data.rating_average}\nTERM: ${data.term_accepted}\nDATE: ${CommonUtils.getTimestampUTC(new Date(data.created_on))}`;
 
         await this.notify({
             text: message,
@@ -62,15 +60,7 @@ export class NotificationService {
     }
 
     async sendPenaltyInfo(data: NotificationPenaltyParams) {
-        const env = secrets.ENV_MODE.trim();
-        let title: string | null = null;
-        if(env === EnvMode.DEV) {
-            title = "SUPPORT:PENALTY:TESTING-DEV";
-        } else {
-            title = "SUPPORT:PENALTY"
-        }
-
-        const message = `${title}\nENTITY: ${data.entity}\nID: ${String(data.id)}\n${data.client_name ? 'NAME: ' + data.client_name + '\n' : ''}${data.user_email ? 'EMAIL: ' + data.user_email + '\n' : ''}VIOLATION: ${data.violation}\nPENALTY: ${data.penalty}\nDATE: ${CommonUtils.getTimestampUTC(new Date())}`;
+        const message = `${this.generateTitle('penalty')}\nENTITY: ${data.entity}\nID: ${String(data.id)}\n${data.client_name ? 'NAME: ' + data.client_name + '\n' : ''}${data.user_email ? 'EMAIL: ' + data.user_email + '\n' : ''}VIOLATION: ${data.violation}\nPENALTY: ${data.penalty}\nDATE: ${CommonUtils.getTimestampUTC(new Date())}`;
 
         await this.notify({
             text: message,

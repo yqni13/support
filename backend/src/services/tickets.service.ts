@@ -8,7 +8,7 @@ import {
     TicketsCreateResponseDTO
 } from "../dtos/tickets.dto";
 import ticketsModel from "../models/tickets.model";
-import { Tickets, TicketsId } from "../repositories/interfaces/tickets.entity.interface";
+import { TicketsId } from "../repositories/interfaces/tickets.entity.interface";
 import ticketsRepository from "../repositories/tickets.repository";
 import * as CommonUtils from "../utils/common.utils";
 import { NotificationService } from "./notificiation.service";
@@ -43,8 +43,8 @@ class TicketsService {
     async createTicket(dto: TicketsCreateDTO, files: Express.Multer.File[] | null): Promise<TicketsCreateResponseDTO> {
         const ticket = await ticketsModel.generateTicketEntity(dto, files);
         const result: TicketsResponseExtendedDTO = await ticketsRepository.create(ticket);
-        const notificationService = NotificationService.getInstance();
-        await notificationService.sendTicketInfo({
+        const notification = NotificationService.getInstance();
+        await notification.sendTicketInfo({
             ticket_id: result.ticket_id,
             client_name: result.client_name,
             user_email: result.user_email,
