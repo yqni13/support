@@ -1,9 +1,16 @@
 ## 📜 $\textsf{\color{salmon}{List\ of\ updates}}$
 
 
+### $\textsf{\color{skyblue}2026/03/26}$
+
+$\textsf{[v1.5.2\ =>\ {\textbf{\color{brown}v1.6.0}]}}$ app<br>
+- $\textsf{\color{teal}Addition:}$ Added health endpoints to improve health checks (manually + cron-jobs).
+
+<br>
+
 ### $\textsf{\color{skyblue}2026/03/25}$
 
-$\textsf{[v1.4.9\ =>\ {\textbf{\color{brown}v1.5.2}]}}$ app<br>
+$\textsf{[v1.4.9\ =>\ v1.5.2]}$ app<br>
 - $\textsf{\color{teal}Addition:}$ Added notification service to inform admin about specified events.
 - $\textsf{\color{orange}Patch:}$ Updated:
   + env variables in connection with notifications (addition/deletion).

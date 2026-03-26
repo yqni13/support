@@ -1,5 +1,5 @@
 # yqni13 | $\texttt{\color{cornflowerblue}{SUPPORT}}$
-### $\textsf{\color{brown}{v1.5.2}}$
+### $\textsf{\color{brown}{v1.6.0}}$
 
 #### Support hub - handling feedback/ratings (`/feedback`) and bug/support requests (`/tickets`) including file attachments across multiple applications via REST API. Built with NodeJS (Typescript), Express & PostgreSQL in Docker container using API-Key authentication and rate-limiting. Created following Test-Driven Development (450+ tests) and hosting env:prod via Render, Neon and Cloudflare.
 
@@ -98,7 +98,7 @@ In terms of rate-limiting, penalties and ready-to-extend functionality, the obse
 
 A certain set of rules checks for incoming requests on a total number for the day and within a certain time range. Before the engine returns found violations, the adapter calls for an increment of the daily rate-limit count. Violations are handled by the penalty handler (setting flags/status) and the workflow ends with either throwing an exception or calling next() to pass to the next middleware.
 <div align="center">
-    <img src="assets/img/observe_middleware_diagram.png" alt="&nbsp;observe middleware diagram">
+    <img src="assets/diagram/observation_middleware_v1.5.2.png" alt="&nbsp;observe middleware diagram">
     Figure 2 - observation middleware workflow, v1.0.0-beta.2
 </div>
 
@@ -215,11 +215,8 @@ Preventing an unwanted merge with unfinished/failed test run, the project is set
 [see changelog for all updates](/docs/CHANGELOG.md)
 
 
-$\textsf{[v1.4.9\ =>\ {\textbf{\color{brown}v1.5.2}]}}$ app<br>
-- $\textsf{\color{teal}Addition:}$ Added notification service to inform admin about specified events.
-- $\textsf{\color{orange}Patch:}$ Updated:
-  + env variables in connection with notifications (addition/deletion).
-  + return values of DTO's for entities 'tickets' and 'feedback'.
+$\textsf{[v1.5.2\ =>\ {\textbf{\color{brown}v1.6.0}]}}$ app<br>
+- $\textsf{\color{teal}Addition:}$ Added health endpoints to improve health checks (manually + cron-jobs).
 
 <br>
 
