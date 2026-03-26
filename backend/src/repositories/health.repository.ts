@@ -8,9 +8,7 @@ class HealthRepository {
         try {
             client = await db.connect();
             await client.query(sql);
-            return {
-                status: 'ok'
-            }
+            return { status: 'ok' };
         } catch(err: any) {
             return {
                 status: 'error',

@@ -6,11 +6,9 @@ import { authAdmin } from "../middleware/auth.admin.middleware";
 const router = Router();
 
 // public
-router.get(
-    '/',
-    factory(healthController.getHealthCheck)
-);
+router.get('/', factory(healthController.getHealthCheck));
 
+// admin only
 router.get(
     '/details',
     authAdmin(),

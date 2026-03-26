@@ -3,14 +3,14 @@ import * as MockUtils from "../../common.test-utils";
 import { DBTestSetup } from "../../db-container.setup";
 import { runMigrations } from '../../db-migrations.setup';
 import request from 'supertest';
+import { HealthCheckExtended } from "../../../src/services/interfaces/health.interface.service";
+import { EnvMode } from "../../../src/utils/enums/env-mode.enum";
 
 jest.mock('../../../src/middleware/auth.admin.middleware', () => ({
     authAdmin: jest.fn(() => (req: Request, res: Response, next: NextFunction) => next())
 }));
 
 import app from '../../../src/app';
-import { HealthCheckExtended } from "../../../src/services/interfaces/health.interface.service";
-import { EnvMode } from "../../../src/utils/enums/env-mode.enum";
 
 jest.setTimeout(60000);
 
