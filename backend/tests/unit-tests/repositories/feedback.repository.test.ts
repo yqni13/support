@@ -5,7 +5,7 @@ import { DBQueryErrorException } from "../../../src/utils/exceptions/db.exceptio
 import { Feedback, FeedbackId } from "../../../src/repositories/interfaces/feedback.entity.interface";
 import { DBConnection } from "../../../src/configs/db";
 import feedbackRepository from "../../../src/repositories/feedback.repository";
-import { FeedbackFilterDTO, FeedbackUpdateReviewDTO } from "../../../src/dtos/feedback.dto";
+import { FeedbackExtendedResponseDTO, FeedbackFilterDTO, FeedbackUpdateReviewDTO } from "../../../src/dtos/feedback.dto";
 import { UsersId } from "../../../src/repositories/interfaces/users.entity.interface";
 import { ClientsId } from "../../../src/repositories/interfaces/clients.entity.interface";
 
@@ -29,6 +29,8 @@ const mockData: Feedback = {
     last_modified: mockTimestamp,
     created_on: mockTimestamp
 };
+const mockClientName = 'TESTCLIENT';
+const mockUserEmail = 'max.mustermann@yqni13.com'
 const expectExceptionResult = DBQueryErrorException;
 const mockBoolean = false;
 
@@ -158,7 +160,19 @@ describe('Unit-tests (repository), priority: entity Feedback', () => {
                 const mockValues: any[] = Object.values(mockParam_entity).map(value => value);
                 const sql = `INSERT`;
 
-                const mockResult: Feedback = structuredClone(mockData);
+                const mockResult: FeedbackExtendedResponseDTO = {
+                    feedback_id: mockData.feedback_id,
+                    client_id: mockData.client_id,
+                    client_name: mockClientName,
+                    user_id: mockData.user_id,
+                    user_email: mockUserEmail,
+                    rating: mockParam_entity.rating!,
+                    term_accepted: mockParam_entity.term_accepted!,
+                    message: mockParam_entity.message!,
+                    last_modified: mockTimestamp,
+                    created_on: mockTimestamp,
+                    blocked: false
+                };
                 const mockClient = MockUtils.mapMockDbClient(mockResult);
                 const testFn = await feedbackRepository.upsertInTa((mockClient as any), mockParam_entity);
 
