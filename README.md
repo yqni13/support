@@ -1,5 +1,5 @@
 # yqni13 | $\texttt{\color{cornflowerblue}{SUPPORT}}$
-### $\textsf{\color{brown}{v1.4.9}}$
+### $\textsf{\color{brown}{v1.6.0}}$
 
 #### Support hub - handling feedback/ratings (`/feedback`) and bug/support requests (`/tickets`) including file attachments across multiple applications via REST API. Built with NodeJS (Typescript), Express & PostgreSQL in Docker container using API-Key authentication and rate-limiting. Created following Test-Driven Development (450+ tests) and hosting env:prod via Render, Neon and Cloudflare.
 
@@ -16,6 +16,7 @@
     <a href="https://www.cloudflare.com/de-de/application-services/products/cdn/"><img src="assets/icons/cloudflare.png" alt="Cloudflare"></a>
     <a href="https://betterstack.com/"><img src="assets/icons/betterstack.png" alt="Betterstack"></a>
     <a href="https://testcontainers.com/"><img src="assets/icons/testcontainers.png" alt="Testcontainers"></a>
+    <a href="https://core.telegram.org/bots/tutorial"><img src="assets/icons/telegram.png" alt="Testcontainers"></a>
 </div>
 
 <br><br>
@@ -61,6 +62,7 @@ Alternatively run application in Docker container [(see docs)](./docs/DEVOPS.md)
 | 🔐 Maintenance Mode | Enable/disable application triggered by request or internal logic |
 | 🕵️ Rate limiting | Request throttling with violation handling |
 | 🔑 API Key Auth | Client authentication via API keys |
+| 📬 Notifications | Admin/Developer notifications on certain events via Telegram bot |
 
 <br>
 
@@ -96,20 +98,45 @@ In terms of rate-limiting, penalties and ready-to-extend functionality, the obse
 
 A certain set of rules checks for incoming requests on a total number for the day and within a certain time range. Before the engine returns found violations, the adapter calls for an increment of the daily rate-limit count. Violations are handled by the penalty handler (setting flags/status) and the workflow ends with either throwing an exception or calling next() to pass to the next middleware.
 <div align="center">
-    <img src="assets/img/observe_middleware_diagram.png" alt="&nbsp;observe middleware diagram">
+    <img src="assets/diagram/observation_middleware_v1.5.2.png" alt="&nbsp;observe middleware diagram">
     Figure 2 - observation middleware workflow, v1.0.0-beta.2
 </div>
 
+<br>
+
+### $\textsf{\color{teal}Notifications}$
+
+While the support hub can receive requests for bugs, help, or feedback and create tickets based on this data, someone has to be informed of them if further action is necessary. Therefore, a notification service has been implemented to push messages to the responsible admin/developer.<br>
+This notification service works with the `Telegram Bot API` by simply creating a bot and sending a custom message (text) with your credentials (`BOT_KEY`, `ADMIN_ID`) to the API:
+```sh
+private async notify(params: NotificationPostParams) {
+    try {
+        await axios.post(`https://api.telegram.org/bot${secrets.NOTIFY_BOT_KEY.trim()}/sendMessage`, {
+            chat_id: secrets.NOTIFY_ADMIN_ID.trim(),
+            text: params.text.trim(),
+        });
+    } catch(err: any) {
+        CommonUtils.logError(params.logMsg, params.logMethod, err);
+    }
+}
+```
+Should the notification fail while the rest of the process was successfully executed, the error will only be logged and not thrown as an exception. Telegram can be used on mobile or desktop operating systems and displays notifications as standard messages with the customized text (see Figure 3, for example).<br>
+[see Telegram Bot API](https://core.telegram.org/bots/tutorial)
+
+<div align="center">
+    <img src="assets/img/notification_example.jpg" alt="&nbsp;Betterstack logging dashboard">
+    Figure 3 - Notification via Telegram bot, v1.5.2
+</div>
 
 <br>
 
 ## 📝 $\textsf{\color{salmon}Logging}$
 
 To monitor errors the logging framework `Winston` is used in combination with Logtail from `Betterstack` as a Singleton: [config](./backend/src/logger/config.logger.ts)
-<br>While working within local (DEV) or test environment, error messages are logged into the consoles. For the deployed environments (STAG/PROD) the logging is set to send logtails to Betterstack (longer storage time than app-hosting service). For easy access and monitoring of error messages, the Betterstack UI client dashboard comes in handy (see `Figure 3`). Additional meta data (environment + version numbers) help identifying and assigning errors.
+<br>While working within local (DEV) or test environment, error messages are logged into the consoles. For the deployed environments (STAG/PROD) the logging is set to send logtails to Betterstack (longer storage time than app-hosting service). For easy access and monitoring of error messages, the Betterstack UI client dashboard comes in handy (see `Figure 4`). Additional meta data (environment + version numbers) help identifying and assigning errors.
 <div align="center">
     <img src="assets/img/betterstack_logging.png" alt="&nbsp;Betterstack logging dashboard">
-    Figure 3 - Betterstack logging dashboard, v1.0.0-beta.1
+    Figure 4 - Betterstack logging dashboard, v1.0.0-beta.1
 </div>
 
 <br>
@@ -124,14 +151,14 @@ Testing of the application server can be done automatically via Jest tests (next
 [PAYLOAD] { "demo_mode": DemoMode }
 ```
 Use `https://support-0hsq.onrender.com` for {{url}} to test on live conditions.<br>
-See Figure 4 for the different use cases & responses (Postman, v11.73.5) - from left to right:
+See Figure 5 for the different use cases & responses (Postman, v11.73.5) - from left to right:
 <br>[PAYLOAD]: { "mode_enum": "success" } => retrieve current version number as request without fail
 <br>[PAYLOAD]: undefined (none) or empty obj/array => retrieve exception for undefined body
 <br>[PAYLOAD]: { "mode_enum": "%§$" } => retrieve exception due to invalid value
 <br>[PAYLOAD]: { "mode_enum": "error" } => retrieve exception for intended failing db query (see data.message: SEL instead of SELECT)
 <div align="center">
     <img src="assets/img/demo_results.png" alt="&nbsp;Betterstack logging dashboard">
-    Figure 4 - /test/demo responses, v1.3.1
+    Figure 5 - /test/demo responses, v1.3.1
 </div>
 
 <br>
@@ -170,16 +197,16 @@ or simply save as script command in `package.json` to run `npm test`:
 <br>
 
 To automatically check tests before merging feature/development branch further up, a `GitHub Action` is set up, see [main.yml](.github/workflows/main.yml).<br>
-Preventing an unwanted merge with unfinished/failed test run, the project is set up to disable merging until all tests have passed (see Figure 5 to Figure 6).
+Preventing an unwanted merge with unfinished/failed test run, the project is set up to disable merging until all tests have passed (see Figure 6 to Figure 7).
 
 <div align="center">
     <img src="assets/img/github-action-jest-processing.png" alt="&nbsp;GitHub processing tests">
-    Figure 5 - processing tests, v0.9.1
+    Figure 6 - processing tests, v0.9.1
 </div>
 <br>
 <div align="center">
     <img src="assets/img/github-action-jest-passed.png" alt="&nbsp;GitHub tests passed">
-    Figure 6 - passing tests, v0.9.1
+    Figure 7 - passing tests, v0.9.1
 </div>
 
 <br>
@@ -188,14 +215,8 @@ Preventing an unwanted merge with unfinished/failed test run, the project is set
 [see changelog for all updates](/docs/CHANGELOG.md)
 
 
-$\textsf{[v1.4.4\ =>\ {\textbf{\color{brown}v1.4.9}]}}$ app<br>
-- $\textsf{\color{teal}Addition:}$ Added form-data parser middleware for requests including files.
-- $\textsf{\color{orange}Patch:}$ Updated:
-  + return types, mapping and handling (part 1).
-  + calculation for delete-permission by comparing timestamps (incorporate timezone offset on database read timestamp).
-  + 'tickets' request: more accurate check for containing files.
-  + use Promise-instance fn finally() in repository-layer to reduce code.
-  + documentation headers and display error on symbol (&).
+$\textsf{[v1.5.2\ =>\ {\textbf{\color{brown}v1.6.0}]}}$ app<br>
+- $\textsf{\color{teal}Addition:}$ Added health endpoints to improve health checks (manually + cron-jobs).
 
 <br>
 

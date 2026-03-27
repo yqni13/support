@@ -1,7 +1,6 @@
 import { MaintenanceMode } from "../../../src/utils/enums/maintenance-mode.enum";
 import * as CommonValidators from "../../../src/validation/common.validation";
 import { EnvMode } from "../../../src/utils/enums/env-mode.enum";
-import { MailSource } from "../../../src/utils/enums/mail-source.enum";
 import { ApiKeyStatus } from "../../../src/utils/enums/api-key-status.enum";
 import { UserStatus } from "../../../src/utils/enums/user-status.enum";
 import { Flag } from "../../../src/utils/enums/flag.enum";
@@ -21,7 +20,6 @@ describe('Unit-tests (validation), priority: synonym CommonValidators', () => {
             { enumObj: DemoMode, enumName: 'demoMode' },
             { enumObj: EnvMode, enumName: 'envMode' },
             { enumObj: Flag, enumName: 'flag' },
-            { enumObj: MailSource, enumName: 'mailSource' },
             { enumObj: MaintenanceMode, enumName: 'maintenanceMode' },
             { enumObj: TicketOption, enumName: 'ticketOption' },
             { enumObj: TicketStatus, enumName: 'ticketStatus' },
