@@ -13,6 +13,7 @@ import metaService from "../../../src/services/meta.service";
 import { UsersId } from "../../../src/repositories/interfaces/users.entity.interface";
 import { ClientsId } from "../../../src/repositories/interfaces/clients.entity.interface";
 import { MetaId } from "../../../src/repositories/interfaces/meta.entity.interface";
+import { NotificationService } from "../../../src/services/notificiation.service";
 
 jest.setTimeout(60000);
 
@@ -23,9 +24,11 @@ const testValidUserId = mockId.users.valid[0] as UsersId;
 describe('Integration-tests (middleware), priority: class PenaltyHandler', () => {
 
     let dbTestSetup: DBTestSetup;
+    let notification: NotificationService;
     beforeAll(async () => {
         dbTestSetup = new DBTestSetup();
         await dbTestSetup.init();
+        notification = NotificationService.getInstance();
         MockUtils.disableConsoleMessages();
         await runMigrations('penalty.integration.test.ts');
     });
@@ -48,6 +51,7 @@ describe('Integration-tests (middleware), priority: class PenaltyHandler', () =>
             };
 
             await dbTestSetup.addTestData();
+            jest.spyOn(notification, 'sendPenaltyInfo').mockImplementation();
             const _ = await penaltyHandler.apply(testParam_context);
             const testFn = await clientsService.getClientById(testValidClientId);
             const testClientsFlagResult = Flag.WARNING;
@@ -63,6 +67,7 @@ describe('Integration-tests (middleware), priority: class PenaltyHandler', () =>
             };
 
             await dbTestSetup.addTestData();
+            jest.spyOn(notification, 'sendPenaltyInfo').mockImplementation();
             const _ = await penaltyHandler.apply(testParam_context);
             const testFn = await usersService.getUserById(testValidUserId);
             const testUsersFlagResult = Flag.WARNING;
@@ -78,6 +83,7 @@ describe('Integration-tests (middleware), priority: class PenaltyHandler', () =>
             };
 
             await dbTestSetup.addTestData();
+            jest.spyOn(notification, 'sendPenaltyInfo').mockImplementation();
             const _ = await penaltyHandler.apply(testParam_context);
             const testFn = await metaService.getMaintenanceMode('support');
             const testMaintenanceModeResult = MaintenanceMode.T011;

@@ -14,6 +14,7 @@ import usersService from "../../services/users.service";
 import { UsersFlagUpdateDTO } from "../../dtos/users.dto";
 import { MaintenanceUpdateDTO } from "../../dtos/meta.dto";
 import metaService from "../../services/meta.service";
+import { NotificationService } from "../../services/notificiation.service";
 
 export class PenaltyHandler{
     constructor(private readonly handlers: Map<Violation, PenaltyApply>) {
@@ -35,8 +36,15 @@ export class ClientsFlagPenalty implements PenaltyApply<Extract<PenaltyContext, 
     async apply(context: PenaltyClientsFlagContext) {
         const id = context.id;
         const dto: ClientsFlagUpdateDTO = { flag: getNextRankEnumValue(Flag, context.penaltyValue) };
-        await clientsService.updateClientFlag(id, dto);
-        // TODO(yqni13): add mail notification (SUPPORT-49)
+        const result = await clientsService.updateClientFlag(id, dto);
+        const notification = NotificationService.getInstance();
+        await notification.sendPenaltyInfo({
+            id: context.id,
+            entity: 'Clients',
+            client_name: result?.name,
+            violation: context.type,
+            penalty: dto.flag,
+        });
     }
 }
 
@@ -46,8 +54,15 @@ export class UsersFlagPenalty implements PenaltyApply<Extract<PenaltyContext, { 
     async apply(context: PenaltyUsersFlagContext) {
         const id = context.id;
         const dto: UsersFlagUpdateDTO = { flag: getNextRankEnumValue(Flag, context.penaltyValue) };
-        await usersService.updateUserFlag(id, dto);
-        // TODO(yqni13): add mail notification (SUPPORT-49)
+        const result = await usersService.updateUserFlag(id, dto);
+        const notification = NotificationService.getInstance();
+        await notification.sendPenaltyInfo({
+            id: context.id,
+            entity: 'Users',
+            user_email: result?.email,
+            violation: context.type,
+            penalty: dto.flag,
+        });
     }
 }
 
@@ -59,6 +74,12 @@ export class MaintenanceTrafficPenalty implements PenaltyApply<Extract<PenaltyCo
         const id = context.id;
         const dto: MaintenanceUpdateDTO = { maintenance_mode: context.penaltyValue }; // MaintenanceMode.T011
         await metaService.updateMaintenanceMode(id, dto);
-        // TODO(yqni13): add mail notification (SUPPORT-49)
+        const notification = NotificationService.getInstance();
+        await notification.sendPenaltyInfo({
+            id: context.id,
+            entity: 'Maintenance',
+            violation: context.type,
+            penalty: dto.maintenance_mode,
+        });
     }
 }

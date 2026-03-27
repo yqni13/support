@@ -116,17 +116,28 @@ IDeleteRepository
         }
     }
 
-    async create(entity: Tickets): Promise<Tickets> {
-        const sql = `INSERT INTO ${this.table}
-        (ticket_id, client_id, user_id, status, option, title, message, resource_paths, flag, info_browser, info_os, info_device, last_modified, created_on)
-        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)
-        RETURNING *;`;
+    async create(entity: Tickets): Promise<TicketsResponseExtendedDTO> {
+        const sql = `
+        WITH inserted AS(
+            INSERT INTO ${this.table}
+                (ticket_id, client_id, user_id, status, option, title, message, resource_paths, flag, info_browser, info_os, info_device, last_modified, created_on)
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)
+            RETURNING *
+        )
+        SELECT
+            inserted.*,
+            clients.name AS client_name,
+            users.email AS user_email
+        FROM inserted
+        LEFT JOIN clients ON inserted.client_id = clients.client_id
+        LEFT JOIN users ON inserted.user_id = users.user_id;
+        `;
         const values = [entity.ticket_id, entity.client_id, entity.user_id, entity.status, entity.option, entity.title, entity.message, entity.resource_paths, entity.flag, entity.info_browser, entity.info_os, entity.info_device, entity.last_modified, entity.created_on];
         const db = DBConnection.getInstance();
         let client: any;
         try {
             client = await db.connect();
-            const result: QueryResult<Tickets> = await client.query(sql, values);
+            const result: QueryResult<TicketsResponseExtendedDTO> = await client.query(sql, values);
             return result.rows[0];
         } catch(err: any) {
             const message = "DB ERROR ON INSERT QUERY";

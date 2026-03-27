@@ -16,14 +16,17 @@ import { DemoLimitsIncrement, RateLimitsIncrement } from "./adapter/rate-limits.
 import { penaltyHandler } from "./container/penalty.container.middleware";
 import { ClientsId } from "../repositories/interfaces/clients.entity.interface";
 import { UsersId } from "../repositories/interfaces/users.entity.interface";
+import { EnvMode } from "../utils/enums/env-mode.enum";
 
 export function observe(isDemo: boolean = false) {
     return async function (req: Request, res: Response, next: NextFunction) {
         try {
-            const provokedRateLimits = !isDemo ? await checkRateLimits(req) : await checkDemoLimits();
-            if(provokedRateLimits) {
-                await penaltyHandler.apply(provokedRateLimits.penalty);
-                throw new ExceedMaxEndpointException(provokedRateLimits.msg, provokedRateLimits.retryAfter);
+            if(secrets.ENV_MODE.trim() !== EnvMode.DEV) {
+                const provokedRateLimits = !isDemo ? await checkRateLimits(req) : await checkDemoLimits();
+                if(provokedRateLimits) {
+                    await penaltyHandler.apply(provokedRateLimits.penalty);
+                    throw new ExceedMaxEndpointException(provokedRateLimits.msg, provokedRateLimits.retryAfter);
+                }
             }
             next();
         } catch(err: any) {

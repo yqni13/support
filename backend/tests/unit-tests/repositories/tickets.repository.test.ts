@@ -23,6 +23,8 @@ jest.mock("../../../src/configs/db", () => {
 const mockValidTicketId = mockId.tickets.valid[0] as TicketsId;
 const mockValidClientId = mockId.clients.valid[0] as ClientsId;
 const mockValidUserId = mockId.users.valid[0] as UsersId;
+const mockValidClientName = 'TESTCLIENT';
+const mockValidUserEmail = 'max.mustermann@yqni13.com';
 const mockTimestamp = '2025-01-01T14:00:04.000Z';
 const mockData: Tickets = {
     ticket_id: mockValidTicketId,
@@ -374,7 +376,23 @@ describe('Unit-tests (repository), priority: entity Tickets', () => {
             test('Return data for created entry, params: <message> = "new-test-message"', async () => {
                 const sql = `INSERT`;
                 const mockValues: any[] = Object.values(mockParam_entity).map(value => value);
-                const mockResult: Tickets = structuredClone(mockParam_entity);
+                const mockResult: TicketsResponseExtendedDTO = {
+                    ticket_id: mockParam_entity.ticket_id,
+                    client_id: mockParam_entity.client_id,
+                    client_name: mockValidClientName,
+                    user_id: mockParam_entity.user_id,
+                    user_email: mockValidUserEmail,
+                    status: mockParam_entity.status,
+                    option: mockParam_entity.option,
+                    title: mockParam_entity.title,
+                    message: mockParam_entity.message,
+                    flag: mockParam_entity.flag,
+                    info_browser: mockParam_entity.info_browser,
+                    info_os: mockParam_entity.info_os,
+                    info_device: mockParam_entity.info_device,
+                    last_modified: mockTimestamp,
+                    created_on: mockTimestamp
+                };
                 const mockClient = MockUtils.mapMockDbClient(mockResult);
                 const testFn = await ticketsRepository.create(mockParam_entity);
 

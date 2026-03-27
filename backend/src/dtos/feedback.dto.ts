@@ -57,3 +57,8 @@ export interface FeedbackResponseDTO {
     created_on: string,
     blocked?: boolean
 }
+
+export interface FeedbackExtendedResponseDTO extends FeedbackResponseDTO {
+    client_name: string,
+    user_email: string
+}
