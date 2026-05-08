@@ -1,9 +1,15 @@
 ## 📜 $\textsf{\color{salmon}{List\ of\ updates}}$
 
+### $\textsf{\color{skyblue}2026/05/08}$
+
+$\textsf{[v1.6.0\ =>\ {\textbf{\color{brown}v1.6.1}]}}$ app<br>
+- $\textsf{\color{orange}Patch:}$ Updated interfaces to remove "I" prefix and remove usages of "any" type.
+
+<br>
 
 ### $\textsf{\color{skyblue}2026/03/26}$
 
-$\textsf{[v1.5.2\ =>\ {\textbf{\color{brown}v1.6.0}]}}$ app<br>
+$\textsf{[v1.5.2\ =>\ v1.6.0]}$ app<br>
 - $\textsf{\color{teal}Addition:}$ Added health endpoints to improve health checks (manually + cron-jobs).
 
 <br>
