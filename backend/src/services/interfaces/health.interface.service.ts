@@ -12,7 +12,7 @@ export interface HealthCheckExtended extends HealthCheck {
 
 export interface HealthCheckDatabase {
     status: string,
-    message?: any
+    message?: string
 }
 
 export interface HealthCheckMemory {

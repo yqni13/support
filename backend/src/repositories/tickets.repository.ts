@@ -1,8 +1,8 @@
 import {
-    IBaseRepository,
-    ICreateRepository,
-    IDeleteRepository,
-    IFindRepository
+    BaseRepository,
+    CreateRepository,
+    DeleteRepository,
+    FindRepository
 } from "./interfaces/base.repository.interface";
 import { DBConnection } from "../configs/db";
 import { QueryResult } from "pg";
@@ -13,10 +13,10 @@ import { logError, now } from "../utils/common.utils";
 import { mapFilteredQueryValues } from "../utils/repository.utils";
 
 class TicketsRepository implements 
-IBaseRepository<Tickets>,
-IFindRepository<Tickets>,
-ICreateRepository<Tickets>,
-IDeleteRepository 
+BaseRepository<Tickets>,
+FindRepository<Tickets>,
+CreateRepository<Tickets>,
+DeleteRepository 
 {
     private table: string;
 
