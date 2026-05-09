@@ -1,6 +1,6 @@
 {
   "name": "support_backend",
-  "version": "1.6.0",
+  "version": "1.6.1",
   "appMeta": {
     "db_version": "1.6.0",
     "docker_image": "yqni13/support",
@@ -32,7 +32,6 @@
     "express-validator": "^7.2.1",
     "glob": "^13.0.0",
     "multer": "^2.0.2",
-    "nodemailer": "^7.0.7",
     "nodemon": "^3.1.9",
     "pg": "^8.16.3",
     "uuid": "^11.1.0",
