@@ -1,6 +1,6 @@
 import { DBConnection } from "../configs/db";
 import { QueryResult } from "pg";
-import { IBaseRepository, ICreateRepository, IFindRepository, IUpdateFlagRepository } from "./interfaces/base.repository.interface";
+import { BaseRepository, CreateRepository, FindRepository, UpdateFlagRepository } from "./interfaces/base.repository.interface";
 import { Users, UsersId } from "./interfaces/users.entity.interface";
 import { logError } from "../utils/common.utils";
 import { UsersFilterDTO } from "../dtos/users.dto";
@@ -8,10 +8,10 @@ import { DBQueryErrorException } from "../utils/exceptions/db.exception";
 import { mapFilteredQueryValues } from "../utils/repository.utils";
 
 class UsersRepository implements 
-IBaseRepository<Users>,
-IFindRepository<Users>,
-ICreateRepository<Users>,
-IUpdateFlagRepository<Users>
+BaseRepository<Users>,
+FindRepository<Users>,
+CreateRepository<Users>,
+UpdateFlagRepository<Users>
 {
     private table: string;
 

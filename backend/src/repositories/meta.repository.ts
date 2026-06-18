@@ -1,11 +1,11 @@
 import { QueryResult } from "pg";
 import { DBConnection } from "../configs/db";
-import { IBaseRepository, IFindRepository } from "./interfaces/base.repository.interface";
+import { BaseRepository, FindRepository } from "./interfaces/base.repository.interface";
 import { Maintenance, Meta, MetaId } from "./interfaces/meta.entity.interface";
 import { logError } from "../utils/common.utils";
 import { DBQueryErrorException } from "../utils/exceptions/db.exception";
 
-class MetaRepository implements IBaseRepository<Meta>, IFindRepository<Meta> {
+class MetaRepository implements BaseRepository<Meta>, FindRepository<Meta> {
 
     private table: string;
 

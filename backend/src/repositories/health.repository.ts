@@ -1,7 +1,8 @@
 import { DBConnection } from "../configs/db";
+import { HealthCheckDatabase } from "../services/interfaces/health.interface.service";
 
 class HealthRepository {
-    async checkDatabase(): Promise<any> {
+    async checkDatabase(): Promise<HealthCheckDatabase> {
         const sql = 'SELECT 1';
         const db = DBConnection.getInstance();
         let client: any;
@@ -9,7 +10,7 @@ class HealthRepository {
             client = await db.connect();
             await client.query(sql);
             return { status: 'ok' };
-        } catch(err: any) {
+        } catch(err: unknown) {
             return {
                 status: 'error',
                 message: err instanceof Error ? err.message : 'Unknown error'
