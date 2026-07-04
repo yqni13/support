@@ -1,8 +1,15 @@
 ## 📜 $\textsf{\color{salmon}{List\ of\ updates}}$
 
+### $\textsf{\color{skyblue}2026/07/04}$
+
+$\textsf{[v1.6.1\ =>\ {\textbf{\color{brown}v1.6.2}]}}$ app<br>
+- $\textsf{\color{orange}Patch:}$ Updated 'tickets' routes to prepare for HTTP method .query() to use for path '/search' (not available on current version of Express.js).
+
+<br>
+
 ### $\textsf{\color{skyblue}2026/05/08}$
 
-$\textsf{[v1.6.0\ =>\ {\textbf{\color{brown}v1.6.1}]}}$ app<br>
+$\textsf{[v1.6.0\ =>\ v1.6.1]}$ app<br>
 - $\textsf{\color{orange}Patch:}$ Updated interfaces to remove "I" prefix and remove usages of "any" type.
 
 <br>

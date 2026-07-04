@@ -44,6 +44,10 @@ router.post(
     factory(ticketsController.postTicketsSearch)
 );
 
+// TODO(yqni13): implement as soon as official version contains new http method
+// Definition to find in: node_modules/@types/express-serve-static-core/index.d.ts => IRouter
+// router.query('/search', authAdmin(), searchSchema, factory(ticketsController.postTicketsSearch));
+
 // create
 router.post(
     '/create',
