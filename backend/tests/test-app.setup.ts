@@ -14,7 +14,6 @@ export function createTestApp(middleware: any[], router: any, route: string) {
 
     app.use(bodyParser.json());
     app.use(cors());
-    app.options("*", cors());
 
     if(middleware.length > 0) {
         app.use(middleware);
