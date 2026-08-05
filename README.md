@@ -1,5 +1,5 @@
 # yqni13 | $\texttt{\color{cornflowerblue}{SUPPORT}}$
-### $\textsf{\color{brown}{v1.6.2}}$
+### $\textsf{\color{brown}{v1.6.3}}$
 
 #### Support hub - handling feedback/ratings (`/feedback`) and bug/support requests (`/tickets`) including file attachments across multiple applications via REST API. Built with NodeJS (Typescript), Express & PostgreSQL in Docker container using API-Key authentication and rate-limiting. Created following Test-Driven Development (450+ tests) and hosting env:prod via Render, Neon and Cloudflare.
 
@@ -215,8 +215,8 @@ Preventing an unwanted merge with unfinished/failed test run, the project is set
 [see changelog for all updates](/docs/CHANGELOG.md)
 
 
-$\textsf{[v1.6.1\ =>\ {\textbf{\color{brown}v1.6.2}]}}$ app<br>
-- $\textsf{\color{orange}Patch:}$ Updated 'tickets' routes to prepare for HTTP method .query() to use for path '/search' (not available on current version of Express.js).
+$\textsf{[v1.6.2\ =>\ {\textbf{\color{brown}v1.6.3}]}}$ app<br>
+- $\textsf{\color{orange}Patch:}$ Updated number parsing by removing unary "+" operator with Number() fn.
 
 <br>
 

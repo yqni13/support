@@ -8,7 +8,7 @@ class FeedbackController {
     async getFeedback(req: Request, res: Response, next: NextFunction) {
         try {
             checkValidation(req);
-            const id = (+req.params.id) as FeedbackId;
+            const id = (Number(req.params.id)) as FeedbackId;
             const response: FeedbackResponseDTO | null = await feedbackService.getFeedbackById(id);
             res.json(response);
         } catch(err: any) {
@@ -45,7 +45,7 @@ class FeedbackController {
     async patchFeedbackReview(req: Request, res: Response, next: NextFunction) {
         try {
             checkValidation(req);
-            const id = (+req.params.id) as FeedbackId;
+            const id = (Number(req.params.id)) as FeedbackId;
             const response: FeedbackResponseDTO | null = await feedbackService.updateFeedbackReview(id);
             res.json(response);
         } catch(err: any) {
