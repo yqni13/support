@@ -1,5 +1,5 @@
 # yqni13 | $\texttt{\color{cornflowerblue}{SUPPORT}}$
-### $\textsf{\color{brown}{v1.6.0}}$
+### $\textsf{\color{brown}{v1.6.3}}$
 
 #### Support hub - handling feedback/ratings (`/feedback`) and bug/support requests (`/tickets`) including file attachments across multiple applications via REST API. Built with NodeJS (Typescript), Express & PostgreSQL in Docker container using API-Key authentication and rate-limiting. Created following Test-Driven Development (450+ tests) and hosting env:prod via Render, Neon and Cloudflare.
 
@@ -215,15 +215,14 @@ Preventing an unwanted merge with unfinished/failed test run, the project is set
 [see changelog for all updates](/docs/CHANGELOG.md)
 
 
-$\textsf{[v1.5.2\ =>\ {\textbf{\color{brown}v1.6.0}]}}$ app<br>
-- $\textsf{\color{teal}Addition:}$ Added health endpoints to improve health checks (manually + cron-jobs).
+$\textsf{[v1.6.2\ =>\ {\textbf{\color{brown}v1.6.3}]}}$ app<br>
+- $\textsf{\color{orange}Patch:}$ Updated number parsing by removing unary "+" operator with Number() fn.
 
 <br>
 
 ### Update objectives:
-<dl>
+<d>
     <dd>- caching layer</dd>
     <dd>- background worker</dd>
     <dd>- jenkins setup</dd>
-    <dd>- mail setup</dd>
-</dl>
+</d

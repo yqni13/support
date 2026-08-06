@@ -1,9 +1,29 @@
 ## 📜 $\textsf{\color{salmon}{List\ of\ updates}}$
 
+### $\textsf{\color{skyblue}2026/08/03}$
+
+$\textsf{[v1.6.2\ =>\ {\textbf{\color{brown}v1.6.3}]}}$ app<br>
+- $\textsf{\color{orange}Patch:}$ Updated number parsing by removing unary "+" operator with Number() fn.
+
+<br>
+
+### $\textsf{\color{skyblue}2026/07/04}$
+
+$\textsf{[v1.6.1\ =>\ v1.6.2]}$ app<br>
+- $\textsf{\color{orange}Patch:}$ Updated 'tickets' routes to prepare for HTTP method .query() to use for path '/search' (not available on current version of Express.js).
+
+<br>
+
+### $\textsf{\color{skyblue}2026/05/08}$
+
+$\textsf{[v1.6.0\ =>\ v1.6.1]}$ app<br>
+- $\textsf{\color{orange}Patch:}$ Updated interfaces to remove "I" prefix and remove usages of "any" type.
+
+<br>
 
 ### $\textsf{\color{skyblue}2026/03/26}$
 
-$\textsf{[v1.5.2\ =>\ {\textbf{\color{brown}v1.6.0}]}}$ app<br>
+$\textsf{[v1.5.2\ =>\ v1.6.0]}$ app<br>
 - $\textsf{\color{teal}Addition:}$ Added health endpoints to improve health checks (manually + cron-jobs).
 
 <br>

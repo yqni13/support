@@ -16,7 +16,7 @@ export async function runMigrations(testfile: string = 'unknown') {
         await migrate({
             databaseUrl: {
                 host: DB_TEST_HOST,
-                port: +(DB_TEST_PORT), // convert string to number
+                port: Number(DB_TEST_PORT),
                 user: DB_TEST_USER,
                 password: DB_TEST_PASS,
                 database: DB_TEST_DATABASE

@@ -10,8 +10,6 @@ import { Violation } from "../../../src/utils/enums/violations.enum";
 import { default as mockId } from "../../mock-data/id.mock-data.json";
 import { ClientsId } from "../../../src/repositories/interfaces/clients.entity.interface";
 import { UsersId } from "../../../src/repositories/interfaces/users.entity.interface";
-
-// Ensure correct type by converting secret to number via unary + operator.
 import { secrets } from "../../../src/utils/secrets.utils";
 
 describe('Unit-tests (middleware), priority: class RateLimitsEngine', () => {
@@ -42,7 +40,7 @@ describe('Unit-tests (middleware), priority: class RateLimitsEngine', () => {
                 jest.spyOn(rateLimitsService, 'createRateLimit').mockImplementation();
                 jest.spyOn(ClientsDailyLimitRule.prototype, 'check').mockResolvedValue(null);
     
-                const rule: RateLimitsRule = new ClientsDailyLimitRule(+secrets.RATELIMITS_CLIENTSDAILYLIMIT);
+                const rule: RateLimitsRule = new ClientsDailyLimitRule(Number(secrets.RATELIMITS_CLIENTSDAILYLIMIT));
                 const count: RateLimitsCount = new RateLimitsIncrement();
                 const engine = new RateLimitsEngine([rule], count);
     
@@ -65,7 +63,7 @@ describe('Unit-tests (middleware), priority: class RateLimitsEngine', () => {
     
                 jest.spyOn(ClientsDailyLimitRule.prototype, 'check').mockResolvedValue(response);
     
-                const rule: RateLimitsRule = new ClientsDailyLimitRule(+secrets.RATELIMITS_CLIENTSDAILYLIMIT);
+                const rule: RateLimitsRule = new ClientsDailyLimitRule(Number(secrets.RATELIMITS_CLIENTSDAILYLIMIT));
                 const count: RateLimitsCount = new RateLimitsIncrement();
                 const engine = new RateLimitsEngine([rule], count);
     
@@ -85,7 +83,7 @@ describe('Unit-tests (middleware), priority: class RateLimitsEngine', () => {
                 jest.spyOn(demoLimitsService, 'createDemoLimit').mockImplementation();
                 jest.spyOn(DemoDailyLimitRule.prototype, 'check').mockResolvedValue(null);
 
-                const rule: RateLimitsRule = new DemoDailyLimitRule(+secrets.DEMOLIMITS_TOTALDAILYLIMIT);
+                const rule: RateLimitsRule = new DemoDailyLimitRule(Number(secrets.DEMOLIMITS_TOTALDAILYLIMIT));
                 const count: RateLimitsCount = new DemoLimitsIncrement();
                 const engine = new RateLimitsEngine([rule], count);
 
@@ -103,7 +101,7 @@ describe('Unit-tests (middleware), priority: class RateLimitsEngine', () => {
 
                 jest.spyOn(DemoDailyLimitRule.prototype, 'check').mockResolvedValue(response);
 
-                const rule: RateLimitsRule = new DemoDailyLimitRule(+secrets.DEMOLIMITS_TOTALDAILYLIMIT);
+                const rule: RateLimitsRule = new DemoDailyLimitRule(Number(secrets.DEMOLIMITS_TOTALDAILYLIMIT));
                 const count: RateLimitsCount = new DemoLimitsIncrement();
                 const engine = new RateLimitsEngine([rule], count);
 

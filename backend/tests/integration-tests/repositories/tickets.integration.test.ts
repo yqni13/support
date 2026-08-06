@@ -165,6 +165,22 @@ describe('Integration-tests (repository), priority: entity Tickets', () => {
             expect(testResponse.body).toMatchObject(testResult);
         })
 
+        // Testing new HTTP method .query()
+        // test('Repository process fn findByFilter(), params: <client_id> result: null', async () => {
+        //     const testParam_dto: TicketsFilterDTO = {
+        //         client_id: mockId.clients.invalid[0] as ClientsId
+        //     };
+        //     const testResult: TicketsResponseDTO[] | null = null;
+
+        //     await dbTestSetup.addTestData();
+        //     const testResponse = await request(app)
+        //         .query(`${apiUrl}/search`)
+        //         .send(testParam_dto);
+
+        //     expect(testResponse.statusCode).toBe(200);
+        //     expect(testResponse.body).toBe(testResult);
+        // })
+
         test('Repository process fn findByFilter(), params: <client_id> result: null', async () => {
             const testParam_dto: TicketsFilterDTO = {
                 client_id: mockId.clients.invalid[0] as ClientsId

@@ -34,7 +34,7 @@ class FeedbackRatingModel {
     toFeedbackRatingResponseDTO(entity: FeedbackRating, extended: false): FeedbackRatingResponseDTO;
 
     toFeedbackRatingResponseDTO(entity: FeedbackRating, extended: boolean) {
-        const delta: number = +((entity.rating_sum / entity.count).toFixed(1));
+        const delta: number = Number((entity.rating_sum / entity.count).toFixed(1));
         if(extended) {
             return {
                 client_id: entity.client_id,

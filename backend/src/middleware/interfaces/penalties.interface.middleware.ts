@@ -8,7 +8,7 @@ import { Violation } from "../../utils/enums/violations.enum";
 export interface BasePenaltyContext {
     type: Violation,
     id: string | number,
-    penaltyValue: any
+    penaltyValue: unknown
 }
 
 export interface PenaltyApply<T extends PenaltyContext = PenaltyContext> {

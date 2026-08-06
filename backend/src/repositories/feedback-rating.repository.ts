@@ -2,13 +2,13 @@ import { PoolClient, QueryResult } from "pg";
 import { DBConnection } from "../configs/db";
 import { logError } from "../utils/common.utils";
 import { DBQueryErrorException } from "../utils/exceptions/db.exception";
-import { IFindRepository } from "./interfaces/base.repository.interface";
+import { FindRepository } from "./interfaces/base.repository.interface";
 import { FeedbackRating } from "./interfaces/feedback-rating.entity.interface";
 import { FeedbackRatingUpdateDTO } from "../dtos/feedback-rating.dto";
 import { ClientsId } from "./interfaces/clients.entity.interface";
 
 class FeedbackRatingRepository implements 
-IFindRepository<FeedbackRating> {
+FindRepository<FeedbackRating> {
     private table: string;
 
     constructor() {
