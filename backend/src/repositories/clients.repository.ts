@@ -4,9 +4,9 @@ import { QueryResult } from "pg";
 import { ApiKeyStatus } from "../utils/enums/api-key-status.enum";
 import { logError } from "../utils/common.utils";
 import { DBQueryErrorException } from "../utils/exceptions/db.exception";
-import { ICreateRepository, IUpdateFlagRepository } from "./interfaces/base.repository.interface";
+import { CreateRepository, UpdateFlagRepository } from "./interfaces/base.repository.interface";
 
-class ClientsRepository implements ICreateRepository<Clients>, IUpdateFlagRepository<Clients> {
+class ClientsRepository implements CreateRepository<Clients>, UpdateFlagRepository<Clients> {
     private table: string;
 
     constructor() {

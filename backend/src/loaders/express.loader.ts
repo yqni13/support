@@ -8,7 +8,6 @@ export class ExpressLoader {
 
         app.use(bodyParser.json());
         app.use(cors());
-        app.options("*", cors());
 
         return app;
     }

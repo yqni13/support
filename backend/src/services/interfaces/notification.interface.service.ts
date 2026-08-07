@@ -37,5 +37,5 @@ export interface NotificationPenaltyParams {
     client_name?: string,
     user_email?: string,
     violation: Violation,
-    penalty: any,
+    penalty: unknown,
 }
